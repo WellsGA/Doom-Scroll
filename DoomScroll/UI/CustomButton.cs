@@ -3,7 +3,7 @@ using Doom_Scroll.Common;
 
 namespace Doom_Scroll.UI
 {
-    internal class CustomButton
+    public class CustomButton
     {
         public enum ImageType
         {

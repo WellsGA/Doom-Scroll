@@ -79,7 +79,7 @@ namespace Doom_Scroll
                 System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
 
                 // save the in the inventory folder
-               // FolderManager.Instance.AddImageToScreenshots("image_" + m_screenshots + ".png", byteArray);
+                FolderManager.Instance.AddImageToScreenshots("image_" + m_screenshots + ".png", byteArray);
 
                 UnityEngine.Object.Destroy(screeenShot);
                 m_screenshots++;

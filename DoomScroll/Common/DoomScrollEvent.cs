@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Doom_Scroll.Common
 {
-    internal class DoomScrollEvent
+    public class DoomScrollEvent
     {
         public event Action MyAction;
         public void InvokeAction()
