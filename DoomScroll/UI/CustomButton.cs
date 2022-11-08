@@ -18,6 +18,7 @@ namespace Doom_Scroll.UI
         // private BoxCollider2D m_collider;
         private SpriteRenderer m_spriteRenderer;
         private Sprite[] buttonIcons;
+        
         private bool isDefaultImg;
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
@@ -55,9 +56,17 @@ namespace Doom_Scroll.UI
             EnableButton(true);
         }
 
+        public Vector2 GetSize() 
+        {
+            return m_spriteRenderer.size;
+        }
+
         public void SetLocalPosition(Vector3 pos)
         {
             ButtonGameObject.transform.localPosition = pos;
+            DoomScroll._log.LogInfo("BUTTON POS: " + ButtonGameObject.transform.position.ToString());
+            DoomScroll._log.LogInfo("BUTTON LOCAL POS: " + ButtonGameObject.transform.localPosition.ToString());
+
         }
 
         public void ScaleSize(float scaledWidth)

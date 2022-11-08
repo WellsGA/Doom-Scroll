@@ -20,7 +20,6 @@ namespace Doom_Scroll.Common
             );
         }
 
-
         // the whole image is one sprite
         public static Sprite ReadImageFromAssembly(Assembly assembly, string resource)
         {

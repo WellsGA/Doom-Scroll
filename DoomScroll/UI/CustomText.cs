@@ -3,20 +3,10 @@ using TMPro;
 
 namespace Doom_Scroll.UI
 {
-    public enum TextPosition
-    {
-        BELOWPARENT,
-        ABOVEPARENT,
-        MIDDLE,
-        LEFTTOPARENT,
-        RIGHTTOPARENT
-    }
     public class CustomText
     {
         public GameObject TextObject { get; }
         public TextMeshPro TextMP { get; }
-        private MeshRenderer m_meshRenderer;
-        private GameObject parent;
         private Vector2 parentSize;
 
         public CustomText(string name, GameObject parent, string text)
@@ -24,51 +14,39 @@ namespace Doom_Scroll.UI
             TextObject = new GameObject();
             TextObject.layer = LayerMask.NameToLayer("UI");
             TextObject.name = name;
-            this.parent = parent;
-            TextObject.transform.SetParent(this.parent.transform);
-
+            TextObject.transform.SetParent(parent.transform);
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             parentSize = sr ? sr.size / 2 : new Vector2(0.5f, 0.5f);
-
-            // sets the defaul position under the parent object
-            SetPosition(TextPosition.BELOWPARENT);
-            m_meshRenderer = TextObject.AddComponent<MeshRenderer>();
+            TextObject.AddComponent<MeshRenderer>();
+            TextObject.transform.localScale = Vector3.one;
             TextMP = TextObject.AddComponent<TextMeshPro>();
             TextMP.text = text;
             TextMP.m_enableWordWrapping = true;
             TextMP.alignment = TextAlignmentOptions.Center;
             TextMP.color = Color.black;
-            TextMP.fontSize = parentSize.y * 4f;
         }
 
-        public void SetPosition(TextPosition pos)
+        public void SetlocalPosition(Vector3 pos)
         {
-            Vector3 position = parent.transform.localPosition;
-            switch (pos)
-            {
-                case TextPosition.BELOWPARENT:
-                    TextObject.transform.localPosition = new Vector3(position.x, position.y - parentSize.y + 0.1f, position.z);
-                    return;
-                case TextPosition.ABOVEPARENT:
-                    TextObject.transform.localPosition = new Vector3(position.x, position.y + parentSize.y + 0.1f, position.z);
-                    return;
-                case TextPosition.LEFTTOPARENT:
-                    TextObject.transform.localPosition = new Vector3(position.x - parentSize.y + 0.1f, position.y, position.z);
-                    return;
-                case TextPosition.RIGHTTOPARENT:
-                    TextObject.transform.localPosition = new Vector3(position.x + parentSize.y + 0.1f, position.y, position.z);
-                    return;
-                case TextPosition.MIDDLE:
-                default:
-                    TextObject.transform.localPosition = position;
-                    return;
-            }
-
+            TextObject.transform.position = TextObject.transform.parent.transform.position;
+            TextObject.transform.localPosition = pos;
+            DoomScroll._log.LogInfo("LABEL POS: " + TextObject.transform.position.ToString());
+            DoomScroll._log.LogInfo("LABEL LOCAL POS: " + TextObject.transform.localPosition.ToString());
         }
 
         public void SetText(string text)
         {
             TextMP.text = text;
+        }
+
+        public void SetSize(float size)
+        {
+            TextMP.fontSize = size;
+        }
+
+        public void DisplayLabel(bool value) 
+        {
+            TextObject.SetActive(value);
         }
     }
 }

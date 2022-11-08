@@ -8,10 +8,11 @@ namespace Doom_Scroll.Common
     {
         public List<IDirectory> Content { get; private set; }
         public Folder ParentFolder { get; }
-
+        
         private string name;
         private string path;
         private CustomButton folderBtn;
+        private CustomText label;
         private Vector2 parentSize;
         public Folder(string parentPath, string name, GameObject parent, Sprite folderImg)
         {
@@ -21,7 +22,7 @@ namespace Doom_Scroll.Common
             Content = new List<IDirectory>();
             Sprite[] images = { folderImg };
             folderBtn = new CustomButton(parent, images, parent.transform.position, 0.8f, name);
-            new CustomText(name, folderBtn.ButtonGameObject, name);
+            label = new CustomText(name, folderBtn.ButtonGameObject, name);
             folderBtn.ActivateButton(false);
         }
 
@@ -49,6 +50,10 @@ namespace Doom_Scroll.Common
         {
             return folderBtn;
         }
+        public CustomText GetLabel()
+        {
+            return label;
+        }
 
         public void DisplayContent()
         {
@@ -65,9 +70,13 @@ namespace Doom_Scroll.Common
                     {
                         pos.x = j * width / 5 - width / 2 + 0.7f;
                         pos.y = i * -height / 4 + height / 2 - 0.7f;
-                        Content[j + i * 5].GetButton().SetLocalPosition(pos);
-                        Content[j + i * 5].GetButton().ScaleSize(width / 5 - 0.1f);
-                        Content[j + i * 5].GetButton().ActivateButton(true);
+                        CustomButton btn = Content[j + i * 5].GetButton();
+                        btn.SetLocalPosition(pos);
+                        btn.ScaleSize(width / 5 - 0.1f);
+                        CustomText txt = Content[j + i * 5].GetLabel();
+                        txt.SetlocalPosition(new Vector3(0, - btn.GetSize().y / 2 - 0.1f, 0));
+                        txt.SetSize(1.5f);
+                        btn.ActivateButton(true);
                     }
                 }
             }

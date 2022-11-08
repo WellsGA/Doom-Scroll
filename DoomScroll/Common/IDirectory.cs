@@ -7,6 +7,7 @@ namespace Doom_Scroll.Common
         public string GetName();
         public string GetPath();
         public CustomButton GetButton();
+        public CustomText GetLabel();
         public void DisplayContent();
         public void HideContent();
         public string PrintDirectory();

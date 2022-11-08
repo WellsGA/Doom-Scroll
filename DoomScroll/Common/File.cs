@@ -14,6 +14,7 @@ namespace Doom_Scroll.Common
         private string name;
         private string path;
         private CustomButton fileBtn;
+        private CustomText label;
         private FileType type;
         private byte[] content;
         public File(string parentPath, GameObject parent, string name, byte[] image)
@@ -21,10 +22,9 @@ namespace Doom_Scroll.Common
             this.name = name;
             path = parentPath + "/" + name;
             content = image;
-            // float width = parentUI.GetComponent<SpriteRenderer>()? parentUI.GetComponent<SpriteRenderer>().size.x / 5 : 0.8f;
             Sprite[] images = { ImageLoader.ReadImageFromByteArray(content) };
             fileBtn = new CustomButton(parent, images, name);
-            new CustomText(name, fileBtn.ButtonGameObject, name);
+            label = new CustomText(name, fileBtn.ButtonGameObject, name);
             fileBtn.ActivateButton(false);
         }
         public string GetName()
@@ -38,6 +38,10 @@ namespace Doom_Scroll.Common
         public CustomButton GetButton()
         {
             return fileBtn;
+        }
+        public CustomText GetLabel()
+        {
+            return label;
         }
         public void DisplayContent()
         {
