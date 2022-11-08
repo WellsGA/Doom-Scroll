@@ -10,9 +10,10 @@ namespace Doom_Scroll
         public static void PostfixStart()
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
-            DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA ACTIVE");
+            DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA INIT");
 
         }
+
     }
 
     [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]

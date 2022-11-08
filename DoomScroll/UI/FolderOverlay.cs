@@ -69,13 +69,10 @@ namespace Doom_Scroll.UI
             return new CustomButton(parent, backBtnImg, backPosition, buttonSize.x, "Back to Previous");
 
         }
-        public static GameObject AddPath(GameObject parent)
+        public static CustomText AddPath(GameObject parent)
         {
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            GameObject pathText = new GameObject();
-            pathText.name = "PathName";
-            pathText.layer = LayerMask.NameToLayer("UI");
-            pathText.transform.SetParent(parent.transform);
+            CustomText pathText = new CustomText("PathName", parent, "Home");
             // RectTransform rt = pathText.AddComponent<RectTransform>();
             // rt.sizeDelta = new Vector2(-sr.size.x / 2 - 3 * buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y);
             return pathText;

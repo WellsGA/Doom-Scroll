@@ -16,16 +16,14 @@ namespace Doom_Scroll.Common
         private CustomButton fileBtn;
         private FileType type;
         private byte[] content;
-        private GameObject parentUI;
         public File(string parentPath, GameObject parent, string name, byte[] image)
         {
             this.name = name;
             path = parentPath + "/" + name;
-            parentUI = parent;
             content = image;
             // float width = parentUI.GetComponent<SpriteRenderer>()? parentUI.GetComponent<SpriteRenderer>().size.x / 5 : 0.8f;
             Sprite[] images = { ImageLoader.ReadImageFromByteArray(content) };
-            fileBtn = new CustomButton(parentUI, images, parentUI.transform.position, 0.8f, name);
+            fileBtn = new CustomButton(parent, images, name);
             new CustomText(name, fileBtn.ButtonGameObject, name);
             fileBtn.ActivateButton(false);
         }

@@ -10,7 +10,7 @@ namespace Doom_Scroll
         public static void PostfixStart()
         {
             ScreenshotManager.Instance.ReSet();
-            // FolderManager.Instance.Reset();
+            FolderManager.Instance.Reset();
         }
 
         [HarmonyPostfix]
@@ -28,9 +28,19 @@ namespace Doom_Scroll
             if (!ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ActivateCameraButton(isActive);
-                DoomScroll._log.LogInfo("HudManager.SetHudActive ---- CAMERA ACTIVE" + isActive);
+                DoomScroll._log.LogInfo("HudManager.SetHudActive ---- CAMERA ACTIVE: " + isActive);
             }
         }
 
+        [HarmonyPostfix]
+        [HarmonyPatch("OpenMeetingRoom")]
+        public static void PostfixOpenMeetingRoom()
+        {
+            if (ScreenshotManager.Instance.IsCameraOpen)
+            {
+                ScreenshotManager.Instance.ToggleCamera();
+                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED" );
+            }
+        }
     }
 }

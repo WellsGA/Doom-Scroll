@@ -19,8 +19,6 @@ namespace Doom_Scroll.UI
         private GameObject parent;
         private Vector2 parentSize;
 
-
-
         public CustomText(string name, GameObject parent, string text)
         {
             TextObject = new GameObject();
@@ -66,7 +64,11 @@ namespace Doom_Scroll.UI
                     return;
             }
 
+        }
 
+        public void SetText(string text)
+        {
+            TextMP.text = text;
         }
     }
 }

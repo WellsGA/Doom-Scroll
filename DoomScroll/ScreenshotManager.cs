@@ -76,7 +76,7 @@ namespace Doom_Scroll
 
                 byte[] byteArray = screeenShot.EncodeToPNG();
                 // save the image locally -- for testing purposes
-                System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
+                // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
 
                 // save the in the inventory folder
                 FolderManager.Instance.AddImageToScreenshots("image_" + m_screenshots + ".png", byteArray);

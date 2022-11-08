@@ -34,8 +34,9 @@ namespace Doom_Scroll.UI
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
             SetButtonImg(ImageType.DEFAULT);
             // size has to be set after setting the image!
-            //make sure the images are sized correctly and scaled proportionately 
+            // make sure the images are sized correctly and scaled proportionately 
             ScaleSize(scaledX);
+            ButtonGameObject.transform.localScale = Vector3.one;
             ActivateButton(true);
             EnableButton(true);
         }
@@ -49,8 +50,7 @@ namespace Doom_Scroll.UI
             m_spriteRenderer = ButtonGameObject.AddComponent<SpriteRenderer>();
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
             SetButtonImg(ImageType.DEFAULT);
-            // size has to be set after setting the image!
-
+            ButtonGameObject.transform.localScale = Vector3.one;
             ActivateButton(true);
             EnableButton(true);
         }
@@ -63,7 +63,6 @@ namespace Doom_Scroll.UI
         public void ScaleSize(float scaledWidth)
         {
             m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
-
         }
         public void SetParent(GameObject parent)
         {

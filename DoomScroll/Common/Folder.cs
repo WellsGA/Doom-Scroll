@@ -12,18 +12,15 @@ namespace Doom_Scroll.Common
         private string name;
         private string path;
         private CustomButton folderBtn;
-
-        private GameObject parentUI;
-        private SpriteRenderer spriteRndr;
+        private Vector2 parentSize;
         public Folder(string parentPath, string name, GameObject parent, Sprite folderImg)
         {
             this.name = name;
             path = parentPath + "/" + name;
-            parentUI = parent;
-            spriteRndr = parent.GetComponent<SpriteRenderer>();
+            parentSize = parent.GetComponent<SpriteRenderer>().size;
             Content = new List<IDirectory>();
             Sprite[] images = { folderImg };
-            folderBtn = new CustomButton(parentUI, images, parentUI.transform.position, 0.8f, name);
+            folderBtn = new CustomButton(parent, images, parent.transform.position, 0.8f, name);
             new CustomText(name, folderBtn.ButtonGameObject, name);
             folderBtn.ActivateButton(false);
         }
@@ -56,8 +53,8 @@ namespace Doom_Scroll.Common
         public void DisplayContent()
         {
             Vector3 pos = new Vector3(0f, 0f, -20f);
-            float width = spriteRndr.size.x * 0.9f;
-            float height = spriteRndr.size.y - 1.5f;
+            float width = parentSize.x * 0.9f;
+            float height = parentSize.y - 1.5f;
 
             // display items on a 5x4 grid 
             for (int i = 0; i < 4; i++)

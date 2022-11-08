@@ -18,7 +18,7 @@ namespace Doom_Scroll
 
         private bool m_isFolderOverlayOpen;
         private GameObject m_folderArea;
-        // private CustomText m_pathText;
+        private CustomText m_pathText;
         // folders
         private Folder m_root;
         private Folder m_previous;
@@ -142,6 +142,7 @@ namespace Doom_Scroll
             m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea);
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
             m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
+            m_pathText = FolderOverlay.AddPath(m_folderArea);
         }
         private void InitFolderStructure()
         {
@@ -170,28 +171,25 @@ namespace Doom_Scroll
                 ActivateFolderOverlay(true);
                 DoomScroll._log.LogInfo("ROOT FOLDER OPEN");
                 // (re)sets root as the current and m_previous folder and displays its content
-                m_current = m_root;
                 m_previous = m_root;
+                m_current = m_root;
                 m_current.DisplayContent();
             }
-
         }
-        public void AddImageToScreenshots(string name, byte[] img)
-        {
-            m_screenshots.AddItem(new File(m_screenshots.GetPath(), m_folderArea, name, img));
-        }
-        public void ActivateFolderOverlay(bool value)
+       
+        private void ActivateFolderOverlay(bool value)
         {
             m_isFolderOverlayOpen = value;
             m_folderArea.SetActive(value);
         }
 
-        public void ChangeDirectory(Folder folder)
+        private void ChangeDirectory(Folder folder)
         {
             if (m_folderToggleBtn.IsActive && m_isFolderOverlayOpen)
             {
                 m_previous = m_current;
                 m_current = folder;
+                m_pathText.SetText(folder.GetPath());
                 m_previous.HideContent();
                 m_current.DisplayContent();
             }
@@ -215,6 +213,11 @@ namespace Doom_Scroll
             ChangeDirectory(m_previous);
         }
 
+        public void AddImageToScreenshots(string name, byte[] img)
+        {
+            m_screenshots.AddItem(new File(m_screenshots.GetPath(), m_folderArea, name, img));
+        }
+
         public void Reset()
         {
             if (hudManagerInstance == null)
@@ -225,8 +228,5 @@ namespace Doom_Scroll
             }
             DoomScroll._log.LogInfo("FOLDER MANAGER RESET");
         }
-
-
-
     }
 }
