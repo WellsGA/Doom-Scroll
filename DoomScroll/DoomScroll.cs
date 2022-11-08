@@ -2,6 +2,8 @@
 using BepInEx.Unity.IL2CPP;
 using BepInEx.Logging;
 using HarmonyLib;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Doom_Scroll;
 
@@ -17,5 +19,14 @@ public class DoomScroll : BasePlugin
 
         var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         harmony.PatchAll();
+
+        // Add mod stamp
+        SceneManager.add_sceneLoaded((UnityAction<Scene, LoadSceneMode>)((scene, _) =>
+        {
+            if (scene.name == "MainMenu")
+            {
+                ModManager.Instance.ShowModStamp();
+            }
+        }));
     }
 }

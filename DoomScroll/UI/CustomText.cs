@@ -30,8 +30,6 @@ namespace Doom_Scroll.UI
         {
             TextObject.transform.position = TextObject.transform.parent.transform.position;
             TextObject.transform.localPosition = pos;
-            DoomScroll._log.LogInfo("LABEL POS: " + TextObject.transform.position.ToString());
-            DoomScroll._log.LogInfo("LABEL LOCAL POS: " + TextObject.transform.localPosition.ToString());
         }
 
         public void SetText(string text)
