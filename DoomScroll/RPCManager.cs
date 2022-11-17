@@ -13,8 +13,6 @@ namespace Doom_Scroll
     }
     public class RPCManager
     {
-        private static ChatController chatContorller = DestroyableSingleton<HudManager>.Instance.Chat;
-
         public static bool RpcSendChatImage(byte[] image)
         {
             string msg = Encoding.Default.GetString(image);
@@ -33,6 +31,7 @@ namespace Doom_Scroll
         // based on the AddChat method of ChatController class
         public static void AddChat(PlayerControl sourcePlayer, byte[] imageBytes)
         {
+            ChatController chatContorller = DestroyableSingleton<HudManager>.Instance.Chat;
             if (!sourcePlayer || !PlayerControl.LocalPlayer)
             {
                 return;
