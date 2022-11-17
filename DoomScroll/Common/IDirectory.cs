@@ -1,15 +1,13 @@
 ﻿using Doom_Scroll.UI;
+using UnityEngine;
 
 namespace Doom_Scroll.Common
 {
     public interface IDirectory
     {
-        public string GetName();
-        public string GetPath();
-        public CustomButton GetButton();
-        public CustomText GetLabel();
+        public CustomButton DirBtn { get; }
+        public CustomText Label { get; }
         public void DisplayContent();
-        public void HideContent();
         public string PrintDirectory();
     }
 }

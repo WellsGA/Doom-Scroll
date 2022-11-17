@@ -19,6 +19,7 @@ namespace Doom_Scroll
         private bool m_isFolderOverlayOpen;
         private GameObject m_folderArea;
         private CustomText m_pathText;
+        
         // folders
         private Folder m_root;
         private Folder m_previous;
@@ -61,7 +62,6 @@ namespace Doom_Scroll
             if (hudManagerInstance.Chat.IsOpen && !m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateButton(true);
-                DoomScroll._log.LogInfo("ACTIVE ");
             }
             else if (!hudManagerInstance.Chat.IsOpen && m_folderToggleBtn.IsActive)
             {
@@ -71,7 +71,6 @@ namespace Doom_Scroll
                 {
                     m_folderToggleBtn.ButtonEvent.InvokeAction();
                 }
-                DoomScroll._log.LogInfo("INACTIVE ");
             }
 
             // If chat is open and the foder toggle button is active invoke toggle on mouse click 
@@ -109,11 +108,30 @@ namespace Doom_Scroll
                     // Check if any of the displayed folders are clicked 
                     foreach (IDirectory dir in m_current.Content)
                     {
-                        if (dir.GetButton().isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        if (dir.DirBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             if (dir is Folder folder)
                             {
                                 ChangeDirectory(folder);
+                            }
+                            else
+                            {
+                                dir.DisplayContent();
+                            }
+                        }
+
+                        if (dir is File file && file.IsShareOpen)
+                        {
+                            file.ShareBtn.ReplaceImgageOnHover();
+                            file.DontShareBtn.ReplaceImgageOnHover();
+                            
+                            if (file.ShareBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                            {
+                                file.ShareBtn.ButtonEvent.InvokeAction();
+                            }
+                            if (file.DontShareBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                            {
+                                file.DontShareBtn.ButtonEvent.InvokeAction();
                             }
                         }
                     }
@@ -148,11 +166,11 @@ namespace Doom_Scroll
         {
             Sprite folderEmpty = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png");
             m_root = new Folder("", "Home", m_folderArea, folderEmpty);
-            m_screenshots = new Folder(m_root.GetPath(), "Images", m_folderArea, folderEmpty);
-            m_tasks = new Folder(m_root.GetPath(), "Tasks", m_folderArea, folderEmpty);
+            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea, folderEmpty);
+            m_tasks = new Folder(m_root.Path, "Tasks", m_folderArea, folderEmpty);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
-            m_root.AddItem(new Folder(m_root.GetPath(), "Checkpoints", m_folderArea, folderEmpty));
+            m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea, folderEmpty));
 
             m_current = m_root;
             m_previous = m_root;
@@ -173,7 +191,7 @@ namespace Doom_Scroll
                 // (re)sets root as the current and m_previous folder and displays its content
                 m_previous = m_root;
                 m_current = m_root;
-                m_current.DisplayContent();
+                m_current.DirBtn.ButtonEvent.InvokeAction();
             }
         }
        
@@ -189,9 +207,9 @@ namespace Doom_Scroll
             {
                 m_previous = m_current;
                 m_current = folder;
-                m_pathText.SetText(folder.GetPath());
+                m_pathText.SetText(folder.Path);
                 m_previous.HideContent();
-                m_current.DisplayContent();
+                m_current.DirBtn.ButtonEvent.InvokeAction();
             }
         }
 
@@ -215,7 +233,7 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(string name, byte[] img)
         {
-            m_screenshots.AddItem(new File(m_screenshots.GetPath(), m_folderArea, name, img));
+            m_screenshots.AddItem(new File(m_screenshots.Path, m_folderArea, name, img, FileType.IMAGE));
         }
 
         public void Reset()

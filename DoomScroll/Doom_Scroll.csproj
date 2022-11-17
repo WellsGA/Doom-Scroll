@@ -52,6 +52,7 @@
     <EmbeddedResource Include="Assets\folderOverlay.png" />
     <EmbeddedResource Include="Assets\folder.png" />
     <EmbeddedResource Include="Assets\folderEmpty.png" />
-    <EmbeddedResource Include="Assets\file.png" />
+    <EmbeddedResource Include="Assets\shareButton.png" />
+    <EmbeddedResource Include="Assets\dontShareButton.png" />
   </ItemGroup>
 </Project>

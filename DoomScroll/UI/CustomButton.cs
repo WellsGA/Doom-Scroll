@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Doom_Scroll.Common;
+using System.Xml.Linq;
 
 namespace Doom_Scroll.UI
 {
@@ -13,7 +14,6 @@ namespace Doom_Scroll.UI
 
         // Creates and manages custom buttnos
         public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
-
         public GameObject ButtonGameObject { get; private set; }
         // private BoxCollider2D m_collider;
         private SpriteRenderer m_spriteRenderer;
@@ -23,26 +23,19 @@ namespace Doom_Scroll.UI
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
 
-
         public CustomButton(GameObject parent, Sprite[] images, Vector3 position, float scaledX, string name)
         {
-            ButtonGameObject = new GameObject(name);
-            ButtonGameObject.layer = LayerMask.NameToLayer("UI");
-            SetParent(parent);
-            SetLocalPosition(position);
-            buttonIcons = images;
-            m_spriteRenderer = ButtonGameObject.AddComponent<SpriteRenderer>();
-            m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
-            SetButtonImg(ImageType.DEFAULT);
+            BasicButton(parent, images, name);
             // size has to be set after setting the image!
-            // make sure the images are sized correctly and scaled proportionately 
+            // ensure the images are sized correctly and scaled proportionately 
             ScaleSize(scaledX);
-            ButtonGameObject.transform.localScale = Vector3.one;
-            ActivateButton(true);
-            EnableButton(true);
+            SetLocalPosition(position);
         }
-
         public CustomButton(GameObject parent, Sprite[] images, string name)
+        {
+            BasicButton(parent, images, name);
+        }
+        private void BasicButton(GameObject parent, Sprite[] images, string name)
         {
             ButtonGameObject = new GameObject(name);
             ButtonGameObject.layer = LayerMask.NameToLayer("UI");
@@ -64,9 +57,6 @@ namespace Doom_Scroll.UI
         public void SetLocalPosition(Vector3 pos)
         {
             ButtonGameObject.transform.localPosition = pos;
-            DoomScroll._log.LogInfo("BUTTON POS: " + ButtonGameObject.transform.position.ToString());
-            DoomScroll._log.LogInfo("BUTTON LOCAL POS: " + ButtonGameObject.transform.localPosition.ToString());
-
         }
 
         public void ScaleSize(float scaledWidth)

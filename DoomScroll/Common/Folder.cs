@@ -9,21 +9,22 @@ namespace Doom_Scroll.Common
         public List<IDirectory> Content { get; private set; }
         public Folder ParentFolder { get; }
         
-        private string name;
-        private string path;
-        private CustomButton folderBtn;
-        private CustomText label;
+        public string Name { get; private set; }
+        public string Path { get; private set; }
+        public CustomButton DirBtn { get; private set; }
+        public CustomText Label { get; private set; }
         private Vector2 parentSize;
         public Folder(string parentPath, string name, GameObject parent, Sprite folderImg)
         {
-            this.name = name;
-            path = parentPath + "/" + name;
+            Name = name;
+            Path = parentPath + "/" + name;
             parentSize = parent.GetComponent<SpriteRenderer>().size;
             Content = new List<IDirectory>();
             Sprite[] images = { folderImg };
-            folderBtn = new CustomButton(parent, images, parent.transform.position, 0.8f, name);
-            label = new CustomText(name, folderBtn.ButtonGameObject, name);
-            folderBtn.ActivateButton(false);
+            DirBtn = new CustomButton(parent, images, name);
+            Label = new CustomText(name, DirBtn.ButtonGameObject, name);
+            DirBtn.ActivateButton(false);
+            DirBtn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
         }
 
         public void AddItem(IDirectory item)
@@ -36,44 +37,25 @@ namespace Doom_Scroll.Common
             Content.Remove(item);
         }
 
-        public string GetName()
-        {
-            return name;
-        }
-
-        public string GetPath()
-        {
-            return path;
-        }
-
-        public CustomButton GetButton()
-        {
-            return folderBtn;
-        }
-        public CustomText GetLabel()
-        {
-            return label;
-        }
-
         public void DisplayContent()
         {
             Vector3 pos = new Vector3(0f, 0f, -20f);
             float width = parentSize.x * 0.9f;
             float height = parentSize.y - 1.5f;
 
-            // display items on a 5x4 grid 
-            for (int i = 0; i < 4; i++)
+            // display items on a 3x2 grid 
+            for (int i = 0; i < 2; i++)
             {
-                for (int j = 0; j < 5; j++)
+                for (int j = 0; j < 3; j++)
                 {
                     if (j + i * 5 < Content.Count)
                     {
-                        pos.x = j * width / 5 - width / 2 + 0.7f;
-                        pos.y = i * -height / 4 + height / 2 - 0.7f;
-                        CustomButton btn = Content[j + i * 5].GetButton();
+                        pos.x = j * width / 3 - width / 2 + 1.2f;
+                        pos.y = i * -height / 2 + height / 2 - 1.2f;
+                        CustomButton btn = Content[j + i * 5].DirBtn;
                         btn.SetLocalPosition(pos);
-                        btn.ScaleSize(width / 5 - 0.1f);
-                        CustomText txt = Content[j + i * 5].GetLabel();
+                        btn.ScaleSize(width / 3 - 0.1f);
+                        CustomText txt = Content[j + i * 3].Label;
                         txt.SetlocalPosition(new Vector3(0, - btn.GetSize().y / 2 - 0.1f, 0));
                         txt.SetSize(1.5f);
                         btn.ActivateButton(true);
@@ -85,7 +67,7 @@ namespace Doom_Scroll.Common
         {
             foreach (IDirectory dir in Content)
             {
-                dir.GetButton().ActivateButton(false);
+                dir.DirBtn.ActivateButton(false);
             }
         }
         public string PrintDirectory()
@@ -95,7 +77,7 @@ namespace Doom_Scroll.Common
             {
                 items += dir.PrintDirectory();
             }
-            return path + "[ " + items + " ]";
+            return Path + "[ " + items + " ]";
         }
 
     }

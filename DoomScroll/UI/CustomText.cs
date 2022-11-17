@@ -7,7 +7,6 @@ namespace Doom_Scroll.UI
     {
         public GameObject TextObject { get; }
         public TextMeshPro TextMP { get; }
-        private Vector2 parentSize;
 
         public CustomText(string name, GameObject parent, string text)
         {
@@ -15,8 +14,6 @@ namespace Doom_Scroll.UI
             TextObject.layer = LayerMask.NameToLayer("UI");
             TextObject.name = name;
             TextObject.transform.SetParent(parent.transform);
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            parentSize = sr ? sr.size / 2 : new Vector2(0.5f, 0.5f);
             TextObject.AddComponent<MeshRenderer>();
             TextObject.transform.localScale = Vector3.one;
             TextMP = TextObject.AddComponent<TextMeshPro>();
