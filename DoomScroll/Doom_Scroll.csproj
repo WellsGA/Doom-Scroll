@@ -37,8 +37,14 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>lib\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>lib\UnityEngine.AudioModuleI.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>lib\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Hazel">
+      <HintPath>lib\Hazel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

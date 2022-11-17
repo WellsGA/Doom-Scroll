@@ -11,7 +11,6 @@ namespace Doom_Scroll.Common
     }
     public class File : IDirectory
     {
-        // type?? image and mapsource ...
         public string Name { get; private set; }
         public string Path { get; private set; }
         public CustomButton DirBtn { get; private set; }
@@ -87,7 +86,9 @@ namespace Doom_Scroll.Common
         private void RpcShareImage() 
         {
             DoomScroll._log.LogInfo("Share Button Clicked!");
+            RPCManager.RpcSendChatImage(content);
         }
+        
         public string PrintDirectory()
         {
             return " " + Path + " [file]";
