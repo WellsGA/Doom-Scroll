@@ -74,12 +74,12 @@ namespace Doom_Scroll
 
                 ShowOverlays(true);
 
-                byte[] byteArray = screeenShot.EncodeToPNG();
+                byte[] byteArray = screeenShot.EncodeToJPG(50);
                 // save the image locally -- for testing purposes
                 // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
 
                 // save the in the inventory folder
-                FolderManager.Instance.AddImageToScreenshots("image_" + m_screenshots + ".png", byteArray);
+                FolderManager.Instance.AddImageToScreenshots("evidence #" + m_screenshots + ".jpg", byteArray);
 
                 UnityEngine.Object.Destroy(screeenShot);
                 m_screenshots++;
