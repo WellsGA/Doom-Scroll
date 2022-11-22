@@ -24,15 +24,15 @@ namespace Doom_Scroll
             if (image.Length >= buffer)
             {
                 Sprite img = ImageLoader.ReadImageFromByteArray(image);
-                //int n = 75; // default quality for the jpg
-                // reduce quality until it fits the buffer
-                /*do
+                int n = 75; // default quality for the jpg
+                //reduce quality until it fits the buffer
+                do
                 {
                     n--;
                     image = img.texture.EncodeToJPG(n);
+
                 }
-                while (image.Length >= buffer);*/
-                image = img.texture.EncodeToJPG(40);
+                while (image.Length >= buffer);
                 DoomScroll._log.LogInfo("New image size: " + image.Length + ", buffer: " + buffer);
 
                 messageWriter.WriteBytesAndSize(image);
