@@ -111,13 +111,13 @@ namespace Doom_Scroll
             Sprite screenshot = ImageLoader.ReadImageFromByteArray(imageBytes);
             GameObject image = new GameObject("chat image");
             image.layer = LayerMask.NameToLayer("UI");
-            image.transform.SetParent(chatBubble.transform);
+            image.transform.SetParent(chatBubble.TextArea.transform);
             SpriteRenderer sr = image.AddComponent<SpriteRenderer>();
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.sprite = screenshot;
             sr.size = new Vector2(2f, sr.sprite.rect.height * 2f / sr.sprite.rect.width);
             Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
-            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, -5);
+            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
             chatBubble.TextArea.text = "et voila";
             chatBubble.TextArea.ForceMeshUpdate(true, true);
             chatBubble.Background.size = new Vector2(5.52f, 0.3f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight() + sr.size.y);

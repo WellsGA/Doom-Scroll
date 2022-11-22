@@ -22,18 +22,22 @@ namespace Doom_Scroll.Common
         private FileType m_type;
         public File(string parentPath, GameObject parentPanel, string name, byte[] image, FileType fileType)
         {
+            Picture = ImageLoader.ReadImageFromByteArray(image);
             Path = parentPath + "/" + name;
             m_type = fileType;
             m_content = image;
+            
             Dir = new GameObject("name");
             Dir.layer = LayerMask.NameToLayer("UI");
             Dir.transform.SetParent(parentPanel.transform);
             m_spriteRenderer = Dir.AddComponent<SpriteRenderer>();
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
+            m_spriteRenderer.sprite = Picture;
+            Dir.transform.localScale = Vector3.one;
+
             Label = new CustomText(name, Dir, name);
             Label.SetlocalPosition(new Vector3(0,-5.2f,0));
-            Picture = ImageLoader.ReadImageFromByteArray(image);
-            m_spriteRenderer.sprite = Picture;
+            
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] shareBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
             Btn = new CustomButton(Dir, shareBtnImg, "Share");
