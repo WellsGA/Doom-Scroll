@@ -7,10 +7,10 @@ using UnityEngine.Rendering;
 
 namespace Doom_Scroll
 {
-    public enum CustomRPC : byte
+    /*public enum CustomRPC : byte
     {
         SENDIMAGE = 255
-    }
+    }*/
     public class RPCManager
     {
         public static bool RpcSendChatImage(byte[] image)
@@ -20,24 +20,27 @@ namespace Doom_Scroll
 
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
             int buffer = messageWriter.Buffer.Length - messageWriter.Position;
+            
             if (image.Length >= buffer)
             {
                 Sprite img = ImageLoader.ReadImageFromByteArray(image);
-                int n = 75; // default quality for the jpg
+                //int n = 75; // default quality for the jpg
                 // reduce quality until it fits the buffer
-                do
+                /*do
                 {
                     n--;
                     image = img.texture.EncodeToJPG(n);
-                    DoomScroll._log.LogInfo("jpg size is " +n);
                 }
-                while (image.Length >= buffer);
-                messageWriter.Write(image);
+                while (image.Length >= buffer);*/
+                image = img.texture.EncodeToJPG(40);
+                DoomScroll._log.LogInfo("New image size: " + image.Length + ", buffer: " + buffer);
+
+                messageWriter.WriteBytesAndSize(image);
             }
             else
             {
                 DoomScroll._log.LogInfo("Buffer was large enough");
-                messageWriter.Write(image);
+                messageWriter.WriteBytesAndSize(image);
             }
             if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
             {
@@ -111,7 +114,7 @@ namespace Doom_Scroll
             Sprite screenshot = ImageLoader.ReadImageFromByteArray(imageBytes);
             GameObject image = new GameObject("chat image");
             image.layer = LayerMask.NameToLayer("UI");
-            image.transform.SetParent(chatBubble.TextArea.transform);
+            image.transform.SetParent(chatBubble.transform);
             SpriteRenderer sr = image.AddComponent<SpriteRenderer>();
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.sprite = screenshot;
@@ -130,11 +133,12 @@ namespace Doom_Scroll
         {
             [HarmonyPrefix]
             [HarmonyPatch("HandleRpc")]
-            public static void PrefixHandleRpct(byte callId, MessageReader reader)
+            public static void PrefixHandleRpc(byte callId, MessageReader reader)
             {
                 switch (callId)
                 {
                     case 255:
+                    DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
                     byte[] imageBytes = reader.ReadBytesAndSize();
                     DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
                     if (DestroyableSingleton<HudManager>.Instance)
