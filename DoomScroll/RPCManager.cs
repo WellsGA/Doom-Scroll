@@ -1,9 +1,9 @@
 ﻿using Hazel;
 using UnityEngine;
 using System;
-using System.Text;
 using Doom_Scroll.Common;
 using HarmonyLib;
+using UnityEngine.Rendering;
 
 namespace Doom_Scroll
 {
@@ -15,30 +15,35 @@ namespace Doom_Scroll
     {
         public static bool RpcSendChatImage(byte[] image)
         {
-            // string msg = Encoding.Default.GetString(image);
-            // adds the image to the chat locally
             
-            // sends it to the other players
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, 255, (SendOption)1);
-            DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length);
-            if(image.Length <= messageWriter.Buffer.Length)
+
+            DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
+            int buffer = messageWriter.Buffer.Length - messageWriter.Position;
+            if (image.Length >= buffer)
             {
-                if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+                Sprite img = ImageLoader.ReadImageFromByteArray(image);
+                int n = 75; // default quality for the jpg
+                // reduce quality until it fits the buffer
+                do
                 {
-                    AddChat(PlayerControl.LocalPlayer, image);
+                    n--;
+                    image = img.texture.EncodeToJPG(n);
+                    DoomScroll._log.LogInfo("jpg size is " +n);
                 }
+                while (image.Length >= buffer);
                 messageWriter.Write(image);
-                messageWriter.EndMessage();
             }
             else
             {
-                if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
-                {
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Image is too big to send");
-                }
+                DoomScroll._log.LogInfo("Buffer was large enough");
+                messageWriter.Write(image);
             }
-            
-            
+            if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+            {
+                AddChat(PlayerControl.LocalPlayer, image);
+            }
+            messageWriter.EndMessage();
             return true;
         }
 
@@ -83,7 +88,6 @@ namespace Doom_Scroll
 
                 chatBubble.AlignChildren();
                 chatContorller.AlignAllBubbles();
-                //
                 Vector3 chatpos = chatBubble.TextArea.transform.position;
                 //image.transform.localPosition = new Vector3(chatpos.x, chatpos.y, 0);
                 if (!chatContorller.IsOpen && chatContorller.notificationRoutine == null)
@@ -113,12 +117,11 @@ namespace Doom_Scroll
             sr.sprite = screenshot;
             sr.size = new Vector2(2f, sr.sprite.rect.height * 2f / sr.sprite.rect.width);
             Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
-            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.2f, -5);
+            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, -5);
             chatBubble.TextArea.text = "et voila";
             chatBubble.TextArea.ForceMeshUpdate(true, true);
-            chatBubble.Background.size = new Vector2(5.52f, 0.2f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight() + sr.size.y);
+            chatBubble.Background.size = new Vector2(5.52f, 0.3f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight() + sr.size.y);
             chatBubble.MaskArea.size = chatBubble.Background.size - new Vector2(0f, 0.03f);
-;
         }
     }
 
@@ -132,9 +135,8 @@ namespace Doom_Scroll
                 switch (callId)
                 {
                     case 255:
-                    // read and encode it to a byte array
                     byte[] imageBytes = reader.ReadBytesAndSize();
-                    DoomScroll._log.LogInfo("image received, size:" + imageBytes.Length);
+                    DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
                     if (DestroyableSingleton<HudManager>.Instance)
                     {
                         RPCManager.AddChat(PlayerControl.LocalPlayer, imageBytes);

@@ -10,8 +10,8 @@ namespace Doom_Scroll.Common
         // makes sprite from a byte array
         public static Sprite ReadImageFromByteArray(byte[] imageByte)
         {
-            // uses ARGB32 as texture format, asset needs to be .png!!
-            Texture2D tex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            // uses RGB24 as texture format, will be jpg
+            Texture2D tex = new Texture2D(1, 1, TextureFormat.RGB24, false);
             ImageConversion.LoadImage(tex, imageByte, false);
             return Sprite.Create(
                 tex,

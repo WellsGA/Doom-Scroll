@@ -25,7 +25,6 @@ namespace Doom_Scroll.UI
 
         public void SetlocalPosition(Vector3 pos)
         {
-            TextObject.transform.position = TextObject.transform.parent.transform.position;
             TextObject.transform.localPosition = pos;
         }
 

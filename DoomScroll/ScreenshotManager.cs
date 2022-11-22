@@ -62,10 +62,9 @@ namespace Doom_Scroll
                 RenderTexture.active = screenTexture;
                 mainCamrea.Render();
 
-                Texture2D screeenShot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+                Texture2D screeenShot = new Texture2D(Screen.width, Screen.height, TextureFormat.ARGB32, false);
                 screeenShot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-                // screeenShot.Apply();
-
+                byte[] byteArray = screeenShot.EncodeToJPG();
                 // reset camera, show player and overlay
                 RenderTexture.active = null;
                 screenTexture.Release();
@@ -73,14 +72,12 @@ namespace Doom_Scroll
                 UnityEngine.Object.Destroy(screenTexture);
 
                 ShowOverlays(true);
-
-                byte[] byteArray = screeenShot.EncodeToJPG(50);
+ 
                 // save the image locally -- for testing purposes
                 // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
 
                 // save the in the inventory folder
-                FolderManager.Instance.AddImageToScreenshots("evidence #" + m_screenshots + ".jpg", byteArray);
-
+                FolderManager.Instance.AddImageToScreenshots("evidence_#" + m_screenshots + ".jpg", byteArray);
                 UnityEngine.Object.Destroy(screeenShot);
                 m_screenshots++;
                 DoomScroll._log.LogInfo("number of screenshots: " + m_screenshots);

@@ -108,7 +108,9 @@ namespace Doom_Scroll
                     // Check if any of the displayed folders are clicked 
                     foreach (IDirectory dir in m_current.Content)
                     {
-                        if (dir.DirBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        dir.Btn.ReplaceImgageOnHover();
+
+                        if (dir.Btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             if (dir is Folder folder)
                             {
@@ -116,22 +118,7 @@ namespace Doom_Scroll
                             }
                             else
                             {
-                                dir.DisplayContent();
-                            }
-                        }
-
-                        if (dir is File file && file.IsShareOpen)
-                        {
-                            file.ShareBtn.ReplaceImgageOnHover();
-                            file.DontShareBtn.ReplaceImgageOnHover();
-                            
-                            if (file.ShareBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                            {
-                                file.ShareBtn.ButtonEvent.InvokeAction();
-                            }
-                            if (file.DontShareBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                            {
-                                file.DontShareBtn.ButtonEvent.InvokeAction();
+                                dir.Btn.ButtonEvent.InvokeAction();
                             }
                         }
                     }
@@ -191,7 +178,7 @@ namespace Doom_Scroll
                 // (re)sets root as the current and m_previous folder and displays its content
                 m_previous = m_root;
                 m_current = m_root;
-                m_current.DirBtn.ButtonEvent.InvokeAction();
+                m_current.Btn.ButtonEvent.InvokeAction();
             }
         }
        
@@ -209,7 +196,7 @@ namespace Doom_Scroll
                 m_current = folder;
                 m_pathText.SetText(folder.Path);
                 m_previous.HideContent();
-                m_current.DirBtn.ButtonEvent.InvokeAction();
+                m_current.Btn.ButtonEvent.InvokeAction();
             }
         }
 

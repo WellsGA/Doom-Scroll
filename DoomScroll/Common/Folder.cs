@@ -7,24 +7,26 @@ namespace Doom_Scroll.Common
     public class Folder : IDirectory
     {
         public List<IDirectory> Content { get; private set; }
-        public Folder ParentFolder { get; }
-        
-        public string Name { get; private set; }
         public string Path { get; private set; }
-        public CustomButton DirBtn { get; private set; }
+        public GameObject Dir { get; private set; }
+        public CustomButton Btn { get; private set; }
         public CustomText Label { get; private set; }
         private Vector2 parentSize;
-        public Folder(string parentPath, string name, GameObject parent, Sprite folderImg)
+        public Folder(string parentPath, string name, GameObject parentPanel, Sprite folderImg)
         {
-            Name = name;
+            Dir = new GameObject("name");
+            Dir.layer = LayerMask.NameToLayer("UI");
+            Dir.transform.SetParent(parentPanel.transform);
+           
             Path = parentPath + "/" + name;
-            parentSize = parent.GetComponent<SpriteRenderer>().size;
+            parentSize = parentPanel.GetComponent<SpriteRenderer>().size;
             Content = new List<IDirectory>();
+            
             Sprite[] images = { folderImg };
-            DirBtn = new CustomButton(parent, images, name);
-            Label = new CustomText(name, DirBtn.ButtonGameObject, name);
-            DirBtn.ActivateButton(false);
-            DirBtn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
+            Btn = new CustomButton(Dir, images, name);
+            Label = new CustomText(name, Btn.ButtonGameObject, name);
+            Btn.ActivateButton(false);
+            Btn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
         }
 
         public void AddItem(IDirectory item)
@@ -52,12 +54,19 @@ namespace Doom_Scroll.Common
                     {
                         pos.x = j * width / 3 - width / 2 + 1.2f;
                         pos.y = i * -height / 2 + height / 2 - 1.2f;
-                        CustomButton btn = Content[j + i * 5].DirBtn;
-                        btn.SetLocalPosition(pos);
-                        btn.ScaleSize(width / 3 - 0.1f);
+                        GameObject dir = Content[j + i * 5].Dir;
+                        CustomButton btn = Content[j + i * 5].Btn;
+                        dir.transform.localPosition = pos;
+                        if (Content[j + i * 5] is File file) 
+                        {
+                            file.ScaleSize(width / 3 - 0.1f);
+                            btn.SetLocalPosition(new Vector3(0, -file.GetSize().y/2 -0.3f, -20));
+                        }
+                        btn.ScaleSize(width / 3 - 0.3f);
                         CustomText txt = Content[j + i * 3].Label;
-                        txt.SetlocalPosition(new Vector3(0, - btn.GetSize().y / 2 - 0.1f, 0));
+                        txt.SetlocalPosition(new Vector3(0, -btn.GetSize().y / 2 - 0.1f, 0));
                         txt.SetSize(1.5f);
+                        dir.SetActive(true);
                         btn.ActivateButton(true);
                     }
                 }
@@ -67,7 +76,8 @@ namespace Doom_Scroll.Common
         {
             foreach (IDirectory dir in Content)
             {
-                dir.DirBtn.ActivateButton(false);
+                dir.Dir.SetActive(false);
+                dir.Btn.ActivateButton(false);
             }
         }
         public string PrintDirectory()

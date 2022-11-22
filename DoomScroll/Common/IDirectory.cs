@@ -5,7 +5,8 @@ namespace Doom_Scroll.Common
 {
     public interface IDirectory
     {
-        public CustomButton DirBtn { get; }
+        public GameObject Dir { get; }
+        public CustomButton Btn { get; }
         public CustomText Label { get; }
         public void DisplayContent();
         public string PrintDirectory();

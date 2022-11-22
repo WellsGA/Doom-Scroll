@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Doom_Scroll.UI;
 using UnityEngine;
+using static Doom_Scroll.UI.CustomButton;
 
 namespace Doom_Scroll.Common
 {
@@ -11,82 +12,57 @@ namespace Doom_Scroll.Common
     }
     public class File : IDirectory
     {
-        public string Name { get; private set; }
+        public GameObject Dir { get; private set; }
         public string Path { get; private set; }
-        public CustomButton DirBtn { get; private set; }
-        public CustomButton ShareBtn { get; private set; }
-        public CustomButton DontShareBtn { get; private set; }
+        public Sprite Picture { get; private set; }
+        public CustomButton Btn { get; private set; }
         public CustomText Label { get; private set; }
-        private FileType type;
-        private byte[] content;
-        public bool IsShareOpen { get; private set; }
-        public File(string parentPath, GameObject parent, string name, byte[] image, FileType fileType)
+        private SpriteRenderer m_spriteRenderer;
+        private byte[] m_content;
+        private FileType m_type;
+        public File(string parentPath, GameObject parentPanel, string name, byte[] image, FileType fileType)
         {
-            Name = name;
             Path = parentPath + "/" + name;
-            type = fileType;
-            content = image;
-            IsShareOpen = false;
-
-            Sprite[] dirBtnImg = { ImageLoader.ReadImageFromByteArray(content) };
-            DirBtn = new CustomButton(parent, dirBtnImg, name);
-            Label = new CustomText(name, DirBtn.ButtonGameObject, name);
-            DirBtn.ActivateButton(false);
-            DirBtn.ButtonEvent.MyAction += DisplayContent;
-
-            CreateShareOverlay();
-            
+            m_type = fileType;
+            m_content = image;
+            Dir = new GameObject("name");
+            Dir.layer = LayerMask.NameToLayer("UI");
+            Dir.transform.SetParent(parentPanel.transform);
+            m_spriteRenderer = Dir.AddComponent<SpriteRenderer>();
+            m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
+            Label = new CustomText(name, Dir, name);
+            Label.SetlocalPosition(new Vector3(0,-5.2f,0));
+            Picture = ImageLoader.ReadImageFromByteArray(image);
+            m_spriteRenderer.sprite = Picture;
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] shareBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
+            Btn = new CustomButton(Dir, shareBtnImg, "Share");
+            Btn.SetLocalPosition(Vector3.zero);
+            Btn.ActivateButton(false);
+            Btn.ButtonEvent.MyAction += DisplayContent;
         }
         
         public void DisplayContent()
         {
             // display the content of the file -- TO DO
-            switch (type)
+            switch (m_type)
             {
                 case FileType.IMAGE:
-                   // DoomScroll._log.LogInfo("Clicked!");
-                    ToggleShareButton();
+                    DoomScroll._log.LogInfo("Share Button Clicked!");
+                    RPCManager.RpcSendChatImage(m_content);
                     return;
                 case FileType.MAPSOURCE:
+                    // to do
                     return;
             }
         }
-
-        private void ToggleShareButton() 
+        public Vector2 GetSize()
         {
-            DirBtn.EnableButton(IsShareOpen);
-            ShareBtn.ActivateButton(!IsShareOpen);
-            DontShareBtn.ActivateButton(!IsShareOpen);
-            IsShareOpen = !IsShareOpen;
+            return m_spriteRenderer.size;
         }
-        private void CreateShareOverlay() 
+        public void ScaleSize(float scaledWidth)
         {
-            // text // to do
-
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            // Share button
-            Sprite[] shareBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
-            ShareBtn = new CustomButton(DirBtn.ButtonGameObject, shareBtnImg, "Share");
-            ShareBtn.ScaleSize(1.5f);
-            ShareBtn.SetLocalPosition(new Vector3(0f, 0f, -5));
-            
-            ShareBtn.ActivateButton(false);
-            ShareBtn.ButtonEvent.MyAction += RpcShareImage;
-
-            // close button
-            Sprite[] dontShareBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            DontShareBtn = new CustomButton(DirBtn.ButtonGameObject, dontShareBtnImg, "Don't Share");
-            DontShareBtn.ScaleSize(0.4f);
-            DontShareBtn.SetLocalPosition(new Vector3(-1.2f, 0.8f, -5));
-           
-            DontShareBtn.ActivateButton(false);
-            DontShareBtn.ButtonEvent.MyAction += ToggleShareButton;
-        }
-     
-        private void RpcShareImage() 
-        {
-            DoomScroll._log.LogInfo("Share Button Clicked!");
-            RPCManager.RpcSendChatImage(content);
+            m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
         }
         
         public string PrintDirectory()
