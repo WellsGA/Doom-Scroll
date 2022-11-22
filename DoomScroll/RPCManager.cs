@@ -32,9 +32,8 @@ namespace Doom_Scroll
                     image = img.texture.EncodeToJPG(n);
 
                 }
-                while (image.Length >= buffer);
+                while (image.Length <= 50000);
                 DoomScroll._log.LogInfo("New image size: " + image.Length + ", buffer: " + buffer);
-
                 messageWriter.WriteBytesAndSize(image);
             }
             else
