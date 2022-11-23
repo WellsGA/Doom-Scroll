@@ -118,10 +118,10 @@ namespace Doom_Scroll
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.sprite = screenshot;
             sr.size = new Vector2(2f, sr.sprite.rect.height * 2f / sr.sprite.rect.width);
-            Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
-            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
             chatBubble.TextArea.text = "et voila";
             chatBubble.TextArea.ForceMeshUpdate(true, true);
+            Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
+            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
             chatBubble.Background.size = new Vector2(5.52f, 0.3f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight() + sr.size.y);
             chatBubble.MaskArea.size = chatBubble.Background.size - new Vector2(0f, 0.03f);
         }
@@ -132,7 +132,7 @@ namespace Doom_Scroll
         {
             [HarmonyPrefix]
             [HarmonyPatch("HandleRpc")]
-            public static void PrefixHandleRpc(byte callId, MessageReader reader)
+            public static void PrefixHandleRpc([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader, PlayerControl __instance)
             {
                 switch (callId)
                 {
@@ -142,7 +142,7 @@ namespace Doom_Scroll
                     DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
                     if (DestroyableSingleton<HudManager>.Instance)
                     {
-                        RPCManager.AddChat(PlayerControl.LocalPlayer, imageBytes);
+                        RPCManager.AddChat(__instance , imageBytes);
                         return;
                     }
                     break;
