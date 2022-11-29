@@ -4,13 +4,15 @@ using System;
 using Doom_Scroll.Common;
 using HarmonyLib;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
+using TMPro;
 
 namespace Doom_Scroll
 {
-    /*public enum CustomRPC : byte
+    public enum CustomRPC : byte
     {
         SENDIMAGE = 255
-    }*/
+    }
     public class RPCManager
     {
         public static bool RpcSendChatImage(byte[] image)
@@ -19,9 +21,10 @@ namespace Doom_Scroll
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, 255, (SendOption)1);
 
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
-            int buffer = messageWriter.Buffer.Length - messageWriter.Position;
             
-            if (image.Length >= buffer)
+            int buffer = messageWriter.Buffer.Length - messageWriter.Position-3;
+            
+            if (Buffer.ByteLength(image) >= buffer)
             {
                 Sprite img = ImageLoader.ReadImageFromByteArray(image);
                 int n = 75; // default quality for the jpg
@@ -32,8 +35,8 @@ namespace Doom_Scroll
                     image = img.texture.EncodeToJPG(n);
 
                 }
-                while (image.Length <= 50000);
-                DoomScroll._log.LogInfo("New image size: " + image.Length + ", buffer: " + buffer);
+                while (Buffer.ByteLength(image) >= buffer);
+                DoomScroll._log.LogInfo("New image size: " + Buffer.ByteLength(image) + ", byte array length: " + image.Length + ", buffer: " + buffer);
                 messageWriter.WriteBytesAndSize(image);
             }
             else
@@ -110,15 +113,21 @@ namespace Doom_Scroll
 
         internal static void SetImage(ChatBubble chatBubble, byte[] imageBytes)
         {
+            // TMP_Sprite screenshot = ImageLoader.ReadTMPSpriteFromByteArray(imageBytes);
             Sprite screenshot = ImageLoader.ReadImageFromByteArray(imageBytes);
+
             GameObject image = new GameObject("chat image");
             image.layer = LayerMask.NameToLayer("UI");
             image.transform.SetParent(chatBubble.transform);
             SpriteRenderer sr = image.AddComponent<SpriteRenderer>();
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.sprite = screenshot;
-            sr.size = new Vector2(2f, sr.sprite.rect.height * 2f / sr.sprite.rect.width);
-            chatBubble.TextArea.text = "et voila";
+            sr.size = new Vector2(2f, sr.sprite.rect.height / sr.sprite.rect.width * 2f);
+            /* TMP_SpriteAsset new_spriteAsset = new TMP_SpriteAsset();
+            new_spriteAsset.spriteInfoList.Add(screenshot);
+            new_spriteAsset.UpdateLookupTables();*/
+
+            chatBubble.TextArea.text = "et voila ...";
             chatBubble.TextArea.ForceMeshUpdate(true, true);
             Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
             image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
@@ -146,7 +155,19 @@ namespace Doom_Scroll
                         return;
                     }
                     break;
-            }
+                }
             }
         }
+
+    [HarmonyPatch(typeof(ChatController))]
+    public static class ChatControlPatch
+    {
+        [HarmonyPostfix]
+        [HarmonyPatch("Awake")]
+        public static void PostfixAwake(ChatController __instance)
+        {
+            __instance.scroller.gameObject.AddComponent<RectMask2D>();
+            DoomScroll._log.LogInfo("Mask added");
+        }
     }
+}

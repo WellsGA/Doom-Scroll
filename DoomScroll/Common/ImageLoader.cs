@@ -1,12 +1,35 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using TMPro;
 using UnityEngine;
 
 namespace Doom_Scroll.Common
 {
     internal class ImageLoader
     {
+        // makes TMP_Sprite from a byte array
+        public static TMP_Sprite ReadTMPSpriteFromByteArray(byte[] imageByte) 
+        {
+            Sprite sprite = ReadImageFromByteArray(imageByte);
+            
+            TMP_Sprite tmpSprite = new TMP_Sprite();
+            tmpSprite.name = "screenshot";
+            tmpSprite.x = sprite.rect.x;
+            tmpSprite.y = sprite.rect.y;
+            tmpSprite.width = sprite.rect.width;
+            tmpSprite.height = sprite.rect.height;
+            tmpSprite.xAdvance = sprite.rect.width;
+            tmpSprite.xOffset = -2f;
+            tmpSprite.yOffset = sprite.rect.height * 0.8f;
+            tmpSprite.scale = 1f;
+            tmpSprite.id = 1;
+            tmpSprite.hashCode = TMP_TextUtilities.GetSimpleHashCode(tmpSprite.name);
+
+            return tmpSprite;
+        }
+
+
         // makes sprite from a byte array
         public static Sprite ReadImageFromByteArray(byte[] imageByte)
         {
