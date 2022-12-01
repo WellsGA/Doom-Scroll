@@ -11,10 +11,23 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
-        SENDIMAGE = 255
+        SENDIMAGE = 255,
+        SENDSWC = 254
     }
     public class RPCManager
     {
+        public static bool RPCSendSWCSuccessText(byte[] SWCtext)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, 254, (SendOption)1);
+            DoomScroll._log.LogInfo("text: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
+            if (SWCtext.Length <= messageWriter.Buffer.Length)
+            {
+                messageWriter.Write(SWCtext);
+                messageWriter.EndMessage();
+            }
+            return true;
+        }
+
         public static bool RpcSendChatImage(byte[] image)
         {
             
