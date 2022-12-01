@@ -32,9 +32,7 @@ namespace Doom_Scroll
         {
             
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, 255, (SendOption)1);
-
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
-            
             int buffer = messageWriter.Buffer.Length - messageWriter.Position-3;
             
             if (Buffer.ByteLength(image) >= buffer)
@@ -46,17 +44,11 @@ namespace Doom_Scroll
                 {
                     n--;
                     image = img.texture.EncodeToJPG(n);
-
                 }
                 while (Buffer.ByteLength(image) >= buffer);
-                DoomScroll._log.LogInfo("New image size: " + Buffer.ByteLength(image) + ", byte array length: " + image.Length + ", buffer: " + buffer);
-                messageWriter.WriteBytesAndSize(image);
+                DoomScroll._log.LogInfo("New image size: " + Buffer.ByteLength(image) + ", byte array length: " + image.Length + ", buffer: " + buffer);   
             }
-            else
-            {
-                DoomScroll._log.LogInfo("Buffer was large enough");
-                messageWriter.WriteBytesAndSize(image);
-            }
+            messageWriter.WriteBytesAndSize(image);
             if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
             {
                 AddChat(PlayerControl.LocalPlayer, image);
@@ -103,7 +95,6 @@ namespace Doom_Scroll
                 chatContorller.SetChatBubbleName(chatBubble, sourecPlayerData, sourecPlayerData.IsDead, didVote, PlayerNameColor.Get(sourecPlayerData), null);
                 // removed chat filter - we are not sending a free text
                 SetImage(chatBubble, imageBytes);
-
                 chatBubble.AlignChildren();
                 chatContorller.AlignAllBubbles();
                 Vector3 chatpos = chatBubble.TextArea.transform.position;
@@ -127,8 +118,12 @@ namespace Doom_Scroll
         internal static void SetImage(ChatBubble chatBubble, byte[] imageBytes)
         {
             // TMP_Sprite screenshot = ImageLoader.ReadTMPSpriteFromByteArray(imageBytes);
+            /* TMP_SpriteAsset new_spriteAsset = new TMP_SpriteAsset();
+           new_spriteAsset.spriteInfoList.Add(screenshot);
+           new_spriteAsset.UpdateLookupTables();*/
+            
             Sprite screenshot = ImageLoader.ReadImageFromByteArray(imageBytes);
-
+            
             GameObject image = new GameObject("chat image");
             image.layer = LayerMask.NameToLayer("UI");
             image.transform.SetParent(chatBubble.transform);
@@ -136,9 +131,7 @@ namespace Doom_Scroll
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.sprite = screenshot;
             sr.size = new Vector2(2f, sr.sprite.rect.height / sr.sprite.rect.width * 2f);
-            /* TMP_SpriteAsset new_spriteAsset = new TMP_SpriteAsset();
-            new_spriteAsset.spriteInfoList.Add(screenshot);
-            new_spriteAsset.UpdateLookupTables();*/
+            image.transform.localScale = Vector3.one;
 
             chatBubble.TextArea.text = "et voila ...";
             chatBubble.TextArea.ForceMeshUpdate(true, true);
