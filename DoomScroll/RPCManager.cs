@@ -11,26 +11,12 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
-        SENDIMAGE = 255,
-        SENDSWC = 254
+        SENDIMAGE = 255
     }
     public class RPCManager
     {
-        public static bool RPCSendSWCSuccessText(byte[] SWCtext)
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, 254, (SendOption)1);
-            DoomScroll._log.LogInfo("text: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
-            if (SWCtext.Length <= messageWriter.Buffer.Length)
-            {
-                messageWriter.Write(SWCtext);
-                messageWriter.EndMessage();
-            }
-            return true;
-        }
-
         public static bool RpcSendChatImage(byte[] image)
-        {
-            
+        {    
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, 255, (SendOption)1);
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
             int buffer = messageWriter.Buffer.Length - messageWriter.Position-3;
@@ -94,7 +80,7 @@ namespace Doom_Scroll
                 chatBubble.SetCosmetics(sourecPlayerData);
                 chatContorller.SetChatBubbleName(chatBubble, sourecPlayerData, sourecPlayerData.IsDead, didVote, PlayerNameColor.Get(sourecPlayerData), null);
                 // removed chat filter - we are not sending a free text
-                SetImage(chatBubble, imageBytes);
+                SetImage(sourcePlayer, chatBubble, imageBytes);
                 chatBubble.AlignChildren();
                 chatContorller.AlignAllBubbles();
                 Vector3 chatpos = chatBubble.TextArea.transform.position;
@@ -115,7 +101,7 @@ namespace Doom_Scroll
             }
         }
 
-        internal static void SetImage(ChatBubble chatBubble, byte[] imageBytes)
+        internal static void SetImage(PlayerControl sourcePlayer, ChatBubble chatBubble, byte[] imageBytes)
         {
             // TMP_Sprite screenshot = ImageLoader.ReadTMPSpriteFromByteArray(imageBytes);
             /* TMP_SpriteAsset new_spriteAsset = new TMP_SpriteAsset();
@@ -136,7 +122,9 @@ namespace Doom_Scroll
             chatBubble.TextArea.text = "et voila ...";
             chatBubble.TextArea.ForceMeshUpdate(true, true);
             Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
-            image.transform.localPosition = new Vector3(chatpos.x - sr.size.x / 2, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
+            float xOffset = sourcePlayer == PlayerControl.LocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
+            image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
+
             chatBubble.Background.size = new Vector2(5.52f, 0.3f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight() + sr.size.y);
             chatBubble.MaskArea.size = chatBubble.Background.size - new Vector2(0f, 0.03f);
         }
