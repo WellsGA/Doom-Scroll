@@ -72,11 +72,11 @@ namespace Doom_Scroll
                 UnityEngine.Object.Destroy(screenTexture);
 
                 ShowOverlays(true);
- 
+
                 // save the image locally -- for testing purposes
                 // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
 
-                // save the in the inventory folder
+                // save the image in the inventory folder
                 FolderManager.Instance.AddImageToScreenshots("evidence_#" + m_screenshots + ".jpg", byteArray);
                 UnityEngine.Object.Destroy(screeenShot);
                 m_screenshots++;
@@ -120,6 +120,7 @@ namespace Doom_Scroll
 
         public void OnClickCaptureScreenshot()
         {
+            if (!m_cameraButton.IsActive) { DoomScroll._log.LogInfo("NO CAM"); return; }
             CaptureScreenshot();
             ToggleCamera();
 
