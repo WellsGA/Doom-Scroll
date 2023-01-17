@@ -4,7 +4,7 @@ using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
 
-namespace DoomScroll
+namespace Doom_Scroll
 {
     public class SecondaryWinCondition
     {

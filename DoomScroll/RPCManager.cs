@@ -16,7 +16,7 @@ namespace Doom_Scroll
     }
     public class RPCManager
     {
-        public static bool RPCSendSWCSuccessText(byte[] SWCtext)
+        public static bool RPCSendSWCSuccessText(string SWCtext)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSWC, (SendOption)1);
             DoomScroll._log.LogInfo("text: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
@@ -24,6 +24,10 @@ namespace Doom_Scroll
             {
                 messageWriter.Write(SWCtext);
                 messageWriter.EndMessage();
+            }
+            else 
+            {
+                //DoomScroll._log.LogInfo("SWC too big. Size: " + Buffer.ByteLength((byte)SWCtext) + ", byte array length: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
             }
             return true;
         }
@@ -158,8 +162,14 @@ namespace Doom_Scroll
                         return;
                     }
                     break;
+                    case 254:
+                        DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
+                        string SWCstring = reader.ReadString();
+                        DoomScroll._log.LogInfo("Text received! Size: " + SWCstring.Length + ", Text: " + SWCstring);
+                        SecondaryWinConditionHolder.addToPlayerSWCList(SWCstring);
+                        return;
                 }
-            }
+        }
         }
 
     

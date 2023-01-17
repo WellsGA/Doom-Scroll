@@ -4,42 +4,57 @@ using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
 
-namespace DoomScroll
+namespace Doom_Scroll
 {
     public static class SecondaryWinConditionHolder
     {
-        private static List<PlayerSWCTracker> playerSWCList = new List<PlayerSWCTracker>();
+        private static PlayerSWCTracker playerSWC;
+        private static byte playerID;
+        private static List<string> playerSWCList = new List<string>();
 
-        public static void addToPlayerSWCList(PlayerSWCTracker playerSWCInfo)
+        public static void assignPlayerID(byte id)
         {
-            playerSWCList.Add(playerSWCInfo);
+            playerID = id;
+        }
+
+        public static void assignLocalPlayerSWCTracker(PlayerSWCTracker tracker)
+        {
+            playerSWC = tracker;
+        }
+
+        public static void addToPlayerSWCList(string playerSWCResultsText)
+        {
+            playerSWCList.Add(playerSWCResultsText);
         }
 
         public static void clearPlayerSWCList()
         {
-            playerSWCList = new List<PlayerSWCTracker>();
+            playerSWCList = new List<string>();
         }
 
         public static void checkTargetVotedOut(GameData.PlayerInfo votedOutPlayer)
         {
-            foreach (PlayerSWCTracker playerSWC in playerSWCList)
+            byte playerSWCTargetID = playerSWC.getSWC().getPlayerSWCTarget();
+            if (votedOutPlayer.PlayerId == playerSWCTargetID)
             {
-                byte playerSWCTargetID = playerSWC.getSWC().getPlayerSWCTarget();
-                if (votedOutPlayer.PlayerId == playerSWCTargetID)
-                {
-                    playerSWC.getSWC().targetWasVotedOut();
-                }
+                playerSWC.getSWC().targetWasVotedOut();
             }
         }
 
-        public static SecondaryWinCondition getSomePlayerSWC(byte thisPlayerID)
+        public static SecondaryWinCondition getThisPlayerSWC()
         {
-            foreach (PlayerSWCTracker swcAndPlayer in playerSWCList)
+            if (playerSWC.getPlayerID() == PlayerControl.LocalPlayer._cachedData.PlayerId)
             {
-                if (swcAndPlayer.getPlayerID() == thisPlayerID)
-                {
-                    return swcAndPlayer.getSWC();
-                }
+                return playerSWC.getSWC();
+            }
+            return null;
+        }
+
+        public static PlayerSWCTracker getThisPlayerTracker()
+        {
+            if (playerSWC.getPlayerID() == PlayerControl.LocalPlayer._cachedData.PlayerId)
+            {
+                return playerSWC;
             }
             return null;
         }
@@ -47,11 +62,11 @@ namespace DoomScroll
         public static string overallSWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure for all players is revealed
         {
             string overallResults = "";
-            foreach (PlayerSWCTracker swcAndPlayer in playerSWCList)
+            foreach (string swcPlayerResults in playerSWCList)
             {
-                if (swcAndPlayer.getSWC().getPlayerSWCGoal() != SecondaryWinCondition.Goal.None)
+                if (swcPlayerResults != "")
                 {
-                    overallResults += swcAndPlayer.getPlayerName() + " " + swcAndPlayer.getSWC().SWCResultsText() + "\n"; // will add a string in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+                    overallResults += swcPlayerResults; // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
                 }
             }
             return overallResults;

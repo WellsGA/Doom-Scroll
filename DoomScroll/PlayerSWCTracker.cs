@@ -4,7 +4,7 @@ using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
 
-namespace DoomScroll
+namespace Doom_Scroll
 {
     public class PlayerSWCTracker
     {
@@ -42,6 +42,18 @@ namespace DoomScroll
                 }
             }
             return "";
+        }
+
+        public string sendableResultsText()
+        {
+            if (SWC.getPlayerSWCGoal() != SecondaryWinCondition.Goal.None)
+            {
+                return "";
+            }
+            else 
+            {
+                return getPlayerName() + " " + SWC.SWCResultsText() + "\n"; // will create a string in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+            }
         }
     }
 }
