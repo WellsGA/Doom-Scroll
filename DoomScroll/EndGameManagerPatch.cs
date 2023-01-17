@@ -18,7 +18,7 @@ namespace Doom_Scroll
             RPCManager.RPCSendSWCSuccessText(SecondaryWinConditionHolder.getThisPlayerTracker().sendableResultsText());
             //will replace "TESTCONDITION" with SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
             //will replace "TESTRESULT" with SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCResultsText();
-            DoomScroll._log.LogInfo(SecondaryWinConditionHolder.overallSWCResultsText())
+            DoomScroll._log.LogInfo(SecondaryWinConditionHolder.overallSWCResultsText());
         }
     }
 }

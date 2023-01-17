@@ -1,4 +1,4 @@
-﻿using DoomScroll;
+﻿using Doom_Scroll;
 using HarmonyLib;
 
 namespace Doom_Scroll
