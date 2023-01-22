@@ -29,6 +29,7 @@ namespace Doom_Scroll
         private int m_screenshots;
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
+
         private ScreenshotManager()
         {
             mainCamrea = Camera.main;

@@ -32,10 +32,11 @@ namespace Doom_Scroll
             }
         }
 
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         [HarmonyPatch("OpenMeetingRoom")]
-        public static void PostfixOpenMeetingRoom()
+        public static void PrefixOpenMeetingRoom()
         {
+            DoomScroll._log.LogInfo("MEETING OPENED");
             if (ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ToggleCamera();
