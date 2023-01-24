@@ -4,6 +4,7 @@ using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
 using Microsoft.Extensions.Logging;
+using Il2CppSystem;
 
 namespace Doom_Scroll
 {
@@ -15,6 +16,7 @@ namespace Doom_Scroll
         public static void PrefixBeginCrewmate(IntroCutscene __instance)
         {
             SecondaryWinConditionHolder.assignPlayerID(PlayerControl.LocalPlayer._cachedData.PlayerId);
+            DoomScroll._log.LogInfo("local player ID assigned: " + SecondaryWinConditionHolder.getPlayerID());
             //#DoomScroll._log.LogInfo("Select Roles Patch is running!!\n There should be Secondary Win Conditions below:\n");
             SecondaryWinConditionHolder.clearPlayerSWCList(); // ensures list is empty before game starts
             GameData.PlayerInfo localPlayer;
@@ -23,17 +25,20 @@ namespace Doom_Scroll
                 if (player.PlayerId == PlayerControl.LocalPlayer._cachedData.PlayerId)
                 {
                     localPlayer = player;
+                    DoomScroll._log.LogInfo("local player assigned: " + localPlayer + ", playerID: " + player.PlayerId);
                     if (localPlayer.Role.IsImpostor)
                     {
                         PlayerSWCTracker secWinCondImpostor = new PlayerSWCTracker(player.PlayerId);
                         secWinCondImpostor.impostorSWC();
                         SecondaryWinConditionHolder.assignLocalPlayerSWCTracker(secWinCondImpostor);
+                        DoomScroll._log.LogInfo("local player SWC tracker assigned: " + secWinCondImpostor.getSWC().SWCAssignText());
                         //#Logger<DoomScrollPlugin>.Info("PID: " + secWinCondImpostor.getPlayerID() + ", Player Name: " + IntroCutscenePatch.getPlayerNameFromID(secWinCondImpostor.getPlayerID()) + ", SWC: " + secWinCondImpostor.getSWC().SWCAssignText());
                     }
                     else if (!localPlayer.Role.IsImpostor)
                     {
                         PlayerSWCTracker secWinCondCrewmate = new PlayerSWCTracker(player.PlayerId);
                         SecondaryWinConditionHolder.assignLocalPlayerSWCTracker(secWinCondCrewmate);
+                        DoomScroll._log.LogInfo("local player SWC tracker assigned: " + secWinCondCrewmate.getSWC().SWCAssignText());
                         //#Logger<DoomScrollPlugin>.Info("PID: " + secWinCondCrewmate.getPlayerID() + ", Player Name: " + IntroCutscenePatch.getPlayerNameFromID(secWinCondCrewmate.getPlayerID()) + ", SWC: " + secWinCondCrewmate.getSWC().SWCAssignText());
                     }
                     break;
@@ -62,17 +67,20 @@ namespace Doom_Scroll
                 if (player.PlayerId == PlayerControl.LocalPlayer._cachedData.PlayerId)
                 {
                     localPlayer = player;
+                    DoomScroll._log.LogInfo("local player assigned: " + localPlayer + ", playerID: " + player.PlayerId);
                     if (localPlayer.Role.IsImpostor)
                     {
                         PlayerSWCTracker secWinCondImpostor = new PlayerSWCTracker(player.PlayerId);
                         secWinCondImpostor.impostorSWC();
                         SecondaryWinConditionHolder.assignLocalPlayerSWCTracker(secWinCondImpostor);
+                        DoomScroll._log.LogInfo("local player SWC tracker assigned: " + secWinCondImpostor.getSWC().SWCAssignText());
                         //#Logger<DoomScrollPlugin>.Info("PID: " + secWinCondImpostor.getPlayerID() + ", Player Name: " + IntroCutscenePatch.getPlayerNameFromID(secWinCondImpostor.getPlayerID()) + ", SWC: " + secWinCondImpostor.getSWC().SWCAssignText());
                     }
                     else if (!localPlayer.Role.IsImpostor)
                     {
                         PlayerSWCTracker secWinCondCrewmate = new PlayerSWCTracker(player.PlayerId);
                         SecondaryWinConditionHolder.assignLocalPlayerSWCTracker(secWinCondCrewmate);
+                        DoomScroll._log.LogInfo("local player SWC tracker assigned: " + secWinCondCrewmate.getSWC().SWCAssignText());
                         //#Logger<DoomScrollPlugin>.Info("PID: " + secWinCondCrewmate.getPlayerID() + ", Player Name: " + IntroCutscenePatch.getPlayerNameFromID(secWinCondCrewmate.getPlayerID()) + ", SWC: " + secWinCondCrewmate.getSWC().SWCAssignText());
                     }
                     break;

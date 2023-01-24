@@ -17,6 +17,11 @@ namespace Doom_Scroll
             playerID = id;
         }
 
+        public static byte getPlayerID()
+        {
+            return playerID;
+        }
+
         public static void assignLocalPlayerSWCTracker(PlayerSWCTracker tracker)
         {
             playerSWC = tracker;
