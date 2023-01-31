@@ -12,11 +12,12 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(NormalPlayerTask))]
     class NormalPlayerTaskPatchtch
     {
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch("AppendTaskText")]
         public static void PostfixAppendTaskText(NormalPlayerTask __instance, ref StringBuilder sb)
         {
             sb.Append("(SWC goes here)");
+            //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
         }
     }
 }
