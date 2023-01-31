@@ -11,8 +11,8 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
-        SENDIMAGE = 255,
-        SENDSWC = 254
+        SENDSWC = 254,
+        SENDIMAGE = 255
     }
     public class RPCManager
     {
@@ -20,15 +20,8 @@ namespace Doom_Scroll
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSWC, (SendOption)1);
             DoomScroll._log.LogInfo("text: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
-            if (SWCtext.Length <= messageWriter.Buffer.Length)
-            {
-                messageWriter.Write(SWCtext);
-                messageWriter.EndMessage();
-            }
-            else 
-            {
-                //DoomScroll._log.LogInfo("SWC too big. Size: " + Buffer.ByteLength((byte)SWCtext) + ", byte array length: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
-            }
+            messageWriter.Write(SWCtext);
+            messageWriter.EndMessage();
             return true;
         }
 
@@ -152,22 +145,26 @@ namespace Doom_Scroll
             {
                 switch (callId)
                 {
-                    case 255:
-                    DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
-                    byte[] imageBytes = reader.ReadBytesAndSize();
-                    DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
-                    if (DestroyableSingleton<HudManager>.Instance)
+                    case 254:
                     {
-                        RPCManager.AddChat(__instance , imageBytes);
+                        string SWCstring = reader.ReadString();
+                        DoomScroll._log.LogInfo("Text received!: " + SWCstring);
+                        SecondaryWinConditionHolder.addToPlayerSWCList(SWCstring);
+                        DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
                         return;
                     }
-                    break;
-                    case 254:
+                    case 255:
+                    {
                         DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
-                        string SWCstring = reader.ReadString();
-                        DoomScroll._log.LogInfo("Text received! Size: " + SWCstring.Length + ", Text: " + SWCstring);
-                        SecondaryWinConditionHolder.addToPlayerSWCList(SWCstring);
-                        return;
+                        byte[] imageBytes = reader.ReadBytesAndSize();
+                        DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
+                        if (DestroyableSingleton<HudManager>.Instance)
+                        {
+                            RPCManager.AddChat(__instance, imageBytes);
+                            return;
+                        }
+                        break;
+                    }
                 }
         }
         }
