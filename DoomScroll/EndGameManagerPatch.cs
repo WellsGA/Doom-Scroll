@@ -15,9 +15,8 @@ namespace Doom_Scroll
         public static void PostfixSetEverythingUp(EndGameManager __instance)
         {
             __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } " + SecondaryWinConditionHolder.getThisPlayerSWC().SWCResultsText() + "</color></size>";
-            RPCManager.RPCSendSWCSuccessText(SecondaryWinConditionHolder.getThisPlayerTracker().sendableResultsText());
-            //will replace "TESTCONDITION" with SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
-            //will replace "TESTRESULT" with SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCResultsText();
+            RPCManager.RPCSendSWCSuccessText("PLACEHOLDER");
+            //SecondaryWinConditionHolder.getThisPlayerTracker().sendableResultsText()
             DoomScroll._log.LogInfo("After sending RPC, " + SecondaryWinConditionHolder.overallSWCResultsText());
         }
     }
