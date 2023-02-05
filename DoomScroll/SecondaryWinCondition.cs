@@ -12,6 +12,7 @@ namespace Doom_Scroll
         private static byte playerSWCTarget = byte.MaxValue;
         private static bool targetVotedOut = false;
         private static bool swcSuccess = false;
+        private static bool gameRunning = false;
 
         private static byte playerID = byte.MaxValue;
         private static List<string> playerSWCList = new List<string>();
@@ -35,6 +36,7 @@ namespace Doom_Scroll
             assignTarget(pID);
             targetVotedOut = false;
             swcSuccess = false;
+            gameRunning = true;
         }
 
         public static void assignImpostorValues()
@@ -43,6 +45,11 @@ namespace Doom_Scroll
         {
             playerSWCGoal = Goal.None;
             playerSWCTarget = byte.MaxValue;
+        }
+
+        public static bool checkGameRunning()
+        {
+            return gameRunning;
         }
 
         public static Goal getPlayerSWCGoal()
@@ -65,6 +72,21 @@ namespace Doom_Scroll
                 }
             }
             return "";
+        }
+
+        public static void gameOver()
+        // Called in ___
+        {
+            //SWCH stuff
+            playerID = byte.MaxValue;
+            playerSWCList = new List<string>();
+
+            //SWC stuff
+            playerSWCGoal = Goal.None;
+            playerSWCTarget= byte.MaxValue;
+            targetVotedOut = false;
+            swcSuccess = false;
+            gameRunning = false;
         }
 
         public static void assignGoal()
