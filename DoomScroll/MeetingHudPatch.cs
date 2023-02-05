@@ -21,7 +21,7 @@ namespace Doom_Scroll
         {
             if (exiled != null)
             {
-                SecondaryWinConditionHolder.checkTargetVotedOut(exiled);
+                SecondaryWinCondition.checkTargetVotedOut(exiled);
             }
         }
     }
@@ -33,7 +33,7 @@ namespace Doom_Scroll
         {
             if (exiled != null)
             {
-                SecondaryWinConditionHolder.checkTargetVotedOut(exiled);
+                SecondaryWinCondition.checkTargetVotedOut(exiled);
             }
         }
     }

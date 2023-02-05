@@ -148,8 +148,8 @@ namespace Doom_Scroll
                     case 254:
                     {
                         string SWCstring = reader.ReadString();
-                        DoomScroll._log.LogInfo("Text received!: " + SWCstring);
-                        SecondaryWinConditionHolder.addToPlayerSWCList(SWCstring);
+                        DoomScroll._log.LogInfo("HandleRpc 254- Text received!: " + SWCstring);
+                        SecondaryWinCondition.addToPlayerSWCList(SWCstring);
                         DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
                         return;
                     }

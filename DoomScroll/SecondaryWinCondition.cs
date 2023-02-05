@@ -6,29 +6,56 @@ using Doom_Scroll.Common;
 
 namespace Doom_Scroll
 {
-    public class SecondaryWinCondition
+    public static class SecondaryWinCondition
     {
-        private Goal playerSWCGoal;
-        private byte playerSWCTarget;
-        private bool targetIsVotedOut = false;
+        private static Goal playerSWCGoal = Goal.None;
+        private static byte playerSWCTarget = byte.MaxValue;
+        private static bool targetVotedOut = false;
+        private static bool swcSuccess = false;
 
-        public SecondaryWinCondition(byte pID)
+        private static byte playerID = byte.MaxValue;
+        private static List<string> playerSWCList = new List<string>();
+
+        public enum Goal
         {
-            assignGoal();
-            assignTarget(pID);
+            Protect,
+            Frame,
+            None
         }
 
-        public Goal getPlayerSWCGoal()
+        public static void initSecondaryWinCondition(byte pID)
+        // Called in Start() in ShipStatus.
+        {
+            //SWCH stuff
+            playerID = PlayerControl.LocalPlayer._cachedData.PlayerId;
+            playerSWCList = new List<string>();
+
+            //SWC stuff
+            assignGoal();
+            assignTarget(pID);
+            targetVotedOut = false;
+            swcSuccess = false;
+        }
+
+        public static void assignImpostorValues()
+        // Called in PrefixBeginImpostor in IntroCutscene if player gets impostor role.
+        // Overwrites SWC values assigned in initSecondaryWinCondition at game start.
+        {
+            playerSWCGoal = Goal.None;
+            playerSWCTarget = byte.MaxValue;
+        }
+
+        public static Goal getPlayerSWCGoal()
         {
             return playerSWCGoal;
         }
 
-        public byte getPlayerSWCTarget()
+        public static byte getPlayerSWCTarget()
         {
             return playerSWCTarget;
         }
 
-        public string getTargetName()
+        public static string getTargetName()
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -40,19 +67,7 @@ namespace Doom_Scroll
             return "";
         }
 
-        public enum Goal
-        {
-            Protect,
-            Frame,
-            None
-        }
-
-        public void targetWasVotedOut()
-        {
-            targetIsVotedOut = true;
-        }
-
-        public void assignGoal()
+        public static void assignGoal()
         {
             int goalNum = UnityEngine.Random.Range(1, 4); //min inclusive, max exclusive. Will return 1, 2, or 3
             if (goalNum == 1)
@@ -69,13 +84,7 @@ namespace Doom_Scroll
             }
         }
 
-        public void assignImpostorValues()
-        {
-            playerSWCGoal = Goal.None;
-            playerSWCTarget = byte.MaxValue;
-        }
-
-        public void assignTarget(byte pID)
+        public static void assignTarget(byte pID)
         {
             /*List< GameData.PlayerInfo > otherPlayers = GameData.Instance.AllPlayers;
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
@@ -111,12 +120,12 @@ namespace Doom_Scroll
 
         }
 
-        public bool CheckSuccess()
+        public static void Evaluate()
         {
             int numPlayers = GameData.Instance.AllPlayers.Count;
             if (playerSWCGoal == Goal.None)
             {
-                return true;
+                swcSuccess = true;
             }
             else if (playerSWCGoal == Goal.Protect)
             {
@@ -126,32 +135,52 @@ namespace Doom_Scroll
                     {
                         if (GameData.Instance.AllPlayers[i].IsDead) //player is dead
                         {
-                            return false;
+                            swcSuccess = false;
                         }
                         else //all other cases, i.e. player is not dead
                         {
-                            return true;
+                            swcSuccess = true;
                         }
                     }
                 }
             }
             else if (playerSWCGoal == Goal.Frame)
             {
-                if (targetIsVotedOut)
+                if (targetVotedOut)
                 {
-                    return true;
+                    swcSuccess = true;
                 }
                 else
                 {
-                    return false;
+                    swcSuccess = false;
                 }
             }
 
-            //playerSWCGoal is null
-            return false;
+            //playerSWCGoal is null (unassigned)
+            swcSuccess = false;
         }
 
-        public string SWCAssignText() // text to put into TMP object at beginning, when roles are assigned
+        public static string SWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure is revealed
+        {
+            string results = "";
+            if (playerSWCGoal != Goal.None)
+            {
+                if (swcSuccess)
+                {
+                    results = ToString() + ": <size=40%>Success</size>";
+                }
+                else if (!swcSuccess)
+                {
+                    results = ToString() + ": <size=40%>Failure</size>";
+                }
+            }
+            // if swc goal is null (unassigned)
+            return results;
+        }
+
+        public static string ToString()
+        // returns the base SWC assignment text, the text to put into TMP object at beginning
+        // when roles are assigned
         {
             if (playerSWCGoal == Goal.Protect)
             {
@@ -164,32 +193,82 @@ namespace Doom_Scroll
             return "";
         }
 
-        public string SWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure is revealed
+
+
+
+
+
+
+        ///METHODS ADDED FROM SECONDARYWINCONDITIONHOLDER:
+        ///
+
+
+        
+
+        public static byte getPlayerID()
         {
-            if (playerSWCGoal != Goal.None)
-                return SWCAssignText() + ": <size=40%>" + SWCSuccessMessage() + "</size>";
-            else
-                return "";
+            return playerID;
         }
 
-        public string SWCSuccessMessage()
+        public static void addToPlayerSWCList(string playerSWCResultsText)
         {
-            bool wasSuccessful = CheckSuccess();
+            playerSWCList.Add(playerSWCResultsText);
+        }
+
+        public static void checkTargetVotedOut(GameData.PlayerInfo votedOutPlayer)
+        {
+            if (votedOutPlayer.PlayerId == playerSWCTarget)
+            {
+                targetVotedOut = true;
+            }
+        }
+
+        public static string overallSWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure for all players is revealed
+        {
+            string overallResults = "";
+            foreach (string swcPlayerResults in playerSWCList)
+            {
+                if (swcPlayerResults != "")
+                {
+                    overallResults += swcPlayerResults; // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+                }
+            }
+            return overallResults;
+        }
+
+
+
+
+
+
+
+        ///METHODS ADDED FROM PLAYERSWCTRACKER:
+        ///
+
+
+
+
+        private static string getPlayerName()
+        {
+            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+            {
+                if (playerInfo.PlayerId == playerID)
+                {
+                    return playerInfo.PlayerName;
+                }
+            }
+            return "";
+        }
+
+        public static string sendableResultsText()
+        {
             if (playerSWCGoal == Goal.None)
             {
                 return "";
             }
-            else if (wasSuccessful)
-            {
-                return "Success";
-            }
-            else if (!wasSuccessful)
-            {
-                return "Failure";
-            }
             else
             {
-                return "";
+                return getPlayerName() + " " + SWCResultsText() + "\n"; // will create a string in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
             }
         }
     }

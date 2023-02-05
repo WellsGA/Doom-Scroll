@@ -14,10 +14,10 @@ namespace Doom_Scroll
         [HarmonyPatch("SetEverythingUp")]
         public static void PostfixSetEverythingUp(EndGameManager __instance)
         {
-            __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } " + SecondaryWinConditionHolder.getThisPlayerSWC().SWCResultsText() + "</color></size>";
+            __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } " + SecondaryWinCondition.SWCResultsText() + "</color></size>";
+            DoomScroll._log.LogInfo("Sending PLACEHOLDER RPC!");
             RPCManager.RPCSendSWCSuccessText("PLACEHOLDER");
-            //SecondaryWinConditionHolder.getThisPlayerTracker().sendableResultsText()
-            DoomScroll._log.LogInfo("After sending RPC, " + SecondaryWinConditionHolder.overallSWCResultsText());
+            DoomScroll._log.LogInfo("After sending RPC, playerSWClist = " + SecondaryWinCondition.overallSWCResultsText());
         }
     }
 }
