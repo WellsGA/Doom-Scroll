@@ -14,7 +14,7 @@ namespace Doom_Scroll
     {
         [HarmonyPostfix]
         [HarmonyPatch("Activate")]
-        public static void PrefixSetTaskText(NormalPlayerTask __instance, ref string str)
+        public static void PostfixActivate()
         {
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinCondition.overallSWCResultsText());
         }

@@ -25,19 +25,18 @@ namespace Doom_Scroll
             None
         }
 
-        public static void initSecondaryWinCondition(byte pID)
+        public static void InitSecondaryWinCondition()
         // Called in Start() in ShipStatus.
         {
             //SWCH stuff
-            playerID = PlayerControl.LocalPlayer._cachedData.PlayerId;
-            playerSWCList = new List<string>();
-
+            playerID = PlayerControl.LocalPlayer.PlayerId;
+            //playerSWCList = new List<string>();
             //SWC stuff
             assignGoal();
-            assignTarget(pID);
             targetVotedOut = false;
             swcSuccess = false;
             gameRunning = true;
+            assignTarget(playerID); 
         }
 
         public static void assignImpostorValues()
