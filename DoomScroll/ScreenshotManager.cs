@@ -133,6 +133,7 @@ namespace Doom_Scroll
 
         public void CheckButtonClicks()
         {
+            if (hudManagerInstance == null) return;
             // Replace sprite on mouse hover for both buttons
             m_cameraButton.ReplaceImgageOnHover();
             m_captureScreenButton.ReplaceImgageOnHover();

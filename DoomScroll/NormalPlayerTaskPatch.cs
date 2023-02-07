@@ -1,16 +1,9 @@
-﻿/*
-using System;
-using System.Collections.Generic;
-using HarmonyLib;
-using UnityEngine;
-using Doom_Scroll.Common;
-using Microsoft.Extensions.Logging;
-using Il2CppSystem;
+﻿using HarmonyLib;
 using Il2CppSystem.Text;
 
 namespace Doom_Scroll
 {
-    [HarmonyPatch(typeof(NormalPlayerTask))]
+   /* [HarmonyPatch(typeof(NormalPlayerTask))]
     class NormalPlayerTaskPatchtch
     {
         [HarmonyPostfix]
@@ -20,6 +13,6 @@ namespace Doom_Scroll
             sb.Append("(SWC goes here)");
             //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
         }
-    }
+
+    }*/
 }
-*/
