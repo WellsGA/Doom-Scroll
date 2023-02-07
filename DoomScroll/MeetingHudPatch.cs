@@ -12,24 +12,25 @@ namespace Doom_Scroll
         {
             FolderManager.Instance.CheckForButtonClicks();
         }
-    }
+        [HarmonyPostfix]
+        [HarmonyPatch("Start")]
+        public static void PostfixStart()
+        {
+            TaskAssigner.Instance.DisplayAssignedTasks();
+        }
 
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-    public static class MeetingHudVotingCompletePatch
-    {
-        public static void Prefix(MeetingHud __instance, ref GameData.PlayerInfo exiled)
+        [HarmonyPrefix]
+        [HarmonyPatch("VotingComplete")]
+        public static void PrefixVotingComplete(MeetingHud __instance, ref GameData.PlayerInfo exiled)
         {
             if (exiled != null)
             {
                 SecondaryWinCondition.checkTargetVotedOut(exiled);
             }
         }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.RpcVotingComplete))]
-    public static class MeetingHudRpcVotingCompletePatch
-    {
-        public static void Prefix(MeetingHud __instance, ref GameData.PlayerInfo exiled)
+        [HarmonyPrefix]
+        [HarmonyPatch("RpcVotingComplete")]
+        public static void PrefixRpcVotingComplete(MeetingHud __instance, ref GameData.PlayerInfo exiled)
         {
             if (exiled != null)
             {

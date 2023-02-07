@@ -3,7 +3,8 @@ using System.Reflection;
 using Doom_Scroll.Common;
 
 namespace Doom_Scroll.UI
-{
+{   
+    //a static container for a set of methods operating on input parameters without having to get or set any internal instance fields.
     internal class ScreenshotOverlay
     {
         public static CustomButton CreateCameraButton(HudManager hud)

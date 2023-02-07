@@ -4,6 +4,7 @@ using Doom_Scroll.Common;
 
 namespace Doom_Scroll.UI
 {
+    //a static container for a set of methods operating on input parameters without having to get or set any internal instance fields.
     public static class FolderOverlay
     {
         private static Vector2 buttonSize = new Vector2(0.5f, 0.5f);

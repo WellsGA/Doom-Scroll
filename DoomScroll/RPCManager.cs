@@ -11,6 +11,7 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
+        SENDASSIGNEDTASK = 253,
         SENDSWC = 254,
         SENDIMAGE = 255
     }
@@ -135,39 +136,4 @@ namespace Doom_Scroll
 
         }
     }
-
-        [HarmonyPatch(typeof(PlayerControl))]
-        public static class PlayerControlPatch
-        {
-            [HarmonyPrefix]
-            [HarmonyPatch("HandleRpc")]
-            public static void PrefixHandleRpc([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader, PlayerControl __instance)
-            {
-                switch (callId)
-                {
-                    case 254:
-                    {
-                        string SWCstring = reader.ReadString();
-                        DoomScroll._log.LogInfo("HandleRpc 254- Text received!: " + SWCstring);
-                        SecondaryWinCondition.addToPlayerSWCList(SWCstring);
-                        DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
-                        return;
-                    }
-                    case 255:
-                    {
-                        DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
-                        byte[] imageBytes = reader.ReadBytesAndSize();
-                        DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
-                        if (DestroyableSingleton<HudManager>.Instance)
-                        {
-                            RPCManager.AddChat(__instance, imageBytes);
-                            return;
-                        }
-                        break;
-                    }
-                }
-        }
-        }
-
-    
 }
