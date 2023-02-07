@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
+using UnityEngine;
 
 namespace Doom_Scroll
 {
@@ -114,7 +115,9 @@ namespace Doom_Scroll
                 
             }
             otherPlayers.Remove*/
-
+            //List<GameData.PlayerInfo> shuffledPlayersMinusLocal = Extensions.Shuffle<GameData.PlayerInfo>(GameData.Instance.AllPlayers);
+            //IList<GameData.PlayerInfo> playersMinusLocal = new List<GameData.PlayerInfo>(new IList<GameData.PlayerInfo>(GameData.Instance.AllPlayers));
+            //playersMinusLocal.Remove(GameData.PlayerInfo.LocalPlayer);
             int numPlayers = GameData.Instance.AllPlayers.Count;
             int playerindex = -1;
             for (int i = 0; i < numPlayers; i++)
