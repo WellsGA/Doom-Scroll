@@ -11,11 +11,17 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(PlayerControl))]
     public static class PlayerControlPatch
     {
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
-        public static void PrefixSetTasks(List<GameData.TaskInfo> tasks)
+        public static void PostfixSetTasks([HarmonyArgument(0)] List<GameData.TaskInfo> tasks)
         {
-            TaskAssigner.Instance.SelectRandomTasks(tasks);
+            byte[] taskIds = new byte[tasks.Count];
+            for(int i=0; i < tasks.Count; i++)
+            {
+                taskIds[i] = tasks[i].TypeId;
+            }
+            TaskAssigner.Instance.SelectRandomTasks(taskIds);
+            DoomScroll._log.LogInfo("SetTasks in PlayerControl called");
         }
 
         [HarmonyPostfix]

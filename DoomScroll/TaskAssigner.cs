@@ -65,14 +65,18 @@ namespace Doom_Scroll
             return assignedTasks;
         }
 
-        public void SelectRandomTasks(List<GameData.TaskInfo> tasks) 
+        public void SelectRandomTasks(byte[] tasks) 
         {
-            if (tasks.Count == 0 || tasks == null) return;
+            if (tasks.Length == 0 || tasks == null)
+            {
+                DoomScroll._log.LogInfo("NO TASKS ...");
+                return; 
+            }
             for (int i = 0; i < AssignableTasksIDs.Length; i++)
             {
-                int index = UnityEngine.Random.Range(0, tasks.Count - 1);
-                AssignableTasksIDs[i] = tasks[index].TypeId;
-                DoomScroll._log.LogInfo("TASKS YOU CAN ASSIGN: " + tasks[index].TypeId);
+                int index = UnityEngine.Random.Range(0, tasks.Length - 1);
+                AssignableTasksIDs[i] = tasks[index];
+                DoomScroll._log.LogInfo("TASKS YOU CAN ASSIGN: " + tasks[index]);
             }  
         }
 
