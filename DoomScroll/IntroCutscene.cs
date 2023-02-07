@@ -11,6 +11,14 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(IntroCutscene))]
     class IntroCutscenePatch
     {
+        [HarmonyPrefix]
+        [HarmonyPatch("BeginCrewmate")]
+        public static void PrefixBeginCrewmate(IntroCutscene __instance)
+        {
+            SecondaryWinCondition.InitSecondaryWinCondition();
+            DoomScroll._log.LogInfo("SecondaryWinCondition initialized: " + SecondaryWinCondition.ToString());
+        }
+
         // displays SWC if local player is crewmate
         [HarmonyPostfix]
         [HarmonyPatch("BeginCrewmate")]
@@ -25,6 +33,8 @@ namespace Doom_Scroll
         [HarmonyPatch("BeginImpostor")]
         public static void PrefixBeginImpostor(IntroCutscene __instance)
         {
+            SecondaryWinCondition.InitSecondaryWinCondition();
+            DoomScroll._log.LogInfo("SecondaryWinCondition initialized: " + SecondaryWinCondition.ToString());
             GameData.PlayerInfo localPlayer;
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {

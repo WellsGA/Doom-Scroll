@@ -15,9 +15,7 @@ namespace Doom_Scroll
             ScreenshotManager.Instance.ActivateCameraButton(true);
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA INIT");
 
-           /* SecondaryWinCondition.InitSecondaryWinCondition();
-            DoomScroll._log.LogInfo("SecondaryWinCondition initialized: " + SecondaryWinCondition.ToString());
-            */
+           
             // list all tasks - for debug purposes
             DoomScroll._log.LogInfo("TASK INFO");            
             foreach (NormalPlayerTask task in __instance.CommonTasks)

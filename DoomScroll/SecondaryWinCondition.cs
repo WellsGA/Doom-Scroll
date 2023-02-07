@@ -30,7 +30,7 @@ namespace Doom_Scroll
         {
             //SWCH stuff
             playerID = PlayerControl.LocalPlayer.PlayerId;
-            //playerSWCList = new List<string>();
+            playerSWCList = new List<string>();
             //SWC stuff
             assignGoal();
             targetVotedOut = false;
