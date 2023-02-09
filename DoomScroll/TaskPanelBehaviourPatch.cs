@@ -19,7 +19,7 @@ namespace Doom_Scroll
             if (SecondaryWinCondition.checkGameRunning())
             {
                 str = str + "\nSWC: " + SecondaryWinCondition.ToString();
-                DoomScroll._log.LogInfo("SWC ToString added to task list: " + SecondaryWinCondition.ToString());
+                //DoomScroll._log.LogInfo("SWC ToString added to task list: " + SecondaryWinCondition.ToString());
             }
         }
     }
