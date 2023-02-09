@@ -17,6 +17,7 @@ namespace Doom_Scroll
         public static void PostfixActivate()
         {
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinCondition.overallSWCResultsText());
+            SecondaryWinCondition.gameOver();
         }
     }
 }
