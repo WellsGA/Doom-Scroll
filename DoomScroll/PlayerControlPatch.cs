@@ -42,7 +42,7 @@ namespace Doom_Scroll
                         TaskAssigner.Instance.AddToAssignedTasks(reader.ReadByte(), reader.ReadByte());
                         return;
                     }
-                case 254:
+                case (byte)CustomRPC.SENDSWC:
                     {
                         string SWCstring = reader.ReadString();
                         DoomScroll._log.LogInfo("HandleRpc 254- Text received!: " + SWCstring);
@@ -50,7 +50,7 @@ namespace Doom_Scroll
                         DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
                         return;
                     }
-                case 255:
+                case (byte)CustomRPC.SENDIMAGE:
                     {
                         DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
                         byte[] imageBytes = reader.ReadBytesAndSize();
