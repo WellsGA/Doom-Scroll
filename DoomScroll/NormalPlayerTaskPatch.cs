@@ -6,15 +6,15 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(NormalPlayerTask))]
     class NormalPlayerTaskPatchtch
     {
-      /*[HarmonyPostfix]
-        [HarmonyPatch("AppendTaskText")]
-        public static void PostfixAppendTaskText(NormalPlayerTask __instance, ref StringBuilder sb)
-        {
-            sb.Append("(SWC goes here)");
-            //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
-        }*/
+        /*[HarmonyPostfix]
+          [HarmonyPatch("AppendTaskText")]
+          public static void PostfixAppendTaskText(NormalPlayerTask __instance, ref StringBuilder sb)
+          {
+              sb.Append("(SWC goes here)");
+              //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
+          }*/
 
-       /* [HarmonyPrefix]
+        [HarmonyPrefix]
         [HarmonyPatch("NextStep")]
         public static void PrefiNextStep(NormalPlayerTask __instance)
         {
@@ -23,12 +23,12 @@ namespace Doom_Scroll
                 GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId);
                 foreach (GameData.TaskInfo task in playerInfo.Tasks)
                 {
-                    if(task.Id == __instance.Id)
+                    if (task.Id == __instance.Id)
                     {
                         TaskAssigner.Instance.AssignPlayerToTask(task.TypeId);
                     }
                 }
             }
-        }*/
+        }
     }
 }
