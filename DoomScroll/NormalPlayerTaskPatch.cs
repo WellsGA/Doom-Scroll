@@ -14,7 +14,7 @@ namespace Doom_Scroll
             //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
         }*/
 
-        [HarmonyPrefix]
+       /* [HarmonyPrefix]
         [HarmonyPatch("NextStep")]
         public static void PrefiNextStep(NormalPlayerTask __instance)
         {
@@ -29,6 +29,6 @@ namespace Doom_Scroll
                     }
                 }
             }
-        }
+        }*/
     }
 }

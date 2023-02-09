@@ -12,16 +12,17 @@ namespace Doom_Scroll
         [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
         public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
         {
-            TaskAssigner.Instance.SelectRandomTasks(__instance.tasks);
+             // check for impostor  
+             TaskAssigner.Instance.SelectRandomTasks(__instance.tasks);
         }
 
         [HarmonyPostfix]
         [HarmonyPatch("CompleteTask")]
         public static void PostfixCompleteTasks(PlayerControl __instance, uint idx)
         {
-            foreach(GameData.TaskInfo ti in __instance.Data.Tasks)
+            foreach (GameData.TaskInfo ti in __instance.Data.Tasks)
             {
-                if(ti.Id == idx)
+                if (ti.Id == idx)
                 {
                     if (TaskAssigner.Instance.AssignableTasksIDs.Contains(ti.TypeId))
                     {
