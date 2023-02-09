@@ -1,10 +1,6 @@
-﻿using Doom_Scroll.Common;
-using Hazel;
-using UnityEngine;
+﻿using Hazel;
 using System.Collections.Generic;
-using Doom_Scroll.UI;
-using System;
-using Il2CppInterop.Runtime;
+
 
 namespace Doom_Scroll
 {
@@ -35,6 +31,7 @@ namespace Doom_Scroll
         {
             // add to dictionary  (maybe we need to check if the task was already assigned and change if so??)
             AssignedTasks.Add(playerID, taskId);
+            DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK ID:" + taskId);
         }
 
         public void RPCAddToAssignedTasks(byte player, byte task) 
@@ -43,7 +40,7 @@ namespace Doom_Scroll
             {
                 AddToAssignedTasks(player, task);
             }
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)11);
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)1);
             messageWriter.Write(player);
             messageWriter.Write(task);
             messageWriter.EndMessage();
@@ -65,28 +62,23 @@ namespace Doom_Scroll
             return assignedTasks;
         }
 
-        public void SelectRandomTasks(byte[] tasks) 
-        {
-            if (tasks.Length == 0 || tasks == null)
-            {
-                DoomScroll._log.LogInfo("NO TASKS ...");
-                return; 
-            }
+        public void SelectRandomTasks(Il2CppSystem.Collections.Generic.List<GameData.TaskInfo> tasks) 
+        {   
+            if(tasks.Count == 0 || tasks == null) return;
             for (int i = 0; i < AssignableTasksIDs.Length; i++)
             {
-                int index = UnityEngine.Random.Range(0, tasks.Length - 1);
-                AssignableTasksIDs[i] = tasks[index];
-                DoomScroll._log.LogInfo("TASKS YOU CAN ASSIGN: " + tasks[index]);
-            }  
+                int index = UnityEngine.Random.Range(0, tasks.Count - 1);
+                AssignableTasksIDs[i] = tasks[index].TypeId;
+                DoomScroll._log.LogInfo("Task IDs You Can Assign : " + AssignableTasksIDs[i]);
+            }
         }
 
         public void AssignPlayerToTask(byte typeid)
         {
             // random select a player for now
-            Il2CppSystem.Collections.Generic.List<PlayerControl> players = PlayerControl.AllPlayerControls;
-            if (players.Count == 0 || players == null) { return; }
-            int index = UnityEngine.Random.Range(0, players.Count-1);
-            PlayerControl player = players[index];
+            if (PlayerControl.AllPlayerControls.Count == 0 || PlayerControl.AllPlayerControls == null) { return; }
+            int index = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count-1);
+            PlayerControl player = PlayerControl.AllPlayerControls[index];
             RPCAddToAssignedTasks(player.PlayerId, typeid);       
         }
 

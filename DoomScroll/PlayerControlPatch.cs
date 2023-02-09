@@ -1,10 +1,7 @@
 ﻿using HarmonyLib;
 using Hazel;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Doom_Scroll
 {
@@ -12,16 +9,10 @@ namespace Doom_Scroll
     public static class PlayerControlPatch
     {
         [HarmonyPostfix]
-        [HarmonyPatch("SetTasks")]
-        public static void PostfixSetTasks([HarmonyArgument(0)] List<GameData.TaskInfo> tasks)
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
+        public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
         {
-            byte[] taskIds = new byte[tasks.Count];
-            for(int i=0; i < tasks.Count; i++)
-            {
-                taskIds[i] = tasks[i].TypeId;
-            }
-            TaskAssigner.Instance.SelectRandomTasks(taskIds);
-            DoomScroll._log.LogInfo("SetTasks in PlayerControl called");
+            TaskAssigner.Instance.SelectRandomTasks(__instance.tasks);
         }
 
         [HarmonyPostfix]
