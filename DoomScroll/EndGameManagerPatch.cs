@@ -16,7 +16,8 @@ namespace Doom_Scroll
         {
             SecondaryWinCondition.Evaluate();
         }
-            [HarmonyPostfix]
+        
+        [HarmonyPostfix]
         [HarmonyPatch("SetEverythingUp")]
         public static void PostfixSetEverythingUp(EndGameManager __instance)
         {
