@@ -14,21 +14,5 @@ namespace Doom_Scroll
               //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
           }*/
 
-       /* [HarmonyPrefix]
-        [HarmonyPatch("NextStep")]
-        public static void PrefiNextStep(NormalPlayerTask __instance)
-        {
-            if (__instance.taskStep >= __instance.MaxStep)
-            {
-                GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId);
-                foreach (GameData.TaskInfo task in playerInfo.Tasks)
-                {
-                    if (task.Id == __instance.Id)
-                    {
-                        TaskAssigner.Instance.AssignPlayerToTask(task.TypeId);
-                    }
-                }
-            }
-        }*/
     }
 }

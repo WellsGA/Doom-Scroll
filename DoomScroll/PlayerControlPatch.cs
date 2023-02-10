@@ -12,8 +12,16 @@ namespace Doom_Scroll
         [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
         public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
         {
-             // check for impostor  
-             TaskAssigner.Instance.SelectRandomTasks(__instance.tasks);
+            // check for impostor
+            if (PlayerControl.LocalPlayer.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
+            {
+                TaskAssigner.Instance.SelectRandomTasks(__instance.tasks);
+            }
+            else
+            {
+                DoomScroll._log.LogInfo(" FUCKERY AFOOT ");
+            }
+           
         }
 
         [HarmonyPostfix]

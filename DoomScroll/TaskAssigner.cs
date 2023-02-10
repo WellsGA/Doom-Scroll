@@ -17,7 +17,7 @@ namespace Doom_Scroll
             }
         }
         // list for all the assigned task - this will be displayed during meetings
-        private static Dictionary<byte, byte> AssignedTasks = new Dictionary<byte, byte>();
+        private static List<byte[]> AssignedTasks = new List<byte[]>();
         // byte array to keep the assignable task IDs
         public byte[] AssignableTasksIDs { get; private set; }
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
@@ -30,7 +30,10 @@ namespace Doom_Scroll
         public void AddToAssignedTasks(byte playerID, byte taskId)
         {
             // add to dictionary  (maybe we need to check if the task was already assigned and change if so??)
-            AssignedTasks.Add(playerID, taskId);
+            byte[] playerTaskPair = new byte[2];
+            playerTaskPair[0] = playerID;
+            playerTaskPair[1] = taskId;
+            AssignedTasks.Add(playerTaskPair);
             DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK ID:" + taskId);
         }
 
@@ -49,10 +52,10 @@ namespace Doom_Scroll
         public override string ToString()
         {
             string assignedTasks = "NAME ========= TASK ========\n";
-            foreach(KeyValuePair<byte, byte> entry in AssignedTasks)
+            foreach(byte[] entry in AssignedTasks)
             {
-                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(entry.Key);
-                NormalPlayerTask task = ShipStatus.Instance.GetTaskById(entry.Value);
+                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(entry[0]);
+                NormalPlayerTask task = ShipStatus.Instance.GetTaskById(entry[1]);
                 if(player == null || task == null)
                 {
                     continue;
@@ -75,7 +78,7 @@ namespace Doom_Scroll
 
         public void AssignPlayerToTask(byte typeid)
         {
-            // random select a player for now
+            // random select a player for now 
             if (PlayerControl.AllPlayerControls.Count == 0 || PlayerControl.AllPlayerControls == null) { return; }
             int index = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count-1);
             PlayerControl player = PlayerControl.AllPlayerControls[index];
