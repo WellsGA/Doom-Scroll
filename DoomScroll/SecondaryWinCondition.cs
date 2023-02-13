@@ -4,6 +4,7 @@ using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
 using UnityEngine;
+using Doom_Scroll.UI;
 
 namespace Doom_Scroll
 {
@@ -14,6 +15,7 @@ namespace Doom_Scroll
         private static bool targetVotedOut = false;
         private static bool swcSuccess = false;
         private static bool gameRunning = false;
+        public static CustomText m_overallSWCText;
 
         private static byte playerID = byte.MaxValue;
         private static List<string> playerSWCList = new List<string>();
