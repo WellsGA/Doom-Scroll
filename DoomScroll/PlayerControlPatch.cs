@@ -9,7 +9,7 @@ namespace Doom_Scroll
     public static class PlayerControlPatch
     {
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.__2__current))]
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
         public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
         {
             // check for impostor
