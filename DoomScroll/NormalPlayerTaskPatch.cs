@@ -4,7 +4,7 @@ using Il2CppSystem.Text;
 namespace Doom_Scroll
 {
     [HarmonyPatch(typeof(NormalPlayerTask))]
-    class NormalPlayerTaskPatchtch
+    class NormalPlayerTaskPatch
     {
         /*[HarmonyPostfix]
           [HarmonyPatch("AppendTaskText")]
@@ -13,6 +13,5 @@ namespace Doom_Scroll
               sb.Append("(SWC goes here)");
               //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
           }*/
-
     }
 }

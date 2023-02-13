@@ -9,7 +9,7 @@ namespace Doom_Scroll
     public static class PlayerControlPatch
     {
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.__2__current))]
         public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
         {
             // check for impostor
@@ -19,7 +19,7 @@ namespace Doom_Scroll
             }
             else
             {
-                DoomScroll._log.LogInfo(" FUCKERY AFOOT ");
+                DoomScroll._log.LogInfo("You cannot assign tasks ...");
             }
            
         }
@@ -35,6 +35,7 @@ namespace Doom_Scroll
                     if (TaskAssigner.Instance.AssignableTasksIDs.Contains(ti.TypeId))
                     {
                         TaskAssigner.Instance.AssignPlayerToTask(ti.TypeId);
+                        continue;
                     }
                 }
             }
@@ -53,10 +54,10 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDSWC:
                     {
-                        string SWCstring = reader.ReadString();
-                        DoomScroll._log.LogInfo("HandleRpc 254- Text received!: " + SWCstring);
-                        SecondaryWinCondition.addToPlayerSWCList(SWCstring);
-                        DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
+                        DoomScroll._log.LogInfo("HandleRpc for swc");
+                       //string SWCstring = ;
+                        SecondaryWinCondition.addToPlayerSWCList(reader.ReadString());
+                        ///DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
                         return;
                     }
                 case (byte)CustomRPC.SENDIMAGE:

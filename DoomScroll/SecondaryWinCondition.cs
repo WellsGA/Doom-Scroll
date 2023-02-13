@@ -10,15 +10,15 @@ namespace Doom_Scroll
 {
     public static class SecondaryWinCondition
     {
-        private static Goal playerSWCGoal = Goal.None;
-        private static byte playerSWCTarget = byte.MaxValue;
-        private static bool targetVotedOut = false;
-        private static bool swcSuccess = false;
+        private static Goal playerSWCGoal;
+        private static byte playerSWCTarget;
+        private static bool targetVotedOut;
+        private static bool swcSuccess;
         private static bool gameRunning = false;
         public static CustomText m_overallSWCText;
 
-        private static byte playerID = byte.MaxValue;
-        private static List<string> playerSWCList = new List<string>();
+        private static byte playerID;
+        private static List<string> playerSWCList;
 
         public enum Goal
         {

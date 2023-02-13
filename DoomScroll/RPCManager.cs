@@ -45,11 +45,12 @@ namespace Doom_Scroll
                 while (Buffer.ByteLength(image) >= buffer);
                 DoomScroll._log.LogInfo("New image size: " + Buffer.ByteLength(image) + ", byte array length: " + image.Length + ", buffer: " + buffer);   
             }
-            messageWriter.WriteBytesAndSize(image);
+            
             if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
             {
                 AddChat(PlayerControl.LocalPlayer, image);
             }
+            messageWriter.WriteBytesAndSize(image);
             messageWriter.EndMessage();
             return true;
         }
