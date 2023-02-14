@@ -1,40 +1,70 @@
 ﻿using HarmonyLib;
 using Hazel;
+using Il2CppSystem.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace Doom_Scroll
 {
     [HarmonyPatch(typeof(PlayerControl))]
     public static class PlayerControlPatch
     {
+        static int i = 0;
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
         public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
         {
+            List<PlayerTask> tasks = __instance.__4__this.myTasks;
             // check for impostor
-            if (PlayerControl.LocalPlayer.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
+            if (tasks != null && tasks.Count > 0)
             {
-                TaskAssigner.Instance.SelectRandomTasks(__instance.tasks);
+                if (__instance.__4__this.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
+                {
+                    TaskAssigner.Instance.SelectRandomTasks(tasks);
+                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
+                }
+                else
+                {
+                    DoomScroll._log.LogInfo("You cannot assign tasks ...");
+                }
             }
-            else
-            {
-                DoomScroll._log.LogInfo("You cannot assign tasks ...");
-            }
-           
+
         }
+
+        /*[HarmonyPostfix]
+        [HarmonyPatch("CoSetTasks")]
+        public static void PostfixCoSetTasks(PlayerControl __instance)
+        {
+
+            // check for impostor
+            if (__instance.myTasks != null)
+            {
+                if (PlayerControl.LocalPlayer.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
+                {
+                    TaskAssigner.Instance.SelectRandomTasks(__instance.);
+                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
+                }
+                else
+                {
+                    DoomScroll._log.LogInfo("You cannot assign tasks ...");
+                }
+            }
+
+        }*/
 
         [HarmonyPostfix]
         [HarmonyPatch("CompleteTask")]
         public static void PostfixCompleteTasks(PlayerControl __instance, uint idx)
         {
-            foreach (GameData.TaskInfo ti in __instance.Data.Tasks)
+            
+            foreach (PlayerTask task in __instance.myTasks)
             {
-                if (ti.Id == idx)
+                if (task.Id == idx)
                 {
-                    if (TaskAssigner.Instance.AssignableTasksIDs.Contains(ti.TypeId))
+                    if (TaskAssigner.Instance.AssignableTasksIDs.Contains(task.Id))
                     {
-                        TaskAssigner.Instance.AssignPlayerToTask(ti.TypeId);
+                        TaskAssigner.Instance.AssignPlayerToTask(task.Id);
                         continue;
                     }
                 }
@@ -49,20 +79,16 @@ namespace Doom_Scroll
             {
                 case (byte)CustomRPC.SENDASSIGNEDTASK:
                     {
-                        TaskAssigner.Instance.AddToAssignedTasks(reader.ReadByte(), reader.ReadByte());
+                        TaskAssigner.Instance.AddToAssignedTasks(__instance, reader.ReadByte(), reader.ReadUInt32());
                         return;
                     }
                 case (byte)CustomRPC.SENDSWC:
                     {
-                        DoomScroll._log.LogInfo("HandleRpc for swc");
-                       //string SWCstring = ;
                         SecondaryWinCondition.addToPlayerSWCList(reader.ReadString());
-                        ///DoomScroll._log.LogInfo("SWC text added to list: " + SWCstring);
                         return;
                     }
                 case (byte)CustomRPC.SENDIMAGE:
                     {
-                        DoomScroll._log.LogInfo("reader buffer: " + reader.Buffer);
                         byte[] imageBytes = reader.ReadBytesAndSize();
                         DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
                         if (DestroyableSingleton<HudManager>.Instance)
