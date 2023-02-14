@@ -19,7 +19,8 @@ namespace Doom_Scroll
         public static void PostfixActivate(ProgressionScreen __instance)
         {
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinCondition.overallSWCResultsText());
-            SecondaryWinCondition.m_overallSWCText = new CustomText("SWCResults", __instance.XpEarnedNowText.gameObject, "PLACEHOLDER" /*SecondaryWinCondition.overallSWCResultsText()*/);
+            SecondaryWinCondition.m_overallSWCText = new CustomText("SWCResults", __instance.XpBar.gameObject, "PLACEHOLDER" /*SecondaryWinCondition.overallSWCResultsText()*/);
+            SecondaryWinCondition.m_overallSWCText.SetColor(Color.white);
             SecondaryWinCondition.gameOver();
         }
     }

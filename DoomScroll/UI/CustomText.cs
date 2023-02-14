@@ -23,6 +23,11 @@ namespace Doom_Scroll.UI
             TextMP.color = Color.black;
         }
 
+        public void SetColor(Color col)
+        {
+            TextMP.color = col;
+        }
+
         public void SetlocalPosition(Vector3 pos)
         {
             TextObject.transform.localPosition = pos;
