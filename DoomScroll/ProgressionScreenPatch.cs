@@ -21,6 +21,9 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinCondition.overallSWCResultsText());
             SecondaryWinCondition.m_overallSWCText = new CustomText("SWCResults", __instance.XpBar.gameObject, "PLACEHOLDER" /*SecondaryWinCondition.overallSWCResultsText()*/);
             SecondaryWinCondition.m_overallSWCText.SetColor(Color.white);
+            SecondaryWinCondition.m_overallSWCText.SetSize(1.5f);
+            Vector3 vec = new Vector3(SecondaryWinCondition.m_overallSWCText.TextObject.transform.localPosition.x, SecondaryWinCondition.m_overallSWCText.TextObject.transform.localPosition.y + 30, SecondaryWinCondition.m_overallSWCText.TextObject.transform.localPosition.z);
+            SecondaryWinCondition.m_overallSWCText.SetlocalPosition(vec);
             SecondaryWinCondition.gameOver();
         }
     }

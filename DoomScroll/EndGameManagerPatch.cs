@@ -7,17 +7,22 @@ using Doom_Scroll.Common;
 
 namespace Doom_Scroll
 {
-    [HarmonyPatch(typeof(EndGameManager))]
-    class EndGameManagerPatch
+    [HarmonyPatch(typeof(AmongUsClient))]
+    class AmongUsClientPatch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("SetEverythingUp")]
-        public static void PrefixSetEverythingUp(EndGameManager __instance)
+        [HarmonyPatch("OnGameEnd")]
+        public static void PrefixOnGameEnd(AmongUsClient __instance)
         {
             SecondaryWinCondition.Evaluate();
             DoomScroll._log.LogInfo("Sending PLACEHOLDER RPC!");
             RPCManager.RPCSendSWCSuccessText("PLACEHOLDER");
         }
+    }
+
+    [HarmonyPatch(typeof(EndGameManager))]
+    class EndGameManagerPatch
+    {
         
         [HarmonyPostfix]
         [HarmonyPatch("SetEverythingUp")]
