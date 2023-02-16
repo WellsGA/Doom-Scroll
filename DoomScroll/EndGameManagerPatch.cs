@@ -8,11 +8,11 @@ using Doom_Scroll.Common;
 namespace Doom_Scroll
 {
     [HarmonyPatch(typeof(AmongUsClient))]
-    class AmongUsClientPatch
+    class InnerNetClientPatch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("OnGameEnd")]
-        public static void PrefixOnGameEnd(AmongUsClient __instance)
+        [HarmonyPatch("StartEndGame")]
+        public static void PrefixStartEndGame()
         {
             SecondaryWinCondition.Evaluate();
             DoomScroll._log.LogInfo("Sending PLACEHOLDER RPC!");
