@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -17,7 +17,7 @@ namespace Doom_Scroll
         [HarmonyPatch("Activate")]
         public static void PostfixActivate(MainMenuManager __instance)
         {
-            /*
+            
             GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
             Vector3 doomscrollBtnPos = __instance.playerCustomizationPrefab.transform.parent.gameObject.transform.position;
             SpriteRenderer mapButtonSr = hud.MapButton.GetComponent<SpriteRenderer>();
@@ -27,7 +27,7 @@ namespace Doom_Scroll
             Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash.png", slices);
 
             return new CustomButton(m_UIParent, cameraBtnSprites, position, scaledSize.x, "Camera Toggle Button");
-            */
+            
         }
     }
-}
+}*/
