@@ -20,6 +20,8 @@ namespace Doom_Scroll
         private static byte playerID;
         private static List<string> playerSWCList;
 
+        //public static CustomButton test_button;
+
         public enum Goal
         {
             Protect,
@@ -181,9 +183,11 @@ namespace Doom_Scroll
                     swcSuccess = false;
                 }
             }
-
-            //playerSWCGoal is null (unassigned)
-            swcSuccess = false;
+            else
+            {
+                //playerSWCGoal is null (unassigned)
+                swcSuccess = false;
+            }
         }
 
         public static string SWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure is revealed
