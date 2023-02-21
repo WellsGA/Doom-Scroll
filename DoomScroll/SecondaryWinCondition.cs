@@ -153,6 +153,7 @@ namespace Doom_Scroll
             int numPlayers = GameData.Instance.AllPlayers.Count;
             if (playerSWCGoal == Goal.None)
             {
+                DoomScroll._log.LogInfo("SWCGoal is None.");
                 swcSuccess = true;
             }
             else if (playerSWCGoal == Goal.Protect)
@@ -163,10 +164,12 @@ namespace Doom_Scroll
                     {
                         if (GameData.Instance.AllPlayers[i].IsDead) //player is dead
                         {
+                            DoomScroll._log.LogInfo("Protect failed.");
                             swcSuccess = false;
                         }
                         else //all other cases, i.e. player is not dead
                         {
+                            DoomScroll._log.LogInfo("Protect successful.");
                             swcSuccess = true;
                         }
                     }
@@ -176,16 +179,19 @@ namespace Doom_Scroll
             {
                 if (targetVotedOut)
                 {
+                    DoomScroll._log.LogInfo("Frame successful.");
                     swcSuccess = true;
                 }
                 else
                 {
+                    DoomScroll._log.LogInfo("Frame failed.");
                     swcSuccess = false;
                 }
             }
             else
             {
                 //playerSWCGoal is null (unassigned)
+                DoomScroll._log.LogInfo("No SWCGoal assigned.");
                 swcSuccess = false;
             }
         }
