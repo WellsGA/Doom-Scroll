@@ -25,19 +25,13 @@ namespace Doom_Scroll
                     TaskAssigner.Instance.SelectRandomTasks(tasks);
                     DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
                 }
-                else
-                {
-                    DoomScroll._log.LogInfo("You cannot assign tasks ...");
-                }
             }
-
         }
 
         /*[HarmonyPostfix]
         [HarmonyPatch("CoSetTasks")]
         public static void PostfixCoSetTasks(PlayerControl __instance)
         {
-
             // check for impostor
             if (__instance.myTasks != null)
             {

@@ -8,16 +8,19 @@ using InnerNet;
 
 namespace Doom_Scroll
 {
-    [HarmonyPatch(typeof(InnerNetClient))]
+    [HarmonyPatch(typeof(GameManager))]
     class InnerNetClientPatch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("StartEndGame")]
-        public static void PrefixStartEndGame(InnerNetClient __instance)
+        [HarmonyPatch("RpcEndGame")]
+        public static void PrefixRpcEndGame(GameManager __instance)
         {
-            SecondaryWinCondition.Evaluate();
-            DoomScroll._log.LogInfo("Sending PLACEHOLDER RPC!");
-            RPCManager.RPCSendSWCSuccessText("PLACEHOLDER");
+            foreach (PlayerControl pi in PlayerControl.AllPlayerControls)
+            {
+                DoomScroll._log.LogInfo("player id: " + pi.name);
+            }
+            SecondaryWinCondition.Evaluate();  
+            RPCManager.RPCSendSWCSuccessText(SecondaryWinCondition.ToString() + ", " + SecondaryWinCondition.SWCResultsText());
         }
     }
 

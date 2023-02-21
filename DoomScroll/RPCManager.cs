@@ -23,6 +23,13 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("text: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
             messageWriter.Write(SWCtext);
             messageWriter.EndMessage();
+            SendErrors sendErrors = AmongUsClient.Instance.connection.Send(messageWriter);
+            if (sendErrors != null)
+            {
+                Debug.Log("Failed to send message: " + sendErrors.ToString());
+                AmongUsClient.Instance.EnqueueDisconnect(DisconnectReasons.Error, "Failed to send message: " + sendErrors.ToString());
+            }
+            messageWriter.Recycle();
             return true;
         }
 
