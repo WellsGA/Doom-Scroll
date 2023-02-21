@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
+using InnerNet;
 
 namespace Doom_Scroll
 {
-    [HarmonyPatch(typeof(AmongUsClient))]
+    [HarmonyPatch(typeof(InnerNetClient))]
     class InnerNetClientPatch
     {
         [HarmonyPrefix]
         [HarmonyPatch("StartEndGame")]
-        public static void PrefixStartEndGame()
+        public static void PrefixStartEndGame(InnerNetClient __instance)
         {
             SecondaryWinCondition.Evaluate();
             DoomScroll._log.LogInfo("Sending PLACEHOLDER RPC!");
