@@ -22,6 +22,8 @@ namespace Doom_Scroll
             this.Dialogue.Show(text);
         }
 
+        DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverImpostorKills, Array.Empty<object>()));
+
         /*
         private void ShowPopup(string error)
         {
