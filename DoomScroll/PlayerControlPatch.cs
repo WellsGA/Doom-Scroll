@@ -4,6 +4,7 @@ using Il2CppSystem.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using static GameData;
 
 namespace Doom_Scroll
 {
@@ -57,17 +58,15 @@ namespace Doom_Scroll
         [HarmonyPatch("CompleteTask")]
         public static void PostfixCompleteTasks(PlayerControl __instance, uint idx)
         {
-            
-            foreach (PlayerTask task in __instance.myTasks)
+           TaskInfo taskInfo = __instance.Data.FindTaskById(idx);
+            if (taskInfo == null)
             {
-                if (task.Id == idx)
-                {
-                    if (TaskAssigner.Instance.AssignableTasksIDs.Contains(task.Id))
-                    {
-                        TaskAssigner.Instance.AssignPlayerToTask(task.Id);
-                        continue;
-                    }
-                }
+                DoomScroll._log.LogInfo("Task not found: " + idx.ToString());
+                return;
+            }
+            if (taskInfo.Complete && TaskAssigner.Instance.AssignableTasksIDs.Contains(idx))
+            {
+                TaskAssigner.Instance.AssignPlayerToTask(idx);
             }
         }
 

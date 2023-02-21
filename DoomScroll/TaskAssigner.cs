@@ -56,13 +56,13 @@ namespace Doom_Scroll
 
         public override string ToString()
         {
-            string assignedTasks = "\t<NAME>\t\t\t<TASK> \t\n  " +
+            string assignedTasks = "<NAME>\t\t<TASK> \n  " +
                                    "=====================================\n";
             foreach(var entry in AssignedTasks)
             {
                 GameData.PlayerInfo player = GameData.Instance.GetPlayerById(entry.playerId);
                 if (player == null) { continue; } // if player has left, we leave them out
-                assignedTasks += player.PlayerName + "\t\t\t " + entry.taskName + "\n";
+                assignedTasks += player.PlayerName + "\t\t" + entry.taskName + "\n";
             }
             return assignedTasks;
         }
