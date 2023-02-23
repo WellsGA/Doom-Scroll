@@ -6,7 +6,7 @@ namespace Doom_Scroll
     public static class SecondaryWinConditionManager
     {
         public static SecondaryWinCondition LocalPLayerSWC { get; private set; }
-        private static List<SecondaryWinCondition> playerSWCList;  // list of SecondaryWinConditions instead of strings
+        private static List<SecondaryWinCondition> playerSWCList = new List<SecondaryWinCondition>();  // list of SecondaryWinConditions instead of strings
 
         public static void InitSecondaryWinCondition(bool isImpostor)
         {

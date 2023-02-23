@@ -143,6 +143,7 @@ namespace Doom_Scroll
             messageWriter.Write(playerSWCTarget);
             // we assume that the target is alive at this point // can it be disconnected tho?
             messageWriter.EndMessage();
+            DoomScroll._log.LogInfo("Sending local SWC");
             return true;
         }
 

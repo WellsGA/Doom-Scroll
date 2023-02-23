@@ -9,7 +9,7 @@ namespace Doom_Scroll
         [HarmonyPatch("BeginCrewmate")]
         public static void PrefixBeginCrewmate()
         {
-            SecondaryWinConditionManager.InitSecondaryWinCondition(true);
+            SecondaryWinConditionManager.InitSecondaryWinCondition(false);
         }
 
         // displays SWC if local player is crewmate
