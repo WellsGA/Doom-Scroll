@@ -1,72 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using HarmonyLib;
-using UnityEngine;
-using Doom_Scroll.Common;
-using UnityEngine;
-using Doom_Scroll.UI;
+﻿using Hazel;
 
 namespace Doom_Scroll
 {
-    public static class SecondaryWinCondition
+    public enum Goal : byte
     {
-        private static Goal playerSWCGoal;
-        private static byte playerSWCTarget;
-        private static bool targetVotedOut;
-        private static bool swcSuccess;
-        private static bool gameRunning = false;
-        public static CustomText m_overallSWCText;
+        Protect,
+        Frame,
+        None
+    }
+    public enum TargetState : byte
+    {
+        ALIVE,
+        KILLED,
+        VOTEDOUT,
+        DISCONNECTED
+    }
+    public class SecondaryWinCondition
+    {
+        private byte playerID;
+        private Goal playerSWCGoal;
+        private byte playerSWCTarget;
+        private TargetState targetState;
 
-        private static byte playerID;
-        private static List<string> playerSWCList;
+        private bool swcSuccess;
 
-        //public static CustomButton test_button;
-
-        public enum Goal
+        public SecondaryWinCondition(byte player, Goal goal, byte target)
         {
-            Protect,
-            Frame,
-            None
+            playerID = player;
+            playerSWCGoal = goal;
+            playerSWCTarget = target;
+            targetState = TargetState.ALIVE;
+            swcSuccess = goal != Goal.Frame  ? true : false; // if protect or none they start on success
         }
 
-        public static void InitSecondaryWinCondition()
-        // Called in Start() in ShipStatus.
+        public void Evaluate()
         {
-            //SWCH stuff
-            playerID = PlayerControl.LocalPlayer.PlayerId;
-            playerSWCList = new List<string>();
-            //SWC stuff
-            assignGoal();
-            targetVotedOut = false;
-            swcSuccess = false;
-            gameRunning = true;
-            assignTarget(playerID); 
+            if (playerSWCGoal == Goal.Protect)
+            {
+                if (targetState != TargetState.ALIVE) //player is dead
+                 {
+                     DoomScroll._log.LogInfo("Protect failed.");
+                      swcSuccess = false;
+                 }
+            }
+            else if (playerSWCGoal == Goal.Frame)
+            {
+                if (targetState == TargetState.VOTEDOUT)
+                {
+                    DoomScroll._log.LogInfo("Frame successful.");
+                    swcSuccess = true;
+                }
+            }
         }
-
-        public static void assignImpostorValues()
-        // Called in PrefixBeginImpostor in IntroCutscene if player gets impostor role.
-        // Overwrites SWC values assigned in initSecondaryWinCondition at game start.
-        {
-            playerSWCGoal = Goal.None;
-            playerSWCTarget = byte.MaxValue;
-        }
-
-        public static bool checkGameRunning()
-        {
-            return gameRunning;
-        }
-
-        public static Goal getPlayerSWCGoal()
-        {
-            return playerSWCGoal;
-        }
-
-        public static byte getPlayerSWCTarget()
-        {
-            return playerSWCTarget;
-        }
-
-        public static string getTargetName()
+        private string getTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -78,213 +64,7 @@ namespace Doom_Scroll
             return "";
         }
 
-        public static void gameOver()
-        // Called in ___
-        {
-            //SWCH stuff
-            playerID = byte.MaxValue;
-            playerSWCList = new List<string>();
-
-            //SWC stuff
-            playerSWCGoal = Goal.None;
-            playerSWCTarget= byte.MaxValue;
-            targetVotedOut = false;
-            swcSuccess = false;
-            gameRunning = false;
-        }
-
-        public static void assignGoal()
-        {
-            int goalNum = UnityEngine.Random.Range(1, 4); //min inclusive, max exclusive. Will return 1, 2, or 3
-            if (goalNum == 1)
-            {
-                playerSWCGoal = Goal.Protect;
-            }
-            else if (goalNum == 2)
-            {
-                playerSWCGoal = Goal.Frame;
-            }
-            else
-            {
-                playerSWCGoal = Goal.None;
-            }
-        }
-
-        public static void assignTarget(byte pID)
-        {
-            /*List< GameData.PlayerInfo > otherPlayers = GameData.Instance.AllPlayers;
-            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
-            {
-                
-            }
-            otherPlayers.Remove*/
-            //List<GameData.PlayerInfo> shuffledPlayersMinusLocal = Extensions.Shuffle<GameData.PlayerInfo>(GameData.Instance.AllPlayers);
-            //IList<GameData.PlayerInfo> playersMinusLocal = new List<GameData.PlayerInfo>(new IList<GameData.PlayerInfo>(GameData.Instance.AllPlayers));
-            //playersMinusLocal.Remove(GameData.PlayerInfo.LocalPlayer);
-            int numPlayers = GameData.Instance.AllPlayers.Count;
-            int playerindex = -1;
-            for (int i = 0; i < numPlayers; i++)
-            {
-                if (GameData.Instance.AllPlayers[i].PlayerId == pID)
-                {
-                    playerindex = i;
-                    break;
-                }
-            }
-            int targetNum = UnityEngine.Random.Range(0, numPlayers - 1);
-            while (targetNum == playerindex)
-            {
-                targetNum = UnityEngine.Random.Range(0, numPlayers - 1);
-            }
-
-            for (int i = 0; i < numPlayers; i++)
-            {
-                if (i == targetNum)
-                {
-                    playerSWCTarget = GameData.Instance.AllPlayers[i].PlayerId;
-                    break;
-                }
-            }
-
-        }
-
-        public static void Evaluate()
-        {
-            int numPlayers = GameData.Instance.AllPlayers.Count;
-            if (playerSWCGoal == Goal.None)
-            {
-                DoomScroll._log.LogInfo("SWCGoal is None.");
-                swcSuccess = true;
-            }
-            else if (playerSWCGoal == Goal.Protect)
-            {
-                for (int i = 0; i < numPlayers; i++)
-                {
-                    if (playerSWCTarget == GameData.Instance.AllPlayers[i].PlayerId)
-                    {
-                        if (GameData.Instance.AllPlayers[i].IsDead) //player is dead
-                        {
-                            DoomScroll._log.LogInfo("Protect failed.");
-                            swcSuccess = false;
-                        }
-                        else //all other cases, i.e. player is not dead
-                        {
-                            DoomScroll._log.LogInfo("Protect successful.");
-                            swcSuccess = true;
-                        }
-                    }
-                }
-            }
-            else if (playerSWCGoal == Goal.Frame)
-            {
-                if (targetVotedOut)
-                {
-                    DoomScroll._log.LogInfo("Frame successful.");
-                    swcSuccess = true;
-                }
-                else
-                {
-                    DoomScroll._log.LogInfo("Frame failed.");
-                    swcSuccess = false;
-                }
-            }
-            else
-            {
-                //playerSWCGoal is null (unassigned)
-                DoomScroll._log.LogInfo("No SWCGoal assigned.");
-                swcSuccess = false;
-            }
-        }
-
-        public static string SWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure is revealed
-        {
-            string results = "";
-            if (playerSWCGoal != Goal.None)
-            {
-                if (swcSuccess)
-                {
-                    results = ToString() + ": <size=40%>Success</size>";
-                }
-                else if (!swcSuccess)
-                {
-                    results = ToString() + ": <size=40%>Failure</size>";
-                }
-            }
-            // if swc goal is null (unassigned)
-            return results;
-        }
-
-        public static string ToString()
-        // returns the base SWC assignment text, the text to put into TMP object at beginning
-        // when roles are assigned
-        {
-            if (playerSWCGoal == Goal.Protect)
-            {
-                return "Protect " + getTargetName();
-            }
-            else if (playerSWCGoal == Goal.Frame)
-            {
-                return "Frame " + getTargetName();
-            }
-            return "";
-        }
-
-
-
-
-
-
-
-        ///METHODS ADDED FROM SECONDARYWINCONDITIONHOLDER:
-        ///
-
-
-        
-
-        public static byte getPlayerID()
-        {
-            return playerID;
-        }
-
-        public static void addToPlayerSWCList(string playerSWCResultsText)
-        {
-            playerSWCList.Add(playerSWCResultsText);
-        }
-
-        public static void checkTargetVotedOut(GameData.PlayerInfo votedOutPlayer)
-        {
-            if (votedOutPlayer.PlayerId == playerSWCTarget)
-            {
-                targetVotedOut = true;
-            }
-        }
-
-        public static string overallSWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure for all players is revealed
-        {
-            string overallResults = "";
-            foreach (string swcPlayerResults in playerSWCList)
-            {
-                if (swcPlayerResults != "")
-                {
-                    overallResults += swcPlayerResults; // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
-                }
-            }
-            return overallResults;
-        }
-
-
-
-
-
-
-
-        ///METHODS ADDED FROM PLAYERSWCTRACKER:
-        ///
-
-
-
-
-        private static string getPlayerName()
+        private string GetPlayerName()
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -296,16 +76,85 @@ namespace Doom_Scroll
             return "";
         }
 
-        public static string sendableResultsText()
+        ///METHODS ADDED FROM SECONDARYWINCONDITIONHOLDER: 
+
+        // replace voded out function with die patch - death reason
+        public void TargetDead(byte id, DeathReason reason)
         {
-            if (playerSWCGoal == Goal.None)
+            if(playerSWCTarget == id)
             {
-                return "";
+                switch (reason)
+                {
+                    case DeathReason.Kill:
+                        targetState = TargetState.KILLED;
+                        break;
+                    case DeathReason.Exile:
+                        targetState = TargetState.VOTEDOUT;
+                        break;
+                    case DeathReason.Disconnect:            // This is not evaluated correctly rn! 
+                    default:
+                        targetState = TargetState.DISCONNECTED;
+                        break;
+                }
+                Evaluate();
             }
-            else
+        }
+
+        public override string ToString()
+        // returns the base SWC assignment text, the text to put into TMP object at beginning
+        // when roles are assigned
+        {
+            if (playerSWCGoal == Goal.Protect)
             {
-                return getPlayerName() + " " + SWCResultsText() + "\n"; // will create a string in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+                return "Protect " + getTargetName();
             }
+            else if (playerSWCGoal == Goal.Frame)
+            {
+                return "Frame " + getTargetName();
+            }
+            return "No secondary win condition";
+        }
+
+        public string SWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure is revealed
+        {
+            if (swcSuccess)
+            {
+                return ToString() + ": <size=40%>Success</size>";
+            }
+            else if (!swcSuccess)
+            {
+                return ToString() + ": <size=40%>Failure</size>";
+            }
+            // if swc goal is null (unassigned)
+            return ToString();
+        }
+
+        public string SendableResultsText()
+        {
+            return GetPlayerName() + " " + SWCResultsText() + "\n"; // will create a string in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+        }
+
+        // RPCs
+        public bool RPCSendSWC()
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSWC, (SendOption)1);
+            messageWriter.Write(playerID);
+            messageWriter.Write((byte)playerSWCGoal);
+            messageWriter.Write(playerSWCTarget);
+            // we assume that the target is alive at this point // can it be disconnected tho?
+            messageWriter.EndMessage();
+            return true;
+        }
+
+        public bool RPCDeathNote()
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DEATHNOTE, (SendOption)1);
+            messageWriter.Write(playerID);
+            messageWriter.Write((byte)playerSWCGoal);
+            messageWriter.Write(playerSWCTarget);
+            messageWriter.Write((byte)targetState);
+            messageWriter.EndMessage();
+            return true;
         }
     }
 }

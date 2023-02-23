@@ -14,11 +14,12 @@ namespace Doom_Scroll
     {
         [HarmonyPrefix]
         [HarmonyPatch("SetTaskText")]
-        public static void PrefixSetTaskText(NormalPlayerTask __instance, ref string str)
+        public static void PrefixSetTaskText(ref string str)
         {
-            if (SecondaryWinCondition.checkGameRunning())
+            // why did we check for game running?
+            if (SecondaryWinConditionManager.LocalPLayerSWC != null)
             {
-                str = str + "\nSWC: " + SecondaryWinCondition.ToString();
+                str = str + "\nSWC: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString();
                 //DoomScroll._log.LogInfo("SWC ToString added to task list: " + SecondaryWinCondition.ToString());
             }
         }

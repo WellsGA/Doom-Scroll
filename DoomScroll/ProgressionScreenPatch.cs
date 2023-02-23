@@ -18,13 +18,13 @@ namespace Doom_Scroll
         [HarmonyPatch("Activate")]
         public static void PostfixActivate(ProgressionScreen __instance)
         {
-            DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinCondition.overallSWCResultsText());
-            SecondaryWinCondition.m_overallSWCText = new CustomText("SWCResults", __instance.XpBar.gameObject, "PLACEHOLDER" /*SecondaryWinCondition.overallSWCResultsText()*/);
-            SecondaryWinCondition.m_overallSWCText.SetColor(Color.white);
-            SecondaryWinCondition.m_overallSWCText.SetSize(5f);
-            Vector3 vec = new Vector3(SecondaryWinCondition.m_overallSWCText.TextObject.transform.localPosition.x, SecondaryWinCondition.m_overallSWCText.TextObject.transform.localPosition.y - 1, SecondaryWinCondition.m_overallSWCText.TextObject.transform.localPosition.z);
-            SecondaryWinCondition.m_overallSWCText.SetlocalPosition(vec);
-            SecondaryWinCondition.gameOver();
+            DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.overallSWCResultsText());
+            CustomText overallSWCText = new CustomText("SWCResults", __instance.XpBar.gameObject, SecondaryWinConditionManager.overallSWCResultsText());
+            overallSWCText.SetColor(Color.white);
+            overallSWCText.SetSize(5f);
+            Vector3 vec = new Vector3(overallSWCText.TextObject.transform.localPosition.x, overallSWCText.TextObject.transform.localPosition.y - 1, overallSWCText.TextObject.transform.localPosition.z);
+            overallSWCText.SetlocalPosition(vec);
+            SecondaryWinConditionManager.gameOver();
         }
     }
 }

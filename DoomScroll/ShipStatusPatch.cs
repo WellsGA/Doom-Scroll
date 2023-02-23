@@ -15,10 +15,9 @@ namespace Doom_Scroll
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA INIT");
-
-           
+     
             // list all tasks - for debug purposes
-            DoomScroll._log.LogInfo("TASK INFO");            
+            /*DoomScroll._log.LogInfo("TASK INFO");            
             foreach (NormalPlayerTask task in __instance.CommonTasks)
             {
                 DoomScroll._log.LogInfo("COMMON name: " + task.name + ", Index: " + task.Index +
@@ -33,29 +32,7 @@ namespace Doom_Scroll
             {
                 DoomScroll._log.LogInfo("NORMAL name: " + task.name + ", Index: " + task.Index +
                 ", type: " + task.TaskType);
-            }
-        }
-
-        // called in AmongUsClient CoStartGameHost() - only shows up on the host's screen
-        [HarmonyPostfix]
-        [HarmonyPatch("Begin")]
-        public static void PostfixBegin(ShipStatus __instance)
-        {
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
-            {
-                // Check players and their tasks
-                DoomScroll._log.LogInfo("player: " + player.PlayerName + ", role: " + player.RoleType);
-                if (player.Tasks != null && player.Tasks.Count > 0)
-                {
-                    foreach (GameData.TaskInfo taskinfo in player.Tasks)
-                    {
-                        NormalPlayerTask playerTask = __instance.GetTaskById(taskinfo.TypeId);
-                        DoomScroll._log.LogInfo("TASK: name: " + playerTask.name + ", Index: " + playerTask.Index +
-                            ", type: " + playerTask.TaskType); // debug
-                    }
-                }             
-            }
-           
+            }*/
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Doom_Scroll;
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace Doom_Scroll
 {
@@ -19,7 +18,9 @@ namespace Doom_Scroll
             TaskAssigner.Instance.DisplayAssignedTasks();
         }
 
-        [HarmonyPrefix]
+        // REPLACED WITH PLAYERCONTROL CLASS DIE METHOD PATCH!
+
+       /* [HarmonyPrefix]
         [HarmonyPatch("VotingComplete")]
         public static void PrefixVotingComplete(MeetingHud __instance, ref GameData.PlayerInfo exiled)
         {
@@ -36,6 +37,6 @@ namespace Doom_Scroll
             {
                 SecondaryWinCondition.checkTargetVotedOut(exiled);
             }
-        }
+        }*/
     }
 }

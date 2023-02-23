@@ -2,37 +2,11 @@
 using UnityEngine;
 using System;
 using Doom_Scroll.Common;
-using HarmonyLib;
-using UnityEngine.Rendering;
-using UnityEngine.UI;
-using TMPro;
 
 namespace Doom_Scroll
 {
-    public enum CustomRPC : byte
+    public class SendImageInChat
     {
-        SENDASSIGNEDTASK = 253,
-        SENDSWC = 254,
-        SENDIMAGE = 255
-    }
-    public class RPCManager
-    {
-        public static bool RPCSendSWCSuccessText(string SWCtext)
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSWC, (SendOption)1);
-            DoomScroll._log.LogInfo("text: " + SWCtext.Length + ", buffer: " + messageWriter.Buffer.Length);
-            messageWriter.Write(SWCtext);
-            messageWriter.EndMessage();
-            SendErrors sendErrors = AmongUsClient.Instance.connection.Send(messageWriter);
-            if (sendErrors != null)
-            {
-                Debug.Log("Failed to send message: " + sendErrors.ToString());
-                AmongUsClient.Instance.EnqueueDisconnect(DisconnectReasons.Error, "Failed to send message: " + sendErrors.ToString());
-            }
-            messageWriter.Recycle();
-            return true;
-        }
-
         public static bool RpcSendChatImage(byte[] image)
         {    
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGE, (SendOption)1);

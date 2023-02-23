@@ -53,7 +53,7 @@ namespace Doom_Scroll.Common
             {
                 case FileType.IMAGE:
                     DoomScroll._log.LogInfo("Share Button Clicked!");
-                    RPCManager.RpcSendChatImage(m_content);
+                    SendImageInChat.RpcSendChatImage(m_content);
                     return;
                 case FileType.MAPSOURCE:
                     // to do

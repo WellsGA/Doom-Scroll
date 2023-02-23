@@ -54,19 +54,6 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
-        public override string ToString()
-        {
-            string assignedTasks = "<NAME>\t\t<TASK> \n  " +
-                                   "=====================================\n";
-            foreach(var entry in AssignedTasks)
-            {
-                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(entry.playerId);
-                if (player == null) { continue; } // if player has left, we leave them out
-                assignedTasks += player.PlayerName + "\t\t" + entry.taskName + "\n";
-            }
-            return assignedTasks;
-        }
-
         public void SelectRandomTasks(Il2CppSystem.Collections.Generic.List<PlayerTask> tasks) 
         {
             AssignedTasks = new List<(byte, string)>();
@@ -91,6 +78,19 @@ namespace Doom_Scroll
         public void DisplayAssignedTasks()
         {
             DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString());
+        }
+
+        public override string ToString()
+        {
+            string assignedTasks = "<NAME>\t\t<TASK> \n  " +
+                                   "=====================================\n";
+            foreach (var entry in AssignedTasks)
+            {
+                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(entry.playerId);
+                if (player == null) { continue; } // if player has left, we leave them out
+                assignedTasks += player.PlayerName + "\t\t" + entry.taskName + "\n";
+            }
+            return assignedTasks;
         }
     }
 }
