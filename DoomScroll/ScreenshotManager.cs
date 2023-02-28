@@ -21,7 +21,8 @@ namespace Doom_Scroll
             }
         }
         private HudManager hudManagerInstance;
-        private GameObject UIOverlay;
+        
+        private CustomModal UIOverlay;
         private CustomButton m_cameraButton;
         private CustomButton m_captureScreenButton;
 
@@ -44,7 +45,7 @@ namespace Doom_Scroll
         {
             m_cameraButton = ScreenshotOverlay.CreateCameraButton(hudManagerInstance);
             UIOverlay = ScreenshotOverlay.InitCameraOverlay(hudManagerInstance);
-            m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay);
+            m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay.UIGameObject);
 
             m_cameraButton.ButtonEvent.MyAction += OnClickCamera;
             m_captureScreenButton.ButtonEvent.MyAction += OnClickCaptureScreenshot;
@@ -88,22 +89,22 @@ namespace Doom_Scroll
         private void ShowOverlays(bool value)
         {
             PlayerControl.LocalPlayer.gameObject.SetActive(value);
-            UIOverlay.SetActive(value);
+            UIOverlay.ActivateCustomUI(value);
         }
 
         public void ToggleCamera()
         {
-            if (!UIOverlay) { return; }
+            if (!UIOverlay.UIGameObject) { return; }
             if (IsCameraOpen)
             {
-                UIOverlay.SetActive(false);
+                UIOverlay.ActivateCustomUI(false);
                 m_captureScreenButton.EnableButton(false);
                 IsCameraOpen = false;
                 HudManager.Instance.SetHudActive(true);
             }
             else
             {
-                UIOverlay.SetActive(true);
+                UIOverlay.ActivateCustomUI(true);
                 m_captureScreenButton.EnableButton(true);
                 IsCameraOpen = true;
                 HudManager.Instance.SetHudActive(false);
@@ -112,7 +113,7 @@ namespace Doom_Scroll
 
         public void ActivateCameraButton(bool value)
         {
-            m_cameraButton.ActivateButton(value);
+            m_cameraButton.ActivateCustomUI(value);
         }
         public void OnClickCamera()
         {

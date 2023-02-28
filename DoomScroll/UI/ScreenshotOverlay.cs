@@ -17,7 +17,7 @@ namespace Doom_Scroll.UI
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash.png", slices);
 
-            return new CustomButton(m_UIParent, cameraBtnSprites, position, scaledSize.x, "Camera Toggle Button");
+            return new CustomButton(m_UIParent, "Camera Toggle Button", cameraBtnSprites, position, scaledSize.x);
         }
 
         public static CustomButton CreateCaptureButton(GameObject parent)
@@ -27,22 +27,17 @@ namespace Doom_Scroll.UI
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             Vector3 pos = new Vector3(sr.size.x / 2 - 0.7f, 0, -10);
 
-            return new CustomButton(parent, captureSprite, pos, 0.6f, "Screenshot Button");
+            return new CustomButton(parent, "Screenshot Button", captureSprite, pos, 0.6f);
         }
 
-        public static GameObject InitCameraOverlay(HudManager hud)
+        public static CustomModal InitCameraOverlay(HudManager hud)
         {
-            GameObject cameraOverlay = new GameObject("ScreenshotOverlay");
-            cameraOverlay.layer = LayerMask.NameToLayer("UI");
-            cameraOverlay.transform.SetParent(hud.transform);
-            cameraOverlay.transform.localPosition = new Vector3(0f, 0f, -5);
-
-            SpriteRenderer sr = cameraOverlay.AddComponent<SpriteRenderer>();
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraOverlay.png");
-            sr.sprite = spr;
+            CustomModal cameraOverlay = new CustomModal(hud.gameObject, "ScreenshotOverlay", spr);  
+            cameraOverlay.SetLocalPosition(new Vector3(0f, 0f, -5));
 
             // deactivate by default
-            cameraOverlay.SetActive(false);
+            cameraOverlay.ActivateCustomUI(false);
             return cameraOverlay;
         }
     }

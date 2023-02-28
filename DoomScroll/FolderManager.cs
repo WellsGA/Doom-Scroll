@@ -16,8 +16,9 @@ namespace Doom_Scroll
         private CustomButton m_homeBtn;
         private CustomButton m_backBtn;
 
+        //modal
         private bool m_isFolderOverlayOpen;
-        private GameObject m_folderArea;
+        private CustomModal m_folderArea;
         private CustomText m_pathText;
         
         // folders
@@ -61,11 +62,11 @@ namespace Doom_Scroll
             // Activate FolderToggle Button if Chat is open and hide if it's closed
             if (hudManagerInstance.Chat.IsOpen && !m_folderToggleBtn.IsActive)
             {
-                m_folderToggleBtn.ActivateButton(true);
+                m_folderToggleBtn.ActivateCustomUI(true);
             }
             else if (!hudManagerInstance.Chat.IsOpen && m_folderToggleBtn.IsActive)
             {
-                m_folderToggleBtn.ActivateButton(false);
+                m_folderToggleBtn.ActivateCustomUI(false);
                 // hide overlay and current folders too if it was still open
                 if (m_isFolderOverlayOpen)
                 {
@@ -132,6 +133,7 @@ namespace Doom_Scroll
 
         private void InitializeFolderManager()
         {
+            if (hudManagerInstance == null) return;
             CreateFolderOverlayUI();
             InitFolderStructure();
             m_folderToggleBtn.ButtonEvent.MyAction += OnClickFolderBtn;
@@ -144,20 +146,20 @@ namespace Doom_Scroll
             m_isFolderOverlayOpen = false;
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);
-            m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea);
-            m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
-            m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
-            m_pathText = FolderOverlay.AddPath(m_folderArea);
+            m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea.UIGameObject);
+            m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea.UIGameObject);
+            m_backBtn = FolderOverlay.AddBackButton(m_folderArea.UIGameObject);
+            m_pathText = FolderOverlay.AddPath(m_folderArea.UIGameObject);
         }
         private void InitFolderStructure()
         {
             Sprite folderEmpty = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png");
-            m_root = new Folder("", "Home", m_folderArea, folderEmpty);
-            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea, folderEmpty);
-            m_tasks = new Folder(m_root.Path, "Tasks", m_folderArea, folderEmpty);
+            m_root = new Folder("", "Home", m_folderArea.UIGameObject, folderEmpty);
+            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject, folderEmpty);
+            m_tasks = new Folder(m_root.Path, "Tasks", m_folderArea.UIGameObject, folderEmpty);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
-            m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea, folderEmpty));
+            m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea.UIGameObject, folderEmpty));
 
             m_current = m_root;
             m_previous = m_root;
@@ -185,7 +187,7 @@ namespace Doom_Scroll
         private void ActivateFolderOverlay(bool value)
         {
             m_isFolderOverlayOpen = value;
-            m_folderArea.SetActive(value);
+            m_folderArea.ActivateCustomUI(value);
         }
 
         private void ChangeDirectory(Folder folder)
@@ -220,7 +222,7 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(string name, byte[] img)
         {
-            m_screenshots.AddItem(new File(m_screenshots.Path, m_folderArea, name, img, FileType.IMAGE));
+            m_screenshots.AddItem(new File(m_screenshots.Path, m_folderArea.UIGameObject, name, img, FileType.IMAGE));
         }
 
         public void Reset()

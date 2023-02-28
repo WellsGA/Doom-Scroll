@@ -35,14 +35,14 @@ namespace Doom_Scroll.Common
             m_spriteRenderer.sprite = Picture;
             Dir.transform.localScale = Vector3.one;
 
-            Label = new CustomText(name, Dir, name);
-            Label.SetlocalPosition(new Vector3(0,-5.2f,0));
+            Label = new CustomText(Dir, name, name);
+            Label.SetLocalPosition(new Vector3(0,-5.2f,0));
             
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] shareBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
-            Btn = new CustomButton(Dir, shareBtnImg, "Share");
+            Btn = new CustomButton(Dir, "Share", shareBtnImg);
             Btn.SetLocalPosition(Vector3.zero);
-            Btn.ActivateButton(false);
+            Btn.ActivateCustomUI(false);
             Btn.ButtonEvent.MyAction += DisplayContent;
         }
         

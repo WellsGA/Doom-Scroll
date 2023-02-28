@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using Doom_Scroll.Common;
-using System.Xml.Linq;
 
 namespace Doom_Scroll.UI
 {
-    public class CustomButton
+    public class CustomButton : CustomUI
     {
         public enum ImageType
         {
@@ -14,8 +13,8 @@ namespace Doom_Scroll.UI
 
         // Creates and manages custom buttnos
         public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
-        public GameObject ButtonGameObject { get; private set; }
-        // private BoxCollider2D m_collider;
+        // inherits UIGameObject from base
+        
         private SpriteRenderer m_spriteRenderer;
         private Sprite[] buttonIcons;
         
@@ -23,51 +22,43 @@ namespace Doom_Scroll.UI
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
 
-        public CustomButton(GameObject parent, Sprite[] images, Vector3 position, float scaledX, string name)
+        public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
-            BasicButton(parent, images, name);
+            BasicButton(images);
             // size has to be set after setting the image!
             // ensure the images are sized correctly and scaled proportionately 
-            ScaleSize(scaledX);
+            SetSize(scaledX);
             SetLocalPosition(position);
         }
-        public CustomButton(GameObject parent, Sprite[] images, string name)
+        public CustomButton(GameObject parent, string name, Sprite[] images) : base(parent, name)
         {
-            BasicButton(parent, images, name);
+            BasicButton(images);
         }
-        private void BasicButton(GameObject parent, Sprite[] images, string name)
+        private void BasicButton(Sprite[] images)
         {
-            ButtonGameObject = new GameObject(name);
-            ButtonGameObject.layer = LayerMask.NameToLayer("UI");
-            SetParent(parent);
             buttonIcons = images;
-            m_spriteRenderer = ButtonGameObject.AddComponent<SpriteRenderer>();
+            m_spriteRenderer = UIGameObject.AddComponent<SpriteRenderer>();
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
             SetButtonImg(ImageType.DEFAULT);
-            ButtonGameObject.transform.localScale = Vector3.one;
-            ActivateButton(true);
+            SetScale(Vector3.one);
+            ActivateCustomUI(true);
             EnableButton(true);
         }
 
-        public Vector2 GetSize() 
+        public Vector2 GetSize()
         {
             return m_spriteRenderer.size;
         }
-
-        public void SetLocalPosition(Vector3 pos)
-        {
-            ButtonGameObject.transform.localPosition = pos;
-        }
-
-        public void ScaleSize(float scaledWidth)
+        public override void SetSize(float scaledWidth)
         {
             m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
         }
-        public void SetParent(GameObject parent)
-        {
-            ButtonGameObject.transform.SetParent(parent.transform, true);
-        }
 
+        public override void ActivateCustomUI(bool value)
+        {
+            base.ActivateCustomUI(value);
+            IsActive = value;
+        }
         public bool isHovered()
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -110,6 +101,7 @@ namespace Doom_Scroll.UI
                 SetButtonImg(ImageType.DEFAULT);
             }
         }
+
         public void EnableButton(bool value)
         {
             IsEnabled = value;
@@ -121,12 +113,6 @@ namespace Doom_Scroll.UI
             {
                 m_spriteRenderer.color = new Color(1f, 1f, 1f, 0.4f);
             }
-        }
-
-        public void ActivateButton(bool value)
-        {
-            IsActive = value;
-            ButtonGameObject.SetActive(value);
         }
     }
 }

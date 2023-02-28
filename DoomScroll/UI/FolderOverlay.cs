@@ -17,30 +17,26 @@ namespace Doom_Scroll.UI
             Vector3 position = new(pos.x, pos.y + size.y + 0.1f, pos.z);
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", slices);
-            CustomButton folderBtn = new CustomButton(parent, btnSprites, position, size.x, "FolderToggleButton");
-            folderBtn.ActivateButton(false);
+            CustomButton folderBtn = new CustomButton(parent, "FolderToggleButton", btnSprites, position, size.x);
+            folderBtn.ActivateCustomUI(false);
             return folderBtn;
         }
 
-        public static GameObject CreateFolderOverlay(GameObject parent)
+        public static CustomModal CreateFolderOverlay(GameObject parent)
         {
             SpriteRenderer backgroundSR = parent.transform.Find("Background").GetComponent<SpriteRenderer>();
-            // create the overlay background
-            GameObject folderOverlay = new GameObject("FolderOverlay");
-            folderOverlay.layer = LayerMask.NameToLayer("UI");
-            folderOverlay.transform.SetParent(parent.transform);
-            folderOverlay.transform.localPosition = new Vector3(0f, 0f, -10f);
-            SpriteRenderer sr = folderOverlay.AddComponent<SpriteRenderer>();
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
-            sr.sprite = spr;
+
+            // create the overlay background
+            CustomModal folderOverlay = new CustomModal(parent, "FolderOverlay", spr);  
+            folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));       
             if (backgroundSR != null)
             {
-                sr.drawMode = SpriteDrawMode.Sliced;
-                sr.size = backgroundSR.size; // the size to render works only when the drawMode is set to SpriteDrawMode.Sliced. !!!!
+                folderOverlay.SetSize(backgroundSR.size);
             }
             else
             {
-                folderOverlay.transform.localScale = parent.transform.localScale * 0.4f;
+                folderOverlay.SetScale(parent.transform.localScale * 0.4f);
             }
             return folderOverlay;
         }
@@ -50,7 +46,7 @@ namespace Doom_Scroll.UI
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             Vector3 position = new Vector3(-sr.size.x / 2 - buttonSize.x / 2, sr.size.y / 2 - buttonSize.y / 2, -5f);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            return new CustomButton(parent, closeBtnImg, position, buttonSize.x, "Close FolderOverlay");
+            return new CustomButton(parent, "Close FolderOverlay", closeBtnImg, position, buttonSize.x);
         }
         public static CustomButton AddHomeButton(GameObject parent)
         {
@@ -58,7 +54,7 @@ namespace Doom_Scroll.UI
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] homeBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.homeButton.png", slices);
             Vector3 homePosition = new Vector3(-sr.size.x / 2 + buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y, -5f);
-            return new CustomButton(parent, homeBtnImg, homePosition, buttonSize.x, "Back to Home");
+            return new CustomButton(parent, "Back to Home", homeBtnImg, homePosition, buttonSize.x);
 
         }
         public static CustomButton AddBackButton(GameObject parent)
@@ -67,13 +63,13 @@ namespace Doom_Scroll.UI
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
             Vector3 backPosition = new Vector3(-sr.size.x / 2 + 2 * buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y, -5f);
-            return new CustomButton(parent, backBtnImg, backPosition, buttonSize.x, "Back to Previous");
+            return new CustomButton(parent, "Back to Previous", backBtnImg, backPosition, buttonSize.x);
 
         }
         public static CustomText AddPath(GameObject parent)
         {
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            CustomText pathText = new CustomText("PathName", parent, "Home");
+            CustomText pathText = new CustomText(parent, "PathName", "Home");
             // RectTransform rt = pathText.AddComponent<RectTransform>();
             // rt.sizeDelta = new Vector2(-sr.size.x / 2 - 3 * buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y);
             return pathText;

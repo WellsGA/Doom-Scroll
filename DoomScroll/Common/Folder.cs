@@ -23,9 +23,9 @@ namespace Doom_Scroll.Common
             Content = new List<IDirectory>();
             
             Sprite[] images = { folderImg };
-            Btn = new CustomButton(Dir, images, name);
-            Label = new CustomText(name, Btn.ButtonGameObject, name);
-            Btn.ActivateButton(false);
+            Btn = new CustomButton(Dir, name, images);
+            Label = new CustomText(Btn.UIGameObject, name, name);
+            Btn.ActivateCustomUI(false);
             Btn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
         }
 
@@ -62,12 +62,12 @@ namespace Doom_Scroll.Common
                             file.ScaleSize(width / 3 - 0.1f);
                             btn.SetLocalPosition(new Vector3(0, -file.GetSize().y/2 -0.3f, -20));
                         }
-                        btn.ScaleSize(width / 3 - 0.3f);
+                        btn.SetSize(width / 3 - 0.3f);
                         CustomText txt = Content[j + i * 3].Label;
-                        txt.SetlocalPosition(new Vector3(0, -btn.GetSize().y / 2 - 0.1f, 0));
+                        txt.SetLocalPosition(new Vector3(0, -btn.GetSize().y / 2 - 0.1f, 0));
                         txt.SetSize(1.5f);
                         dir.SetActive(true);
-                        btn.ActivateButton(true);
+                        btn.ActivateCustomUI(true);
                     }
                 }
             }
@@ -77,7 +77,7 @@ namespace Doom_Scroll.Common
             foreach (IDirectory dir in Content)
             {
                 dir.Dir.SetActive(false);
-                dir.Btn.ActivateButton(false);
+                dir.Btn.ActivateCustomUI(false);
             }
         }
         public string PrintDirectory()

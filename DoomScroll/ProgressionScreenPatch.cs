@@ -19,11 +19,11 @@ namespace Doom_Scroll
         public static void PostfixActivate(ProgressionScreen __instance)
         {
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.overallSWCResultsText());
-            CustomText overallSWCText = new CustomText("SWCResults", __instance.XpBar.gameObject, SecondaryWinConditionManager.overallSWCResultsText());
+            CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.overallSWCResultsText());
             overallSWCText.SetColor(Color.white);
             overallSWCText.SetSize(5f);
-            Vector3 vec = new Vector3(overallSWCText.TextObject.transform.localPosition.x, overallSWCText.TextObject.transform.localPosition.y - 1, overallSWCText.TextObject.transform.localPosition.z);
-            overallSWCText.SetlocalPosition(vec);
+            Vector3 vec = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 1, overallSWCText.UIGameObject.transform.localPosition.z);
+            overallSWCText.SetLocalPosition(vec);
             SecondaryWinConditionManager.gameOver();
         }
     }
