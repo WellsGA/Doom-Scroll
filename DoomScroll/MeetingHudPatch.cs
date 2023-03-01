@@ -15,28 +15,8 @@ namespace Doom_Scroll
         [HarmonyPatch("Start")]
         public static void PostfixStart()
         {
-            TaskAssigner.Instance.DisplayAssignedTasks();
+            TaskAssigner.Instance.DisplayAssignedTasks();  // debug purposes
         }
 
-        // REPLACED WITH PLAYERCONTROL CLASS DIE METHOD PATCH!
-
-       /* [HarmonyPrefix]
-        [HarmonyPatch("VotingComplete")]
-        public static void PrefixVotingComplete(MeetingHud __instance, ref GameData.PlayerInfo exiled)
-        {
-            if (exiled != null)
-            {
-                SecondaryWinCondition.checkTargetVotedOut(exiled);
-            }
-        }
-        [HarmonyPrefix]
-        [HarmonyPatch("RpcVotingComplete")]
-        public static void PrefixRpcVotingComplete(MeetingHud __instance, ref GameData.PlayerInfo exiled)
-        {
-            if (exiled != null)
-            {
-                SecondaryWinCondition.checkTargetVotedOut(exiled);
-            }
-        }*/
     }
 }

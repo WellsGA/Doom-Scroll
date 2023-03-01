@@ -63,5 +63,8 @@
     <EmbeddedResource Include="Assets\folderEmpty.png" />
     <EmbeddedResource Include="Assets\shareButton.png" />
     <EmbeddedResource Include="Assets\dontShareButton.png" />
+    <EmbeddedResource Include="Assets\panel.png" />
+    <EmbeddedResource Include="Assets\emptyBtn.png" />
+
   </ItemGroup>
 </Project>

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
-using Doom_Scroll.Common;
-using Microsoft.Extensions.Logging;
-using Il2CppSystem;
-using Il2CppSystem.Text;
 using Doom_Scroll.UI;
 
 namespace Doom_Scroll

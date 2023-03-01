@@ -1,6 +1,9 @@
 ﻿using Hazel;
 using System.Collections.Generic;
-
+using UnityEngine;
+using Doom_Scroll.UI;
+using Doom_Scroll.Common;
+using System.Reflection;
 
 namespace Doom_Scroll
 {
@@ -18,8 +21,11 @@ namespace Doom_Scroll
         }
         // list for all the assigned task - this will be displayed during meetings
         private static List<(byte playerId, string taskName)> AssignedTasks = new List<(byte, string)>();
-        // byte array to keep the assignable task IDs
+        // byte array to hold the assignable task IDs
         public uint[] AssignableTasksIDs { get; private set; }
+        private CustomModal assignerPanel;
+        private List<CustomButton> playerButtons = new List<CustomButton>();
+
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
         {
@@ -60,7 +66,7 @@ namespace Doom_Scroll
             if (tasks.Count == 0 || tasks == null) return;
             for (int i = 0; i < AssignableTasksIDs.Length; i++)
             {
-                int index = UnityEngine.Random.Range(0, tasks.Count - 1);
+                int index = Random.Range(0, tasks.Count - 1);
                 AssignableTasksIDs[i] = tasks[index].Id; /// AAAAAAA
                 DoomScroll._log.LogInfo("Task You Can Assign: " + tasks[index].name + "(" + tasks[index].Id.ToString() + ")" );
             }
@@ -70,7 +76,7 @@ namespace Doom_Scroll
         {
             // random select a player for now 
             if (PlayerControl.AllPlayerControls.Count == 0 || PlayerControl.AllPlayerControls == null) { return; }
-            int index = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count-1);
+            int index = Random.Range(0, PlayerControl.AllPlayerControls.Count-1);
             PlayerControl player = PlayerControl.AllPlayerControls[index];
             RPCAddToAssignedTasks(player.PlayerId, id);       
         }
@@ -91,6 +97,32 @@ namespace Doom_Scroll
                 assignedTasks += player.PlayerName + "\t\t" + entry.taskName + "\n";
             }
             return assignedTasks;
+        }
+
+        public void CreateTaskAssignerPanel(GameObject parentPanel, GameObject closeBtn)
+        {
+            
+            Sprite[] buttonBg = {ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
+          
+            // closeBtn.transform.position.x + 0.7f, closeBtn.transform.position.y, closeBtn.transform.position.z
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y, closeBtn.transform.position.z-50);
+
+            // add the players as buttons
+            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+            {
+                if (!playerInfo.IsDead)
+                {
+                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), buttonBg, topLeftPos, 0.5f);
+                    playerButtons.Add(btn);
+                    topLeftPos = new Vector2(topLeftPos.x + 0.5f, topLeftPos.y);  // needs fixing
+                   /* PoolablePlayer pp = new PoolablePlayer();
+                    pp.SetFlipX(false);
+                    pp.transform.localScale = Vector3.one;
+                    pp.transform.localPosition = parentPanel.transform.position;
+                    pp.UpdateFromEitherPlayerDataOrCache(playerInfo, PlayerOutfitType.Default, PlayerMaterial.MaskType.None, false);*/
+
+                }
+            }
         }
     }
 }

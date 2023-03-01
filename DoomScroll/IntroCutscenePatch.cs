@@ -35,22 +35,6 @@ namespace Doom_Scroll
                 SecondaryWinConditionManager.InitSecondaryWinCondition(false);
             }
 
-            /* DoomScroll._log.LogInfo("SecondaryWinCondition initialized: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
-            GameData.PlayerInfo localPlayer;
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
-            {
-                if (player.PlayerId == PlayerControl.LocalPlayer._cachedData.PlayerId)
-                {
-                    localPlayer = player;
-                    DoomScroll._log.LogInfo("local player assigned: " + localPlayer + ", playerID: " + player.PlayerId);
-                    if (localPlayer.Role.IsImpostor)
-                    {
-                        SecondaryWinConditionManager.LocalPLayerSWC.assignImpostorValues();
-                        DoomScroll._log.LogInfo("You're the impostor! SecondaryWinCondition re-initialized: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
-                    }
-                    break;
-                }
-            }*/
         }
 
         // displays SWC if local player is impostor
