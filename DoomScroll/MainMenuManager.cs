@@ -17,7 +17,7 @@ namespace Doom_Scroll
     {
         public static CustomButton test_button;
         public static GenericPopup PopupPrefab;
-        public static DialogueBox Dialogue;
+        public static DialogueBox Dialogue = new DialogueBox();
 
         public static void ShowPopUp(string text)
         {
@@ -65,7 +65,7 @@ namespace Doom_Scroll
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
 
 
-            CustomButton test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
+            test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
             test_button.ActivateCustomUI(true);
 

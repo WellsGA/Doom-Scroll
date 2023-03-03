@@ -7,10 +7,20 @@ using Doom_Scroll.Common;
 
 namespace Doom_Scroll
 {
-    //Disable chat scrolling limit:
+    //NEW Disable chat scrolling limit
+
+    //DEPRECATED Disable chat scrolling limit:
     [HarmonyPatch(typeof(ObjectPoolBehavior), nameof(ObjectPoolBehavior.Reclaim))]
     public static class ObjectPoolBehaviorReclaimPatch
     {
+        [HarmonyPrefix]
+        [HarmonyPatch("ReclaimOldest")]
+        public static bool PrefixReclaimOldest(MainMenuManager __instance)
+        {
+            return false;
+        }
+
+        /*
         public static void Postfix(ObjectPoolBehavior __instance, PoolableBehavior obj)
         {
             Il2CppSystem.Collections.Generic.List<PoolableBehavior> obj2 = __instance.activeChildren;
@@ -31,5 +41,7 @@ namespace Doom_Scroll
                 }
             }
         }
+        */
+
     }
 }
