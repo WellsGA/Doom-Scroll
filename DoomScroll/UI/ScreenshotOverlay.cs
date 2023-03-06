@@ -10,8 +10,8 @@ namespace Doom_Scroll.UI
         public static CustomButton CreateCameraButton(HudManager hud)
         {
             GameObject m_UIParent = hud.gameObject;
-            Vector3 mapBtnPos = hud.MapButton.transform.position;
-            SpriteRenderer mapButtonSr = hud.MapButton.GetComponent<SpriteRenderer>();
+            Vector3 mapBtnPos = hud.MapButton.gameObject.transform.position;
+            SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
             Vector3 position = new Vector3(mapBtnPos.x, mapBtnPos.y - mapButtonSr.size.y * hud.MapButton.transform.localScale.y, mapBtnPos.z);
             Vector2 scaledSize = mapButtonSr.size * hud.MapButton.transform.localScale;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };

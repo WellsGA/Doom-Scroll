@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using Hazel;
-using Il2CppSystem.Collections.Generic;
+using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -22,14 +22,14 @@ namespace Doom_Scroll
         static int i = 0;
        
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
-        public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__113 __instance)
+        [HarmonyPatch("SetTasks")]
+        public static void PostfixSetTasks(PlayerControl __instance)
         {
-            List<PlayerTask> tasks = __instance.__4__this.myTasks;
+            List<PlayerTask> tasks = __instance.myTasks;
             // check for impostor
             if (tasks != null && tasks.Count > 0)
             {
-                if (__instance.__4__this.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
+                if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {
                     TaskAssigner.Instance.SelectRandomTasks(tasks);
                     DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
@@ -89,7 +89,9 @@ namespace Doom_Scroll
                         // DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
-                            SendImageInChat.AddChat(__instance, imageBytes);
+                            ChatControllerPatch.screenshot = imageBytes;
+                            string chatMessage = __instance.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
+                            HudManager.Instance.Chat.AddChat(__instance, chatMessage);
                             return;
                         }
                         break;

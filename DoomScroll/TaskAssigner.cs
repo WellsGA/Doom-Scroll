@@ -23,7 +23,6 @@ namespace Doom_Scroll
         private static List<(byte playerId, string taskName)> AssignedTasks = new List<(byte, string)>();
         // byte array to hold the assignable task IDs
         public uint[] AssignableTasksIDs { get; private set; }
-        private CustomModal assignerPanel;
         private List<CustomButton> playerButtons = new List<CustomButton>();
 
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
@@ -60,7 +59,7 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
-        public void SelectRandomTasks(Il2CppSystem.Collections.Generic.List<PlayerTask> tasks) 
+        public void SelectRandomTasks(List<PlayerTask> tasks) 
         {
             AssignedTasks = new List<(byte, string)>();
             if (tasks.Count == 0 || tasks == null) return;
@@ -99,22 +98,20 @@ namespace Doom_Scroll
             return assignedTasks;
         }
 
-        public void CreateTaskAssignerPanel(GameObject parentPanel, GameObject closeBtn)
+        public void CreateTaskAssignerPanel(GameObject closeBtn)
         {
-            
+            GameObject parentPanel = closeBtn.transform.parent.gameObject;
             Sprite[] buttonBg = {ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
-          
-            // closeBtn.transform.position.x + 0.7f, closeBtn.transform.position.y, closeBtn.transform.position.z
-            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y, closeBtn.transform.position.z-50);
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y+0.2f, closeBtn.transform.position.z-50);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead)
                 {
-                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), buttonBg, topLeftPos, 0.5f);
+                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), buttonBg, topLeftPos, 0.3f);
                     playerButtons.Add(btn);
-                    topLeftPos = new Vector2(topLeftPos.x + 0.5f, topLeftPos.y);  // needs fixing
+                    topLeftPos = new Vector2(topLeftPos.x + 0.3f, topLeftPos.y);  // needs fixing
                    /* PoolablePlayer pp = new PoolablePlayer();
                     pp.SetFlipX(false);
                     pp.transform.localScale = Vector3.one;

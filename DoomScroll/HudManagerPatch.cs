@@ -15,14 +15,14 @@ namespace Doom_Scroll
 
         [HarmonyPostfix]
         [HarmonyPatch("Update")]
-        public static void PostfixUpdate(HudManager __instance)
+        public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
             // __instance.TaskText.text += "\nSWC: " + SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch("SetHudActive")]
+        [HarmonyPatch(nameof(HudManager.SetHudActive),new[] { typeof(bool) })]
         public static void PostfixSetHudActive(bool isActive)
         {
             if (!ScreenshotManager.Instance.IsCameraOpen)

@@ -10,18 +10,17 @@ namespace Doom_Scroll
         [HarmonyPatch("Begin")]
         public static void PostfixBegin(Minigame __instance) 
         {
-            // GameObject parent = __instance.gameObject.transform.Find("Background").gameObject;
-            GameObject closeBtn = __instance.gameObject.transform.Find("CloseButton").gameObject;
-            if(closeBtn)
+            if(__instance != null)
             {
-                TaskAssigner.Instance.CreateTaskAssignerPanel(__instance.gameObject, closeBtn);
-                DoomScroll._log.LogInfo("Background found, adding panel ");
-
+                GameObject closeBtn = __instance.GetComponentInChildren<CloseButtonConsoleBehaviour>().gameObject;
+                if (closeBtn != null)
+                {
+                    TaskAssigner.Instance.CreateTaskAssignerPanel(closeBtn);
+                    DoomScroll._log.LogInfo("Close button found, adding panel ");
+                    return;
+                }
             }
-            else
-            {
-                DoomScroll._log.LogInfo("No background found in Minigame: " + __instance.TaskType);
-            }
+            DoomScroll._log.LogInfo("Minigame Begin Called");
         }
     }
 }

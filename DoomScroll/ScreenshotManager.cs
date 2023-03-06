@@ -27,7 +27,7 @@ namespace Doom_Scroll
         private CustomButton m_captureScreenButton;
 
         private Camera mainCamrea;
-        private int m_screenshots;
+        public int Screenshots { get; private set; }
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
 
@@ -35,7 +35,7 @@ namespace Doom_Scroll
         {
             mainCamrea = Camera.main;
             hudManagerInstance = HudManager.Instance;
-            m_screenshots = 0;
+            Screenshots = 0;
             m_maxPictures = 3;
             IsCameraOpen = false;
             InitializeManager();
@@ -76,13 +76,13 @@ namespace Doom_Scroll
                 ShowOverlays(true);
 
                 // save the image locally -- for testing purposes
-                // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + m_screenshots + ".png", byteArray);
+                // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + Screenshots + ".png", byteArray);
 
                 // save the image in the inventory folder
-                FolderManager.Instance.AddImageToScreenshots("evidence_#" + m_screenshots + ".jpg", byteArray);
+                FolderManager.Instance.AddImageToScreenshots("evidence_#" + Screenshots + ".jpg", byteArray);
                 UnityEngine.Object.Destroy(screeenShot);
-                m_screenshots++;
-                DoomScroll._log.LogInfo("number of screenshots: " + m_screenshots);
+                Screenshots++;
+                DoomScroll._log.LogInfo("number of screenshots: " + Screenshots);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Doom_Scroll
             CaptureScreenshot();
             ToggleCamera();
 
-            if (m_screenshots == m_maxPictures)
+            if (Screenshots == m_maxPictures)
             {
                 m_cameraButton.EnableButton(false);
             }
@@ -160,7 +160,7 @@ namespace Doom_Scroll
 
         public void ReSet()
         {
-            m_screenshots = 0;
+            Screenshots = 0;
             IsCameraOpen = false;
             if (hudManagerInstance == null)
             {

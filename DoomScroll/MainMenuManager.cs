@@ -41,9 +41,9 @@ namespace Doom_Scroll
         
         [HarmonyPrefix]
         [HarmonyPatch("LateUpdate")]
-        public static void PrefixLateUpdate(MainMenuManager __instance)
+        public static void PrefixLateUpdate()
         {
-            CheckButtonClicks();
+           // CheckButtonClicks();
         }
 
 
@@ -54,7 +54,7 @@ namespace Doom_Scroll
 
             mainMenuManagerInstance = __instance;
             //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
-            GameObject m_UIParent = __instance.DefaultButtonSelected.transform.parent.gameObject.transform.Find("BottomButtons").gameObject;
+            GameObject m_UIParent = __instance.gameObject.transform.Find("BottomButtons").gameObject;
             GameObject inventoryButton = m_UIParent.transform.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();

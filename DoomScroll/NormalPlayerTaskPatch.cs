@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Il2CppSystem.Text;
+using UnityEngine;
 
 namespace Doom_Scroll
 {
@@ -13,5 +14,6 @@ namespace Doom_Scroll
               sb.Append("(SWC goes here)");
               //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
           }*/
+
     }
 }

@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using Doom_Scroll.Common;
+using TMPro;
 
 namespace Doom_Scroll
 {
@@ -29,71 +30,18 @@ namespace Doom_Scroll
             
             if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
             {
-                AddChat(PlayerControl.LocalPlayer, image);
+                ChatControllerPatch.screenshot = image;
+                string chatMessage = PlayerControl.LocalPlayer.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatMessage);
             }
             messageWriter.WriteBytesAndSize(image);
             messageWriter.EndMessage();
             return true;
-        }
+        }       
 
-        // based on the AddChat method of ChatController class
-        public static void AddChat(PlayerControl sourcePlayer, byte[] imageBytes)
-        {
-            ChatController chatContorller = DestroyableSingleton<HudManager>.Instance.Chat;
-            if (!sourcePlayer || !PlayerControl.LocalPlayer)
-            {
-                return;
-            }
-            GameData.PlayerInfo localPlayerData = PlayerControl.LocalPlayer.Data;
-            GameData.PlayerInfo sourecPlayerData = sourcePlayer.Data;
-            if (sourecPlayerData == null || localPlayerData == null 
-                || (sourecPlayerData.IsDead && !localPlayerData.IsDead))
-            {
-                return;
-            }
-            if (chatContorller.chatBubPool.NotInUse == 0)
-            {
-                chatContorller.chatBubPool.ReclaimOldest();
-            }
-            ChatBubble chatBubble = chatContorller.chatBubPool.Get<ChatBubble>();
-            try
-            {
-                chatBubble.transform.SetParent(chatContorller.scroller.Inner);
-                chatBubble.transform.localScale = Vector3.one;
-                bool flag = sourcePlayer == PlayerControl.LocalPlayer;
-                if (flag)
-                {
-                    chatBubble.SetRight();
-                }
-                else
-                {
-                    chatBubble.SetLeft();
-                }
-                bool didVote = MeetingHud.Instance && MeetingHud.Instance.DidVote(sourcePlayer.PlayerId);
-                chatBubble.SetCosmetics(sourecPlayerData);
-                chatContorller.SetChatBubbleName(chatBubble, sourecPlayerData, sourecPlayerData.IsDead, didVote, PlayerNameColor.Get(sourecPlayerData), null);
-                // removed chat filter - we are not sending a free text
-                SetImage(flag, chatBubble, imageBytes);
-                chatBubble.AlignChildren();
-                chatContorller.AlignAllBubbles();
-                Vector3 chatpos = chatBubble.TextArea.transform.position;
-                if (!chatContorller.IsOpen && chatContorller.notificationRoutine == null)
-                {
-                    chatContorller.notificationRoutine = chatContorller.StartCoroutine(chatContorller.BounceDot());
-                }
-                if (!flag)
-                {
-                    SoundManager.Instance.PlaySound(chatContorller.MessageSound, false, 1f, null).pitch = 0.5f + (float)sourcePlayer.PlayerId / 15f;
-                }
-            }
-            catch (Exception message)
-            {
-                DoomScroll._log.LogError(message);
-                chatContorller.chatBubPool.Reclaim(chatBubble);
-            }
-        }
-
-        internal static void SetImage(bool isLocalPlayer, ChatBubble chatBubble, byte[] imageBytes)
+        // in the 2023.2.28 release ChatBubble is an internal class,
+        // so we have to access the Gamobject that has the ChatBubble scrip on it and set the image to be displayed
+        internal static void SetImage(bool isLocalPlayer, GameObject chatBubble, byte[] imageBytes)
         {
             Sprite screenshot = ImageLoader.ReadImageFromByteArray(imageBytes);
 
@@ -107,14 +55,20 @@ namespace Doom_Scroll
             sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             image.transform.localScale = Vector3.one;
 
-            chatBubble.TextArea.text = "et voila ...";
-            chatBubble.TextArea.ForceMeshUpdate(true, true);
-            Vector3 chatpos = chatBubble.TextArea.transform.localPosition;
+            // get the child elements of ChatBubble we need to set the image correctly
+            TextMeshPro chatText = chatBubble.transform.FindChild("ChatText").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro nameText = chatBubble.transform.FindChild("NameText").gameObject.GetComponent<TextMeshPro>();
+            SpriteRenderer background = chatBubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
+            SpriteRenderer maskArea = chatBubble.transform.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
+            
+            chatText.text = "Fuck internal classes!";
+            chatText.ForceMeshUpdate(true, true);
+            Vector3 chatpos = chatText.transform.localPosition;
             float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
             image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
 
-            chatBubble.Background.size = new Vector2(5.52f, 0.3f + chatBubble.NameText.GetNotDumbRenderedHeight() + chatBubble.TextArea.GetNotDumbRenderedHeight() + sr.size.y);
-            chatBubble.MaskArea.size = chatBubble.Background.size - new Vector2(0f, 0.03f);
+            background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + chatText.GetNotDumbRenderedHeight() + sr.size.y);
+            maskArea.size = background.size - new Vector2(0f, 0.03f);
 
         }
     }
