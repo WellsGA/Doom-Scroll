@@ -18,6 +18,7 @@ namespace Doom_Scroll
         public static CustomButton test_button;
         public static GenericPopup PopupPrefab;
         public static DialogueBox Dialogue = new DialogueBox();
+        public static CreditsScreenPopUp our_credits = new CreditsScreenPopUp();
 
         public static void ShowPopUp(string text)
         {
@@ -94,6 +95,7 @@ namespace Doom_Scroll
 
         public static void OnClickDoomScroll()
         {
+            our_credits.enabled = true;
             test_button.EnableButton(false);
 
             //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
