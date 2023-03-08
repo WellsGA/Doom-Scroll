@@ -11,7 +11,7 @@ namespace Doom_Scroll
 
         [HarmonyPostfix]
         [HarmonyPatch("AddChat")]
-        public static void PostfixAddChat(ChatController __instance, ref PlayerControl sourcePlayer, ref string chatText)
+        public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText)
         {
             bool flag = sourcePlayer == PlayerControl.LocalPlayer;
             TextMeshPro[] texts = __instance.scroller.gameObject.GetComponentsInChildren<TextMeshPro>();
@@ -21,12 +21,17 @@ namespace Doom_Scroll
                 {
                     if(text.text == chatText)
                     {
-                        SendImageInChat.SetImage(flag, text.transform.parent.gameObject, screenshot);
+                        GameObject chatbubble = text.transform.parent.gameObject;
+                        DoomScroll._log.LogInfo("image bytes: " + screenshot.Length);
+                        if(chatbubble != null && screenshot != null)
+                        {
+                            SendImageInChat.SetImage(flag, chatbubble, screenshot);
+                        }
                     }
                 }
             }
             
-            // __instance.AlignAllBubbles(); // private method, use reflection?
+           // __instance.AlignAllBubbles(); // private method, use reflection?
         }
     }
 }

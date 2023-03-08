@@ -16,7 +16,7 @@ namespace Doom_Scroll
     class MainMenuManagerPatch
     {
         public static CustomButton test_button;
-        public static GenericPopup PopupPrefab;
+        //public static GenericPopup PopupPrefab;
         public static DialogueBox Dialogue = new DialogueBox();
         public static CreditsScreenPopUp our_credits = new CreditsScreenPopUp();
 
@@ -48,7 +48,7 @@ namespace Doom_Scroll
         }
 
 
-            [HarmonyPostfix]
+       /* [HarmonyPostfix]
         [HarmonyPatch("Start")]
         public static void PostfixStart(MainMenuManager __instance)
         {
@@ -72,7 +72,7 @@ namespace Doom_Scroll
 
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
             
-        }
+        }*/
         public static void CheckButtonClicks()
         {
             if (mainMenuManagerInstance == null) return;

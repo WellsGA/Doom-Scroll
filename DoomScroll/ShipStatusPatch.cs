@@ -1,8 +1,4 @@
-﻿using AmongUs.GameOptions;
-using HarmonyLib;
-using Il2CppSystem.Collections.Generic;
-using System;
-using UnityEngine;
+﻿using HarmonyLib;
 
 namespace Doom_Scroll
 {

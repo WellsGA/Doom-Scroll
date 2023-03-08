@@ -54,22 +54,30 @@ namespace Doom_Scroll
             sr.size = new Vector2(2f, sr.sprite.rect.height / sr.sprite.rect.width * 2f);
             sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             image.transform.localScale = Vector3.one;
-
+            DoomScroll._log.LogInfo("Image size: " + sr.size);
             // get the child elements of ChatBubble we need to set the image correctly
-            TextMeshPro chatText = chatBubble.transform.FindChild("ChatText").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro nameText = chatBubble.transform.FindChild("NameText").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro chatText = chatBubble.transform.Find("ChatText").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro nameText = chatBubble.transform.Find("NameText").gameObject.GetComponent<TextMeshPro>();
             SpriteRenderer background = chatBubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
             SpriteRenderer maskArea = chatBubble.transform.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
-            
-            chatText.text = "Fuck internal classes!";
-            chatText.ForceMeshUpdate(true, true);
-            Vector3 chatpos = chatText.transform.localPosition;
-            float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
-            image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
+            if (chatText != null)
+            {
+                DoomScroll._log.LogInfo("chat text name: " + chatText.name);
+                chatText.text = "Fuck internal classes!";
+                chatText.ForceMeshUpdate(true, true);
+                Vector3 chatpos = chatText.transform.localPosition;
+                float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
+                image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
+            }
+            if(nameText != null && background != null && maskArea != null)
+            {
+                DoomScroll._log.LogInfo("background name: " + background.name);
+                DoomScroll._log.LogInfo("maskArea name: " + maskArea.name);
 
-            background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + chatText.GetNotDumbRenderedHeight() + sr.size.y);
-            maskArea.size = background.size - new Vector2(0f, 0.03f);
-
+                background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + chatText.GetNotDumbRenderedHeight() + sr.size.y);
+                maskArea.size = background.size - new Vector2(0f, 0.03f);
+            }
+           
         }
     }
 }

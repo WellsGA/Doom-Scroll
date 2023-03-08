@@ -59,7 +59,7 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
-        public void SelectRandomTasks(List<PlayerTask> tasks) 
+        public void SelectRandomTasks(Il2CppSystem.Collections.Generic.List<PlayerTask> tasks) 
         {
             AssignedTasks = new List<(byte, string)>();
             if (tasks.Count == 0 || tasks == null) return;

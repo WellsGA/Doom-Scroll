@@ -1,10 +1,9 @@
 ﻿using HarmonyLib;
 using Hazel;
-using System.Collections.Generic;
+using Il2CppSystem.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
-using static GameData;
+
 
 namespace Doom_Scroll
 {
@@ -20,18 +19,18 @@ namespace Doom_Scroll
     public static class PlayerControlPatch
     {
         static int i = 0;
-       
+
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
-        public static void PostfixSetTasks(PlayerControl __instance)
+        public static void PostfixCoSetTasks(PlayerControl __instance)
         {
-            List<PlayerTask> tasks = __instance.myTasks;
+
             // check for impostor
-            if (tasks != null && tasks.Count > 0)
+            if (__instance.myTasks != null && __instance.myTasks.Count > 0)
             {
                 if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {
-                    TaskAssigner.Instance.SelectRandomTasks(tasks);
+                    TaskAssigner.Instance.SelectRandomTasks(__instance.myTasks);
                     DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
                 }
             }
@@ -41,7 +40,7 @@ namespace Doom_Scroll
         [HarmonyPatch("CompleteTask")]
         public static void PostfixCompleteTasks(PlayerControl __instance, uint idx)
         {
-           TaskInfo taskInfo = __instance.Data.FindTaskById(idx);
+           GameData.TaskInfo taskInfo = __instance.Data.FindTaskById(idx);
             if (taskInfo == null)
             {
                 DoomScroll._log.LogInfo("Task not found: " + idx.ToString());
