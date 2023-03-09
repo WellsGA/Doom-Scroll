@@ -44,7 +44,7 @@ namespace Doom_Scroll
         [HarmonyPatch("LateUpdate")]
         public static void PrefixLateUpdate()
         {
-           // CheckButtonClicks();
+           CheckButtonClicks();
         }
 
 
