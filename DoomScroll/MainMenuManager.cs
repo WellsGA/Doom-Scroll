@@ -44,18 +44,20 @@ namespace Doom_Scroll
         [HarmonyPatch("LateUpdate")]
         public static void PrefixLateUpdate()
         {
-           // CheckButtonClicks();
+           //CheckButtonClicks();
         }
 
 
-       /* [HarmonyPostfix]
+        [HarmonyPostfix]
         [HarmonyPatch("Start")]
         public static void PostfixStart(MainMenuManager __instance)
         {
 
             mainMenuManagerInstance = __instance;
             //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
-            GameObject m_UIParent = __instance.gameObject.transform.Find("BottomButtons").gameObject;
+            DoomScroll._log.LogInfo(GameObject.Find("BottomButtons"));
+            GameObject m_UIParent = GameObject.Find("BottomButtons");
+            DoomScroll._log.LogInfo(m_UIParent.transform.Find("InventoryButton").gameObject);
             GameObject inventoryButton = m_UIParent.transform.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
@@ -72,7 +74,8 @@ namespace Doom_Scroll
 
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
             
-        }*/
+        }
+
         public static void CheckButtonClicks()
         {
             if (mainMenuManagerInstance == null) return;
@@ -96,7 +99,7 @@ namespace Doom_Scroll
         public static void OnClickDoomScroll()
         {
             our_credits.enabled = true;
-            test_button.EnableButton(false);
+            test_button.ActivateCustomUI(false);
 
             //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
             //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
