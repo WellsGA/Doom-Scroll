@@ -44,7 +44,7 @@ namespace Doom_Scroll
         [HarmonyPatch("LateUpdate")]
         public static void PrefixLateUpdate()
         {
-           //CheckButtonClicks();
+           // CheckButtonClicks();
         }
 
 
@@ -55,9 +55,7 @@ namespace Doom_Scroll
 
             mainMenuManagerInstance = __instance;
             //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
-            DoomScroll._log.LogInfo(GameObject.Find("BottomButtons"));
-            GameObject m_UIParent = GameObject.Find("BottomButtons");
-            DoomScroll._log.LogInfo(m_UIParent.transform.Find("InventoryButton").gameObject);
+            GameObject m_UIParent = GameObject.Find("BottomButtons").gameObject;
             GameObject inventoryButton = m_UIParent.transform.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
@@ -66,16 +64,12 @@ namespace Doom_Scroll
             scaledSize = scaledSize / 2;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
-
-
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
             test_button.ActivateCustomUI(true);
-
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
-            
-        }
 
+        }
         public static void CheckButtonClicks()
         {
             if (mainMenuManagerInstance == null) return;
@@ -99,7 +93,7 @@ namespace Doom_Scroll
         public static void OnClickDoomScroll()
         {
             our_credits.enabled = true;
-            test_button.ActivateCustomUI(false);
+            test_button.EnableButton(false);
 
             //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
             //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));

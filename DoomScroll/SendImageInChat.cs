@@ -55,14 +55,20 @@ namespace Doom_Scroll
             sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             image.transform.localScale = Vector3.one;
             DoomScroll._log.LogInfo("Image size: " + sr.size);
+            DoomScroll._log.LogInfo("chatbubble name: " + chatBubble.name);
+
             // get the child elements of ChatBubble we need to set the image correctly
             TextMeshPro chatText = chatBubble.transform.Find("ChatText").gameObject.GetComponent<TextMeshPro>();
+            DoomScroll._log.LogInfo("chat text name: " + chatText.name);
             TextMeshPro nameText = chatBubble.transform.Find("NameText").gameObject.GetComponent<TextMeshPro>();
+            DoomScroll._log.LogInfo("Player name: " + chatText.name);
             SpriteRenderer background = chatBubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
+            DoomScroll._log.LogInfo("background name: " + background.name);
             SpriteRenderer maskArea = chatBubble.transform.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
+            DoomScroll._log.LogInfo("maskArea name: " + maskArea.name);
             if (chatText != null)
             {
-                DoomScroll._log.LogInfo("chat text name: " + chatText.name);
+               
                 chatText.text = "Fuck internal classes!";
                 chatText.ForceMeshUpdate(true, true);
                 Vector3 chatpos = chatText.transform.localPosition;
@@ -71,8 +77,8 @@ namespace Doom_Scroll
             }
             if(nameText != null && background != null && maskArea != null)
             {
-                DoomScroll._log.LogInfo("background name: " + background.name);
-                DoomScroll._log.LogInfo("maskArea name: " + maskArea.name);
+               
+               
 
                 background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + chatText.GetNotDumbRenderedHeight() + sr.size.y);
                 maskArea.size = background.size - new Vector2(0f, 0.03f);
