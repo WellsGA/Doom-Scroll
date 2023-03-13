@@ -18,7 +18,8 @@ namespace Doom_Scroll
         public static CustomButton test_button;
         //public static GenericPopup PopupPrefab;
         public static DialogueBox Dialogue = new DialogueBox();
-        public static CreditsScreenPopUp our_credits = new CreditsScreenPopUp();
+        public static CreditsScreenPopUp our_credits = new();
+        public static bool AreCreditsOpen { get; private set; }
 
         public static void ShowPopUp(string text)
         {
@@ -44,7 +45,8 @@ namespace Doom_Scroll
         [HarmonyPatch("LateUpdate")]
         public static void PrefixLateUpdate()
         {
-           CheckButtonClicks();
+            //DoomScroll._log.LogMessage("test_button: " + test_button);
+            CheckButtonClicks();
         }
 
 
@@ -66,14 +68,14 @@ namespace Doom_Scroll
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
-            test_button.ActivateCustomUI(true);
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
+            test_button.ActivateCustomUI(true);
 
         }
         public static void CheckButtonClicks()
         {
             if (mainMenuManagerInstance == null) return;
-
+            //DoomScroll._log.LogMessage("Replacing hover image");
             test_button.ReplaceImgageOnHover();
 
             try
@@ -81,6 +83,8 @@ namespace Doom_Scroll
                 // Invoke methods on mouse click - open DoomScroll info popup
                 if (test_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
+                    DoomScroll._log.LogMessage("Button clicked");
+                    DoomScroll._log.LogMessage("Clicked and action being invoked");
                     test_button.ButtonEvent.InvokeAction();
                 }
             }
@@ -92,12 +96,27 @@ namespace Doom_Scroll
 
         public static void OnClickDoomScroll()
         {
-            our_credits.enabled = true;
-            test_button.EnableButton(false);
+            ToggleOurCredits();
+            ShowPopUp("DOOM SCROLL: A mod made by very cool people! :D");
 
             //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
             //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
             ShowPopUp("DOOM SCROLL: A mod made by very cool people! :D");
+        }
+        public static void ToggleOurCredits()
+        {
+            if (AreCreditsOpen)
+            {
+                test_button.EnableButton(true);
+                our_credits.enabled = false;
+                AreCreditsOpen = false;
+            }
+            else
+            {
+                test_button.EnableButton(false);
+                our_credits.enabled = true;
+                AreCreditsOpen = true;
+            }
         }
     }
 }
