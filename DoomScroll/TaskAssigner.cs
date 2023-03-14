@@ -82,7 +82,8 @@ namespace Doom_Scroll
 
         public void DisplayAssignedTasks()
         {
-            DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString());
+            // to do: list it on a UI modal 
+            DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString()); // debug
         }
 
         public override string ToString()
@@ -100,9 +101,10 @@ namespace Doom_Scroll
 
         public void CreateTaskAssignerPanel(GameObject closeBtn)
         {
+            Sprite[] buttonBg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
             GameObject parentPanel = closeBtn.transform.parent.gameObject;
-            Sprite[] buttonBg = {ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
-            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y, closeBtn.transform.position.z-50);
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y-0.3f, closeBtn.transform.localPosition.z-20);
+            DoomScroll._log.LogInfo("Close btn pos: " + closeBtn.transform.localPosition);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
@@ -111,13 +113,9 @@ namespace Doom_Scroll
                 {
                     CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), buttonBg, topLeftPos, 0.3f);
                     playerButtons.Add(btn);
-                    topLeftPos = new Vector2(topLeftPos.x + 0.3f, topLeftPos.y);  // needs fixing
-                   /* PoolablePlayer pp = new PoolablePlayer();
-                    pp.SetFlipX(false);
-                    pp.transform.localScale = Vector3.one;
-                    pp.transform.localPosition = parentPanel.transform.position;
-                    pp.UpdateFromEitherPlayerDataOrCache(playerInfo, PlayerOutfitType.Default, PlayerMaterial.MaskType.None, false);*/
-
+                    DoomScroll._log.LogInfo("Player btn pos: " + btn.UIGameObject.transform.localPosition);
+                    topLeftPos.x += + 0.3f; 
+                   
                 }
             }
         }

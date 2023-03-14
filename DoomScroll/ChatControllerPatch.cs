@@ -23,11 +23,11 @@ namespace Doom_Scroll
             {
                 foreach (TextMeshPro text in texts)
                 {
-                    if(text.text == chatText)
+                    if (text.text == chatText)
                     {
                         Transform chatbubble = text.transform.parent;
                         DoomScroll._log.LogInfo("image bytes: " + screenshot.Length);
-                        if(chatbubble != null && screenshot != null)
+                        if (chatbubble != null && screenshot != null)
                         {
                             Sprite imgSprite = ImageLoader.ReadImageFromByteArray(screenshot);
 
@@ -61,6 +61,7 @@ namespace Doom_Scroll
                             }
                             screenshot = null;
                         }
+                        break;
                     }
                 }
             }            
