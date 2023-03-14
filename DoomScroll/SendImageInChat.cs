@@ -6,7 +6,7 @@ using TMPro;
 
 namespace Doom_Scroll
 {
-    public class SendImageInChat
+    public class SendImageInChat : MonoBehaviour
     {
         public static bool RpcSendChatImage(byte[] image)
         {    
@@ -41,7 +41,7 @@ namespace Doom_Scroll
 
         // in the 2023.2.28 release ChatBubble is an internal class,
         // so we have to access the Gamobject that has the ChatBubble scrip on it and set the image to be displayed
-        internal static void SetImage(bool isLocalPlayer, GameObject chatBubble, byte[] imageBytes)
+        internal static void SetImage(bool isLocalPlayer, Transform chatBubble, SpriteRenderer background, byte[] imageBytes)
         {
             Sprite screenshot = ImageLoader.ReadImageFromByteArray(imageBytes);
 
@@ -59,31 +59,27 @@ namespace Doom_Scroll
 
             // get the child elements of ChatBubble we need to set the image correctly
             TextMeshPro chatText = chatBubble.transform.Find("ChatText").gameObject.GetComponent<TextMeshPro>();
-            DoomScroll._log.LogInfo("chat text name: " + chatText.name);
+            DoomScroll._log.LogInfo("chat text name: " + chatText.text);
             TextMeshPro nameText = chatBubble.transform.Find("NameText").gameObject.GetComponent<TextMeshPro>();
-            DoomScroll._log.LogInfo("Player name: " + chatText.name);
-            SpriteRenderer background = chatBubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
-            DoomScroll._log.LogInfo("background name: " + background.name);
+            DoomScroll._log.LogInfo("Player name: " + nameText.text);
+           
             SpriteRenderer maskArea = chatBubble.transform.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
-            DoomScroll._log.LogInfo("maskArea name: " + maskArea.name);
-            if (chatText != null)
+            DoomScroll._log.LogInfo("maskArea name: " + maskArea.size);
+            /*if (chatText != null)
             {
-               
                 chatText.text = "Fuck internal classes!";
                 chatText.ForceMeshUpdate(true, true);
                 Vector3 chatpos = chatText.transform.localPosition;
                 float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
                 image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
             }
-            if(nameText != null && background != null && maskArea != null)
+            if (nameText != null && background != null && maskArea != null)
             {
-               
-               
-
                 background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + chatText.GetNotDumbRenderedHeight() + sr.size.y);
                 maskArea.size = background.size - new Vector2(0f, 0.03f);
-            }
-           
+            }*/
+
+
         }
     }
 }
