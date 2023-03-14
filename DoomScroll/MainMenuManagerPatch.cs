@@ -58,7 +58,7 @@ namespace Doom_Scroll
             mainMenuManagerInstance = __instance;
             //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
             GameObject m_UIParent = GameObject.Find("BottomButtons").gameObject;
-            GameObject inventoryButton = m_UIParent.transform.Find("InventoryButton").gameObject;
+            GameObject inventoryButton = GameObject.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
             Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z);

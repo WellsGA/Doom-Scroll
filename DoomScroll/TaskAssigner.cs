@@ -102,7 +102,7 @@ namespace Doom_Scroll
         {
             GameObject parentPanel = closeBtn.transform.parent.gameObject;
             Sprite[] buttonBg = {ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
-            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y+0.2f, closeBtn.transform.position.z-50);
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y, closeBtn.transform.position.z-50);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)

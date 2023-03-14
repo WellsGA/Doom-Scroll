@@ -23,14 +23,13 @@ namespace Doom_Scroll
         [HarmonyPatch("SetTasks")]
         public static void PostfixCoSetTasks(PlayerControl __instance)
         {
-
             // check for impostor
             if (__instance.myTasks != null && __instance.myTasks.Count > 0)
             {
                 if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {
                     TaskAssigner.Instance.SelectRandomTasks(__instance.myTasks);
-                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
+                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++i + " times");
                 }
             }
         }
@@ -84,7 +83,7 @@ namespace Doom_Scroll
                 case (byte)CustomRPC.SENDIMAGE:
                     {
                         byte[] imageBytes = reader.ReadBytesAndSize();
-                        // DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length);
+                        // DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length); // debug
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
                             ChatControllerPatch.screenshot = imageBytes;

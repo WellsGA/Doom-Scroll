@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Doom_Scroll
 {
+    // in the 2023.2.28 release ChatBubble is an internal class,
+    // so we have to access the Gamobject that has the ChatBubble scrip on it and set the image to be displayed
     [HarmonyPatch(typeof(ChatController))]
     public class ChatControllerPatch
     {
@@ -27,7 +29,6 @@ namespace Doom_Scroll
                         DoomScroll._log.LogInfo("image bytes: " + screenshot.Length);
                         if(chatbubble != null && screenshot != null)
                         {
-
                             Sprite imgSprite = ImageLoader.ReadImageFromByteArray(screenshot);
 
                             GameObject image = new GameObject("chat image");
