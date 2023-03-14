@@ -11,6 +11,7 @@ namespace Doom_Scroll
         public static void InitSecondaryWinCondition(bool isImpostor)
         {
             // set local swc
+            playerSWCList = new List<SecondaryWinCondition>();
             byte localPlayer = PlayerControl.LocalPlayer.PlayerId;
             Goal localPlayerGoal = isImpostor ? Goal.None : assignGoal();
             byte localPlayerTarget = isImpostor? byte.MaxValue : assignTarget();
@@ -46,7 +47,7 @@ namespace Doom_Scroll
             string overallResults = "";
             foreach (SecondaryWinCondition swc in playerSWCList)
             {
-                overallResults += swc.SWCResultsText() + '\n'; // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+                overallResults += swc.SendableResultsText(); // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
             }
             return overallResults;
         }
