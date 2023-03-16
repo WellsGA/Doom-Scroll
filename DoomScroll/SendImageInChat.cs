@@ -14,7 +14,7 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
             int buffer = messageWriter.Buffer.Length - messageWriter.Position-3;
             
-            if (Buffer.ByteLength(image) >= buffer)
+            if (Buffer.ByteLength(image) >= buffer/2)
             {
                 Sprite img = ImageLoader.ReadImageFromByteArray(image);
                 int n = 75; // default quality for the jpg
