@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>Doom_Scroll</AssemblyName>
+    <Description>An Among Us mod about misinformation</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>Doom_Scroll</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AmongUs.GameLibs.Steam" Version="2022.10.25" />
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.662" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>lib\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>lib\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>lib\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>lib\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>lib\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>lib\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>lib\UnityEngine.AudioModuleI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>lib\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Hazel">
+      <HintPath>lib\Hazel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\closeButton.png" />
+    <EmbeddedResource Include="Assets\homeButton.png" />
+    <EmbeddedResource Include="Assets\backButton.png" />
+    <EmbeddedResource Include="Assets\cameraFlash.png" />
+    <EmbeddedResource Include="Assets\cameraOverlay.png" />
+    <EmbeddedResource Include="Assets\captureScreenNew.png" />
+    <EmbeddedResource Include="Assets\folderToggle.png" />
+    <EmbeddedResource Include="Assets\folderOverlay.png" />
+    <EmbeddedResource Include="Assets\folder.png" />
+    <EmbeddedResource Include="Assets\folderEmpty.png" />
+    <EmbeddedResource Include="Assets\shareButton.png" />
+    <EmbeddedResource Include="Assets\dontShareButton.png" />
+    <EmbeddedResource Include="Assets\panel.png" />
+    <EmbeddedResource Include="Assets\emptyBtn.png" />
+	<EmbeddedResource Include="Assets\MainMenu_Button_Green.png" />
+
+  </ItemGroup>
+</Project>
