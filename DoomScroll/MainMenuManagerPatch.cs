@@ -9,13 +9,17 @@ using Il2CppSystem.Text;
 using Doom_Scroll.UI;
 using System.Reflection;
 using UnityEngine.UI;
+using Sentry.Internal;
 
 namespace Doom_Scroll
 {
     [HarmonyPatch(typeof(MainMenuManager))]
     class MainMenuManagerPatch
     {
+        private static Vector2 buttonSize = new Vector2(0.5f, 0.5f);
         public static CustomButton test_button;
+        public static CustomModal credits_overlay;
+        public static CustomButton close_button;
         //public static GenericPopup PopupPrefab;
         public static DialogueBox Dialogue = new DialogueBox();
         public static CreditsScreenPopUp our_credits = new();
@@ -54,8 +58,9 @@ namespace Doom_Scroll
         [HarmonyPatch("Start")]
         public static void PostfixStart(MainMenuManager __instance)
         {
+            AreCreditsOpen = false;
 
-            mainMenuManagerInstance = __instance;
+            MainMenuManager mainMenuManagerInstance = __instance;
             //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
             GameObject m_UIParent = GameObject.Find("BottomButtons").gameObject;
             GameObject inventoryButton = GameObject.Find("InventoryButton").gameObject;
@@ -71,7 +76,41 @@ namespace Doom_Scroll
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
             test_button.ActivateCustomUI(true);
 
+            //find parent that's in center of screen
+            //OR TRY bannerLogo_AmongUs
+            //can get its spriterenderer as well
+            //use agnes's function to resize x size if necessary- SetSize(scaledWidth)
+            credits_overlay = InitCreditsOverlay(GameObject.Find("MainUI").gameObject);
+            close_button = AddCloseButton(credits_overlay.UIGameObject);
+            close_button.ButtonEvent.MyAction += ToggleOurCredits;
         }
+        public static CustomModal InitCreditsOverlay(GameObject parent)
+        {
+            CustomModal creditsOverlay = CreateCreditsOverlay(parent);
+
+            return creditsOverlay;
+        }
+        public static CustomModal CreateCreditsOverlay(GameObject parent)
+        {
+            SpriteRenderer bannerSR = GameObject.Find("bannerLogo_AmongUs").GetComponent<SpriteRenderer>();
+            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
+
+            // create the overlay background
+            CustomModal creditsOverlay = new CustomModal(parent, "CreditsOverlay", spr);
+            creditsOverlay.SetLocalPosition(new Vector3(0f, 0f, -50f));
+            creditsOverlay.SetScale(parent.transform.localScale * 0.4f);
+            // deactivate by default
+            creditsOverlay.ActivateCustomUI(false);
+            return creditsOverlay;
+        }
+        public static CustomButton AddCloseButton(GameObject parent)
+        {
+            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
+            Vector3 position = new Vector3(-sr.size.x / 2 - buttonSize.x / 2, sr.size.y / 2 - buttonSize.y / 2, -5f);
+            Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
+            return new CustomButton(parent, "Close OurCredits", closeBtnImg, position, buttonSize.x);
+        }
+
         public static void CheckButtonClicks()
         {
             if (mainMenuManagerInstance == null) return;
@@ -92,29 +131,44 @@ namespace Doom_Scroll
             {
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
+            if (AreCreditsOpen)
+            {
+                try
+                {
+                    if (close_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        close_button.ButtonEvent.InvokeAction();
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+                }
+            }
         }
 
         public static void OnClickDoomScroll()
         {
             ToggleOurCredits();
-            ShowPopUp("DOOM SCROLL: A mod made by very cool people! :D");
+            //ShowPopUp("DOOM SCROLL: A mod made by very cool people! :D");
 
             //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
             //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
-            ShowPopUp("DOOM SCROLL: A mod made by very cool people! :D");
         }
         public static void ToggleOurCredits()
         {
             if (AreCreditsOpen)
             {
                 test_button.EnableButton(true);
-                our_credits.enabled = false;
+                credits_overlay.ActivateCustomUI(false);
+                //our_credits.enabled = false;
                 AreCreditsOpen = false;
             }
             else
             {
                 test_button.EnableButton(false);
-                our_credits.enabled = true;
+                credits_overlay.ActivateCustomUI(true);
+                //our_credits.enabled = true;
                 AreCreditsOpen = true;
             }
         }
