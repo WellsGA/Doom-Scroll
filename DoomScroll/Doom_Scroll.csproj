@@ -73,5 +73,6 @@
     <EmbeddedResource Include="Assets\panel.png" />
     <EmbeddedResource Include="Assets\emptyBtn.png" />
 	  <EmbeddedResource Include="Assets\MainMenu_Button_Green.png" />
+    <EmbeddedResource Include="Assets\playerIcon.png" />
   </ItemGroup>
 </Project>

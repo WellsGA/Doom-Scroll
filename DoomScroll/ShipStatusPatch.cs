@@ -11,7 +11,7 @@ namespace Doom_Scroll
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA INIT");
-     
+
             // list all tasks - for debug purposes
             /*DoomScroll._log.LogInfo("TASK INFO");            
             foreach (NormalPlayerTask task in __instance.CommonTasks)

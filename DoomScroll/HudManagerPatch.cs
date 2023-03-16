@@ -7,10 +7,16 @@ namespace Doom_Scroll
     {
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
-        public static void PostfixStart()
+        public static void PostfixStart(HudManager __instance)
         {
             ScreenshotManager.Instance.ReSet();
             FolderManager.Instance.Reset();
+            PoolablePlayer player = HudManager.Instance.MeetingPrefab.PlayerButtonPrefab.PlayerIcon;
+            if (player != null)
+            {
+                TaskAssigner.Instance.SetPlayerIconPrefab(player);
+            }
+
         }
 
         [HarmonyPostfix]
