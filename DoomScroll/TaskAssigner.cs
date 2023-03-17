@@ -115,11 +115,11 @@ namespace Doom_Scroll
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead)
-                {
+                {                  
                     CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), playerSprite, topLeftPos, 0.3f);
-                    //btn.SetColor(Palette. FromHex(playerInfo.DefaultOutfit.ColorId));
+                    btn.SetColor(Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     playerButtons.Add(btn);
-                    DoomScroll._log.LogInfo("Player btn pos: " + btn.UIGameObject.transform.localPosition);
+                    DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName );
                     topLeftPos.x += +0.3f;
                 }
             }
