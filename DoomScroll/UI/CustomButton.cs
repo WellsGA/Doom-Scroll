@@ -16,8 +16,8 @@ namespace Doom_Scroll.UI
         // inherits UIGameObject from base
         
         private SpriteRenderer m_spriteRenderer;
-        private Sprite[] buttonIcons;
-        
+        private Sprite[] buttonImage;
+
         private bool isDefaultImg;
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
@@ -36,7 +36,7 @@ namespace Doom_Scroll.UI
         }
         private void BasicButton(Sprite[] images)
         {
-            buttonIcons = images;
+            buttonImage = images;
             m_spriteRenderer = UIGameObject.AddComponent<SpriteRenderer>();
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
             SetButtonImg(ImageType.DEFAULT);
@@ -59,6 +59,19 @@ namespace Doom_Scroll.UI
             m_spriteRenderer.color = color;
         }
 
+        public SpriteRenderer AddIconToButton(Sprite icon)
+        {
+            GameObject iconGo = new GameObject("Icon");
+            iconGo.layer = LayerMask.NameToLayer("UI");
+            iconGo.transform.SetParent(UIGameObject.transform.parent.transform);
+            SpriteRenderer sr = iconGo.AddComponent<SpriteRenderer>();
+            sr.drawMode = SpriteDrawMode.Sliced;
+            sr.sprite = icon;
+            sr.size = m_spriteRenderer.size / 1.4f;
+            iconGo.transform.position = UIGameObject.transform.position;
+            iconGo.transform.localPosition = UIGameObject.transform.localPosition + new Vector3(0,0,-10);
+            return sr;
+        }
         public override void ActivateCustomUI(bool value)
         {
             base.ActivateCustomUI(value);
@@ -81,15 +94,15 @@ namespace Doom_Scroll.UI
             switch (type)
             {
                 case ImageType.DEFAULT:
-                    m_spriteRenderer.sprite = buttonIcons[0];
+                    m_spriteRenderer.sprite = buttonImage[0];
                     isDefaultImg = true;
                     break;
                 case ImageType.HOVER:
-                    m_spriteRenderer.sprite = buttonIcons.Length > 1 ? buttonIcons[1] : buttonIcons[0];
+                    m_spriteRenderer.sprite = buttonImage.Length > 1 ? buttonImage[1] : buttonImage[0];
                     isDefaultImg = false;
                     break;
                 default:
-                    m_spriteRenderer.sprite = buttonIcons[0];
+                    m_spriteRenderer.sprite = buttonImage[0];
                     isDefaultImg = true;
                     break;
             }

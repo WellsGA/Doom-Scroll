@@ -106,9 +106,10 @@ namespace Doom_Scroll
 
         public void CreateTaskAssignerPanel(GameObject closeBtn)
         {
-            Sprite[] playerSprite = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png") };
+            Sprite[] butttonSprite = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
+            Sprite playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
             GameObject parentPanel = closeBtn.transform.parent.gameObject;
-            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.7f, closeBtn.transform.localPosition.y+0.3f, closeBtn.transform.localPosition.z-20);
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.5f, closeBtn.transform.localPosition.y+0.3f, closeBtn.transform.localPosition.z-20);
             DoomScroll._log.LogInfo("Close btn pos: " + closeBtn.transform.localPosition);
 
             // add the players as buttons
@@ -116,11 +117,13 @@ namespace Doom_Scroll
             {
                 if (!playerInfo.IsDead)
                 {                  
-                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), playerSprite, topLeftPos, 0.3f);
-                    btn.SetColor(Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
+                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), butttonSprite, topLeftPos, 0.4f);
+                    SpriteRenderer sr = btn.AddIconToButton(playerSprite);
+                    sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
                     playerButtons.Add(btn);
+                   
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName );
-                    topLeftPos.x += +0.3f;
+                    topLeftPos.x += +0.5f;
                 }
             }
         }
