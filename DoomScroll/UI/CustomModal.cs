@@ -29,5 +29,6 @@ namespace Doom_Scroll.UI
         {
             return m_spriteRenderer.size;
         }
+
     }
 }

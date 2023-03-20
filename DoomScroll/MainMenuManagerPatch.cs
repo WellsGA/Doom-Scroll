@@ -49,7 +49,6 @@ namespace Doom_Scroll
         [HarmonyPatch("LateUpdate")]
         public static void PrefixLateUpdate()
         {
-            //DoomScroll._log.LogMessage("test_button: " + test_button);
             CheckButtonClicks();
         }
 
@@ -66,12 +65,13 @@ namespace Doom_Scroll
             GameObject inventoryButton = GameObject.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z);
+            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z+50);
             Vector2 scaledSize = doomscrollButtonSr.size * inventoryButton.transform.localScale;
             scaledSize = scaledSize / 2;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
+            DoomScroll._log.LogInfo("1:" + doomscrollBtnSprites[0].bounds.size + " , 2:  " + doomscrollBtnSprites[1].bounds.size);
 
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
             test_button.ActivateCustomUI(true);
@@ -163,6 +163,7 @@ namespace Doom_Scroll
                 credits_overlay.ActivateCustomUI(false);
                 //our_credits.enabled = false;
                 AreCreditsOpen = false;
+                DoomScroll._log.LogInfo("Closing");
             }
             else
             {
@@ -170,6 +171,7 @@ namespace Doom_Scroll
                 credits_overlay.ActivateCustomUI(true);
                 //our_credits.enabled = true;
                 AreCreditsOpen = true;
+                DoomScroll._log.LogInfo("opening");
             }
         }
     }

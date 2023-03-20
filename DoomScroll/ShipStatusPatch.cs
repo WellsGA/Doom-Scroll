@@ -13,22 +13,22 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA INIT");
 
             // list all tasks - for debug purposes
-            /*DoomScroll._log.LogInfo("TASK INFO");            
+            DoomScroll._log.LogInfo("TASK INFO");
             foreach (NormalPlayerTask task in __instance.CommonTasks)
             {
                 DoomScroll._log.LogInfo("COMMON name: " + task.name + ", Index: " + task.Index +
-                ", type: " + task.TaskType);
+                ", type: " + task.TaskType + ", task steps: " + task.MaxStep);
             }
             foreach (NormalPlayerTask task in __instance.LongTasks)
             {
                 DoomScroll._log.LogInfo("LONG name: " + task.name + ", Index: " + task.Index +
-                ", type: " + task.TaskType);
+                ", type: " + task.TaskType + ", task steps: " + task.MaxStep);
             }
             foreach (NormalPlayerTask task in __instance.NormalTasks)
             {
                 DoomScroll._log.LogInfo("NORMAL name: " + task.name + ", Index: " + task.Index +
-                ", type: " + task.TaskType);
-            }*/
+                ", type: " + task.TaskType + ", task steps: " + task.MaxStep);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
-
+using System.Runtime.CompilerServices;
 
 namespace Doom_Scroll
 {
@@ -24,17 +24,22 @@ namespace Doom_Scroll
         private static List<(byte playerId, string taskName)> AssignedTasks = new List<(byte, string)>();
         // byte array to hold the assignable task IDs
         public uint[] AssignableTasksIDs { get; private set; }    
-        private List<CustomButton> playerButtons = new List<CustomButton>();
-        private PoolablePlayer playerIcon = null;
+        private List<CustomButton> playerButtons;
+        private CustomModal playerButtonHolder;
+        private Sprite panelSprite;
+        private Sprite[] butttonSprite;
+        private Sprite playerSprite;
+
+        // private PoolablePlayer playerIcon = null;
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
         {
             AssignableTasksIDs = new uint[2];
+            playerButtons = new List<CustomButton>();
+            panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
+            butttonSprite[0] = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png");
+            playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
             DoomScroll._log.LogInfo("TASK ASSIGNER CONSTRUCTOR");
-        }
-        public void SetPlayerIconPrefab(PoolablePlayer player)
-        {
-            playerIcon = player;
         }
 
         public void AddToAssignedTasks(PlayerControl sender, byte playerID, uint taskId)
@@ -71,18 +76,14 @@ namespace Doom_Scroll
             for (int i = 0; i < AssignableTasksIDs.Length; i++)
             {
                 int index = Random.Range(0, tasks.Count - 1);
-                AssignableTasksIDs[i] = tasks[index].Id; /// AAAAAAA
-                DoomScroll._log.LogInfo("Task You Can Assign: " + tasks[index].name + "(" + tasks[index].Id.ToString() + ")" );
+                AssignableTasksIDs[i] = tasks[index].Id;
+                DoomScroll._log.LogInfo("You Can Assign: " + tasks[index].name + "(" + tasks[index].Id.ToString() + ")" );
             }
         }
 
-        public void AssignPlayerToTask(uint id)
+        public void AssignPlayerToTask(uint taskId, byte playerId)
         {
-            // random select a player for now 
-            if (PlayerControl.AllPlayerControls.Count == 0 || PlayerControl.AllPlayerControls == null) { return; }
-            int index = Random.Range(0, PlayerControl.AllPlayerControls.Count-1);
-            PlayerControl player = PlayerControl.AllPlayerControls[index];
-            RPCAddToAssignedTasks(player.PlayerId, id);       
+            RPCAddToAssignedTasks(playerId, taskId);       
         }
 
         public void DisplayAssignedTasks()
@@ -106,11 +107,13 @@ namespace Doom_Scroll
 
         public void CreateTaskAssignerPanel(GameObject closeBtn)
         {
-            Sprite[] butttonSprite = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png") };
-            Sprite playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
             GameObject parentPanel = closeBtn.transform.parent.gameObject;
-            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.5f, closeBtn.transform.localPosition.y+0.3f, closeBtn.transform.localPosition.z-20);
-            DoomScroll._log.LogInfo("Close btn pos: " + closeBtn.transform.localPosition);
+            playerButtonHolder = new CustomModal(parentPanel, "Player buttons", panelSprite);
+            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count, 1f);
+            Vector3 pos = new Vector3(closeBtn.transform.localPosition.x + size.x/2, closeBtn.transform.localPosition.y + 0.3f, closeBtn.transform.localPosition.z - 10);
+            playerButtonHolder.SetSize(pos);
+            playerButtonHolder.SetLocalPosition(pos);
+            Vector3 topLeftPos = new Vector3(pos.x + 0.5f, pos.y, pos.z-10);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
@@ -121,11 +124,24 @@ namespace Doom_Scroll
                     SpriteRenderer sr = btn.AddIconToButton(playerSprite);
                     sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
                     playerButtons.Add(btn);
-                   
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName );
-                    topLeftPos.x += +0.5f;
+                    topLeftPos.x += 0.5f;
                 }
             }
         }
+
+        public void CheckForPlayerButtonClick(uint taskId)
+        {
+            foreach (CustomButton btn in playerButtons)
+            {
+                btn.ReplaceImgageOnHover();
+
+                if (btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    
+                }
+            }
+        }
+
     }
 }

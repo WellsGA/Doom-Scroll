@@ -35,22 +35,6 @@ namespace Doom_Scroll
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch("CompleteTask")]
-        public static void PostfixCompleteTasks(PlayerControl __instance, uint idx)
-        {
-           GameData.TaskInfo taskInfo = __instance.Data.FindTaskById(idx);
-            if (taskInfo == null)
-            {
-                DoomScroll._log.LogInfo("Task not found: " + idx.ToString());
-                return;
-            }
-            if (taskInfo.Complete && TaskAssigner.Instance.AssignableTasksIDs.Contains(idx))
-            {
-                TaskAssigner.Instance.AssignPlayerToTask(idx);
-            }
-        }
-
-        [HarmonyPostfix]
         [HarmonyPatch("Die")]
         public static void PostfixDie(PlayerControl __instance, DeathReason reason)
         {

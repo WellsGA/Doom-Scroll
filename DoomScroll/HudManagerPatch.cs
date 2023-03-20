@@ -11,12 +11,12 @@ namespace Doom_Scroll
         {
             ScreenshotManager.Instance.ReSet();
             FolderManager.Instance.Reset();
-            PoolablePlayer player = HudManager.Instance.MeetingPrefab.PlayerButtonPrefab.PlayerIcon;
+            /*PoolablePlayer player = HudManager.Instance.MeetingPrefab.PlayerButtonPrefab.PlayerIcon;
             if (player != null)
             {
-                TaskAssigner.Instance.SetPlayerIconPrefab(player);
-            }
 
+                TaskAssigner.Instance.SetPlayerIconPrefab(player);
+            }*/
         }
 
         [HarmonyPostfix]
@@ -24,6 +24,11 @@ namespace Doom_Scroll
         public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
+            if (Minigame.Instance != null)
+            {
+                // TaskAssigner.Instance.CheckButtonClicks();
+               
+            }
             // __instance.TaskText.text += "\nSWC: " + SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
         }
 
