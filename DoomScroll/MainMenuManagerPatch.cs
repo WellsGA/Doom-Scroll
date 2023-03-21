@@ -20,7 +20,6 @@ namespace Doom_Scroll
         public static CustomButton test_button;
         public static CustomModal credits_overlay;
         public static CustomButton close_button;
-        //public static GenericPopup PopupPrefab;
         public static DialogueBox Dialogue = new DialogueBox();
         public static CreditsScreenPopUp our_credits = new();
         public static bool AreCreditsOpen { get; private set; }
@@ -31,19 +30,6 @@ namespace Doom_Scroll
         }
 
         private static MainMenuManager mainMenuManagerInstance;
-
-        //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverImpostorKills, Array.Empty<object>()));
-
-
-        /*private void ShowPopup(string error)
-        {
-            if (this.PopupPrefab)
-            {
-                GenericPopup genericPopup = Object.Instantiate<GenericPopup>(this.PopupPrefab);
-                genericPopup.TextAreaTMP.text = error;
-                genericPopup.transform.SetWorldZ(base.transform.position.z - 1f);
-            }
-        }*/
         
         [HarmonyPrefix]
         [HarmonyPatch("LateUpdate")]
@@ -60,7 +46,6 @@ namespace Doom_Scroll
             AreCreditsOpen = false;
 
             MainMenuManager mainMenuManagerInstance = __instance;
-            //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
             GameObject m_UIParent = GameObject.Find("BottomButtons").gameObject;
             GameObject inventoryButton = GameObject.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
@@ -76,10 +61,6 @@ namespace Doom_Scroll
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
             test_button.ActivateCustomUI(true);
 
-            //find parent that's in center of screen
-            //OR TRY bannerLogo_AmongUs
-            //can get its spriterenderer as well
-            //use agnes's function to resize x size if necessary- SetSize(scaledWidth)
             credits_overlay = InitCreditsOverlay(GameObject.Find("MainUI").gameObject);
             close_button = AddCloseButton(credits_overlay.UIGameObject);
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
@@ -119,7 +100,7 @@ namespace Doom_Scroll
 
             try
             {
-                // Invoke methods on mouse click - open DoomScroll info popup
+                // Invoke methods on mouse click - opens DoomScroll info popup
                 if (test_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     DoomScroll._log.LogMessage("Button clicked");
@@ -150,10 +131,6 @@ namespace Doom_Scroll
         public static void OnClickDoomScroll()
         {
             ToggleOurCredits();
-            //ShowPopUp("DOOM SCROLL: A mod made by very cool people! :D");
-
-            //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
-            //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
         }
         public static void ToggleOurCredits()
         {
