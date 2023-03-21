@@ -25,14 +25,22 @@ namespace Doom_Scroll
         public uint[] AssignableTasksIDs { get; private set; }
         public int MaxAssignableTasks { get; private set; }
         public Dictionary<byte, CustomButton> PlayerButtons { get; private set; }
+        public uint CurrentMinigameTask { get; private set; }
+
+
         // UI elements
         private Sprite panelSprite;
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
-        private uint currentMinigameTask;
         
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
+        {
+            InitTaskAssigner();
+            DoomScroll._log.LogInfo("TASK ASSIGNER CONSTRUCTOR");
+        }
+
+        private void InitTaskAssigner()
         {
             MaxAssignableTasks = 2;
             AssignableTasksIDs = new uint[MaxAssignableTasks];
@@ -42,9 +50,7 @@ namespace Doom_Scroll
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             butttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png", slices);
             playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
-            DoomScroll._log.LogInfo("TASK ASSIGNER CONSTRUCTOR");
         }
-
         public void AddToAssignedTasks(PlayerControl sender, byte playerID, uint taskId)
         {
             string taskName = " o_O ";
@@ -84,6 +90,7 @@ namespace Doom_Scroll
         public void AssignPlayerToTask(uint taskId, byte playerId)
         {
             PlayerButtons = new Dictionary<byte, CustomButton>(); // reinit this Dictionary, so it will be empty when the Miigame opens
+
             // assign the task to the selected player and notify others
             RPCAddToAssignedTasks(playerId, taskId);       
         }
@@ -108,18 +115,18 @@ namespace Doom_Scroll
         }
 
         // creates the panel with player buttons for each opened assignable minigame 
-        // it's going to be a child objecy of the minigame prefab, and gets destroyed when the parent is destroyed!
+        // it's going to be a child objecy of the Minigame prefab, therefore, it gets destroyed when the parent is destroyed!
         public void CreateTaskAssignerPanel(GameObject closeBtn, uint taskId)
         {
-            currentMinigameTask = taskId;
-            
+            CurrentMinigameTask = taskId;
+
             GameObject parentPanel = closeBtn.transform.parent.gameObject;
-            CustomModal playerButtonHolder = new CustomModal(parentPanel, "Player buttons", panelSprite);
+            CustomModal playerButtonHolder = new CustomModal(parentPanel, "Button holder", panelSprite);
             Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/2 + 1f, 0.5f);
             Vector3 pos = new Vector3(closeBtn.transform.localPosition.x + size.x/ 2 + 0.5f, closeBtn.transform.localPosition.y + 0.3f, closeBtn.transform.localPosition.z - 10);
             playerButtonHolder.SetSize(size);
             playerButtonHolder.SetLocalPosition(pos);
-            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 1f, pos.y, pos.z-10);
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 0.8f, pos.y, pos.z-20);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
@@ -134,6 +141,8 @@ namespace Doom_Scroll
                     topLeftPos.x += 0.4f;
                 }
             }
+            // inactive at first, gets activated on task completition
+            // playerButtonHolder.UIGameObject.SetActive(false);
         }
 
         public void CheckForPlayerButtonClick()
@@ -144,10 +153,16 @@ namespace Doom_Scroll
                 item.Value.ReplaceImgageOnHover();
                 if (item.Value.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    AssignPlayerToTask(currentMinigameTask, item.Key);
-                    DoomScroll._log.LogInfo("Task assigned: " + currentMinigameTask + ", to player: " + item.Key);
+                    AssignPlayerToTask(CurrentMinigameTask, item.Key);
+                    DoomScroll._log.LogInfo("Task assigned: " + CurrentMinigameTask + ", to player: " + item.Key);
                 }
             }
+        }
+
+        public void Reset()
+        {
+            InitTaskAssigner();
+            DoomScroll._log.LogInfo("TASK ASSIGNER MANAGER RESET");
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Doom_Scroll
 {
@@ -7,10 +8,11 @@ namespace Doom_Scroll
     {
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
-        public static void PostfixStart(HudManager __instance)
+        public static void PostfixStart()
         {
             ScreenshotManager.Instance.ReSet();
             FolderManager.Instance.Reset();
+            TaskAssigner.Instance.Reset();
         }
 
         [HarmonyPostfix]
@@ -18,11 +20,14 @@ namespace Doom_Scroll
         public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
-            if (Minigame.Instance != null && TaskAssigner.Instance.PlayerButtons.Count != 0)
+            if (Minigame.Instance != null)
             {
                 // Minigame.Instance.MyNormTask field is protected ... :(
-                TaskAssigner.Instance.CheckForPlayerButtonClick();
-               
+                Transform go = Minigame.Instance.transform.Find("Button holder");
+                if (go != null)
+                {
+                    TaskAssigner.Instance.CheckForPlayerButtonClick();
+                }
             }
             // __instance.TaskText.text += "\nSWC: " + SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
         }

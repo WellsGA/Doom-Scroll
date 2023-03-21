@@ -15,5 +15,13 @@ namespace Doom_Scroll
               //SecondaryWinConditionHolder.getThisPlayerSWC().SWCAssignText()
           }*/
 
+        [HarmonyPrefix]
+        [HarmonyPatch("NextStep")]
+        public static void PrefixNextStep(NormalPlayerTask __instance)
+        {
+            if(__instance.Id != TaskAssigner.Instance.CurrentMinigameTask) return;
+            // if current is the last step, set maxstep to one more and activate the assign panel
+
+        }
     }
 }
