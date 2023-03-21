@@ -12,9 +12,9 @@ namespace Doom_Scroll
         public static void PostfixBegin(Minigame __instance, PlayerTask task) 
         {
             // no prefab or not a player task or not among the assignable tasks
-            if(__instance == null || __instance.TaskType == TaskTypes.None 
-                || !TaskAssigner.Instance.AssignableTasksIDs.Contains(task.Id)) return;
-            
+            /*if(__instance == null || __instance.TaskType == TaskTypes.None 
+                || !TaskAssigner.Instance.AssignableTasksIDs.Contains(task.Id)) return;*/
+            if (__instance == null || __instance.TaskType == TaskTypes.None) return; // all tasks will be assignable for testing purposes
             // GameObject closeBtn = __instance.GetComponentInChildren<CloseButtonConsoleBehaviour>().gameObject; // didn't work, more than one go has this class
             GameObject closeBtn = __instance.transform.Find("CloseButton").gameObject;
             if (closeBtn != null)
