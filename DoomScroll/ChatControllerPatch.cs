@@ -48,7 +48,7 @@ namespace Doom_Scroll
                             SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
                             SpriteRenderer background = chatbubble.Find("Background").gameObject.GetComponent<SpriteRenderer>();
 
-                            text.text = "Fuck internal classes!";
+                            text.text = "";
                             text.ForceMeshUpdate(true, true);
                             Vector3 chatpos = text.transform.localPosition;
                             float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;

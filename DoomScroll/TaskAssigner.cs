@@ -4,7 +4,6 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Doom_Scroll
 {
@@ -20,24 +19,28 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
-        // list for all the assigned task - this will be displayed during meetings
-        private static List<(byte playerId, string taskName)> AssignedTasks = new List<(byte, string)>();
+        // list of tasks assigned by each player - this will be displayed during meetings
+        private static List<(byte playerId, string taskName)> AssignedTasks;
         // byte array to hold the assignable task IDs
-        public uint[] AssignableTasksIDs { get; private set; }    
-        private List<CustomButton> playerButtons;
-        private CustomModal playerButtonHolder;
+        public uint[] AssignableTasksIDs { get; private set; }
+        public int MaxAssignableTasks { get; private set; }
+        public Dictionary<byte, CustomButton> PlayerButtons { get; private set; }
+        // UI elements
         private Sprite panelSprite;
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
-
-        // private PoolablePlayer playerIcon = null;
+        private uint currentMinigameTask;
+        
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
         {
-            AssignableTasksIDs = new uint[2];
-            playerButtons = new List<CustomButton>();
+            MaxAssignableTasks = 2;
+            AssignableTasksIDs = new uint[MaxAssignableTasks];
+            AssignedTasks = new List<(byte, string)>();
+            PlayerButtons = new Dictionary<byte, CustomButton>();
             panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
-            butttonSprite[0] = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png");
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            butttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png", slices);
             playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
             DoomScroll._log.LogInfo("TASK ASSIGNER CONSTRUCTOR");
         }
@@ -69,20 +72,19 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
-        public void SelectRandomTasks(Il2CppSystem.Collections.Generic.List<PlayerTask> tasks) 
+        public void SetAssignableTask(uint[] id) 
         {
             AssignedTasks = new List<(byte, string)>();
-            if (tasks.Count == 0 || tasks == null) return;
-            for (int i = 0; i < AssignableTasksIDs.Length; i++)
+            if (id.Length <= AssignableTasksIDs.Length)
             {
-                int index = Random.Range(0, tasks.Count - 1);
-                AssignableTasksIDs[i] = tasks[index].Id;
-                DoomScroll._log.LogInfo("You Can Assign: " + tasks[index].name + "(" + tasks[index].Id.ToString() + ")" );
+                AssignableTasksIDs = id;
             }
         }
 
         public void AssignPlayerToTask(uint taskId, byte playerId)
         {
+            PlayerButtons = new Dictionary<byte, CustomButton>(); // reinit this Dictionary, so it will be empty when the Miigame opens
+            // assign the task to the selected player and notify others
             RPCAddToAssignedTasks(playerId, taskId);       
         }
 
@@ -105,40 +107,45 @@ namespace Doom_Scroll
             return assignedTasks;
         }
 
-        public void CreateTaskAssignerPanel(GameObject closeBtn)
+        // creates the panel with player buttons for each opened assignable minigame 
+        // it's going to be a child objecy of the minigame prefab, and gets destroyed when the parent is destroyed!
+        public void CreateTaskAssignerPanel(GameObject closeBtn, uint taskId)
         {
+            currentMinigameTask = taskId;
+            
             GameObject parentPanel = closeBtn.transform.parent.gameObject;
-            playerButtonHolder = new CustomModal(parentPanel, "Player buttons", panelSprite);
-            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count, 1f);
-            Vector3 pos = new Vector3(closeBtn.transform.localPosition.x + size.x/2, closeBtn.transform.localPosition.y + 0.3f, closeBtn.transform.localPosition.z - 10);
-            playerButtonHolder.SetSize(pos);
+            CustomModal playerButtonHolder = new CustomModal(parentPanel, "Player buttons", panelSprite);
+            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/2 + 1f, 0.5f);
+            Vector3 pos = new Vector3(closeBtn.transform.localPosition.x + size.x/ 2 + 0.5f, closeBtn.transform.localPosition.y + 0.3f, closeBtn.transform.localPosition.z - 10);
+            playerButtonHolder.SetSize(size);
             playerButtonHolder.SetLocalPosition(pos);
-            Vector3 topLeftPos = new Vector3(pos.x + 0.5f, pos.y, pos.z-10);
+            Vector3 topLeftPos = new Vector3(closeBtn.transform.localPosition.x + 1f, pos.y, pos.z-10);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead)
                 {                  
-                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerId.ToString(), butttonSprite, topLeftPos, 0.4f);
+                    CustomButton btn = new CustomButton(parentPanel, playerInfo.PlayerName, butttonSprite, topLeftPos, 0.4f);
                     SpriteRenderer sr = btn.AddIconToButton(playerSprite);
                     sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
-                    playerButtons.Add(btn);
+                    PlayerButtons.Add(playerInfo.PlayerId, btn);
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName );
-                    topLeftPos.x += 0.5f;
+                    topLeftPos.x += 0.4f;
                 }
             }
         }
 
-        public void CheckForPlayerButtonClick(uint taskId)
+        public void CheckForPlayerButtonClick()
         {
-            foreach (CustomButton btn in playerButtons)
+            if (PlayerButtons.Count == 0) return;
+            foreach( KeyValuePair<byte, CustomButton> item in PlayerButtons)
             {
-                btn.ReplaceImgageOnHover();
-
-                if (btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                item.Value.ReplaceImgageOnHover();
+                if (item.Value.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    
+                    AssignPlayerToTask(currentMinigameTask, item.Key);
+                    DoomScroll._log.LogInfo("Task assigned: " + currentMinigameTask + ", to player: " + item.Key);
                 }
             }
         }

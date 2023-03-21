@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 using Hazel;
-using System;
-using System.Linq;
-
+using UnityEngine;
 
 namespace Doom_Scroll
 {
@@ -17,19 +15,31 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(PlayerControl))]
     public static class PlayerControlPatch
     {
-        static int i = 0;
+        static int count = 0;
 
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
         public static void PostfixCoSetTasks(PlayerControl __instance)
         {
-            // check for impostor
             if (__instance.myTasks != null && __instance.myTasks.Count > 0)
-            {
+            {   // check for impostor
                 if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {
-                    TaskAssigner.Instance.SelectRandomTasks(__instance.myTasks);
-                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++i + " times");
+                    uint[] taskIds = new uint[TaskAssigner.Instance.MaxAssignableTasks];
+                    int i = 0;
+                    foreach(PlayerTask task in __instance.myTasks)
+                    {
+                        if(i < TaskAssigner.Instance.MaxAssignableTasks)
+                        {
+                            // to do: check for task type!!!! 
+                            taskIds[i] = task.Id;
+                            i++;
+                            continue;
+                        }
+                        break;
+                    }
+                    TaskAssigner.Instance.SetAssignableTask(taskIds);
+                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
                 }
             }
         }

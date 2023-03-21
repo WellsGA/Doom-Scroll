@@ -65,7 +65,7 @@ namespace Doom_Scroll
             GameObject inventoryButton = GameObject.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z+50);
+            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z-70);
             Vector2 scaledSize = doomscrollButtonSr.size * inventoryButton.transform.localScale;
             scaledSize = scaledSize / 2;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
