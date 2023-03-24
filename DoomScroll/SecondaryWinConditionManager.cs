@@ -48,6 +48,8 @@ namespace Doom_Scroll
             foreach (SecondaryWinCondition swc in playerSWCList)
             {
                 overallResults += swc.SendableResultsText(); // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+                DoomScroll._log.LogInfo("Added " + swc.SendableResultsText + " to overall Results.");
+                DoomScroll._log.LogInfo("Overall results now is: " + overallResults + "");
             }
             return overallResults;
         }
