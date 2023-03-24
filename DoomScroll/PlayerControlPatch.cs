@@ -33,9 +33,8 @@ namespace Doom_Scroll
                     List<uint> assignableTasks = new List<uint>();
                     foreach(PlayerTask task in __instance.myTasks)
                     {
-                        taskIds.Add(task.Id);
+                        taskIds.Add(task.Id); 
                     }
-                    // more taskIds to do than to assign
                     for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
                     {
                         int taskIndex = Random.Range(0, taskIds.Count - 1);

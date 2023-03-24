@@ -4,6 +4,7 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
+using static Il2CppSystem.Threading.SemaphoreSlim;
 
 namespace Doom_Scroll
 {
@@ -20,7 +21,7 @@ namespace Doom_Scroll
             }
         }
         // list of tasks assigned by each player - this will be displayed during meetings
-        private static List<(byte playerId, string taskName)> AssignedTasks;
+        private static List<AssignedTask> AssignedTasks;
         // list ofassignable tasks
         public List<uint> AssignableTasks { get; private set; }
         public int MaxAssignableTasks { get; private set; }
@@ -33,7 +34,8 @@ namespace Doom_Scroll
         private Sprite panelSprite;
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
-        
+        public bool isAssignerPanelActive;
+
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
         {
@@ -45,15 +47,20 @@ namespace Doom_Scroll
         {
             MaxAssignableTasks = 3;
             AssignableTasks = new List<uint>();
-            AssignedTasks = new List<(byte, string)>();
+            AssignedTasks = new List<AssignedTask>();
             PlayerButtons = new Dictionary<byte, CustomButton>();
+            isAssignerPanelActive = false;
         }
 
-        public void ActivatePanel(uint taskId, bool flag) 
+        public void ActivatePanel(bool flag) 
         {
-            CurrentMinigameTask = taskId;
             PlayerButtonHolder.UIGameObject.SetActive(flag);
+            isAssignerPanelActive = flag;
+        }
 
+        public void SetCurrentMinigameTask(uint id)
+        {
+            CurrentMinigameTask = id;
         }
         public void SetAssignableTasks(List<uint> tasks)
         {
@@ -65,6 +72,7 @@ namespace Doom_Scroll
             if (AmongUsClient.Instance.AmClient)
             {
                 AddToAssignedTasks(PlayerControl.LocalPlayer, player, task);
+                AssignableTasks.Remove(task);
             }
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)1);
             messageWriter.Write(player);
@@ -73,17 +81,14 @@ namespace Doom_Scroll
         }
         public void AddToAssignedTasks(PlayerControl sender, byte playerID, uint taskId)
         {
-            string taskName = " o_O ";
             foreach (PlayerTask task in sender.myTasks)
             {
                 if (task.Id == taskId)
                 {
-                    taskName = task.name;
+                    AssignedTasks.Add(new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID));
+                    DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK ID:" + task.TaskType);
                 }
             }
-            // add to list  (maybe we need to check if the task was already assigned and change if so??)
-            AssignedTasks.Add((playerID, taskName));
-            DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK ID:" + taskName);
         }
         
         public void CheckForPlayerButtonClick()
@@ -95,7 +100,7 @@ namespace Doom_Scroll
                 if (item.Value.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     RPCAddToAssignedTasks(item.Key, CurrentMinigameTask);
-                    PlayerButtonHolder.UIGameObject.SetActive(false);
+                    ActivatePanel(false);
                     DoomScroll._log.LogInfo("Task assigned: " + CurrentMinigameTask + ", to player: " + item.Key);
                 }
             }
@@ -117,11 +122,9 @@ namespace Doom_Scroll
         {
             string assignedTasks = "<NAME>\t\t<TASK> \n  " +
                                    "=====================================\n";
-            foreach (var entry in AssignedTasks)
-            {
-                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(entry.playerId);
-                if (player == null) { continue; }       // if player has left, we leave them out
-                assignedTasks += player.PlayerName + "\t\t" + entry.taskName + "\n";
+            foreach (AssignedTask entry in AssignedTasks)
+            {     
+                assignedTasks += entry.AssigneeName + "\t\t" + entry.Type + "\n";
             }
             return assignedTasks;
         }
@@ -161,7 +164,7 @@ namespace Doom_Scroll
                 }
             }
             // inactive at first, gets activated on task completition
-            PlayerButtonHolder.UIGameObject.SetActive(false);
+            ActivatePanel(false);
         }
 
     }

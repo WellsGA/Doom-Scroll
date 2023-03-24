@@ -21,9 +21,14 @@ namespace Doom_Scroll
         {
             ScreenshotManager.Instance.CheckButtonClicks();
             
-            if (Minigame.Instance != null && TaskAssigner.Instance.PlayerButtonHolder.UIGameObject.active)
+            if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
             {
                 TaskAssigner.Instance.CheckForPlayerButtonClick();
+            } 
+            else if (Minigame.Instance == null && TaskAssigner.Instance.isAssignerPanelActive)
+            {
+                // close the panel if no player was selected but the game is closed
+                TaskAssigner.Instance.ActivatePanel(false);
             }
         }
 
