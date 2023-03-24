@@ -144,23 +144,29 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("player count: " + GameData.Instance.AllPlayers.Count);
             GameObject parentPanel = HudManager.Instance.gameObject;
             PlayerButtonHolder = new CustomModal(parentPanel, "Button holder", panelSprite);
-            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count /2 + 1f, 0.5f);
+            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/1.5f + 1f, 1f);
             Vector3 pos = new Vector3(0, 0,- 50);
             PlayerButtonHolder.SetSize(size);
             PlayerButtonHolder.SetLocalPosition(pos);
-            Vector3 topLeftPos = new Vector3(pos.x - size.x/2, pos.y, pos.z - 10);
+            CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "Select a player to assign this task.");
+            title.SetLocalPosition(new Vector3(0, 0.3f, -10));
+            title.SetSize(1.6f);
+            Vector3 topLeftPos = new Vector3(pos.x - size.x/2 + 0.5f, pos.y - 0.1f, pos.z - 10);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead)
                 {
-                    CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, butttonSprite, topLeftPos, 0.4f);
+                    CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, butttonSprite, topLeftPos, 0.45f);
+                    CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
+                    label.SetLocalPosition(new Vector3(0, -btn.GetSize().x/2 - 0.05f, -10));
+                    label.SetSize(1.2f);
                     SpriteRenderer sr = btn.AddIconToButton(playerSprite);
                     sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
                     PlayerButtons.Add(playerInfo.PlayerId, btn);
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName);
-                    topLeftPos.x += 0.4f;
+                    topLeftPos.x += 0.6f;
                 }
             }
             // inactive at first, gets activated on task completition
