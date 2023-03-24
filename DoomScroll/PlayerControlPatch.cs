@@ -25,7 +25,10 @@ namespace Doom_Scroll
             
             if (__instance.myTasks != null && __instance.myTasks.Count > 0)
             {
-                TaskAssigner.Instance.CreateTaskAssignerPanel(); // players are ready, create the panel
+                if (AmongUsClient.Instance.AmClient)
+                {
+                    TaskAssigner.Instance.CreateTaskAssignerPanel(); // players are ready, create the panel
+                }  
                 // check for impostor
                 if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {

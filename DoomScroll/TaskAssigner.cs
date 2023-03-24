@@ -4,7 +4,6 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
-using static Il2CppSystem.Threading.SemaphoreSlim;
 
 namespace Doom_Scroll
 {
@@ -134,6 +133,7 @@ namespace Doom_Scroll
         public void CreateTaskAssignerPanel()
         {
             if (!HudManager.Instance) return;
+            PlayerButtons = new Dictionary<byte, CustomButton>();
             // Sprites: panel, button background, button icon
             panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
@@ -172,6 +172,5 @@ namespace Doom_Scroll
             // inactive at first, gets activated on task completition
             ActivatePanel(false);
         }
-
     }
 }
