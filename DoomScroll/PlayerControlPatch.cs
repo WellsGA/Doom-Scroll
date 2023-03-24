@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Hazel;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
@@ -19,28 +20,32 @@ namespace Doom_Scroll
 
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
-        public static void PostfixCoSetTasks(PlayerControl __instance)
+        public static void PostfixSetTasks(PlayerControl __instance)
         {
+            
             if (__instance.myTasks != null && __instance.myTasks.Count > 0)
-            {   // check for impostor
+            {
+                TaskAssigner.Instance.CreateTaskAssignerPanel(); // players are ready, create the panel
+                // check for impostor
                 if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {
-                    uint[] taskIds = new uint[TaskAssigner.Instance.MaxAssignableTasks];
-                    int i = 0;
+                    List<uint> taskIds = new List<uint>();
+                    List<uint> assignableTasks = new List<uint>();
                     foreach(PlayerTask task in __instance.myTasks)
                     {
-                        if(i < TaskAssigner.Instance.MaxAssignableTasks)
-                        {
-                            // to do: check for task type!!!! 
-                            taskIds[i] = task.Id;
-                            i++;
-                            continue;
-                        }
-                        break;
+                        taskIds.Add(task.Id);
                     }
-                    TaskAssigner.Instance.SetAssignableTask(taskIds);
-                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
-                }
+                    // more taskIds to do than to assign
+                    for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
+                    {
+                        int taskIndex = Random.Range(0, taskIds.Count - 1);
+                        assignableTasks.Add(taskIds[taskIndex]);
+                        taskIds.RemoveAt(taskIndex);
+                    }
+                        TaskAssigner.Instance.SetAssignableTasks(assignableTasks);
+                        DoomScroll._log.LogInfo("original " + __instance.myTasks.Count + " copy: " + assignableTasks.Count);
+                }                    
+                DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
             }
         }
 

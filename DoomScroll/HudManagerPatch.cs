@@ -20,16 +20,11 @@ namespace Doom_Scroll
         public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
-            if (Minigame.Instance != null)
+            
+            if (Minigame.Instance != null && TaskAssigner.Instance.PlayerButtonHolder.UIGameObject.active)
             {
-                // Minigame.Instance.MyNormTask field is protected ... :(
-                Transform go = Minigame.Instance.transform.Find("Button holder");
-                if (go != null)
-                {
-                    TaskAssigner.Instance.CheckForPlayerButtonClick();
-                }
+                TaskAssigner.Instance.CheckForPlayerButtonClick();
             }
-            // __instance.TaskText.text += "\nSWC: " + SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
         }
 
         [HarmonyPostfix]
