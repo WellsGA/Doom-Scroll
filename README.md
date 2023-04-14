@@ -19,11 +19,11 @@ Games have become a point of interest for combating misinformation, as they allo
 
 To do so, we have added the following game mechanics:
 
--a camera option where players can create screenshots during the standard round
+-a camera function where players can create screenshots during the standard round (the player's avatar will automatically be removed from the screenshot)
 
 -a sign-in function, where players can complete tasks but attribute the completion to another player
 
--a folder system containing both screenshots and the static data, that can be called during the meeting phase to use as evidence
+-a folder system containing both screenshots and the sign-in data, that can be called during the meeting phase to use as evidence
 
 -an updated chatfeed that allows folder artifacts to be shared amongst players, as well as removes the chat limiter so that players can see everything posted from previous rounds during a match
 
