@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using Hazel;
-using Il2CppSystem.Collections.Generic;
-using System;
-using System.Linq;
-using static GameData;
+using UnityEngine;
+using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
@@ -18,37 +16,39 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(PlayerControl))]
     public static class PlayerControlPatch
     {
-        static int i = 0;
+        static int count = 0;
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__110), nameof(PlayerControl._CoSetTasks_d__110.MoveNext))]
-        public static void PostfixCoSetTasks(PlayerControl._CoSetTasks_d__110 __instance)
+        [HarmonyPatch("SetTasks")]
+        public static void PostfixSetTasks(PlayerControl __instance)
         {
-            List<PlayerTask> tasks = __instance.__4__this.myTasks;
-            // check for impostor
-            if (tasks != null && tasks.Count > 0)
+
+            if (__instance.myTasks != null && __instance.myTasks.Count > 0)
             {
-                if (__instance.__4__this.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != RoleTypes.Impostor)
+                if (AmongUsClient.Instance.AmClient)
                 {
-                    TaskAssigner.Instance.SelectRandomTasks(tasks);
-                    DoomScroll._log.LogInfo("SelectRandomTasks Function called " + i++ + " times");
+                    TaskAssigner.Instance.CreateTaskAssignerPanel(); // players are ready, create the panel
                 }
-            }
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch("CompleteTask")]
-        public static void PostfixCompleteTasks(PlayerControl __instance, uint idx)
-        {
-           TaskInfo taskInfo = __instance.Data.FindTaskById(idx);
-            if (taskInfo == null)
-            {
-                DoomScroll._log.LogInfo("Task not found: " + idx.ToString());
-                return;
-            }
-            if (taskInfo.Complete && TaskAssigner.Instance.AssignableTasksIDs.Contains(idx))
-            {
-                TaskAssigner.Instance.AssignPlayerToTask(idx);
+                // check for impostor
+                if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != RoleTypes.Impostor)
+                    //NEED TO FIX changed AmongUs.GameOptions.RoleTypes.Imposter to just RoleTypes.Impostor. Not sure if that messes things up.
+                {
+                    List<uint> taskIds = new List<uint>();
+                    List<uint> assignableTasks = new List<uint>();
+                    foreach (PlayerTask task in __instance.myTasks)
+                    {
+                        taskIds.Add(task.Id);
+                    }
+                    for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
+                    {
+                        int taskIndex = Random.Range(0, taskIds.Count - 1);
+                        assignableTasks.Add(taskIds[taskIndex]);
+                        taskIds.RemoveAt(taskIndex);
+                    }
+                    TaskAssigner.Instance.SetAssignableTasks(assignableTasks);
+                    DoomScroll._log.LogInfo("original " + __instance.myTasks.Count + " copy: " + assignableTasks.Count);
+                }
+                DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
             }
         }
 

@@ -15,7 +15,7 @@ namespace Doom_Scroll
         public static void Postfix(Scroller __instance)
         {
 
-            if (!m_ScrollerPatchHasRun)
+            if (!m_ScrollerPatchHasRun && GameObject.Find("ChatUI") != null)
             {
                 __instance.ContentYBounds = new FloatRange(float.MinValue, float.MaxValue);
             }

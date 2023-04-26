@@ -14,7 +14,7 @@ namespace Doom_Scroll.UI
             Vector3 pos = keyboardBtn.transform.localPosition;
             SpriteRenderer sr = keyboardBtn.GetComponent<SpriteRenderer>();
             Vector2 size = sr ? sr.size : new Vector2(0.5f, 0.5f);
-            Vector3 position = new(pos.x, pos.y + size.y + 0.1f, pos.z);
+            Vector3 position = new(pos.x, pos.y + size.y * 2 + 0.05f, pos.z);
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", slices);
             CustomButton folderBtn = new CustomButton(parent, "FolderToggleButton", btnSprites, position, size.x);
@@ -28,8 +28,8 @@ namespace Doom_Scroll.UI
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
 
             // create the overlay background
-            CustomModal folderOverlay = new CustomModal(parent, "FolderOverlay", spr);  
-            folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));       
+            CustomModal folderOverlay = new CustomModal(parent, "FolderOverlay", spr);
+            folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));
             if (backgroundSR != null)
             {
                 folderOverlay.SetSize(backgroundSR.size);
@@ -72,6 +72,8 @@ namespace Doom_Scroll.UI
             CustomText pathText = new CustomText(parent, "PathName", "Home");
             // RectTransform rt = pathText.AddComponent<RectTransform>();
             // rt.sizeDelta = new Vector2(-sr.size.x / 2 - 3 * buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y);
+            Vector3 vec = new Vector3(pathText.UIGameObject.transform.localPosition.x, pathText.UIGameObject.transform.localPosition.y, pathText.UIGameObject.transform.localPosition.z + 50);
+            pathText.SetLocalPosition(vec);
             return pathText;
         }
     }

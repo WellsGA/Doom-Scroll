@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Linq;
 using UnityEngine;
 
 namespace Doom_Scroll
@@ -8,20 +9,24 @@ namespace Doom_Scroll
     {
         [HarmonyPostfix]
         [HarmonyPatch("Begin")]
-        public static void PostfixBegin(Minigame __instance) 
+        public static void PostfixBegin(Minigame __instance, PlayerTask task)
         {
-            // GameObject parent = __instance.gameObject.transform.Find("Background").gameObject;
-            GameObject closeBtn = __instance.gameObject.transform.Find("CloseButton").gameObject;
-            if(closeBtn)
+            // no prefab or not a player task or no assignable tasks
+            if (__instance == null || __instance.TaskType == TaskTypes.None || TaskAssigner.Instance.AssignableTasks == null) return;
+            DoomScroll._log.LogInfo("Beging called");
+            foreach (uint pt in TaskAssigner.Instance.AssignableTasks)
             {
-                TaskAssigner.Instance.CreateTaskAssignerPanel(__instance.gameObject, closeBtn);
-                DoomScroll._log.LogInfo("Background found, adding panel ");
-
-            }
-            else
-            {
-                DoomScroll._log.LogInfo("No background found in Minigame: " + __instance.TaskType);
+                DoomScroll._log.LogInfo("task id: " + task.Id + "pt id" + pt);
+                if (pt == task.Id)
+                {
+                    DoomScroll._log.LogInfo("Task Assignable");
+                    TaskAssigner.Instance.ActivatePanel(true);
+                    TaskAssigner.Instance.SetCurrentMinigameTask(pt); //set the active assignable task id
+                    break;
+                }
+                DoomScroll._log.LogInfo("Task NOT Assignable");
             }
         }
+
     }
 }
