@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Doom_Scroll
 {
@@ -11,18 +12,28 @@ namespace Doom_Scroll
         {
             ScreenshotManager.Instance.ReSet();
             FolderManager.Instance.Reset();
+            TaskAssigner.Instance.Reset();
         }
 
         [HarmonyPostfix]
         [HarmonyPatch("Update")]
-        public static void PostfixUpdate(HudManager __instance)
+        public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
-            // __instance.TaskText.text += "\nSWC: " + SecondaryWinConditionHolder.getSomePlayerSWC(PlayerControl.LocalPlayer._cachedData.PlayerId).SWCAssignText();
+
+            if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
+            {
+                TaskAssigner.Instance.CheckForPlayerButtonClick();
+            }
+            else if (Minigame.Instance == null && TaskAssigner.Instance.isAssignerPanelActive)
+            {
+                // close the panel if no player was selected but the game is closed
+                TaskAssigner.Instance.ActivatePanel(false);
+            }
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch("SetHudActive")]
+        [HarmonyPatch(nameof(HudManager.SetHudActive), new[] { typeof(bool) })]
         public static void PostfixSetHudActive(bool isActive)
         {
             if (!ScreenshotManager.Instance.IsCameraOpen)
@@ -40,7 +51,7 @@ namespace Doom_Scroll
             if (ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ToggleCamera();
-                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED" );
+                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED");
             }
         }
     }
