@@ -22,6 +22,7 @@ namespace Doom_Scroll
         public static CustomButton close_button;
         public static DialogueBox Dialogue = new DialogueBox();
         public static CreditsScreenPopUp our_credits = new();
+        public static AspectPosition aspect = new AspectPosition();
         public static bool AreCreditsOpen { get; private set; }
 
         public static void ShowPopUp(string text)
