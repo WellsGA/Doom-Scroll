@@ -131,7 +131,18 @@ namespace Doom_Scroll
 
         public string SendableResultsText()
         {
-            return GetPlayerName() + " " + SWCResultsText() + "\n"; // will create a string in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+            if (playerSWCGoal == Goal.None)
+            {
+                return "";
+            }
+            else if (swcSuccess)
+            {
+                return GetPlayerName() + " " + ToString() + ": Success\n";
+            }
+            else
+            {
+                return GetPlayerName() + " " + ToString() + ": Failure\n";
+            }
         }
 
         // RPCs
