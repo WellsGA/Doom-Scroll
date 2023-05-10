@@ -99,19 +99,26 @@ namespace Doom_Scroll
                         */
                         //NEW SECTION
                         List<byte> imageByteArray = new List<byte>();
+                        DoomScroll._log.LogMessage("--------------\nreceiving string of bytearray");
                         string linesString = reader.ReadString();
+                        DoomScroll._log.LogMessage($"--------------\nstring of bytearray received: {linesString}");
                         string[] linesList = linesString.Split(' ');
                         int lineCounter = 0;
+                        DoomScroll._log.LogMessage($"--------------PARSING STRING OF BYTE LINES--------------");
                         foreach (string str in linesList)
                         {
                             if (str.Length > 1)
                             {
+                                DoomScroll._log.LogMessage($"Line #{lineCounter}: {str}");
                                 string lineCounterString = $"{lineCounter}";
+                                DoomScroll._log.LogMessage($"original byte (without lineCounter atttached): {str.Substring(lineCounterString.Length)}");
                                 imageByteArray.Add((byte)(Int32.Parse(str.Substring(lineCounterString.Length))));
                             }
                             lineCounter = lineCounter + 1;
                         }
+                        DoomScroll._log.LogMessage($"--------------PARSING COMPLETE--------------");
                         byte[] imageBytes = imageByteArray.ToArray();
+                        DoomScroll._log.LogMessage($"COMPLETED BYTE ARRAY: {imageBytes}");
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
                             ChatControllerPatch.screenshot = imageBytes;

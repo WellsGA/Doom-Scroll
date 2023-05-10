@@ -39,16 +39,20 @@ namespace Doom_Scroll
             // NEW SENDING METHOD: WRITE EACH BYTE INDIVIDUALLY, WITH A STRING NUMBER ON FRONT? THEN SEND COMPILED STRING
             // OVERALL STRING MAY BE TOO BIG; COULD TRY USING .Write() ON EACH LINE SEPARATELY?
             //          messageWriter.Write($"{line_counter}{imgLine}");
-            int line_counter = 0;
+            int lineCounter = 0;
             string lines = "";
+            DoomScroll._log.LogMessage("Creating string of bytearray:\n------------");
             foreach (byte imgLine in image)
             {
-                lines = lines + $"{line_counter}{imgLine} ";
-                line_counter = line_counter + 1;
+                DoomScroll._log.LogMessage($"LINE {lineCounter}: {imgLine}");
+                lines = lines + $"{lineCounter}{imgLine} ";
+                lineCounter = lineCounter + 1;
             }
+            DoomScroll._log.LogMessage($"--------------\nstring of bytearray created: {lines}");
             messageWriter.Write(lines);
             //NEW SECTION ENDS HERE
             messageWriter.EndMessage();
+            DoomScroll._log.LogMessage("--------------\nstring of bytearray sent!");
             return true;
         }       
     }
