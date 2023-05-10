@@ -34,9 +34,43 @@ namespace Doom_Scroll
                 string chatMessage = PlayerControl.LocalPlayer.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatMessage);
             }
-            messageWriter.WriteBytesAndSize(image);
+            // messageWriter.WriteBytesAndSize(image);
+
+            // NEW SENDING METHOD: WRITE EACH BYTE INDIVIDUALLY, WITH A STRING NUMBER ON FRONT? THEN SEND COMPILED STRING
+            // OVERALL STRING MAY BE TOO BIG; COULD TRY USING .Write() ON EACH LINE SEPARATELY?
+            //          messageWriter.Write($"{line_counter}{imgLine}");
+            int line_counter = 0;
+            string lines = "";
+            foreach (byte imgLine in image)
+            {
+                lines = lines + $"{line_counter}{imgLine} ";
+                line_counter = line_counter + 1;
+            }
+            messageWriter.Write(lines);
+            //NEW SECTION ENDS HERE
             messageWriter.EndMessage();
             return true;
         }       
     }
+    //UNUSED, FOR NOW
+    public class Line
+    {
+        private int lineCounter;
+        private byte line;
+        public Line(int lCounter, byte l)
+        {
+            lineCounter = lCounter;
+            line = l;
+        }
+    }
+    /*
+    public class Photo
+    {
+        private byte[] image;
+        public Photo(byte[] img)
+        {
+            image = img;
+        }
+    }
+    */
 }

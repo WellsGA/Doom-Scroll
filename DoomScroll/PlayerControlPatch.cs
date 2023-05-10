@@ -2,6 +2,7 @@
 using Hazel;
 using UnityEngine;
 using System.Collections.Generic;
+using Il2CppSystem;
 
 namespace Doom_Scroll
 {
@@ -40,7 +41,7 @@ namespace Doom_Scroll
                     }
                     for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
                     {
-                        int taskIndex = Random.Range(0, taskIds.Count - 1);
+                        int taskIndex = UnityEngine.Random.Range(0, taskIds.Count - 1);
                         assignableTasks.Add(taskIds[taskIndex]);
                         taskIds.RemoveAt(taskIndex);
                     }
@@ -83,6 +84,8 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDIMAGE:
                     {
+                        //Original Code:
+                        /*
                         byte[] imageBytes = reader.ReadBytesAndSize();
                         // DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length); // debug
                         if (DestroyableSingleton<HudManager>.Instance)
@@ -93,6 +96,32 @@ namespace Doom_Scroll
                             return;
                         }
                         break;
+                        */
+                        //NEW SECTION
+                        List<byte> imageByteArray = new List<byte>();
+                        string linesString = reader.ReadString();
+                        string[] linesList = linesString.Split(' ');
+                        int lineCounter = 0;
+                        foreach (string str in linesList)
+                        {
+                            if (str.Length > 1)
+                            {
+                                string lineCounterString = $"{lineCounter}";
+                                imageByteArray.Add((byte)(Int32.Parse(str.Substring(lineCounterString.Length))));
+                            }
+                            lineCounter = lineCounter + 1;
+                        }
+                        byte[] imageBytes = imageByteArray.ToArray();
+                        if (DestroyableSingleton<HudManager>.Instance)
+                        {
+                            ChatControllerPatch.screenshot = imageBytes;
+                            string chatMessage = __instance.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
+                            HudManager.Instance.Chat.AddChat(__instance, chatMessage);
+                            return;
+                        }
+                        break;
+                        //NEW SECTION ENDS HERE
+
                     }
             }
         }
