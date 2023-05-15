@@ -18,6 +18,7 @@ namespace Doom_Scroll
     public static class PlayerControlPatch
     {
         static int count = 0;
+        private static Dictionary<String, DoomScrollImage> currentImagesAssembling = new Dictionary<String, DoomScrollImage>();
 
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
@@ -84,50 +85,51 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDIMAGE:
                     {
-                        //Original Code:
-                        /*
-                        byte[] imageBytes = reader.ReadBytesAndSize();
-                        // DoomScroll._log.LogInfo("Image received! Size:" + imageBytes.Length); // debug
-                        if (DestroyableSingleton<HudManager>.Instance)
+                        DoomScroll._log.LogMessage("--------------\nReceiving RPC image\n--------------");
+                        byte numMessages = reader.ReadByte();
+                        byte pID = reader.ReadByte();
+                        byte imgID = reader.ReadByte();
+                        DoomScrollImage currentImage = new DoomScrollImage(numMessages, pID, imgID);
+                        String currentImageKey = $"{pID}{imgID}";
+                        currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
+                        DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
+                        for (int i = 0; i < (int)numMessages; i++)
                         {
-                            ChatControllerPatch.screenshot = imageBytes;
-                            string chatMessage = __instance.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
-                            HudManager.Instance.Chat.AddChat(__instance, chatMessage);
-                            return;
-                        }
-                        break;
-                        */
-                        //NEW SECTION
-                        List<byte> imageByteArray = new List<byte>();
-                        DoomScroll._log.LogMessage("--------------\nreceiving string of bytearray");
-                        string linesString = reader.ReadString();
-                        DoomScroll._log.LogMessage($"--------------\nstring of bytearray received: {linesString}");
-                        string[] linesList = linesString.Split(' ');
-                        int lineCounter = 0;
-                        DoomScroll._log.LogMessage($"--------------PARSING STRING OF BYTE LINES--------------");
-                        foreach (string str in linesList)
-                        {
-                            if (str.Length > 1)
+                            byte[] imageBytesSection = reader.ReadBytesAndSize();
+                            if (imageBytesSection[0] == pID && imageBytesSection[1] == imgID)
                             {
-                                DoomScroll._log.LogMessage($"Line #{lineCounter}: {str}");
-                                string lineCounterString = $"{lineCounter}";
-                                DoomScroll._log.LogMessage($"original byte (without lineCounter atttached): {str.Substring(lineCounterString.Length)}");
-                                imageByteArray.Add((byte)(Int32.Parse(str.Substring(lineCounterString.Length))));
+                                currentImagesAssembling[currentImageKey].InsertByteChunk(imageBytesSection);
+                                DoomScroll._log.LogMessage($"Received image chunk #{i+1} out of {numMessages}, inserted to current DoomScrollImage");
                             }
-                            lineCounter = lineCounter + 1;
+                            else
+                            {
+                                //HERE IS WHERE WE MAY WANT TO HANDLE ACCIDENTALLY RECEIVING ANOTHER IMAGE'S MESSAGES
+                            }
                         }
-                        DoomScroll._log.LogMessage($"--------------PARSING COMPLETE--------------");
-                        byte[] imageBytes = imageByteArray.ToArray();
-                        DoomScroll._log.LogMessage($"COMPLETED BYTE ARRAY: {imageBytes}");
-                        if (DestroyableSingleton<HudManager>.Instance)
+                        if (reader.ReadString() == "END OF MESSAGE")
                         {
-                            ChatControllerPatch.screenshot = imageBytes;
-                            string chatMessage = __instance.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
-                            HudManager.Instance.Chat.AddChat(__instance, chatMessage);
-                            return;
+                            DoomScroll._log.LogMessage("Image receiving complete!");
+                        }
+                        if (currentImagesAssembling[currentImageKey].CompileImage())
+                        {
+                            if (DestroyableSingleton<HudManager>.Instance)
+                            {
+                                ChatControllerPatch.screenshot = currentImagesAssembling[currentImageKey].Image;
+                                string chatMessage = __instance.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
+                                HudManager.Instance.Chat.AddChat(__instance, chatMessage);
+                                return;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            DoomScroll._log.LogMessage("IMAGE MISSING SECTION(S)");
+                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[currentImageKey].GetMissingLines()}");
+
+                            DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {pID} AND imgID {imgID}\n");
+                            // LATER HERE WE CAN FIX THIS
                         }
                         break;
-                        //NEW SECTION ENDS HERE
 
                     }
             }
