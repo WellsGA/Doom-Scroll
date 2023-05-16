@@ -122,12 +122,12 @@ namespace Doom_Scroll
                     currentImageSection.Insert(0, playerID);
                 }
                 messageWriter.WriteBytesAndSize(currentImageSection.ToArray());
-                DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent.");
+                DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {currentImageSection.Count}");
             }
             messageWriter.Write("END OF MESSAGE");
             DoomScroll._log.LogMessage("All bytearrays sent.");
             return true;
-        }       
+        }
     }
     //UNUSED, FOR NOW
     public class Line
