@@ -68,12 +68,9 @@ namespace Doom_Scroll.UI
         }
         public static CustomText AddPath(GameObject parent)
         {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             CustomText pathText = new CustomText(parent, "PathName", "Home");
-            // RectTransform rt = pathText.AddComponent<RectTransform>();
-            // rt.sizeDelta = new Vector2(-sr.size.x / 2 - 3 * buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y);
-            Vector3 vec = new Vector3(pathText.UIGameObject.transform.localPosition.x, pathText.UIGameObject.transform.localPosition.y, pathText.UIGameObject.transform.localPosition.z+50);
-            pathText.SetLocalPosition(vec);
+            pathText.SetLocalPosition(new Vector3(0, 0.3f, -10));
+            pathText.SetSize(1.6f);
             return pathText;
         }
     }

@@ -29,7 +29,6 @@ namespace Doom_Scroll
         
         // UI elements
         public CustomModal PlayerButtonHolder { get; private set; }
-        private CustomText panelTitle;
         private Sprite panelSprite;
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
@@ -82,10 +81,10 @@ namespace Doom_Scroll
         {
             foreach (PlayerTask task in sender.myTasks)
             {
-                if (task.Id == taskId)
+                if (task.Id == taskId) // check if sender really had that task and get the type
                 {
                     AssignedTasks.Add(new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID));
-                    DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK ID:" + task.TaskType);
+                    DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK TYPE:" + task.TaskType);
                 }
             }
         }
@@ -100,7 +99,6 @@ namespace Doom_Scroll
                 {
                     RPCAddToAssignedTasks(item.Key, CurrentMinigameTask);
                     ActivatePanel(false);
-                    DoomScroll._log.LogInfo("Task assigned: " + CurrentMinigameTask + ", to player: " + item.Key);
                 }
             }
         }
@@ -122,7 +120,8 @@ namespace Doom_Scroll
             string assignedTasks = "<NAME>\t\t<TASK> \n  " +
                                    "=====================================\n";
             foreach (AssignedTask entry in AssignedTasks)
-            {     
+            {
+                // we can check for completition here
                 assignedTasks += entry.AssigneeName + "\t\t" + entry.Type + "\n";
             }
             return assignedTasks;
@@ -145,13 +144,14 @@ namespace Doom_Scroll
             GameObject parentPanel = HudManager.Instance.gameObject;
             PlayerButtonHolder = new CustomModal(parentPanel, "Button holder", panelSprite);
             Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/1.5f + 1f, 1f);
-            Vector3 pos = new Vector3(0, 0,- 50);
+            Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
+            Vector3 pos = new Vector3(0, -bounds.y/2+size.y/2,- 50);
             PlayerButtonHolder.SetSize(size);
             PlayerButtonHolder.SetLocalPosition(pos);
-            CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "Select a player to assign this task.");
+            CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "You can assign this task to another player before you complete it.");
             title.SetLocalPosition(new Vector3(0, 0.3f, -10));
             title.SetSize(1.6f);
-            Vector3 topLeftPos = new Vector3(pos.x - size.x/2 + 0.5f, pos.y - 0.1f, pos.z - 10);
+            Vector3 topLeftPos = new Vector3(pos.x - size.x/2 + 0.5f, -0.1f, pos.z - 10);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)

@@ -196,8 +196,7 @@ namespace Doom_Scroll
             {
                 m_previous = m_current;
                 m_current = folder;
-                m_pathText.SetText("LOTS OF WORDS");
-                //m_pathText.SetText(folder.Path);
+                m_pathText.SetText(folder.Path);
                 m_previous.HideContent();
                 m_current.Btn.ButtonEvent.InvokeAction();
             }
