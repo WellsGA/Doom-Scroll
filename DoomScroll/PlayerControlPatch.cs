@@ -93,12 +93,14 @@ namespace Doom_Scroll
                         String currentImageKey = $"{pID}{imgID}";
                         currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
+                        DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary: {currentImagesAssembling}");
                         for (int i = 0; i < (int)numMessages; i++)
                         {
                             byte playerid = reader.ReadByte();
                             int imageid = reader.ReadByte();
                             int sectionIndex = reader.ReadInt32();
                             byte[] imageBytesSection = reader.ReadBytesAndSize();
+                            DoomScroll._log.LogMessage($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
                             currentImagesAssembling[$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
                             DoomScroll._log.LogMessage($"Received image chunk #{i} out of {numMessages}, inserted to current DoomScrollImage");
                             
