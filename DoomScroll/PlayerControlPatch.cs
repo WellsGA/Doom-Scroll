@@ -86,7 +86,7 @@ namespace Doom_Scroll
                 case (byte)CustomRPC.SENDIMAGE:
                     {
                         DoomScroll._log.LogMessage("--------------\nReceiving RPC image\n--------------");
-                        byte numMessages = reader.ReadByte();
+                        int numMessages = reader.ReadInt32();
                         byte pID = reader.ReadByte();
                         byte imgID = reader.ReadByte();
                         DoomScrollImage currentImage = new DoomScrollImage(numMessages, pID, imgID);
@@ -95,16 +95,13 @@ namespace Doom_Scroll
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
                         for (int i = 0; i < (int)numMessages; i++)
                         {
+                            byte playerid = reader.ReadByte();
+                            byte imageid = reader.ReadByte();
+                            int sectionIndex = reader.ReadInt32();
                             byte[] imageBytesSection = reader.ReadBytesAndSize();
-                            if (imageBytesSection[0] == pID && imageBytesSection[1] == imgID)
-                            {
-                                currentImagesAssembling[currentImageKey].InsertByteChunk(imageBytesSection);
-                                DoomScroll._log.LogMessage($"Received image chunk #{i+1} out of {numMessages}, inserted to current DoomScrollImage");
-                            }
-                            else
-                            {
-                                //HERE IS WHERE WE MAY WANT TO HANDLE ACCIDENTALLY RECEIVING ANOTHER IMAGE'S MESSAGES
-                            }
+                            currentImagesAssembling[$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
+                            DoomScroll._log.LogMessage($"Received image chunk #{i} out of {numMessages}, inserted to current DoomScrollImage");
+                            
                         }
                         if (reader.ReadString() == "END OF MESSAGE")
                         {

@@ -19,12 +19,12 @@ namespace Doom_Scroll
         public byte ImgNumber { get; }
         public byte[] Image { get; }
 
-        public DoomScrollImage(byte numMessages, byte send, byte num)
+        public DoomScrollImage(int numMessages, byte send, byte num)
         {
             sender = send;
             imgNumber = num;
             imageList = new List<byte[]>(numMessages); //this apparently doesn't let you assign stuff to random positions though
-            for (int i = 0; i < imgNumber; i++) imageList.Add(null);
+            //for (int i = 0; i < imgNumber; i++) imageList.Add(null);
         }
 
         public bool SameImage(byte send, byte num)
@@ -35,13 +35,9 @@ namespace Doom_Scroll
             }
             return false;
         }
-        public void InsertByteChunk(byte[] byteChunk)
+        public void InsertByteChunk(int sectionIndex, byte[] byteChunk)
         {
-            if (byteChunk.Length > 1)
-            {
-                imageList.Insert((int)byteChunk[0], byteChunk[1..]);
-                // If above slice doesn't work, try this: (byte[])byteChunk.Skip(1)
-            }
+            imageList.Insert((int)sectionIndex, byteChunk);
         }
 
         public bool CompileImage()
@@ -108,24 +104,23 @@ namespace Doom_Scroll
             DoomScroll._log.LogMessage($"Sent image info: \n* {numMessages} messages to send\n* from player ID {playerID}\n* image ID number {imageID}");
             foreach (int i in Enumerable.Range(0, numMessages))
             {
-                List<byte> currentImageSection;
+                messageWriter.Write(playerID);
+                messageWriter.Write(imageID);
+                messageWriter.Write(i);
                 if (i != numMessages - 1)
                 {
-                    currentImageSection = image.Skip(1000 * i).Take(1000).ToList();
-                    currentImageSection.Insert(0, imageID);
-                    currentImageSection.Insert(0, playerID);
+                    messageWriter.WriteBytesAndSize(image.Skip(1000 * i).Take(1000).ToArray());
+                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).Take(1000).ToArray()}");
                 }
                 else
                 {
-                    currentImageSection = image.Skip(1000 * i).ToList();
-                    currentImageSection.Insert(0, imageID);
-                    currentImageSection.Insert(0, playerID);
+                    messageWriter.WriteBytesAndSize(image.Skip(1000 * i).ToArray());
+                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).ToArray()}");
                 }
-                messageWriter.WriteBytesAndSize(currentImageSection.ToArray());
-                DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {currentImageSection.Count}");
             }
             messageWriter.Write("END OF MESSAGE");
             DoomScroll._log.LogMessage("All bytearrays sent.");
+            messageWriter.EndMessage();
             return true;
         }
     }
