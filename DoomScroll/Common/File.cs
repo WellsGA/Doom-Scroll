@@ -5,6 +5,7 @@ using static Doom_Scroll.UI.CustomButton;
 
 namespace Doom_Scroll.Common
 {
+
     public enum FileType
     {
         IMAGE,
@@ -20,13 +21,17 @@ namespace Doom_Scroll.Common
         private SpriteRenderer m_spriteRenderer;
         private byte[] m_content;
         private FileType m_type;
+        private int m_id;
+        private static int m_idCounter = 0;
+
         public File(string parentPath, GameObject parentPanel, string name, byte[] image, FileType fileType)
         {
             Picture = ImageLoader.ReadImageFromByteArray(image);
             Path = parentPath + "/" + name;
             m_type = fileType;
             m_content = image;
-            
+            m_id = m_idCounter++;
+
             Dir = new GameObject("name");
             Dir.layer = LayerMask.NameToLayer("UI");
             Dir.transform.SetParent(parentPanel.transform);
@@ -53,7 +58,7 @@ namespace Doom_Scroll.Common
             {
                 case FileType.IMAGE:
                     DoomScroll._log.LogInfo("Share Button Clicked!");
-                    SendImageInChat.RpcSendChatImage(m_content);
+                    SendImageInChat.RpcSendChatImage(m_id, m_content);
                     return;
                 case FileType.MAPSOURCE:
                     // to do

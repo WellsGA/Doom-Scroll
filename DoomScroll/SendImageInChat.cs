@@ -12,14 +12,14 @@ namespace Doom_Scroll
     public class DoomScrollImage
     {
         private byte sender;
-        private byte imgNumber;
+        private int imgNumber;
         private byte[] image;
         private List<byte[]> imageList;
         public byte Sender { get; }
         public byte ImgNumber { get; }
         public byte[] Image { get; }
 
-        public DoomScrollImage(int numMessages, byte send, byte num)
+        public DoomScrollImage(int numMessages, byte send, int num)
         {
             sender = send;
             imgNumber = num;
@@ -74,7 +74,7 @@ namespace Doom_Scroll
     {
         private static int ImageSize = 15;
         private static int ImageSectionLength = 1000;
-        public static bool RpcSendChatImage(byte[] image)
+        public static bool RpcSendChatImage(int id, byte[] image)
         {    
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGE, (SendOption)1);
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
@@ -84,7 +84,7 @@ namespace Doom_Scroll
             image = img.texture.EncodeToJPG(15); // CURRENT RESIZE OF THE IMAGE IS 15, BUT CAN BE CHANGED AS NEEDED
             int numBytes = Buffer.ByteLength(image);
             byte playerID = PlayerControl.LocalPlayer.PlayerId;
-            byte imageID = 0; // QUESTION FOR AGNES: HOW AND WHERE CAN I GET THE IMAGE ID?
+            int imageID = id; // QUESTION FOR AGNES: HOW AND WHERE CAN I GET THE IMAGE ID?
 
             DoomScroll._log.LogInfo("New image size: " + numBytes + ", byte array length: " + image.Length + ", buffer: " + buffer);
 

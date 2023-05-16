@@ -88,7 +88,7 @@ namespace Doom_Scroll
                         DoomScroll._log.LogMessage("--------------\nReceiving RPC image\n--------------");
                         int numMessages = reader.ReadInt32();
                         byte pID = reader.ReadByte();
-                        byte imgID = reader.ReadByte();
+                        int imgID = reader.ReadByte();
                         DoomScrollImage currentImage = new DoomScrollImage(numMessages, pID, imgID);
                         String currentImageKey = $"{pID}{imgID}";
                         currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
@@ -96,7 +96,7 @@ namespace Doom_Scroll
                         for (int i = 0; i < (int)numMessages; i++)
                         {
                             byte playerid = reader.ReadByte();
-                            byte imageid = reader.ReadByte();
+                            int imageid = reader.ReadByte();
                             int sectionIndex = reader.ReadInt32();
                             byte[] imageBytesSection = reader.ReadBytesAndSize();
                             currentImagesAssembling[$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
