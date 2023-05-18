@@ -72,19 +72,14 @@ namespace Doom_Scroll
 
     public class SendImageInChat : MonoBehaviour
     {
-        private static int ImageSize = 15;
-        private static int ImageSectionLength = 1000;
-        public static bool RpcSendChatImage(int id, byte[] image)
+        public static bool RpcSendChatImage(byte playerID, int imageID, byte[] image, int numMessages)
         {    
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGE, (SendOption)1);
             DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos "+ messageWriter.Position);
             int buffer = messageWriter.Buffer.Length - messageWriter.Position-3;
             
-            Sprite img = ImageLoader.ReadImageFromByteArray(image);
-            image = img.texture.EncodeToJPG(15); // CURRENT RESIZE OF THE IMAGE IS 15, BUT CAN BE CHANGED AS NEEDED
-            int numBytes = Buffer.ByteLength(image);
-            byte playerID = PlayerControl.LocalPlayer.PlayerId;
-            int imageID = id; // QUESTION FOR AGNES: HOW AND WHERE CAN I GET THE IMAGE ID?
+             // CURRENT RESIZE OF THE IMAGE IS 15, BUT CAN BE CHANGED AS NEEDED
+            int numBytes = image.Length;
 
             DoomScroll._log.LogInfo("New image size: " + numBytes + ", byte array length: " + image.Length + ", buffer: " + buffer);
 
@@ -95,31 +90,27 @@ namespace Doom_Scroll
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatMessage);
             }
 
-            int numMessages = (int)Math.Ceiling(numBytes / ImageSectionLength*1f); // CURRENT SIZE OF AN ARRAY WE ARE SENDING IS 1000.0, BUT CAN BE CHANGED AS NEEDED
+             // CURRENT SIZE OF AN ARRAY WE ARE SENDING IS 1000.0, BUT CAN BE CHANGED AS NEEDED
             DoomScroll._log.LogMessage($"Image is {image.Length} bytes long, so there will be {numMessages} messages to send.");
 
             messageWriter.Write(numMessages);
             messageWriter.Write(playerID);
             messageWriter.Write(imageID);
             DoomScroll._log.LogMessage($"Sent image info: \n* {numMessages} messages to send\n* from player ID {playerID}\n* image ID number {imageID}");
-            foreach (int i in Enumerable.Range(0, numMessages))
-            {
-                messageWriter.Write(playerID);
-                messageWriter.Write(imageID);
-                messageWriter.Write(i);
-                if (i != numMessages - 1)
-                {
-                    messageWriter.WriteBytesAndSize(image.Skip(1000 * i).Take(1000).ToArray());
-                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).Take(1000).ToArray()}");
-                }
-                else
-                {
-                    messageWriter.WriteBytesAndSize(image.Skip(1000 * i).ToArray());
-                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).ToArray()}");
-                }
-            }
-            messageWriter.Write("END OF MESSAGE");
-            DoomScroll._log.LogMessage("All bytearrays sent.");
+            
+            //messageWriter.Write("END OF MESSAGE");
+            //DoomScroll._log.LogMessage("All bytearrays sent.");
+            
+            messageWriter.EndMessage();
+            return true;
+        }
+        public static bool RPCSendChatImagePiece(byte playerID, int imageID, byte[] section, int numMessages, int sectionID)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGEPIECE, (SendOption)1);
+            messageWriter.Write(playerID);
+            messageWriter.Write(imageID);
+            messageWriter.Write(sectionID);
+            messageWriter.WriteBytesAndSize(section);
             messageWriter.EndMessage();
             return true;
         }

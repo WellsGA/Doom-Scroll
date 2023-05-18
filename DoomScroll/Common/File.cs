@@ -1,5 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using Doom_Scroll.UI;
+using Hazel;
 using UnityEngine;
 using static Doom_Scroll.UI.CustomButton;
 
@@ -13,6 +16,8 @@ namespace Doom_Scroll.Common
     }
     public class File : IDirectory
     {
+        private static int ImageSize = 15;
+        private static int ImageSectionLength = 1000;
         public GameObject Dir { get; private set; }
         public string Path { get; private set; }
         public Sprite Picture { get; private set; }
@@ -57,8 +62,29 @@ namespace Doom_Scroll.Common
             switch (m_type)
             {
                 case FileType.IMAGE:
+                    //preparing arguments for RPCs
+                    int numMessages = (int)Math.Ceiling(m_content.Length / ImageSectionLength * 1f);
+                    byte pID = PlayerControl.LocalPlayer.PlayerId;
+                    Sprite img = ImageLoader.ReadImageFromByteArray(m_content);
+                    byte[] image = img.texture.EncodeToJPG(ImageSize);
+
                     DoomScroll._log.LogInfo("Share Button Clicked!");
-                    SendImageInChat.RpcSendChatImage(m_id, m_content);
+
+                    //sending RPCs
+                    SendImageInChat.RpcSendChatImage(pID, m_id, image, numMessages);
+                    foreach (int i in Enumerable.Range(0, numMessages))
+                    {
+                        if (i != numMessages - 1)
+                        {
+                            SendImageInChat.RPCSendChatImagePiece(pID, m_id, image.Skip(1000 * i).Take(1000).ToArray(), numMessages, i);
+                            DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).Take(1000).ToArray()}");
+                        }
+                        else
+                        {
+                            SendImageInChat.RPCSendChatImagePiece(pID, m_id, image.Skip(1000 * i).ToArray(), numMessages, i);
+                            DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).ToArray()}");
+                        }
+                    }
                     return;
                 case FileType.MAPSOURCE:
                     // to do

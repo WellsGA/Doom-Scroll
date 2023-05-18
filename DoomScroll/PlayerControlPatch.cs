@@ -8,6 +8,7 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
+        SENDIMAGEPIECE = 251,
         DEATHNOTE = 252,
         SENDASSIGNEDTASK = 253,
         SENDSWC = 254,
@@ -94,26 +95,24 @@ namespace Doom_Scroll
                         currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
                         DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary: {currentImagesAssembling}");
-                        for (int i = 0; i < (int)numMessages; i++)
-                        {
-                            byte playerid = reader.ReadByte();
-                            int imageid = reader.ReadByte();
-                            int sectionIndex = reader.ReadInt32();
-                            byte[] imageBytesSection = reader.ReadBytesAndSize();
-                            DoomScroll._log.LogMessage($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
-                            currentImagesAssembling[$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
-                            DoomScroll._log.LogMessage($"Received image chunk #{i} out of {numMessages}, inserted to current DoomScrollImage");
-                            
-                        }
-                        if (reader.ReadString() == "END OF MESSAGE")
-                        {
-                            DoomScroll._log.LogMessage("Image receiving complete!");
-                        }
-                        if (currentImagesAssembling[currentImageKey].CompileImage())
+                        return;
+
+                    }
+                case (byte)CustomRPC.SENDIMAGEPIECE:
+                    {
+                        byte playerid = reader.ReadByte();
+                        int imageid = reader.ReadByte();
+                        int sectionIndex = reader.ReadInt32();
+                        byte[] imageBytesSection = reader.ReadBytesAndSize();
+                        DoomScroll._log.LogMessage($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
+                        currentImagesAssembling[$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
+                        DoomScroll._log.LogMessage($"Received image chunk #{sectionIndex}, inserted to current DoomScrollImage");
+
+                        if (currentImagesAssembling[$"{playerid}{imageid}"].CompileImage())
                         {
                             if (DestroyableSingleton<HudManager>.Instance)
                             {
-                                ChatControllerPatch.screenshot = currentImagesAssembling[currentImageKey].Image;
+                                ChatControllerPatch.screenshot = currentImagesAssembling[$"{playerid}{imageid}"].Image;
                                 string chatMessage = __instance.PlayerId + "#" + ScreenshotManager.Instance.Screenshots;
                                 HudManager.Instance.Chat.AddChat(__instance, chatMessage);
                                 return;
@@ -123,9 +122,9 @@ namespace Doom_Scroll
                         else
                         {
                             DoomScroll._log.LogMessage("IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[currentImageKey].GetMissingLines()}");
+                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[$"{playerid}{imageid}"].GetMissingLines()}");
 
-                            DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {pID} AND imgID {imgID}\n");
+                            DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {playerid} AND imgID {imageid}\n");
                             // LATER HERE WE CAN FIX THIS
                         }
                         break;
