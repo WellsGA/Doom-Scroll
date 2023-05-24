@@ -14,7 +14,7 @@ namespace Doom_Scroll.Common
         private Vector2 parentSize;
         public Folder(string parentPath, string name, GameObject parentPanel, Sprite folderImg)
         {
-            Dir = new GameObject("name");
+            Dir = new GameObject(name);
             Dir.layer = LayerMask.NameToLayer("UI");
             Dir.transform.SetParent(parentPanel.transform);
            

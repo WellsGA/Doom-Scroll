@@ -154,9 +154,12 @@ namespace Doom_Scroll
         private void InitFolderStructure()
         {
             Sprite folderEmpty = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png");
+            Sprite file = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.file.png");
+
             m_root = new Folder("", "Home", m_folderArea.UIGameObject, folderEmpty);
             m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject, folderEmpty);
-            m_tasks = new Folder(m_root.Path, "Tasks", m_folderArea.UIGameObject, folderEmpty);
+            
+            m_tasks = new File(m_root.Path, "Tasks", m_folderArea.UIGameObject, folderEmpty);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea.UIGameObject, folderEmpty));
@@ -222,7 +225,7 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(string name, byte[] img)
         {
-            m_screenshots.AddItem(new File(m_screenshots.Path, m_folderArea.UIGameObject, name, img, FileType.IMAGE));
+            m_screenshots.AddItem(new FileScreenshot(m_screenshots.Path, m_folderArea.UIGameObject, name, img));
         }
 
         public void Reset()
