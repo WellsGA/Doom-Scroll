@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
@@ -25,7 +24,7 @@ namespace Doom_Scroll
         private Folder m_root;
         private Folder m_previous;
         private Folder m_current;
-        private FileText m_tasks;
+        private FileTask m_tasks;
         private Folder m_screenshots;
 
         private HudManager hudManagerInstance;
@@ -120,6 +119,10 @@ namespace Doom_Scroll
                             else
                             {
                                 dir.Btn.ButtonEvent.InvokeAction();
+                                if (dir is FileTask taskModal)
+                                {
+                                    taskModal.CheckForCloseFile();
+                                }
                             }
                         }
                     }
@@ -156,7 +159,7 @@ namespace Doom_Scroll
             m_root = new Folder("", "Home", m_folderArea.UIGameObject);
             m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject);
             
-            m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea.UIGameObject);
+            m_tasks = new FileTask(m_root.Path, "Tasks", m_folderArea.UIGameObject);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea.UIGameObject));

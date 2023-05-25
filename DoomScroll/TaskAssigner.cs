@@ -117,7 +117,7 @@ namespace Doom_Scroll
 
         public override string ToString()
         {
-            string assignedTasks = "<NAME>\t\t<TASK> \n  " +
+            string assignedTasks = "NAME\t\tTASK \n  " +
                                    "=====================================\n";
             foreach (AssignedTask entry in AssignedTasks)
             {

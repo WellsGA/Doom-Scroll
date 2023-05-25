@@ -46,7 +46,7 @@ namespace Doom_Scroll.UI
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             Vector3 position = new Vector3(-sr.size.x / 2 - buttonSize.x / 2, sr.size.y / 2 - buttonSize.y / 2, -5f);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            return new CustomButton(parent, "Close FolderOverlay", closeBtnImg, position, buttonSize.x);
+            return new CustomButton(parent, "Close Overlay", closeBtnImg, position, buttonSize.x);
         }
         public static CustomButton AddHomeButton(GameObject parent)
         {
@@ -73,5 +73,6 @@ namespace Doom_Scroll.UI
             pathText.SetSize(2.6f);
             return pathText;
         }
+
     }
 }
