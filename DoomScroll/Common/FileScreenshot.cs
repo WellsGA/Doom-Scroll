@@ -15,12 +15,19 @@ namespace Doom_Scroll.Common
         private int m_id;
         private static int m_idCounter = 0;
 
-        public FileScreenshot(string parentPath, string name, GameObject parentPanel, Sprite fileImg, byte[] image) : base (parentPath, name, parentPanel, fileImg)
+        public FileScreenshot(string parentPath, string name, GameObject parentPanel, byte[] image) : base (parentPath, name, parentPanel)
         {
             m_id = m_idCounter++;
-
-            Picture = ImageLoader.ReadImageFromByteArray(image);
             m_content = image;
+            Picture = ImageLoader.ReadImageFromByteArray(image);
+            ChangePreviewImage(Picture);
+
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] shareBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
+            Btn = new CustomButton(Dir, name, shareBtnImg);
+            Btn.SetLocalPosition(Vector3.zero);
+            Btn.ActivateCustomUI(false);
+            Btn.ButtonEvent.MyAction += DisplayContent;
         }
 
         public override void DisplayContent() 
@@ -31,11 +38,11 @@ namespace Doom_Scroll.Common
             Sprite img = ImageLoader.ReadImageFromByteArray(m_content);
             byte[] image = img.texture.EncodeToJPG(ImageSize);
 
-            DoomScroll._log.LogInfo("Share Button Clicked!");
+            DoomScroll._log.LogInfo("file size: " + image.Length);
 
             //sending RPCs
             SendImageInChat.RpcSendChatImage(pID, m_id, image, numMessages);
-            foreach (int i in Enumerable.Range(0, numMessages))
+           /* foreach (int i in Enumerable.Range(0, numMessages))
             {
                 if (i != numMessages - 1)
                 {
@@ -47,8 +54,7 @@ namespace Doom_Scroll.Common
                     SendImageInChat.RPCSendChatImagePiece(pID, m_id, image.Skip(1000 * i).ToArray(), numMessages, i);
                     DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).ToArray()}");
                 }
-            }
-            return;
+            }*/
         }
     }
 }

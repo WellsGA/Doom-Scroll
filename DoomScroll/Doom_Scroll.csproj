@@ -71,6 +71,7 @@
     <EmbeddedResource Include="Assets\file.png" />
     <EmbeddedResource Include="Assets\shareButton.png" />
     <EmbeddedResource Include="Assets\dontShareButton.png" />
+    <EmbeddedResource Include="Assets\openButton.png" />
     <EmbeddedResource Include="Assets\panel.png" />
     <EmbeddedResource Include="Assets\emptyBtn.png" />
 	  <EmbeddedResource Include="Assets\MainMenu_Button_Green.png" />

@@ -132,10 +132,5 @@ namespace Doom_Scroll.UI
                 m_spriteRenderer.color = new Color(1f, 1f, 1f, 0.4f);
             }
         }
-
-        public void ReplaceSpriteRenderer(SpriteRenderer sr)
-        {
-            m_spriteRenderer = sr;  
-        }
     }
 }

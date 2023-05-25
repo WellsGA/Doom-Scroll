@@ -25,7 +25,7 @@ namespace Doom_Scroll
         private Folder m_root;
         private Folder m_previous;
         private Folder m_current;
-        private Folder m_tasks;
+        private FileText m_tasks;
         private Folder m_screenshots;
 
         private HudManager hudManagerInstance;
@@ -153,16 +153,13 @@ namespace Doom_Scroll
         }
         private void InitFolderStructure()
         {
-            Sprite folderEmpty = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png");
-            Sprite file = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.file.png");
-
-            m_root = new Folder("", "Home", m_folderArea.UIGameObject, folderEmpty);
-            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject, folderEmpty);
+            m_root = new Folder("", "Home", m_folderArea.UIGameObject);
+            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject);
             
-            m_tasks = new File(m_root.Path, "Tasks", m_folderArea.UIGameObject, folderEmpty);
+            m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea.UIGameObject);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
-            m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea.UIGameObject, folderEmpty));
+            m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea.UIGameObject));
 
             m_current = m_root;
             m_previous = m_root;
@@ -225,7 +222,7 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(string name, byte[] img)
         {
-            m_screenshots.AddItem(new FileScreenshot(m_screenshots.Path, m_folderArea.UIGameObject, name, img));
+            m_screenshots.AddItem(new FileScreenshot(m_screenshots.Path, name, m_folderArea.UIGameObject, img));
         }
 
         public void Reset()

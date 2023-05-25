@@ -21,5 +21,11 @@ namespace Doom_Scroll
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(assignee);
             AssigneeName = playerInfo == null ? "Unknown player": playerInfo.PlayerName;  // if player has left, we don't know
         }
+
+        public bool IsTaskFinished()
+        {
+            // chack if task is completed
+            return true;
+        }
     }
 }

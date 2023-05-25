@@ -69,8 +69,8 @@ namespace Doom_Scroll.UI
         public static CustomText AddPath(GameObject parent)
         {
             CustomText pathText = new CustomText(parent, "PathName", "Home");
-            pathText.SetLocalPosition(new Vector3(0, 0.3f, -10));
-            pathText.SetSize(1.6f);
+            pathText.SetLocalPosition(new Vector3(0, 2.3f, -10));
+            pathText.SetSize(2.6f);
             return pathText;
         }
     }

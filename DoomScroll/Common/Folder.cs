@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Reflection;
+using System.Collections.Generic;
 using Doom_Scroll.UI;
 using UnityEngine;
 
@@ -12,8 +13,10 @@ namespace Doom_Scroll.Common
         public CustomButton Btn { get; private set; }
         public CustomText Label { get; private set; }
         private Vector2 parentSize;
-        public Folder(string parentPath, string name, GameObject parentPanel, Sprite folderImg)
+        public Folder(string parentPath, string name, GameObject parentPanel)
         {
+            Sprite folderEmpty = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png");
+
             Dir = new GameObject(name);
             Dir.layer = LayerMask.NameToLayer("UI");
             Dir.transform.SetParent(parentPanel.transform);
@@ -22,7 +25,7 @@ namespace Doom_Scroll.Common
             parentSize = parentPanel.GetComponent<SpriteRenderer>().size;
             Content = new List<IDirectory>();
             
-            Sprite[] images = { folderImg };
+            Sprite[] images = { folderEmpty };
             Btn = new CustomButton(Dir, name, images);
             Label = new CustomText(Btn.UIGameObject, name, name);
             Btn.ActivateCustomUI(false);
