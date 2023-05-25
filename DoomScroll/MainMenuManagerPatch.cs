@@ -15,7 +15,7 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(MainMenuManager))]
     class MainMenuManagerPatch
     {
-        private static Vector2 buttonSize = new Vector2(0.5f, 0.5f);
+        private static Vector2 buttonSize = new Vector2(1.5f, 1.5f);
         public static CustomButton test_button;
         public static CustomModal credits_overlay;
         public static CustomButton close_button;
@@ -173,15 +173,15 @@ namespace Doom_Scroll
             //<<CREATE CREDITS TEXT>>
             CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", "WE MADE THIS AWESOME MOD.");
             credits_text.SetColor(Color.black);
-            credits_text.SetSize(2f);
+            credits_text.SetSize(7f);
             Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f, -10);
             credits_text.SetLocalPosition(textPos);
 
             //<<CREATE LINK BUTTON>>
             SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
-            Vector3 link_button_pos = textPos + new Vector3(0, -0.5f, 0);
+            Vector3 link_button_pos = textPos + new Vector3(0, -2f, 0);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", closeBtnImg, link_button_pos, buttonSize.x);
+            link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", doomscrollBtnSprites, link_button_pos, buttonSize.x);
             link_button.ButtonEvent.MyAction += OpenLink;
 
         }
@@ -209,6 +209,18 @@ namespace Doom_Scroll
                 if (close_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     close_button.ButtonEvent.InvokeAction();
+                }
+            }
+            catch (System.Exception e)
+            {
+                DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+            }
+
+            try
+            {
+                if (link_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    link_button.ButtonEvent.InvokeAction();
                 }
             }
             catch (System.Exception e)
