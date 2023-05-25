@@ -29,7 +29,7 @@ namespace Doom_Scroll.Common
 
             // create the overlay background
             m_taskModal = new CustomModal(parentPanel, "FolderOverlay", panel);
-            m_taskModal.SetLocalPosition(new Vector3(0f, 0f, -50f));
+            m_taskModal.SetLocalPosition(new Vector3(0f, 0f, -70f));
             // add close button
             m_close = FolderOverlay.AddCloseButton(m_taskModal.UIGameObject);
             // deactivate (hide) modal

@@ -56,12 +56,7 @@ namespace Doom_Scroll
             //close_button = AddCloseButton(credits_overlay.UIGameObject);
             //close_button.ButtonEvent.MyAction += ToggleOurCredits;
         }*/
-        public static CustomModal InitCreditsOverlay(GameObject parent)
-        {
-            CustomModal creditsOverlay = CreateCreditsOverlay(parent);
 
-            return creditsOverlay;
-        }
         public static CustomModal CreateCreditsOverlay(GameObject parent)
         {
             SpriteRenderer bannerSR = GameObject.Find("bannerLogo_AmongUs").GetComponent<SpriteRenderer>();
@@ -159,37 +154,34 @@ namespace Doom_Scroll
             GameObject inventoryButton = m_UIParent.transform.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
             SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z);
+            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z-10);
             Vector2 scaledSize = doomscrollButtonSr.size * inventoryButton.transform.localScale;
             scaledSize = scaledSize / 2;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
 
-
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
-            test_button.ActivateCustomUI(true);
+            //test_button.ActivateCustomUI(true);
 
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
 
-            credits_overlay = InitCreditsOverlay(GameObject.Find("MainUI").gameObject);
+            credits_overlay = CreateCreditsOverlay(GameObject.Find("MainUI").gameObject);
             close_button = AddCloseButton(credits_overlay.UIGameObject);
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
             //<<CREATE CREDITS TEXT>>
-            CustomText credits_text = new CustomText(credits_overlay.UIGameObject.gameObject, "DoomScrollTeamCredits", "WE MADE THIS AWESOME MOD.");
+            CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", "WE MADE THIS AWESOME MOD.");
             credits_text.SetColor(Color.black);
             credits_text.SetSize(2f);
-            Vector3 vec = new Vector3(credits_text.UIGameObject.transform.localPosition.x, credits_text.UIGameObject.transform.localPosition.y - 1, credits_text.UIGameObject.transform.localPosition.z);
-            credits_text.SetLocalPosition(vec);
-            credits_text.ActivateCustomUI(true); //Do I need to do this?
+            Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f, -10);
+            credits_text.SetLocalPosition(textPos);
 
             //<<CREATE LINK BUTTON>>
             SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
-            Vector3 link_button_pos = new Vector3(0f, 0f, 2f);
+            Vector3 link_button_pos = textPos + new Vector3(0, -0.5f, 0);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", closeBtnImg, position, buttonSize.x);
-            link_button.ActivateCustomUI(true); //Do I need to do this?
+            link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", closeBtnImg, link_button_pos, buttonSize.x);
             link_button.ButtonEvent.MyAction += OpenLink;
 
         }

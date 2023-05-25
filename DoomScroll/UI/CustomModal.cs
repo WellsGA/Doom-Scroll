@@ -27,7 +27,7 @@ namespace Doom_Scroll.UI
 
         public Vector2 GetSize()
         {
-            return m_spriteRenderer.size;
+            return m_spriteRenderer.size * UIGameObject.transform.localScale;
         }
 
     }
