@@ -19,6 +19,7 @@ namespace Doom_Scroll
         public static CustomButton test_button;
         public static CustomModal credits_overlay;
         public static CustomButton close_button;
+        public static CustomButton link_button;
         public static bool AreCreditsOpen { get; private set; }
 
         public static void OpenLink()
@@ -175,6 +176,22 @@ namespace Doom_Scroll
             close_button = AddCloseButton(credits_overlay.UIGameObject);
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
+            //<<CREATE CREDITS TEXT>>
+            CustomText credits_text = new CustomText(credits_overlay.UIGameObject.gameObject, "DoomScrollTeamCredits", "WE MADE THIS AWESOME MOD.");
+            credits_text.SetColor(Color.black);
+            credits_text.SetSize(2f);
+            Vector3 vec = new Vector3(credits_text.UIGameObject.transform.localPosition.x, credits_text.UIGameObject.transform.localPosition.y - 1, credits_text.UIGameObject.transform.localPosition.z);
+            credits_text.SetLocalPosition(vec);
+            credits_text.ActivateCustomUI(true); //Do I need to do this?
+
+            //<<CREATE LINK BUTTON>>
+            SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
+            Vector3 link_button_pos = new Vector3(0f, 0f, 2f);
+            Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
+            link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", closeBtnImg, position, buttonSize.x);
+            link_button.ActivateCustomUI(true); //Do I need to do this?
+            link_button.ButtonEvent.MyAction += OpenLink;
+
         }
         public static void CheckButtonClicks()
         {
@@ -212,7 +229,6 @@ namespace Doom_Scroll
         {
             //test_button.EnableButton(false);
             ToggleOurCredits();
-            OpenLink();
             //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
             //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
         }
