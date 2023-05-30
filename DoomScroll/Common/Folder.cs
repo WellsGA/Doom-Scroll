@@ -92,6 +92,5 @@ namespace Doom_Scroll.Common
             }
             return Path + "[ " + items + " ]";
         }
-
     }
 }

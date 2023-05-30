@@ -56,5 +56,10 @@ namespace Doom_Scroll.Common
                 }
             }*/
         }
+
+        public override void HideContent()
+        {
+            // doesn't need to do anything
+        }
     }
 }

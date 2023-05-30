@@ -38,6 +38,7 @@ namespace Doom_Scroll.Common
         }
     
         public virtual void DisplayContent() { }
+        public virtual void HideContent() { }
         public Vector2 GetSize()
         {
             return m_spriteRenderer.size;

@@ -2,6 +2,7 @@
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
+using MS.Internal.Xml.XPath;
 
 namespace Doom_Scroll
 {
@@ -22,8 +23,8 @@ namespace Doom_Scroll
         
         // folders
         private Folder m_root;
-        private Folder m_previous;
-        private Folder m_current;
+        private IDirectory m_previous;
+        private IDirectory m_current;
         private FileTask m_tasks;
         private Folder m_screenshots;
 
@@ -105,24 +106,15 @@ namespace Doom_Scroll
                     {
                         m_backBtn.ButtonEvent.InvokeAction();
                     }
-                    // Check if any of the displayed folders are clicked 
-                    foreach (IDirectory dir in m_current.Content)
+                    // if current is folder, check for clicks on any of its contents
+                    if(m_current is Folder currFolder)
                     {
-                        dir.Btn.ReplaceImgageOnHover();
-
-                        if (dir.Btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        foreach (IDirectory dir in currFolder.Content)
                         {
-                            if (dir is Folder folder)
+                            dir.Btn.ReplaceImgageOnHover();
+                            if (dir.Btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                             {
-                                ChangeDirectory(folder);
-                            }
-                            else
-                            {
-                                dir.Btn.ButtonEvent.InvokeAction();
-                                if (dir is FileTask taskModal)
-                                {
-                                    taskModal.CheckForCloseFile();
-                                }
+                                ChangeDirectory(dir);
                             }
                         }
                     }
@@ -193,15 +185,22 @@ namespace Doom_Scroll
             m_folderArea.ActivateCustomUI(value);
         }
 
-        private void ChangeDirectory(Folder folder)
+        private void ChangeDirectory(IDirectory folder)
         {
             if (m_folderToggleBtn.IsActive && m_isFolderOverlayOpen)
-            {
-                m_previous = m_current;
-                m_current = folder;
-                m_pathText.SetText(folder.Path);
-                m_previous.HideContent();
-                m_current.Btn.ButtonEvent.InvokeAction();
+            { 
+                if (folder is FileScreenshot) 
+                {
+                    folder.Btn.ButtonEvent.InvokeAction();
+                }
+                else
+                {
+                    m_previous = m_current;
+                    m_current = folder;
+                    m_pathText.SetText(folder.Path);
+                    m_previous.HideContent();
+                    m_current.Btn.ButtonEvent.InvokeAction();
+                }
             }
         }
 

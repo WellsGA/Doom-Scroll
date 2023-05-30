@@ -143,12 +143,12 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("player count: " + GameData.Instance.AllPlayers.Count);
             GameObject parentPanel = HudManager.Instance.gameObject;
             PlayerButtonHolder = new CustomModal(parentPanel, "Button holder", panelSprite);
-            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/1.5f + 1f, 1f);
+            Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/1.5f, 1f);
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Vector3 pos = new Vector3(0, -bounds.y/2+size.y/2,- 50);
             PlayerButtonHolder.SetSize(size);
             PlayerButtonHolder.SetLocalPosition(pos);
-            CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "You can assign this task to another player before you complete it.");
+            CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "Who is completing this task?");
             title.SetLocalPosition(new Vector3(0, 0.3f, -10));
             title.SetSize(1.6f);
             Vector3 topLeftPos = new Vector3(pos.x - size.x/2 + 0.5f, -0.1f, pos.z - 10);

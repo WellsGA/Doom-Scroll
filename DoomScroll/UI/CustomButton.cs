@@ -53,7 +53,6 @@ namespace Doom_Scroll.UI
         {
             m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
         }
-
         public void SetColor(Color color)
         {
             m_spriteRenderer.color = color;
