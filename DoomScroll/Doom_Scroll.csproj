@@ -62,6 +62,8 @@
     <EmbeddedResource Include="Assets\homeButton.png" />
     <EmbeddedResource Include="Assets\backButton.png" />
     <EmbeddedResource Include="Assets\cameraFlash.png" />
+    <EmbeddedResource Include="Assets\postNews.png" />
+    <EmbeddedResource Include="Assets\submitButton.png" />
     <EmbeddedResource Include="Assets\cameraOverlay.png" />
     <EmbeddedResource Include="Assets\captureScreenNew.png" />
     <EmbeddedResource Include="Assets\folderToggle.png" />
