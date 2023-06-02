@@ -166,7 +166,7 @@ namespace Doom_Scroll
         public void RPCShareNews(string news)
         {
             AddNews(news); // add locally
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)1);
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
             messageWriter.Write(news);
             messageWriter.EndMessage();
         }
