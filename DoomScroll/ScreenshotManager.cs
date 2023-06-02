@@ -104,6 +104,7 @@ namespace Doom_Scroll
             }
             else
             {
+                if (NewsFeedManager.Instance.IsInputpanelOpen) { NewsFeedManager.Instance.ToggleNewsForm(); } // close news form if oopen
                 UIOverlay.ActivateCustomUI(true);
                 m_captureScreenButton.EnableButton(true);
                 IsCameraOpen = true;
@@ -158,7 +159,7 @@ namespace Doom_Scroll
             }
         }
 
-        public void ReSet()
+        public void Reset()
         {
             Screenshots = 0;
             IsCameraOpen = false;

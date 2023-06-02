@@ -10,7 +10,9 @@ namespace Doom_Scroll
         public static void PostfixStart(ShipStatus __instance)
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
-            DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA INIT");
+            NewsFeedManager.Instance.ActivateNewsButton(true);
+            NewsFeedManager.Instance.CanCreateNews(true);
+            DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA AND NEWS INIT");
 
             // list all tasks - for debug purposes
             DoomScroll._log.LogInfo("COMMON TASKS");

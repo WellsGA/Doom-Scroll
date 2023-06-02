@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Doom_Scroll
 {
@@ -8,11 +9,18 @@ namespace Doom_Scroll
     {
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
-        public static void PostfixStart()
+        public static void PostfixStart(HudManager __instance)
         {
-            ScreenshotManager.Instance.ReSet();
+            // adding Canvas to the Hud
+            __instance.gameObject.AddComponent<Canvas>();
+            CanvasScaler cs = __instance.gameObject.AddComponent<CanvasScaler>();
+            cs.m_UiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            __instance.gameObject.AddComponent<GraphicRaycaster>();
+
+            ScreenshotManager.Instance.Reset();
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
+            NewsFeedManager.Instance.Reset();
         }
 
         [HarmonyPostfix]
@@ -20,7 +28,8 @@ namespace Doom_Scroll
         public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
-            
+            NewsFeedManager.Instance.CheckButtonClicks();
+
             if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
             {
                 TaskAssigner.Instance.CheckForPlayerButtonClick();
@@ -39,6 +48,7 @@ namespace Doom_Scroll
             if (!ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ActivateCameraButton(isActive);
+                NewsFeedManager.Instance.ActivateNewsButton(isActive);
                 DoomScroll._log.LogInfo("HudManager.SetHudActive ---- CAMERA ACTIVE: " + isActive);
             }
         }
@@ -52,6 +62,11 @@ namespace Doom_Scroll
             {
                 ScreenshotManager.Instance.ToggleCamera();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED" );
+            }
+            if (NewsFeedManager.Instance.IsInputpanelOpen)
+            {
+                NewsFeedManager.Instance.ToggleNewsForm();
+                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
         }
     }

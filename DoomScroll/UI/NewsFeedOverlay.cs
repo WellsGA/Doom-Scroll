@@ -8,15 +8,16 @@ namespace Doom_Scroll.UI
     {
         public static CustomButton CreateNewsInputButton(HudManager hud)
         {
-            GameObject m_UIParent = hud.gameObject;
+            GameObject UIParent = hud.gameObject;
             Vector3 mapBtnPos = hud.MapButton.gameObject.transform.position;
             SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(mapBtnPos.x, mapBtnPos.y - 2 * mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y, mapBtnPos.z);
+            float yDist = (2 * mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y) + 0.05f;
+            Vector3 position = new Vector3(mapBtnPos.x, mapBtnPos.y - yDist, mapBtnPos.z);
             Vector2 scaledSize = mapButtonSr.size * hud.MapButton.gameObject.transform.localScale;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", slices);
 
-            return new CustomButton(m_UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
+            return new CustomButton(UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
         }
 
         public static CustomModal InitInputOverlay(HudManager hud)
@@ -29,12 +30,19 @@ namespace Doom_Scroll.UI
             return cameraOverlay;
         }
 
+        public static CustomInputField AddInputField(GameObject parent, Vector3 pos) 
+        {
+            CustomInputField field = new CustomInputField(parent, "Headline", "Headline");
+            field.SetLocalPosition(pos);
+            return field;
+        }
+
         public static CustomButton CreateSubmitButton(GameObject parent)
         {
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] submitSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.submitButton.png", slices);
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 pos = new Vector3(0, sr.size.y / 2 + 0.7f, -10);
+            Vector3 pos = new Vector3(0, sr.size.y / 2 - 0.7f, -10);
 
             return new CustomButton(parent, "Submit News Button", submitSprite, pos, 1f);
         }
