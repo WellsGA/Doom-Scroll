@@ -1,6 +1,8 @@
 # DoomScroll
 ## An Among Us mod about misinformation.
 
+This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC
+
 - DoomScroll folder contains the plugin for the most recent version of Among Us - 02. 28. 2023
 - version_10_25_2022 is a plugin for the previous release - 10. 25. 2022
 
