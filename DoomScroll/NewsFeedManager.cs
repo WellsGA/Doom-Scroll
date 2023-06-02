@@ -156,7 +156,7 @@ namespace Doom_Scroll
                             swcString = swc.SendableResultsText();
                         }
                     }
-                    headline += " has an agenda! " + swcString;
+                    headline += swcString;
                     break;
             }
             headline += "\n\t - " + NewsStrings.trustedSources[rand] + " -";
@@ -196,15 +196,15 @@ namespace Doom_Scroll
                     break;
                 case 1:
                     rand = UnityEngine.Random.Range(0, NewsStrings.headlines2p.Length);
-                    headline = NewsStrings.headlines1p[rand];
+                    headline = NewsStrings.headlines2p[rand];
                     headline.Replace("{0}", GetRandomPlayerName());
                     headline.Replace("{1}", GetRandomPlayerName());
                     break;
                 case 2:
                     // rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p1n.Length);
                     int num = UnityEngine.Random.Range(0,6);
-                    headline = NewsStrings.headlines1p[0].Replace("{0}", GetRandomPlayerName()); // currently one item
-                    headline.Replace("{1}", GetRandomPlayerName());
+                    headline = NewsStrings.headlines1p1n[0].Replace("{0}", GetRandomPlayerName()); // currently one item
+                    headline.Replace("{1}", num.ToString());
                     break;
             }
             return headline;
@@ -224,6 +224,7 @@ namespace Doom_Scroll
         {
             IsInputpanelOpen = false;
             canCreateNews = false;
+            newsList = new List<string>();
             if (hudManagerInstance == null)
             {
                 hudManagerInstance = HudManager.Instance;
