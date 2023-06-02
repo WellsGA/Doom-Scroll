@@ -1,5 +1,6 @@
 ﻿using BepInEx.Unity.IL2CPP.UnityEngine;
 using Doom_Scroll.Common;
+using Epic.OnlineServices.P2P;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -11,36 +12,43 @@ namespace Doom_Scroll.UI
     internal class CustomInputField : CustomUI
     {
         // inherits UIGameObject from base
-        public GameObject PlaceHolder { get; }
+        
+       
+        public TMP_InputField TextInputField { get; }
+        public RectTransform InputRectTransform { get; }
+        public GameObject TextArea { get; }
+        public Image InputBg { get;}
         public GameObject TextInput { get; }
         public TextMeshPro Text { get; }
+        public GameObject PlaceHolder { get; }
         public TextMeshPro PlaceholderText { get; }
-        public TMP_InputField TextInputField { get; }
-        public GameObject TextArea { get; }
-        public Image InputBg { get;} 
-        public CustomInputField(GameObject parent, string name, string placeholder) : base(parent, name)
+
+        public CustomInputField(GameObject parent, string name, string placeholder, float parentWidth) : base(parent, name)
         {
-            UIGameObject.AddComponent<RectTransform>();
-            // UIGameObject.transform.localScale = Vector3.one;
+            InputRectTransform = UIGameObject.AddComponent<RectTransform>();
+            InputRectTransform.sizeDelta = new Vector2(parentWidth - 0.2f, 0.3f);
+            UIGameObject.transform.localScale = Vector3.one;
             UIGameObject.AddComponent<CanvasRenderer>();
             TextInputField = UIGameObject.AddComponent<TMP_InputField>();
             TextInputField.interactable = true;
 
             InputBg = UIGameObject.AddComponent<Image>();
-            InputBg.sprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
+            InputBg.sprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png");
             InputBg.raycastTarget = true;
 
             TextArea = new GameObject("Text Area");
             TextArea.transform.SetParent(UIGameObject.transform);
-            RectTransform rt = TextArea.AddComponent<RectTransform>();
+            RectTransform textAreaRT = TextArea.AddComponent<RectTransform>();
             TextArea.AddComponent<RectMask2D>();
             
             PlaceHolder = new GameObject("Placeholder");
             PlaceHolder.transform.SetParent(TextArea.transform);
-            PlaceHolder.AddComponent<RectTransform>();
+            RectTransform placeHolderRT = PlaceHolder.AddComponent<RectTransform>();
+            placeHolderRT.sizeDelta = InputRectTransform.sizeDelta;
             PlaceHolder.AddComponent<CanvasRenderer>();
-            PlaceHolder.AddComponent<RectTransform>();
+
             PlaceholderText = PlaceHolder.AddComponent<TextMeshPro>();
+            PlaceholderText.fontSize = 4f;
             PlaceholderText.text = placeholder;
             PlaceholderText.alignment = TextAlignmentOptions.Center;
             PlaceholderText.color = Color.grey;
@@ -48,10 +56,12 @@ namespace Doom_Scroll.UI
 
             TextInput = new GameObject("Text");
             TextInput.transform.SetParent(TextArea.transform);
-            TextInput.AddComponent<RectTransform>();
+            RectTransform textInputRT = TextInput.AddComponent<RectTransform>();
+            textInputRT.sizeDelta = InputRectTransform.sizeDelta;
             Text = TextInput.AddComponent<TextMeshPro>();
+            Text.fontSize = 4f;
 
-            TextInputField.textViewport = rt;
+            TextInputField.textViewport = textAreaRT;
             TextInputField.textComponent = Text;
             TextInputField.textComponent.m_enableWordWrapping = true;
             TextInputField.textComponent.m_overflowMode = TextOverflowModes.ScrollRect;
@@ -68,9 +78,14 @@ namespace Doom_Scroll.UI
             Text.text = text;
         }
 
-        public override void SetSize(float size)
+        public void SetFontSize(float size)
         {
             Text.fontSize = size;
+        }
+
+        public override void SetSize(float height) // change the height of the input area
+        {
+            InputRectTransform.sizeDelta = InputRectTransform.sizeDelta + new Vector2(0, height); 
         }
 
     }

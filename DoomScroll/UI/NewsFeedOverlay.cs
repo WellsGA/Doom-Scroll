@@ -22,18 +22,22 @@ namespace Doom_Scroll.UI
 
         public static CustomModal InitInputOverlay(HudManager hud)
         {
+            Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
-            CustomModal cameraOverlay = new CustomModal(hud.gameObject, "News Form Overlay", spr);
-            cameraOverlay.SetLocalPosition(new Vector3(0f, 0f, -5));
+            CustomModal inputForm = new CustomModal(hud.gameObject, "News Form Overlay", spr);
+            inputForm.SetSize(4f);
+            Vector2 size = inputForm.GetSize();
+            inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2, size.y/2, -5));
             // deactivate by default
-            cameraOverlay.ActivateCustomUI(false);
-            return cameraOverlay;
+            inputForm.ActivateCustomUI(false);
+            return inputForm;
         }
 
-        public static CustomInputField AddInputField(GameObject parent, Vector3 pos) 
+        public static CustomInputField AddInputField(CustomModal parent) 
         {
-            CustomInputField field = new CustomInputField(parent, "Headline", "Headline");
-            field.SetLocalPosition(pos);
+            Vector2 parentSize = parent.GetSize();
+            CustomInputField field = new CustomInputField(parent.UIGameObject, "Headline", "Headline", parentSize.x);
+            field.SetLocalPosition(new Vector3(0, parentSize.y/2 - 0.5f, 0));
             return field;
         }
 
@@ -42,7 +46,7 @@ namespace Doom_Scroll.UI
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] submitSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.submitButton.png", slices);
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 pos = new Vector3(0, sr.size.y / 2 - 0.7f, -10);
+            Vector3 pos = new Vector3(0, -sr.size.y / 2 + 0.7f, -10);
 
             return new CustomButton(parent, "Submit News Button", submitSprite, pos, 1f);
         }

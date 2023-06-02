@@ -46,7 +46,7 @@ namespace Doom_Scroll
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
 
             m_submitButton = NewsFeedOverlay.CreateSubmitButton(m_inputPanel.UIGameObject);
-            m_headline = NewsFeedOverlay.AddInputField(m_inputPanel.UIGameObject, new Vector3(0, 0, 0));
+            m_headline = NewsFeedOverlay.AddInputField(m_inputPanel);
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
             m_submitButton.ButtonEvent.MyAction += OnClickSubmitNews;
             ActivateNewsButton(false);
@@ -76,8 +76,9 @@ namespace Doom_Scroll
         }
 
         public void OnClickSubmitNews()
-        {
+        {  
             DoomScroll._log.LogInfo("NEWS FORM SUBMITTED");
+            ToggleNewsForm();
         }
         public void ActivateNewsButton(bool value)
         {
