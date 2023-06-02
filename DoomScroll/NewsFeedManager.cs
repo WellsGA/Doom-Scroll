@@ -197,14 +197,14 @@ namespace Doom_Scroll
                 case 1:
                     rand = UnityEngine.Random.Range(0, NewsStrings.headlines2p.Length);
                     headline = NewsStrings.headlines2p[rand];
-                    headline.Replace("{0}", GetRandomPlayerName());
-                    headline.Replace("{1}", GetRandomPlayerName());
+                    headline = headline.Replace("{0}", GetRandomPlayerName());
+                    headline = headline.Replace("{1}", GetRandomPlayerName());
                     break;
                 case 2:
                     // rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p1n.Length);
                     int num = UnityEngine.Random.Range(0,6);
                     headline = NewsStrings.headlines1p1n[0].Replace("{0}", GetRandomPlayerName()); // currently one item
-                    headline.Replace("{1}", num.ToString());
+                    headline = headline.Replace("{1}", num.ToString());
                     break;
             }
             return headline;

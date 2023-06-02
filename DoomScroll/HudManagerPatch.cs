@@ -59,8 +59,8 @@ namespace Doom_Scroll
         {
             if (PlayerControl.LocalPlayer.AmOwner) 
             {
-                NewsFeedManager.Instance.CreateFakeNews();
-                /*int rand = UnityEngine.Random.Range(0, 10);
+                ///NewsFeedManager.Instance.CreateFakeNews();
+                int rand = UnityEngine.Random.Range(0, 10);
                 if (rand % 2 == 0)
                 {
                     NewsFeedManager.Instance.CreateTrueNews();
@@ -68,7 +68,7 @@ namespace Doom_Scroll
                 else
                 {
                     NewsFeedManager.Instance.CreateFakeNews();
-                }*/
+                }
             }
             
             DoomScroll._log.LogInfo("MEETING OPENED");
