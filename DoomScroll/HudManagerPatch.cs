@@ -57,6 +57,19 @@ namespace Doom_Scroll
         [HarmonyPatch("OpenMeetingRoom")]
         public static void PrefixOpenMeetingRoom()
         {
+            if (PlayerControl.LocalPlayer.AmOwner) 
+            {
+                int rand = UnityEngine.Random.Range(0, 10);
+                if (rand % 2 == 0)
+                {
+                    NewsFeedManager.Instance.CreateTrueNews();
+                }
+                else
+                {
+                    NewsFeedManager.Instance.CreateFakeNews();
+                }
+            }
+            
             DoomScroll._log.LogInfo("MEETING OPENED");
             if (ScreenshotManager.Instance.IsCameraOpen)
             {

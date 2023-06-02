@@ -15,7 +15,8 @@ namespace Doom_Scroll
         [HarmonyPatch("Start")]
         public static void PostfixStart()
         {
-           // TaskAssigner.Instance.DisplayAssignedTasks();  // debug purposes
+            // TaskAssigner.Instance.DisplayAssignedTasks();  // debug purposes
+            NewsFeedManager.Instance.DisplayNews();
         }
 
     }

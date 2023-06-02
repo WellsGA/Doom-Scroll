@@ -1,4 +1,6 @@
-﻿using Doom_Scroll.UI;
+﻿using Doom_Scroll.Common;
+using Doom_Scroll.UI;
+using Hazel;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,10 +31,11 @@ namespace Doom_Scroll
         private bool canCreateNews;
         
         // list of news created randomly and by the selected players -  will be displayed during meetings
-        private static List<AssignedTask> AssignedTasks;
+        private static List<string> newsList;
 
         private NewsFeedManager()
         {
+            newsList = new List<string>();
             IsInputpanelOpen = false;
             canCreateNews = false;
             hudManagerInstance = HudManager.Instance;
@@ -116,6 +119,105 @@ namespace Doom_Scroll
             {
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
+        }
+        // Automatic News Creation - Only if player is host!
+        public void CreateFakeNews() 
+        {
+            int rand = UnityEngine.Random.Range(0, NewsStrings.fakeSources.Length);
+            string headline = GetRandomHeadline();
+            headline += "\n\t - " + NewsStrings.fakeSources[rand] + " -";
+            RPCShareNews(headline);
+        }
+
+        public void CreateTrueNews() 
+        {
+            int type = UnityEngine.Random.Range(0, 2); // random type of news
+            int rand = UnityEngine.Random.Range(0, NewsStrings.trustedSources.Length);
+            int playerNr = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count); 
+            PlayerControl player = PlayerControl.AllPlayerControls[playerNr]; //random player
+            string headline = player.name;
+            switch (type) 
+            {
+                case 0: // get the number of completed tasks
+                    int i = 0;
+                    foreach (PlayerTask task in player.myTasks)
+                    {  
+                        if (task.IsComplete) i++;
+                    }
+                    headline += " completed " + i + " tasks so far.";
+                    break;
+                case 1:  // get their swc (if any)
+                    List<SecondaryWinCondition> swcs = SecondaryWinConditionManager.GetSWCList();
+                    string swcString = "had no swc";
+                    foreach(SecondaryWinCondition swc in swcs)
+                    {
+                        if(player.PlayerId == swc.GetPayerId())
+                        {
+                            swcString = swc.SendableResultsText();
+                        }
+                    }
+                    headline += " has an agenda! " + swcString;
+                    break;
+            }
+            headline += "\n\t - " + NewsStrings.trustedSources[rand] + " -";
+            RPCShareNews(headline);
+        }
+
+        public void RPCShareNews(string news)
+        {
+            AddNews(news); // add locally
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)1);
+            messageWriter.Write(news);
+            messageWriter.EndMessage();
+        }
+
+        public void AddNews(string news) 
+        {
+            newsList.Add(news);
+        }
+
+        private string GetRandomPlayerName() 
+        {
+            int rand = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count);
+            return PlayerControl.AllPlayerControls[rand].name;
+        }
+
+        private string GetRandomHeadline() 
+        {
+            string headline = "";
+            int rand;
+            int type = UnityEngine.Random.Range(0,3);
+            switch (type)
+            {
+                case 0:
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p.Length);
+                    string player = GetRandomPlayerName();
+                    headline = NewsStrings.headlines1p[rand].Replace("{0}", player);
+                    break;
+                case 1:
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlines2p.Length);
+                    headline = NewsStrings.headlines1p[rand];
+                    headline.Replace("{0}", GetRandomPlayerName());
+                    headline.Replace("{1}", GetRandomPlayerName());
+                    break;
+                case 2:
+                    // rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p1n.Length);
+                    int num = UnityEngine.Random.Range(0,6);
+                    headline = NewsStrings.headlines1p[0].Replace("{0}", GetRandomPlayerName()); // currently one item
+                    headline.Replace("{1}", GetRandomPlayerName());
+                    break;
+            }
+            return headline;
+        }
+
+        public void DisplayNews()
+        {
+            string allnews = "\nNEWS FEED\n";
+            foreach(string news in newsList)
+            {
+                allnews += news +"\n";
+            }
+            DoomScroll._log.LogInfo(allnews);
         }
 
         public void Reset()

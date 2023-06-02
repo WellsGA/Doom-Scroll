@@ -8,6 +8,7 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
+        SENDNEWS = 250,
         SENDIMAGEPIECE = 251,
         DEATHNOTE = 252,
         SENDASSIGNEDTASK = 253,
@@ -68,6 +69,11 @@ namespace Doom_Scroll
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDNEWS:
+                    {
+                        NewsFeedManager.Instance.AddNews(reader.ReadString());
+                        return;
+                    }
                 case (byte)CustomRPC.DEATHNOTE:
                     {
                         // other player dead, has to update swc list
@@ -96,7 +102,6 @@ namespace Doom_Scroll
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
                         DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary: {currentImagesAssembling}");
                         return;
-
                     }
                 case (byte)CustomRPC.SENDIMAGEPIECE:
                     {
@@ -128,7 +133,6 @@ namespace Doom_Scroll
                             // LATER HERE WE CAN FIX THIS
                         }
                         break;
-
                     }
             }
         }

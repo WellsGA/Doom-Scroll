@@ -85,10 +85,10 @@ namespace Doom_Scroll
                     break;
                 }
             }
-            int targetNum = UnityEngine.Random.Range(0, numPlayers - 1);
+            int targetNum = UnityEngine.Random.Range(0, numPlayers);
             while (targetNum == playerindex)
             {
-                targetNum = UnityEngine.Random.Range(0, numPlayers - 1);
+                targetNum = UnityEngine.Random.Range(0, numPlayers);
             }
 
             for (int i = 0; i < numPlayers; i++)
@@ -99,6 +99,11 @@ namespace Doom_Scroll
                 }
             }
             return target;
+        }
+
+        public static List<SecondaryWinCondition> GetSWCList()
+        {
+            return playerSWCList;
         }
     }
 }

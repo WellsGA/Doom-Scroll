@@ -76,6 +76,10 @@ namespace Doom_Scroll
             return "";
         }
 
+        public byte GetPayerId()
+        {
+            return playerID;
+        }
         ///METHODS ADDED FROM SECONDARYWINCONDITIONHOLDER: 
 
         // replace voded out function with die patch - death reason
@@ -133,7 +137,7 @@ namespace Doom_Scroll
         {
             if (playerSWCGoal == Goal.None)
             {
-                return "";
+                return ToString();
             }
             else if (swcSuccess)
             {

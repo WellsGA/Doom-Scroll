@@ -46,7 +46,7 @@ namespace Doom_Scroll.UI
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] submitSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.submitButton.png", slices);
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 pos = new Vector3(0, -sr.size.y / 2 + 0.7f, -10);
+            Vector3 pos = new Vector3(0, -sr.size.y / 2 + 0.4f, -10);
 
             return new CustomButton(parent, "Submit News Button", submitSprite, pos, 1f);
         }
