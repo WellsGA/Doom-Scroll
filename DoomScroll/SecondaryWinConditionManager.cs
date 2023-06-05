@@ -47,9 +47,12 @@ namespace Doom_Scroll
             string overallResults = "";
             foreach (SecondaryWinCondition swc in playerSWCList)
             {
-                overallResults += swc.SendableResultsText(); // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
-                DoomScroll._log.LogInfo("Added " + swc.SendableResultsText() + " to overall Results.");
-                DoomScroll._log.LogInfo("Overall results now is: " + overallResults + "");
+                if (swc.ToString() != "No secondary win condition")
+                {
+                    overallResults += swc.SendableResultsText(); // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
+                    DoomScroll._log.LogInfo("Added " + swc.SendableResultsText() + " to overall Results.");
+                    DoomScroll._log.LogInfo("Overall results now is: " + overallResults + "");
+                }
             }
             return overallResults;
         }

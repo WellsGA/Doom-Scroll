@@ -3,6 +3,7 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
+using Il2CppSystem.Collections;
 
 namespace Doom_Scroll
 {
@@ -11,16 +12,25 @@ namespace Doom_Scroll
     {
         private static Vector2 buttonSize = new Vector2(1.5f, 1.5f);
         public static CustomButton link_button;
+        //private static bool hasBeenClicked = false;
+        public static bool progressionScreenOpen = false;
+        public static bool ProgressionScreenOpen { get; private set; }
 
         public static void OpenLink()
         {
             Application.OpenURL("https://www.google.com/");
         }
 
+        /*public void LateUpdate()
+        {
+            CheckButtonClicks();
+        }*/
+
         [HarmonyPostfix]
         [HarmonyPatch("Activate")]
         public static void PostfixActivate(ProgressionScreen __instance)
         {
+            progressionScreenOpen = true;
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.overallSWCResultsText());
             CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.overallSWCResultsText());
             overallSWCText.SetColor(Color.white);
@@ -39,6 +49,7 @@ namespace Doom_Scroll
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
             link_button = new CustomButton(BloodSplat, "Close OurCredits", doomscrollBtnSprites, link_button_pos, buttonSize.x);
             link_button.ButtonEvent.MyAction += OpenLink;
+            //hasBeenClicked = false;
         }
         /*
         public void Update()
@@ -58,16 +69,21 @@ namespace Doom_Scroll
 
         public static void CheckButtonClicks()
         {
-            try
+            if (link_button != null)
             {
-                if (link_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                try
                 {
-                    link_button.ButtonEvent.InvokeAction();
+                    //if (link_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0) && hasBeenClicked == false)
+                    if (link_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        link_button.ButtonEvent.InvokeAction();
+                        //hasBeenClicked = true;
+                    }
                 }
-            }
-            catch (System.Exception e)
-            {
-                DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+                catch (System.Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+                }
             }
         }
     }
