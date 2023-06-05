@@ -22,21 +22,6 @@ namespace Doom_Scroll.UI
 
             return new CustomButton(m_UIParent, "Camera Toggle Button", cameraBtnSprites, position, scaledSize.x);
 
-
-
-            //   ORIGINAL CODE TO SET UP BUTTON:
-            /*
-            GameObject m_UIParent = hud.gameObject;
-            Vector3 mapBtnPos = hud.MapButton.gameObject.transform.position;
-            SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(mapBtnPos.x, mapBtnPos.y - mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y, mapBtnPos.z);
-            Vector2 scaledSize = mapButtonSr.size * hud.MapButton.gameObject.transform.localScale;
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash.png", slices);
-
-            return new CustomButton(m_UIParent, "Camera Toggle Button", cameraBtnSprites, position, scaledSize.x);
-            */
-
         }
 
         public static CustomButton CreateCaptureButton(GameObject parent)

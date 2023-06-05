@@ -139,7 +139,7 @@ namespace Doom_Scroll
             {
                 // select 1/5th of the players randomly and enable news creation for them
                 List<PlayerControl> allPlayer = new List<PlayerControl>();
-                double numberWhoCanPost = Math.Truncate((double)(PlayerControl.AllPlayerControls.Count / 5));
+                double numberWhoCanPost = 2;
                 foreach (PlayerControl pc in PlayerControl.AllPlayerControls)
                 {
                     allPlayer.Add(pc);
