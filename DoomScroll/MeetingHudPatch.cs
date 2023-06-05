@@ -16,7 +16,7 @@ namespace Doom_Scroll
         public static void PostfixStart()
         {
             // TaskAssigner.Instance.DisplayAssignedTasks();  // debug purposes
-            NewsFeedManager.Instance.DisplayNews();
+            
         }
 
     }

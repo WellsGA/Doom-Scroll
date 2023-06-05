@@ -19,14 +19,13 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
+        public int NumberOfNewsOptions { get; private set; } = 5;
 
         private HudManager hudManagerInstance;
-
         private CustomModal m_inputPanel;
         private CustomButton m_togglePanelButton;
         public bool IsInputpanelOpen { get; private set; }
-        private bool canCreateNews;
-        private int numberOfNewsOptions = 5;
+        private bool canPostNews;
         //list of news created randomly if the player can create news
         private List<CustomButton> newsOptions;
         // list of news created randomly and by the selected players -  will be displayed during meetings
@@ -43,7 +42,7 @@ namespace Doom_Scroll
         {
             m_togglePanelButton = NewsFeedOverlay.CreateNewsInputButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
-            newsOptions = NewsFeedOverlay.AddNewsSelect(m_inputPanel, numberOfNewsOptions);
+            newsOptions = NewsFeedOverlay.AddNewsSelect(m_inputPanel, NumberOfNewsOptions);
            
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
             ActivateNewsButton(false);
@@ -75,7 +74,7 @@ namespace Doom_Scroll
         public void OnSelectNewsItem(CustomButton button)
         {  
             DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + button.UIGameObject.name);
-            CanCreateNews(false);
+            CanPostNews(false);
             ToggleNewsForm();
         }
         public void ActivateNewsButton(bool value)
@@ -83,15 +82,15 @@ namespace Doom_Scroll
             m_togglePanelButton.UIGameObject.SetActive(value);
         }
 
-        public void CanCreateNews(bool value)
+        public void CanPostNews(bool value)
         {
-            canCreateNews = value;
-            m_togglePanelButton.EnableButton(canCreateNews);
+            canPostNews = value;
+            m_togglePanelButton.EnableButton(canPostNews);
         }
 
         public void CheckButtonClicks()
         {
-            if (hudManagerInstance == null || !canCreateNews) return;
+            if (hudManagerInstance == null || !canPostNews) return;
             
             // Replace sprite on mouse hover for both buttons
             m_togglePanelButton.ReplaceImgageOnHover();
@@ -117,6 +116,42 @@ namespace Doom_Scroll
             {
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
+        }
+
+        // Sets CanPostNews for player by host
+        // the host selects the player(s) who can create news - at the beginning and after each meeting
+        public void SelectPLayersWhoCanPostNews()
+        {
+            if (PlayerControl.LocalPlayer.AmOwner)
+            {
+                // select 1/5th of the players randomly and enable news creation for them
+                List<PlayerControl> allPlayer = new List<PlayerControl>();
+                double numberWhoCanPost = Math.Truncate((double)(PlayerControl.AllPlayerControls.Count / 5));
+                foreach (PlayerControl pc in PlayerControl.AllPlayerControls)
+                {
+                    allPlayer.Add(pc);
+                }
+                for (int i = 0; i < numberWhoCanPost; i++)
+                {
+                    int playerIndex = UnityEngine.Random.Range(0, allPlayer.Count);
+                    RPCPLayerCanCreateNews(allPlayer[playerIndex]);
+                    DoomScroll._log.LogInfo("RPC CALLED FOR : " + allPlayer[playerIndex].name);
+                    allPlayer.RemoveAt(playerIndex);
+                }
+            }
+        }
+        public void RPCPLayerCanCreateNews(PlayerControl player)
+        {
+            // if selected player local player set locally
+            if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+            {
+                canPostNews = true;
+            }
+            // inform the others
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDPLAYERCANPOST, (SendOption)1);
+            messageWriter.Write(player.PlayerId);
+            messageWriter.Write(player.name);
+            messageWriter.EndMessage();
         }
 
         // Automatic News Creation - Only if player is host!
@@ -155,7 +190,7 @@ namespace Doom_Scroll
                             swcString = swc.SendableResultsText();
                         }
                     }
-                    headline += swcString;
+                    headline = swcString;
                     break;
             }
             headline += "\n\t - " + NewsStrings.trustedSources[rand] + " -";
@@ -222,7 +257,7 @@ namespace Doom_Scroll
         public void Reset()
         {
             IsInputpanelOpen = false;
-            canCreateNews = false;
+            canPostNews = false;
             allNewsList = new List<string>();
             newsOptions = new List<CustomButton>();
             hudManagerInstance = HudManager.Instance;

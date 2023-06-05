@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
@@ -11,7 +12,7 @@ namespace Doom_Scroll
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
             NewsFeedManager.Instance.ActivateNewsButton(true);
-            NewsFeedManager.Instance.CanCreateNews(true);
+            NewsFeedManager.Instance.CanPostNews(false); // by edfault player cannot create news
 
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA AND NEWS INIT");
 
@@ -34,6 +35,13 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("Name: " + task.name + ", Index: " + task.Index +
                 ", type: " + task.TaskType + ", task steps: " + task.MaxStep);
             }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("Begin")] // only called when host
+        public static void PostfixBegin()
+        {
+            NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
         }
     }
 }

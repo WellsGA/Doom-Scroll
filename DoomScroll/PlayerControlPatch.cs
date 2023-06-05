@@ -8,6 +8,7 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
+        SENDPLAYERCANPOST = 249,
         SENDNEWS = 250,
         SENDIMAGEPIECE = 251,
         DEATHNOTE = 252,
@@ -44,7 +45,7 @@ namespace Doom_Scroll
                     }
                     for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
                     {
-                        int taskIndex = UnityEngine.Random.Range(0, taskIds.Count - 1);
+                        int taskIndex = UnityEngine.Random.Range(0, taskIds.Count);
                         assignableTasks.Add(taskIds[taskIndex]);
                         taskIds.RemoveAt(taskIndex);
                     }
@@ -69,10 +70,20 @@ namespace Doom_Scroll
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDPLAYERCANPOST:
+                    {
+                        byte id = reader.ReadByte();
+                        string name = reader.ReadString();
+                        if(id == PlayerControl.LocalPlayer.PlayerId)
+                        {
+                            NewsFeedManager.Instance.CanPostNews(true);
+                        }
+                        DoomScroll._log.LogMessage(name + " can publish news!");
+                        return;
+                    }
                 case (byte)CustomRPC.SENDNEWS:
                     {
                         NewsFeedManager.Instance.AddNews(reader.ReadString());
-                        DoomScroll._log.LogInfo("NEWS RPC");
                         return;
                     }
                 case (byte)CustomRPC.DEATHNOTE:
