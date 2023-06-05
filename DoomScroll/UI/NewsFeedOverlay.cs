@@ -9,16 +9,26 @@ namespace Doom_Scroll.UI
     {
         public static CustomButton CreateNewsInputButton(HudManager hud)
         {
+            //   NEW CODE TO SET UP BUTTON:
+            GameObject UIParent = hud.MapButton.gameObject;
+            SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
+            Vector2 scaledSize = mapButtonSr.size;
+            float yDist = (3 * mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y);
+            Vector3 position = new Vector3(0, 0 - yDist, 0);
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", slices);
+
+            return new CustomButton(UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
+
+            //   ORIGINAL CODE TO SET UP BUTTON:
+            /*
             GameObject UIParent = hud.gameObject;
             Vector3 mapBtnPos = hud.MapButton.gameObject.transform.position;
             SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
             float yDist = (2 * mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y) + 0.05f;
             Vector3 position = new Vector3(mapBtnPos.x, mapBtnPos.y - yDist, mapBtnPos.z);
             Vector2 scaledSize = mapButtonSr.size * hud.MapButton.gameObject.transform.localScale;
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", slices);
-
-            return new CustomButton(UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
+            */
         }
 
         public static CustomModal InitInputOverlay(HudManager hud)
