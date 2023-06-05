@@ -33,8 +33,6 @@ namespace Doom_Scroll.Common
             Dir.transform.localScale = Vector3.one;
 
             Label = new CustomText(Dir, name, name);
-            Label.SetLocalPosition(new Vector3(0,-5.2f,0));
-            
         }
     
         public virtual void DisplayContent() { }

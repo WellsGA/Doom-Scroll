@@ -25,7 +25,8 @@ namespace Doom_Scroll
         private Folder m_root;
         private IDirectory m_previous;
         private IDirectory m_current;
-        private FileTask m_tasks;
+        private FileText m_tasks;
+        private FileText m_posts;
         private Folder m_screenshots;
 
         private HudManager hudManagerInstance;
@@ -150,11 +151,11 @@ namespace Doom_Scroll
         {
             m_root = new Folder("", "Home", m_folderArea.UIGameObject);
             m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject);
-            
-            m_tasks = new FileTask(m_root.Path, "Tasks", m_folderArea.UIGameObject);
+            m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea.UIGameObject, FileTextType.TASKS);
+            m_posts = new FileText(m_root.Path, "Posts", m_folderArea.UIGameObject, FileTextType.NEWS);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
-            m_root.AddItem(new Folder(m_root.Path, "Checkpoints", m_folderArea.UIGameObject));
+            m_root.AddItem(m_posts);
 
             m_current = m_root;
             m_previous = m_root;

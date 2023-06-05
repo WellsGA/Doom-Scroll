@@ -28,6 +28,8 @@ namespace Doom_Scroll.Common
             Btn.SetLocalPosition(Vector3.zero);
             Btn.ActivateCustomUI(false);
             Btn.ButtonEvent.MyAction += DisplayContent;
+
+            Label.SetLocalPosition(new Vector3(0, -5.2f, 0));
         }
 
         public override void DisplayContent() 

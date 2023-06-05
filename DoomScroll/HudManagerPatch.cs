@@ -73,24 +73,23 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
 
-            NewsFeedManager.Instance.DisplayNews();
-
             NewsFeedManager.Instance.CanPostNews(false); // cannot create news
             if (PlayerControl.LocalPlayer.AmOwner)
             {
                 // create a random news
-                int rand = UnityEngine.Random.Range(0, 10);
-                if (rand % 2 == 0)
+                if (Random.Range(0, 2) == 0)
                 {
-                    NewsFeedManager.Instance.CreateTrueNews();
+                    NewsFeedManager.Instance.RPCShareNews(NewsFeedManager.Instance.CreateTrueNews());
                 }
                 else
                 {
-                    NewsFeedManager.Instance.CreateFakeNews();
+                    NewsFeedManager.Instance.RPCShareNews(NewsFeedManager.Instance.CreateFakeNews());
                 }
                 // selects new players to post news
                 NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
             }
+            DoomScroll._log.LogInfo(NewsFeedManager.Instance.DisplayNews());
+
         }
     }
 }

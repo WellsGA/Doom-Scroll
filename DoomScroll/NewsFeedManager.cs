@@ -72,8 +72,10 @@ namespace Doom_Scroll
         }
 
         public void OnSelectNewsItem(CustomButton button)
-        {  
-            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + button.UIGameObject.name);
+        {
+            string news = button.Label.TextMP.text;
+            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + news);
+            RPCShareNews(news);
             CanPostNews(false);
             ToggleNewsForm();
         }
@@ -86,6 +88,15 @@ namespace Doom_Scroll
         {
             canPostNews = value;
             m_togglePanelButton.EnableButton(canPostNews);
+            if (value)
+            {
+                foreach (CustomButton option in newsOptions)
+                {
+                    string news = CreateFakeNews();
+                    option.Label.SetText(news);
+                    DoomScroll._log.LogInfo("BUTTON  LABEL: " + news);
+                }
+            }
         }
 
         public void CheckButtonClicks()
@@ -102,15 +113,17 @@ namespace Doom_Scroll
                     m_togglePanelButton.ButtonEvent.InvokeAction();
                 }
                 // Invoke methods on mouse click - submit news
-                foreach (CustomButton button in newsOptions) 
+                if(m_togglePanelButton.IsEnabled && m_togglePanelButton.IsActive)
                 {
-                    button.ReplaceImgageOnHover();
-                    if (button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    foreach (CustomButton button in newsOptions)
                     {
-                        OnSelectNewsItem(button);
+                        button.ReplaceImgageOnHover();
+                        if (button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        {
+                            OnSelectNewsItem(button);
+                        }
                     }
                 }
-                
             }
             catch (Exception e)
             {
@@ -135,9 +148,9 @@ namespace Doom_Scroll
                 {
                     int playerIndex = UnityEngine.Random.Range(0, allPlayer.Count);
                     RPCPLayerCanCreateNews(allPlayer[playerIndex]);
-                    DoomScroll._log.LogInfo("RPC CALLED FOR : " + allPlayer[playerIndex].name);
                     allPlayer.RemoveAt(playerIndex);
                 }
+                RPCPLayerCanCreateNews(PlayerControl.LocalPlayer); //debug: host can always post
             }
         }
         public void RPCPLayerCanCreateNews(PlayerControl player)
@@ -145,25 +158,26 @@ namespace Doom_Scroll
             // if selected player local player set locally
             if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
             {
-                canPostNews = true;
+                CanPostNews(true);
             }
             // inform the others
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDPLAYERCANPOST, (SendOption)1);
             messageWriter.Write(player.PlayerId);
             messageWriter.Write(player.name);
             messageWriter.EndMessage();
+            DoomScroll._log.LogInfo("RPC CALLED FOR : " + player.name);
         }
 
         // Automatic News Creation - Only if player is host!
-        public void CreateFakeNews() 
+        public string CreateFakeNews() 
         {
             int rand = UnityEngine.Random.Range(0, NewsStrings.fakeSources.Length);
             string headline = GetRandomHeadline();
             headline += "\n\t - " + NewsStrings.fakeSources[rand] + " -";
-            RPCShareNews(headline);
+            return headline;
         }
 
-        public void CreateTrueNews() 
+        public string CreateTrueNews() 
         {
             int type = UnityEngine.Random.Range(0, 2); // random type of news
             int rand = UnityEngine.Random.Range(0, NewsStrings.trustedSources.Length);
@@ -190,12 +204,12 @@ namespace Doom_Scroll
                             swcString = swc.SendableResultsText();
                         }
                     }
-                    headline = swcString;
+                    headline += " " + swcString;
                     break;
             }
             headline += "\n\t - " + NewsStrings.trustedSources[rand] + " -";
-            RPCShareNews(headline);
-        }
+            return headline;
+       }
 
         public void RPCShareNews(string news)
         {
@@ -244,16 +258,19 @@ namespace Doom_Scroll
             return headline;
         }
 
-        public void DisplayNews()
+        public string DisplayNews()
         {
-            string allnews = "\nNEWS FEED\n";
+            string allnews = "\nNEWS FEED\n\n";
             foreach(string news in allNewsList)
             {
                 allnews += news +"\n";
             }
-            DoomScroll._log.LogInfo(allnews);
+            return allnews;
         }
-
+        public void PrintCurrentNewsPublisher(string name)
+        {
+            DoomScroll._log.LogMessage( name +" can publish news!");
+        }
         public void Reset()
         {
             IsInputpanelOpen = false;
