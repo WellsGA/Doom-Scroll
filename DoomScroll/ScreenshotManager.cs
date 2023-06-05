@@ -30,6 +30,7 @@ namespace Doom_Scroll
         public int Screenshots { get; private set; }
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
+        public event Action AdjustPositionDoomScroll;
 
         private ScreenshotManager()
         {
@@ -48,9 +49,27 @@ namespace Doom_Scroll
             m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay.UIGameObject);
 
             m_cameraButton.ButtonEvent.MyAction += OnClickCamera;
+            //m_cameraButton.gameObject.AddComponent<AspectPosition>();
             m_captureScreenButton.ButtonEvent.MyAction += OnClickCaptureScreenshot;
             ActivateCameraButton(false);
         }
+        /*public void AdjustPositionCameraButton()
+        {
+            if (m_cameraButton != null && hudManagerInstance != null)
+            {
+                GameObject m_UIParent = hudManagerInstance.gameObject;
+                Vector3 mapBtnPos = hudManagerInstance.MapButton.gameObject.transform.position;
+                SpriteRenderer mapButtonSr = hudManagerInstance.MapButton.gameObject.GetComponent<SpriteRenderer>();
+                Vector2 scaledSize = mapButtonSr.size * hudManagerInstance.MapButton.gameObject.transform.localScale;
+                m_cameraButton.SetLocalPosition(new Vector3(mapBtnPos.x, mapBtnPos.y - mapButtonSr.size.y * hudManagerInstance.MapButton.gameObject.transform.localScale.y, mapBtnPos.z));
+                m_cameraButton.SetSize(scaledSize.x);
+                DoomScroll._log.LogInfo("Camera moved!");
+            }
+        }*/
+        /*public void AdjustPlease()
+        {
+            AdjustPositionDoomScroll?.Invoke();
+        }*/
         private void CaptureScreenshot()
         {
             if (mainCamrea)
@@ -115,6 +134,15 @@ namespace Doom_Scroll
         public void ActivateCameraButton(bool value)
         {
             m_cameraButton.ActivateCustomUI(value);
+            /*if (value)
+            {
+                AdjustPositionDoomScroll += AdjustPositionCameraButton;
+            }
+            else
+            {
+
+                AdjustPositionDoomScroll -= AdjustPositionCameraButton;
+            }*/
         }
         public void OnClickCamera()
         {
