@@ -27,7 +27,8 @@ namespace Doom_Scroll.Common
             
             Sprite[] images = { folderEmpty };
             Btn = new CustomButton(Dir, name, images);
-            Label = new CustomText(Btn.UIGameObject, name, name);
+            Label = Btn.Label;
+            Label.SetText(name);
             Btn.ActivateCustomUI(false);
             Btn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
         }

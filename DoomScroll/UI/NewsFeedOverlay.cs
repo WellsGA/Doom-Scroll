@@ -28,7 +28,7 @@ namespace Doom_Scroll.UI
             CustomModal inputForm = new CustomModal(hud.gameObject, "News Form Overlay", spr);
             inputForm.SetSize(4.2f);
             Vector2 size = inputForm.GetSize();
-            inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2-0.5f, size.y/2, -5));
+            inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2-1f, size.y/2, -5));
             // deactivate by default
             inputForm.ActivateCustomUI(false);
             return inputForm;

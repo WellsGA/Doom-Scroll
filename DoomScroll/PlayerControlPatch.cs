@@ -72,13 +72,12 @@ namespace Doom_Scroll
             {
                 case (byte)CustomRPC.SENDPLAYERCANPOST:
                     {
-                        byte id = reader.ReadByte();
-                        string name = reader.ReadString();
-                        if(id == PlayerControl.LocalPlayer.PlayerId)
+                        if(reader.ReadByte() == PlayerControl.LocalPlayer.PlayerId)
                         {
                             NewsFeedManager.Instance.CanPostNews(true);
                         }
-                        DoomScroll._log.LogMessage(name + " can publish news!");
+                        NewsFeedManager.Instance.PrintCurrentNewsPublisher(reader.ReadString());
+                        
                         return;
                     }
                 case (byte)CustomRPC.SENDNEWS:

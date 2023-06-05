@@ -17,10 +17,12 @@ namespace Doom_Scroll.UI
         
         private SpriteRenderer m_spriteRenderer;
         private Sprite[] buttonImage;
-
+       
         private bool isDefaultImg;
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
+
+        public CustomText Label { get; private set; }
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
@@ -41,6 +43,9 @@ namespace Doom_Scroll.UI
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
             SetButtonImg(ImageType.DEFAULT);
             SetScale(Vector3.one);
+            Label = new CustomText(UIGameObject, "label", ""); //empty button label
+            Label.SetScale(Vector3.one);
+            Label.TextMP.fontSize = 1f;
             ActivateCustomUI(true);
             EnableButton(true);
         }
@@ -56,6 +61,16 @@ namespace Doom_Scroll.UI
         public void SetColor(Color color)
         {
             m_spriteRenderer.color = color;
+        }
+
+        public void SetLabelText(string value)
+        {
+            Label.SetText(value);
+        }
+
+        public void SetLabelPosition(Vector3 pos)
+        {
+            Label.SetLocalPosition(pos);
         }
 
         public SpriteRenderer AddIconToButton(Sprite icon)
