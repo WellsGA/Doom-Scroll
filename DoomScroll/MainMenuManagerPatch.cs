@@ -119,6 +119,8 @@ namespace Doom_Scroll
             {
                 test_button.EnableButton(true);
                 credits_overlay.ActivateCustomUI(false);
+                close_button.EnableButton(false);
+                link_button.EnableButton(false);
                 //our_credits.enabled = false;
                 AreCreditsOpen = false;
                 DoomScroll._log.LogInfo("Closing");
@@ -127,6 +129,8 @@ namespace Doom_Scroll
             {
                 test_button.EnableButton(false);
                 credits_overlay.ActivateCustomUI(true);
+                close_button.EnableButton(true);
+                link_button.EnableButton(true);
                 //our_credits.enabled = true;
                 AreCreditsOpen = true;
                 DoomScroll._log.LogInfo("opening");
@@ -163,6 +167,10 @@ namespace Doom_Scroll
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
             //test_button.ActivateCustomUI(true);
+            test_button.ActivateCustomUI(false);
+            test_button.ActivateCustomUI(true);
+            test_button.UIGameObject.gameObject.SetActive(false);
+            test_button.UIGameObject.gameObject.SetActive(true);
 
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
 
@@ -171,15 +179,15 @@ namespace Doom_Scroll
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
             //<<CREATE CREDITS TEXT>>
-            CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", "WE MADE THIS AWESOME MOD.");
+            CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", "<b><size=120%>____<u>DOOMSCROLL MOD TEAM</u>____</size></b>\n\n<b>Lead Researcher & Project Lead:</b>\nGary Wells\n\n<b>Mod Developers:</b>\nAgnes Romhanyi\nAlaina Klaes\n<b><size=120%>______________________________</size></b>\n\n<size=80%>Click the button below to open the Pre-Test link:</size>");
             credits_text.SetColor(Color.black);
             credits_text.SetSize(7f);
-            Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f, -10);
+            Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f-3f, -10);
             credits_text.SetLocalPosition(textPos);
 
             //<<CREATE LINK BUTTON>>
             SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
-            Vector3 link_button_pos = textPos + new Vector3(0, -2f, 0);
+            Vector3 link_button_pos = textPos + new Vector3(0, -5.5f, 0);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
             link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", doomscrollBtnSprites, link_button_pos, buttonSize.x);
             link_button.ButtonEvent.MyAction += OpenLink;
