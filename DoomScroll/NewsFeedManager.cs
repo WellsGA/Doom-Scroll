@@ -23,23 +23,19 @@ namespace Doom_Scroll
         private HudManager hudManagerInstance;
 
         private CustomModal m_inputPanel;
-        private CustomInputField m_headline;
-        private CustomInputField m_content;
         private CustomButton m_togglePanelButton;
-        private CustomButton m_submitButton;
         public bool IsInputpanelOpen { get; private set; }
         private bool canCreateNews;
-        
+        private int numberOfNewsOptions = 5;
+        //list of news created randomly if the player can create news
+        private List<CustomButton> newsOptions;
         // list of news created randomly and by the selected players -  will be displayed during meetings
-        private static List<string> newsList;
+        private static List<string> allNewsList;
+
 
         private NewsFeedManager()
         {
-            newsList = new List<string>();
-            IsInputpanelOpen = false;
-            canCreateNews = false;
-            hudManagerInstance = HudManager.Instance;
-            InitializeInputPanel();
+            Reset();
             DoomScroll._log.LogInfo("NEWS FEED MANAGER CONSTRUCTOR");
         }
 
@@ -47,11 +43,9 @@ namespace Doom_Scroll
         {
             m_togglePanelButton = NewsFeedOverlay.CreateNewsInputButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
-
-            m_submitButton = NewsFeedOverlay.CreateSubmitButton(m_inputPanel.UIGameObject);
-            m_headline = NewsFeedOverlay.AddInputField(m_inputPanel);
+            newsOptions = NewsFeedOverlay.AddNewsSelect(m_inputPanel, numberOfNewsOptions);
+           
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
-            m_submitButton.ButtonEvent.MyAction += OnClickSubmitNews;
             ActivateNewsButton(false);
         }
 
@@ -66,21 +60,22 @@ namespace Doom_Scroll
             if (IsInputpanelOpen)
             {
                 m_inputPanel.ActivateCustomUI(false);
-                m_submitButton.EnableButton(false);
+                foreach(CustomButton button in newsOptions) { button.EnableButton(false); }
                 IsInputpanelOpen = false;
             }
             else
             {
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
                 m_inputPanel.ActivateCustomUI(true);
-                m_submitButton.EnableButton(true);
+                foreach (CustomButton button in newsOptions) { button.EnableButton(true); }
                 IsInputpanelOpen = true;
             }
         }
 
-        public void OnClickSubmitNews()
+        public void OnSelectNewsItem(CustomButton button)
         {  
-            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED");
+            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + button.UIGameObject.name);
+            CanCreateNews(false);
             ToggleNewsForm();
         }
         public void ActivateNewsButton(bool value)
@@ -100,8 +95,6 @@ namespace Doom_Scroll
             
             // Replace sprite on mouse hover for both buttons
             m_togglePanelButton.ReplaceImgageOnHover();
-            m_submitButton.ReplaceImgageOnHover();
-
             try
             {
                 // Invoke methods on mouse click - open news form overlay
@@ -110,16 +103,22 @@ namespace Doom_Scroll
                     m_togglePanelButton.ButtonEvent.InvokeAction();
                 }
                 // Invoke methods on mouse click - submit news
-                if (m_submitButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                foreach (CustomButton button in newsOptions) 
                 {
-                    m_submitButton.ButtonEvent.InvokeAction();
+                    button.ReplaceImgageOnHover();
+                    if (button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        OnSelectNewsItem(button);
+                    }
                 }
+                
             }
             catch (Exception e)
             {
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
         }
+
         // Automatic News Creation - Only if player is host!
         public void CreateFakeNews() 
         {
@@ -173,7 +172,7 @@ namespace Doom_Scroll
 
         public void AddNews(string news) 
         {
-            newsList.Add(news);
+            allNewsList.Add(news);
         }
 
         private string GetRandomPlayerName() 
@@ -213,7 +212,7 @@ namespace Doom_Scroll
         public void DisplayNews()
         {
             string allnews = "\nNEWS FEED\n";
-            foreach(string news in newsList)
+            foreach(string news in allNewsList)
             {
                 allnews += news +"\n";
             }
@@ -224,12 +223,10 @@ namespace Doom_Scroll
         {
             IsInputpanelOpen = false;
             canCreateNews = false;
-            newsList = new List<string>();
-            if (hudManagerInstance == null)
-            {
-                hudManagerInstance = HudManager.Instance;
-                InitializeInputPanel();
-            }
+            allNewsList = new List<string>();
+            newsOptions = new List<CustomButton>();
+            hudManagerInstance = HudManager.Instance;
+            InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Doom_Scroll.Common;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -25,9 +26,9 @@ namespace Doom_Scroll.UI
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
             CustomModal inputForm = new CustomModal(hud.gameObject, "News Form Overlay", spr);
-            inputForm.SetSize(4f);
+            inputForm.SetSize(4.2f);
             Vector2 size = inputForm.GetSize();
-            inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2, size.y/2, -5));
+            inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2-0.5f, size.y/2, -5));
             // deactivate by default
             inputForm.ActivateCustomUI(false);
             return inputForm;
@@ -40,7 +41,22 @@ namespace Doom_Scroll.UI
             field.SetLocalPosition(new Vector3(0, parentSize.y/2 - 0.5f, 0));
             return field;
         }
-
+        public static List<CustomButton> AddNewsSelect(CustomModal parent, int listItems)
+        {
+            List<CustomButton> list = new List<CustomButton>();
+            Vector2 parentSize = parent.GetSize();
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png", slices);
+            float inputHeight = 0.5f;
+            for(int i = 0; i < listItems; i++)
+            {
+                Vector3 pos = new Vector3(0, parentSize.y / 2 - inputHeight, -10);
+                CustomButton btn = new CustomButton(parent.UIGameObject, "newsItem", spr, pos, parentSize.x - 0.05f);          
+                list.Add(btn);
+                inputHeight += btn.GetSize().y + 0.02f;
+            }
+            return list;
+        }
         public static CustomButton CreateSubmitButton(GameObject parent)
         {
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };

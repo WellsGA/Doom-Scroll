@@ -12,6 +12,7 @@ namespace Doom_Scroll
             ScreenshotManager.Instance.ActivateCameraButton(true);
             NewsFeedManager.Instance.ActivateNewsButton(true);
             NewsFeedManager.Instance.CanCreateNews(true);
+
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA AND NEWS INIT");
 
             // list all tasks - for debug purposes

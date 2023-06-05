@@ -12,10 +12,10 @@ namespace Doom_Scroll
         public static void PostfixStart(HudManager __instance)
         {
             // adding Canvas to the Hud
-            __instance.gameObject.AddComponent<Canvas>();
+            /*__instance.gameObject.AddComponent<Canvas>();
             CanvasScaler cs = __instance.gameObject.AddComponent<CanvasScaler>();
             cs.m_UiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            __instance.gameObject.AddComponent<GraphicRaycaster>();
+            __instance.gameObject.AddComponent<GraphicRaycaster>();*/
 
             ScreenshotManager.Instance.Reset();
             FolderManager.Instance.Reset();
@@ -48,8 +48,12 @@ namespace Doom_Scroll
             if (!ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ActivateCameraButton(isActive);
-                NewsFeedManager.Instance.ActivateNewsButton(isActive);
                 DoomScroll._log.LogInfo("HudManager.SetHudActive ---- CAMERA ACTIVE: " + isActive);
+            }
+            if (!NewsFeedManager.Instance.IsInputpanelOpen)
+            {
+                NewsFeedManager.Instance.ActivateNewsButton(isActive);
+                DoomScroll._log.LogInfo("HudManager.SetHudActive ---- NEWS BUTTON ACTIVE: " + isActive);
             }
         }
 
@@ -82,6 +86,7 @@ namespace Doom_Scroll
                 NewsFeedManager.Instance.ToggleNewsForm();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
+            NewsFeedManager.Instance.CanCreateNews(true);
         }
     }
 }

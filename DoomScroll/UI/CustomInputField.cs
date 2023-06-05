@@ -1,18 +1,14 @@
-﻿using BepInEx.Unity.IL2CPP.UnityEngine;
-using Doom_Scroll.Common;
-using Epic.OnlineServices.P2P;
+﻿using Doom_Scroll.Common;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UIElements.TextField;
 
 namespace Doom_Scroll.UI
 {
     internal class CustomInputField : CustomUI
     {
-        // inherits UIGameObject from base
-        
+        // inherits UIGameObject from base 
        
         public TMP_InputField TextInputField { get; }
         public RectTransform InputRectTransform { get; }
