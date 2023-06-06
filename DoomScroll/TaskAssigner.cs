@@ -113,19 +113,18 @@ namespace Doom_Scroll
         {
             // to do: list it on a UI modal 
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 1.2f, -10) ;
-            CustomText title = new CustomText(parent.UIGameObject, "title", "Assigned Tasks");
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 1.2f, -10);
+            /* CustomText title = new CustomText(parent.UIGameObject, "title", "Assigned Tasks");
             title.SetLocalPosition(pos);
-            title.SetSize(3f);
+            title.SetSize(3f);*/
             float offset = 0f;
             foreach (AssignedTask task in AssignedTasks)
             {
                 task.DisplayTaskCard(parent);
-                offset -= task.Card.GetSize().y + 0.1f;
+                offset -= task.Card.GetSize().y/2 + 0.1f;
                 pos.y += offset;
                 task.Card.SetLocalPosition(pos);
                 task.Card.ActivateCustomUI(true);
-                
             }
             DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString()); // debug
         }

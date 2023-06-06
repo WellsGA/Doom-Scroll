@@ -25,7 +25,7 @@ namespace Doom_Scroll.Common
 
             Btn.Label.SetLocalPosition(new Vector3(0, -0.5f, 0));
             Btn.ResetButtonImage(file);
-            Btn.AddIconToButton(Picture, 0.25f);
+            Btn.AddIconToButton(Picture, 0.2f);
         }
 
         public override void DisplayContent() 

@@ -26,11 +26,10 @@ namespace Doom_Scroll
         private CustomButton m_togglePanelButton;
         public bool IsInputpanelOpen { get; private set; }
         private bool canPostNews;
-        //list of news created randomly if the player can create news
+        // list of news created randomly if the player can create news
         private List<CustomButton> newsOptions;
         // list of news created randomly and by the selected players -  will be displayed during meetings
         private static List<string> allNewsList;
-
 
         private NewsFeedManager()
         {
