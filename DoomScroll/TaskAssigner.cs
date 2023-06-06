@@ -20,7 +20,7 @@ namespace Doom_Scroll
             }
         }
         // list of tasks assigned by each player - this will be displayed during meetings
-        private static List<AssignedTask> AssignedTasks;
+        public List<AssignedTask> AssignedTasks { get; private set; }
         // list ofassignable tasks
         public List<uint> AssignableTasks { get; private set; }
         public int MaxAssignableTasks { get; private set; }
@@ -112,9 +112,31 @@ namespace Doom_Scroll
         public void DisplayAssignedTasks()
         {
             // to do: list it on a UI modal 
+            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10) ;
+            CustomText title = new CustomText(parent.UIGameObject, "title", "Assigned Tasks");
+            title.SetLocalPosition(pos);
+            title.SetSize(3f);
+            float offset = 0f;
+            foreach (AssignedTask task in AssignedTasks)
+            {
+                task.DisplayTaskCard(parent);
+                offset -= task.Card.GetSize().y + 0.1f;
+                pos.y += offset;
+                task.Card.SetLocalPosition(pos);
+                task.Card.ActivateCustomUI(true);
+                
+            }
             DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString()); // debug
         }
 
+        public void HideAssignedTasks()
+        {
+            foreach (AssignedTask task in AssignedTasks)
+            {
+                task.Card.ActivateCustomUI(false);
+            }
+        }
         public override string ToString()
         {
             string assignedTasks = "NAME\t\tTASK \n  " +
@@ -162,7 +184,7 @@ namespace Doom_Scroll
                     CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
                     label.SetLocalPosition(new Vector3(0, -btn.GetSize().x/2 - 0.05f, -10));
                     label.SetSize(1.2f);
-                    SpriteRenderer sr = btn.AddIconToButton(playerSprite);
+                    SpriteRenderer sr = btn.AddIconToButton(playerSprite, 0.7f);
                     sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
                     PlayerButtons.Add(playerInfo.PlayerId, btn);
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName);

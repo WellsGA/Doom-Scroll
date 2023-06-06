@@ -6,7 +6,7 @@ namespace Doom_Scroll.UI
     public class CustomText : CustomUI
     {
         // inherits UIGameObject from base
-        public TextMeshPro TextMP { get; }
+        public TextMeshPro TextMP { get; private set; }
         public CustomText(GameObject parent, string name, string text) :base(parent, name)
         {
             UIGameObject.AddComponent<MeshRenderer>();
@@ -33,5 +33,9 @@ namespace Doom_Scroll.UI
             TextMP.fontSize = size;
         }
 
+        public void SetTextAlignment(TextAlignmentOptions alignType)
+        {
+            TextMP.alignment = alignType;
+        }
     }
 }

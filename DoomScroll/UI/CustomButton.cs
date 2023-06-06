@@ -16,12 +16,11 @@ namespace Doom_Scroll.UI
         // inherits UIGameObject from base
         
         private SpriteRenderer m_spriteRenderer;
-        private Sprite[] buttonImage;
+        private Sprite[] m_buttonImage;
        
         private bool isDefaultImg;
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
-
         public CustomText Label { get; private set; }
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
@@ -38,14 +37,14 @@ namespace Doom_Scroll.UI
         }
         private void BasicButton(Sprite[] images)
         {
-            buttonImage = images;
+            m_buttonImage = images;
             m_spriteRenderer = UIGameObject.AddComponent<SpriteRenderer>();
             m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
             SetButtonImg(ImageType.DEFAULT);
             SetScale(Vector3.one);
             Label = new CustomText(UIGameObject, "label", ""); //empty button label
             Label.SetScale(Vector3.one);
-            Label.TextMP.fontSize = 1f;
+            Label.SetSize(1f);
             ActivateCustomUI(true);
             EnableButton(true);
         }
@@ -63,17 +62,7 @@ namespace Doom_Scroll.UI
             m_spriteRenderer.color = color;
         }
 
-        public void SetLabelText(string value)
-        {
-            Label.SetText(value);
-        }
-
-        public void SetLabelPosition(Vector3 pos)
-        {
-            Label.SetLocalPosition(pos);
-        }
-
-        public SpriteRenderer AddIconToButton(Sprite icon)
+        public SpriteRenderer AddIconToButton(Sprite icon, float rim)
         {
             GameObject iconGo = new GameObject("Icon");
             iconGo.layer = LayerMask.NameToLayer("UI");
@@ -81,7 +70,7 @@ namespace Doom_Scroll.UI
             SpriteRenderer sr = iconGo.AddComponent<SpriteRenderer>();
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.sprite = icon;
-            sr.size = m_spriteRenderer.size / 1.4f;
+            sr.size = m_spriteRenderer.size * rim;
             iconGo.transform.position = UIGameObject.transform.position;
             iconGo.transform.localPosition = UIGameObject.transform.localPosition + new Vector3(0,0,-10);
             return sr;
@@ -108,15 +97,15 @@ namespace Doom_Scroll.UI
             switch (type)
             {
                 case ImageType.DEFAULT:
-                    m_spriteRenderer.sprite = buttonImage[0];
+                    m_spriteRenderer.sprite = m_buttonImage[0];
                     isDefaultImg = true;
                     break;
                 case ImageType.HOVER:
-                    m_spriteRenderer.sprite = buttonImage.Length > 1 ? buttonImage[1] : buttonImage[0];
+                    m_spriteRenderer.sprite = m_buttonImage.Length > 1 ? m_buttonImage[1] : m_buttonImage[0];
                     isDefaultImg = false;
                     break;
                 default:
-                    m_spriteRenderer.sprite = buttonImage[0];
+                    m_spriteRenderer.sprite = m_buttonImage[0];
                     isDefaultImg = true;
                     break;
             }
@@ -132,6 +121,13 @@ namespace Doom_Scroll.UI
             {
                 SetButtonImg(ImageType.DEFAULT);
             }
+        }
+
+        public void ResetButtonImage(Sprite[] newImage)
+        {
+            m_buttonImage = newImage;
+            SetButtonImg(ImageType.DEFAULT);
+            SetScale(Vector3.one);
         }
 
         public void EnableButton(bool value)

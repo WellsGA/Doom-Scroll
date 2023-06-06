@@ -204,7 +204,6 @@ namespace Doom_Scroll
                 }
             }
         }
-
         public void OnClickFolderBtn()
         {
             if (m_folderToggleBtn.IsActive)
@@ -228,6 +227,10 @@ namespace Doom_Scroll
             m_screenshots.AddItem(new FileScreenshot(m_screenshots.Path, name, m_folderArea.UIGameObject, img));
         }
 
+        public CustomModal GetFolderArea()
+        {
+            return m_folderArea;
+        }
         public void Reset()
         {
             if (hudManagerInstance == null)

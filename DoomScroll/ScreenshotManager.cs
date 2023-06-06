@@ -30,7 +30,7 @@ namespace Doom_Scroll
         public int Screenshots { get; private set; }
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
-        public event Action AdjustPositionDoomScroll;
+        // public event Action AdjustPositionDoomScroll;
 
         private ScreenshotManager()
         {

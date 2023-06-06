@@ -17,19 +17,15 @@ namespace Doom_Scroll.Common
 
         public FileScreenshot(string parentPath, string name, GameObject parentPanel, byte[] image) : base (parentPath, name, parentPanel)
         {
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] file = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
             m_id = m_idCounter++;
             m_content = image;
             Picture = ImageLoader.ReadImageFromByteArray(image);
-            ChangePreviewImage(Picture);
 
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] shareBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
-            Btn = new CustomButton(Dir, name, shareBtnImg);
-            Btn.SetLocalPosition(Vector3.zero);
-            Btn.ActivateCustomUI(false);
-            Btn.ButtonEvent.MyAction += DisplayContent;
-
-            Label.SetLocalPosition(new Vector3(0, -5.2f, 0));
+            Btn.Label.SetLocalPosition(new Vector3(0, -0.5f, 0));
+            Btn.ResetButtonImage(file);
+            Btn.AddIconToButton(Picture, 0.25f);
         }
 
         public override void DisplayContent() 

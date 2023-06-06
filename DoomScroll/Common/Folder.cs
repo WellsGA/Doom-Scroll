@@ -11,7 +11,6 @@ namespace Doom_Scroll.Common
         public string Path { get; private set; }
         public GameObject Dir { get; private set; }
         public CustomButton Btn { get; private set; }
-        public CustomText Label { get; private set; }
         private Vector2 parentSize;
         public Folder(string parentPath, string name, GameObject parentPanel)
         {
@@ -27,8 +26,9 @@ namespace Doom_Scroll.Common
             
             Sprite[] images = { folderEmpty };
             Btn = new CustomButton(Dir, name, images);
-            Label = Btn.Label;
-            Label.SetText(name);
+            Btn.Label.SetText(name);
+            Btn.Label.SetLocalPosition(new Vector3(0, 0, 0));
+            Btn.Label.SetSize(3f);
             Btn.ActivateCustomUI(false);
             Btn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
         }
@@ -61,15 +61,7 @@ namespace Doom_Scroll.Common
                         GameObject dir = Content[j + i * 5].Dir;
                         CustomButton btn = Content[j + i * 5].Btn;
                         dir.transform.localPosition = pos;
-                        if (Content[j + i * 5] is File file) 
-                        {
-                            file.ScaleSize(width / 3 - 0.1f);
-                            btn.SetLocalPosition(new Vector3(0, -file.GetSize().y/2 -0.3f, -20));
-                        }
                         btn.SetSize(width / 3 - 0.3f);
-                        CustomText txt = Content[j + i * 3].Label;
-                        txt.SetLocalPosition(new Vector3(0, -btn.GetSize().y / 2 - 0.1f, 0));
-                        txt.SetSize(1.5f);
                         dir.SetActive(true);
                         btn.ActivateCustomUI(true);
                     }
