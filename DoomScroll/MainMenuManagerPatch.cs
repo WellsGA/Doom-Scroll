@@ -9,6 +9,7 @@ using Il2CppSystem.Text;
 using Doom_Scroll.UI;
 using System.Reflection;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Doom_Scroll
 {
@@ -179,15 +180,33 @@ namespace Doom_Scroll
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
             //<<CREATE CREDITS TEXT>>
-            CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", "<b><size=120%>____<u>DOOMSCROLL MOD TEAM</u>____</size></b>\n\n<b>Lead Researcher & Project Lead:</b>\nGary Wells\n\n<b>Mod Developers:</b>\nAgnes Romhanyi\nAlaina Klaes\n<b><size=120%>______________________________</size></b>\n\n<size=80%>Click the button below to open the Pre-Test link:</size>");
+            //string creditsText = "<b><size=120%>____<u>DOOMSCROLL MOD TEAM</u>____</size></b>\n\n<b>Lead Researcher & Project Lead:</b>\nGary Wells\n\n<b>Mod Developers:</b>\nAgnes Romhanyi\nAlaina Klaes\n<b><size=120%>______________________________</size></b>\n\n<size=80%>Click the button below to open the Pre-Test link:</size>";
+            string creditsText = "DoomScroll is an Among Us mod intended to shape the gameplay towards developing the player’s\n" +
+                " ability to identify and avoid misinformation. The game’s core mechanics are already well built\n" +
+                " for creating social deception – players must listen to each other’s insights and perspectives\n" +
+                " and determine who might not be telling the truth, lest they choose incorrectly and let the imposter\n" +
+                " win. Our goal is to add even greater depth to this process by introducing elements commonly found\n" +
+                " when assessing misinformation on social media. Some of these elements include:" +
+                "\r\n\r\n<b>Secondary Win Conditions (SWC):</b> \nAdditional objectives for crewmates. Frame a rival player or protect an ally!" +
+                "\r\n<b>Chat logs:</b> \nchat logs are no longer removed after each meeting, \nallowing you look back at everyone’s actions from earlier in the game." +
+                "\r\n<b>Sign-in Forms:</b> \nWhile completing a task, sign in as another player to make it appear as if they completed it." +
+                "\r\n<b>Headlines:</b> \nPlayers will randomly be given the chance to share a news headline with the rest of the group. \nThese hints might reveal the truth, or just create mass confusion!" +
+                "\r\n<b>Folder System:</b> \nThe folder system allows you to pull up evidence (sign-in forms and headlines)\n during meetings to support your arguments." +
+                "\r\n\r\n<b>DoomScroll Development Team:</b>" +
+                "\r\n\r\n-                                                      Garrison Wells - Designer, Producer \t\t\t Alaina Klaes - Programmer, Artist                                        -" +
+                "\r\n\r\n-                                                          Agnes Romhanyi - Lead Programmer \t\t\t    Ashley Chia Sun - Intern                                                          -" +
+                "\r\n\r\nTwitter: @DoomScrollMod";
+            CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", creditsText);
             credits_text.SetColor(Color.black);
-            credits_text.SetSize(7f);
+            credits_text.SetSize(3f);
             Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f-3f, -10);
             credits_text.SetLocalPosition(textPos);
+            credits_text.TextMP.m_enableWordWrapping = false;
+            //credits_text.TextMP.alignment = TextAlignmentOptions.Left;
 
             //<<CREATE LINK BUTTON>>
             SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
-            Vector3 link_button_pos = textPos + new Vector3(0, -5.5f, 0);
+            Vector3 link_button_pos = textPos + new Vector3(0, -5.8f, 0);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
             link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", doomscrollBtnSprites, link_button_pos, buttonSize.x);
             link_button.ButtonEvent.MyAction += OpenLink;
