@@ -117,12 +117,10 @@ namespace Doom_Scroll
             /* CustomText title = new CustomText(parent.UIGameObject, "title", "Assigned Tasks");
             title.SetLocalPosition(pos);
             title.SetSize(3f);*/
-            float offset = 0f;
             foreach (AssignedTask task in AssignedTasks)
             {
                 task.DisplayTaskCard(parent);
-                offset -= task.Card.GetSize().y/2 + 0.1f;
-                pos.y += offset;
+                pos.y -= task.Card.GetSize().y + 0.1f;
                 task.Card.SetLocalPosition(pos);
                 task.Card.ActivateCustomUI(true);
             }
