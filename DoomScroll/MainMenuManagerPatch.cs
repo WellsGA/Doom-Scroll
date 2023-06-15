@@ -30,33 +30,6 @@ namespace Doom_Scroll
 
         private static MainMenuManager mainMenuManagerInstance;
 
-        /*
-        [HarmonyPostfix]
-        [HarmonyPatch("Start")]
-        public static void PostfixStart(MainMenuManager __instance)
-        {
-            AreCreditsOpen = false;
-
-            MainMenuManager mainMenuManagerInstance = __instance;
-            GameObject m_UIParent = GameObject.Find("BottomButtons").gameObject;
-            GameObject inventoryButton = GameObject.Find("InventoryButton").gameObject;
-            Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
-            SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z - 70);
-            Vector2 scaledSize = doomscrollButtonSr.size * inventoryButton.transform.localScale;
-            scaledSize = scaledSize / 2;
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
-            test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
-            DoomScroll._log.LogInfo("1:" + doomscrollBtnSprites[0].bounds.size + " , 2:  " + doomscrollBtnSprites[1].bounds.size);
-
-            test_button.ButtonEvent.MyAction += OnClickDoomScroll;
-            test_button.ActivateCustomUI(true);
-
-            //credits_overlay = InitCreditsOverlay(GameObject.Find("MainUI").gameObject);
-            //close_button = AddCloseButton(credits_overlay.UIGameObject);
-            //close_button.ButtonEvent.MyAction += ToggleOurCredits;
-        }*/
 
         public static CustomModal CreateCreditsOverlay(GameObject parent)
         {
@@ -79,41 +52,6 @@ namespace Doom_Scroll
             return new CustomButton(parent, "Close OurCredits", closeBtnImg, position, buttonSize.x);
         }
 
-        /*public static void CheckButtonClicks()
-        {
-            if (mainMenuManagerInstance == null) return;
-            //DoomScroll._log.LogMessage("Replacing hover image");
-            test_button.ReplaceImgageOnHover();
-
-            try
-            {
-                // Invoke methods on mouse click - opens DoomScroll info popup
-                if (test_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                {
-                    DoomScroll._log.LogMessage("Button clicked");
-                    DoomScroll._log.LogMessage("Clicked and action being invoked");
-                    test_button.ButtonEvent.InvokeAction();
-                }
-            }
-            catch (System.Exception e)
-            {
-                DoomScroll._log.LogError("Error invoking method: " + e);
-            }
-            if (AreCreditsOpen)
-            {
-                try
-                {
-                    if (close_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        close_button.ButtonEvent.InvokeAction();
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    DoomScroll._log.LogError("Error invoking overlay button method: " + e);
-                }
-            }
-        }*/
         public static void ToggleOurCredits()
         {
             if (AreCreditsOpen)
@@ -122,7 +60,6 @@ namespace Doom_Scroll
                 credits_overlay.ActivateCustomUI(false);
                 close_button.EnableButton(false);
                 link_button.EnableButton(false);
-                //our_credits.enabled = false;
                 AreCreditsOpen = false;
                 DoomScroll._log.LogInfo("Closing");
             }
@@ -132,7 +69,6 @@ namespace Doom_Scroll
                 credits_overlay.ActivateCustomUI(true);
                 close_button.EnableButton(true);
                 link_button.EnableButton(true);
-                //our_credits.enabled = true;
                 AreCreditsOpen = true;
                 DoomScroll._log.LogInfo("opening");
             }
@@ -154,7 +90,6 @@ namespace Doom_Scroll
             AreCreditsOpen = false;
             mainMenuManagerInstance = __instance;
 
-            //GameObject m_UIParent = __instance.playerCustomizationPrefab.transform.parent.gameObject;
             GameObject m_UIParent = __instance.DefaultButtonSelected.transform.parent.gameObject.transform.Find("BottomButtons").gameObject;
             GameObject inventoryButton = m_UIParent.transform.Find("InventoryButton").gameObject;
             Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
@@ -167,7 +102,6 @@ namespace Doom_Scroll
 
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
-            //test_button.ActivateCustomUI(true);
             test_button.ActivateCustomUI(false);
             test_button.ActivateCustomUI(true);
             test_button.UIGameObject.gameObject.SetActive(false);
@@ -180,7 +114,6 @@ namespace Doom_Scroll
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
             //<<CREATE CREDITS TEXT>>
-            //string creditsText = "<b><size=120%>____<u>DOOMSCROLL MOD TEAM</u>____</size></b>\n\n<b>Lead Researcher & Project Lead:</b>\nGary Wells\n\n<b>Mod Developers:</b>\nAgnes Romhanyi\nAlaina Klaes\n<b><size=120%>______________________________</size></b>\n\n<size=80%>Click the button below to open the Pre-Test link:</size>";
             string creditsText = "DoomScroll is an Among Us mod intended to shape the gameplay towards developing the player’s\n" +
                 " ability to identify and avoid misinformation. The game’s core mechanics are already well built\n" +
                 " for creating social deception – players must listen to each other’s insights and perspectives\n" +
@@ -202,7 +135,6 @@ namespace Doom_Scroll
             Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f-3f, -10);
             credits_text.SetLocalPosition(textPos);
             credits_text.TextMP.m_enableWordWrapping = false;
-            //credits_text.TextMP.alignment = TextAlignmentOptions.Left;
 
             //<<CREATE LINK BUTTON>>
             SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
@@ -258,10 +190,7 @@ namespace Doom_Scroll
 
         public static void OnClickDoomScroll()
         {
-            //test_button.EnableButton(false);
             ToggleOurCredits();
-            //DestroyableSingleton<HudManager>.Instance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
-            //mainMenuManagerInstance.ShowPopUp(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameOverTaskWin, Array.Empty<object>()));
         }
     }
 }
