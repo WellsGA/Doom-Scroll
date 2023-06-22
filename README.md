@@ -7,8 +7,7 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 - version_10_25_2022 is a plugin for the previous release - 10. 25. 2022
 
 __Both versions are currently under development__
-Since the latest Among Us release caused a lot of trouble for the main features of our plugin, we are focusing on finishing the prototype that works with the previous version first. 
-
+We are currently focused on completing the prototype for the most up-to-date version of Among Us.
  
 This is an alternative version that doesn't use Reactor.
 Find the original project repo here: https://github.com/WellsGA/Doom-Scroll-Among-Us-mod
@@ -21,12 +20,14 @@ Games have become a point of interest for combating misinformation, as they allo
 
 To do so, we have added the following game mechanics:
 
--a camera function where players can create screenshots during the standard round (the player's avatar will automatically be removed from the screenshot)
+-Screenshots: Players can create screenshots during the standard round (the player's avatar will automatically be removed from the screenshot) [currently under construction due to server limitations]
 
--a sign-in function, where players can complete tasks but attribute the completion to another player
+-Task Sign-In Forms: Players can complete tasks but attribute the completion to another player
 
--a folder system containing both screenshots and the sign-in data, that can be called during the meeting phase to use as evidence
+-Headlines: Players can share news headlines from questionable sources that may (or may not) provide hints about the true imposters
+
+-In-Meeting Folder System: A folder system containing screenshots, sign-in data, and news alerts that can be called during the meeting phase to use as evidence
 
 -an updated chatfeed that allows folder artifacts to be shared amongst players, as well as removes the chat limiter so that players can see everything posted from previous rounds during a match
 
--secondary win conditions (SWCs) that give players ulterior motives in their play (e.g. Blue is crewmate, but must also protect Red; Red is crewmate, but must also frame Yellow). Success or failure of SWCs will be shown to all players at the completion of the match.
+-Secondary Win Conditions (SWCs): Secondary objectives that give players ulterior motives in their play (e.g. Blue is crewmate, but must also protect Red; Red is crewmate, but must also frame Yellow). Success or failure of SWCs will be shown to all players at the completion of the match.
