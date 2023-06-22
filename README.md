@@ -28,6 +28,6 @@ To do so, we have added the following game mechanics:
 
 -In-Meeting Folder System: A folder system containing screenshots, sign-in data, and news alerts that can be called during the meeting phase to use as evidence
 
--an updated chatfeed that allows folder artifacts to be shared amongst players, as well as removes the chat limiter so that players can see everything posted from previous rounds during a match
+-Static Chat Logs: an updated chatfeed that removes the chat limiter so that players can see everything posted from previous rounds during a match
 
 -Secondary Win Conditions (SWCs): Secondary objectives that give players ulterior motives in their play (e.g. Blue is crewmate, but must also protect Red; Red is crewmate, but must also frame Yellow). Success or failure of SWCs will be shown to all players at the completion of the match.
