@@ -17,7 +17,7 @@ namespace Doom_Scroll
         [HarmonyPatch("BeginCrewmate")]
         public static void PostfixBeginCrewmate(IntroCutscene __instance)
         {
-            __instance.TeamTitle.text += "\n<size=20%><color=\"white\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
+            __instance.TeamTitle.text += "\n<size=20%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
 
@@ -37,7 +37,7 @@ namespace Doom_Scroll
         [HarmonyPatch("BeginImpostor")]
         public static void PostfixBeginImpostor(IntroCutscene __instance)
         {
-            __instance.TeamTitle.text += "\n<size=20%><color=\"white\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
+            __instance.TeamTitle.text += "\n<size=20%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
 
@@ -47,7 +47,7 @@ namespace Doom_Scroll
         [HarmonyPatch("ShowRole")]
         public static void PrefixShowRole(IntroCutscene __instance)
         {
-            __instance.RoleText.text += "\n<size=10%><color=\"white\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
+            __instance.RoleText.text += "\n<size=10%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under second role screen: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
     }

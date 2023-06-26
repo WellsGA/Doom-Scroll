@@ -19,7 +19,7 @@ namespace Doom_Scroll
             // why did we check for game running?
             if (SecondaryWinConditionManager.LocalPLayerSWC != null && SecondaryWinConditionManager.LocalPLayerSWC.ToString() != "No secondary win condition")
             {
-                str = str + "\nSWC: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString();
+                str = str + "<color=\"yellow\">\nSWC: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color>";
                 //DoomScroll._log.LogInfo("SWC ToString added to task list: " + SecondaryWinCondition.ToString());
             }
         }
