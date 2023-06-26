@@ -50,11 +50,9 @@ namespace Doom_Scroll
                 ScreenshotManager.Instance.ActivateCameraButton(isActive);
                 DoomScroll._log.LogInfo("HudManager.SetHudActive ---- CAMERA ACTIVE: " + isActive);
             }
-            if (!NewsFeedManager.Instance.IsInputpanelOpen)
-            {
-                NewsFeedManager.Instance.ActivateNewsButton(isActive);
-                DoomScroll._log.LogInfo("HudManager.SetHudActive ---- NEWS BUTTON ACTIVE: " + isActive);
-            }
+            NewsFeedManager.Instance.ActivateNewsButton(isActive);
+            DoomScroll._log.LogInfo("HudManager.SetHudActive ---- NEWS BUTTON ACTIVE: " + isActive);
+
         }
 
         [HarmonyPrefix]

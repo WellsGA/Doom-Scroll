@@ -80,7 +80,7 @@ namespace Doom_Scroll
         }
         public void ActivateNewsButton(bool value)
         {
-            m_togglePanelButton.UIGameObject.SetActive(value);
+            m_togglePanelButton.ActivateCustomUI(value); ;
         }
 
         public void CanPostNews(bool value)
@@ -100,7 +100,7 @@ namespace Doom_Scroll
 
         public void CheckButtonClicks()
         {
-            if (hudManagerInstance == null || !canPostNews) return;
+            if (hudManagerInstance == null || !m_togglePanelButton.IsActive || !canPostNews) return;
             
             // Replace sprite on mouse hover for both buttons
             m_togglePanelButton.ReplaceImgageOnHover();
@@ -112,7 +112,7 @@ namespace Doom_Scroll
                     m_togglePanelButton.ButtonEvent.InvokeAction();
                 }
                 // Invoke methods on mouse click - submit news
-                if(m_togglePanelButton.IsEnabled && m_togglePanelButton.IsActive)
+                if(m_togglePanelButton.IsEnabled && IsInputpanelOpen)
                 {
                     foreach (CustomButton button in newsOptions)
                     {
@@ -134,24 +134,23 @@ namespace Doom_Scroll
         // the host selects the player(s) who can create news - at the beginning and after each meeting
         public void SelectPLayersWhoCanPostNews()
         {
-            if (PlayerControl.LocalPlayer.AmOwner)
+            if (!PlayerControl.LocalPlayer.AmOwner) return;
+            // select 1/5th of the players randomly and enable news creation for them
+            List<PlayerControl> allPlayer = new List<PlayerControl>();
+            double numberWhoCanPost = Math.Ceiling((double)PlayerControl.AllPlayerControls.Count/5);
+            foreach (PlayerControl pc in PlayerControl.AllPlayerControls)
             {
-                // select 1/5th of the players randomly and enable news creation for them
-                List<PlayerControl> allPlayer = new List<PlayerControl>();
-                double numberWhoCanPost = 2;
-                foreach (PlayerControl pc in PlayerControl.AllPlayerControls)
-                {
-                    allPlayer.Add(pc);
-                }
-                for (int i = 0; i < numberWhoCanPost; i++)
-                {
-                    int playerIndex = UnityEngine.Random.Range(0, allPlayer.Count);
-                    RPCPLayerCanCreateNews(allPlayer[playerIndex]);
-                    allPlayer.RemoveAt(playerIndex);
-                }
-                RPCPLayerCanCreateNews(PlayerControl.LocalPlayer); //debug: host can always post
+                allPlayer.Add(pc);
             }
+            for (int i = 0; i < numberWhoCanPost; i++)
+            {
+                int playerIndex = UnityEngine.Random.Range(0, allPlayer.Count);
+                RPCPLayerCanCreateNews(allPlayer[playerIndex]);
+                allPlayer.RemoveAt(playerIndex);
+            }
+            // RPCPLayerCanCreateNews(PlayerControl.LocalPlayer); //debug: host can always post
         }
+
         public void RPCPLayerCanCreateNews(PlayerControl player)
         {
             // if selected player local player set locally
@@ -164,7 +163,6 @@ namespace Doom_Scroll
             messageWriter.Write(player.PlayerId);
             messageWriter.Write(player.name);
             messageWriter.EndMessage();
-            DoomScroll._log.LogInfo("RPC CALLED FOR : " + player.name);
         }
 
         // Automatic News Creation - Only if player is host!
@@ -203,7 +201,7 @@ namespace Doom_Scroll
                             swcString = swc.SendableResultsText();
                         }
                     }
-                    headline += " " + swcString;
+                    headline = swcString;
                     break;
             }
             headline += "\n\t - " + NewsStrings.trustedSources[rand] + " -";
