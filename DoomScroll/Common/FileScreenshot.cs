@@ -27,7 +27,22 @@ namespace Doom_Scroll.Common
             Btn.ResetButtonImage(file);
             Btn.AddIconToButton(Picture, 0.2f);
         }
+        public override void DisplayContent()
+        {
+            //preparing arguments for RPCs
+            int numMessages = (int)Math.Ceiling(m_content.Length / ImageSectionLength * 1f);
+            byte pID = PlayerControl.LocalPlayer.PlayerId;
+            Sprite img = ImageLoader.ReadImageFromByteArray(m_content);
+            byte[] image = img.texture.EncodeToJPG(ImageSize);
 
+            DoomScroll._log.LogInfo("file size: " + image.Length);
+
+            //sending RPCs
+            SendImageInChat.RpcSendChatImage(image);
+        }
+
+        /*\
+        //NEWER SCREENSHOT WAY
         public override void DisplayContent() 
         {
             //preparing arguments for RPCs
@@ -52,8 +67,8 @@ namespace Doom_Scroll.Common
                     SendImageInChat.RPCSendChatImagePiece(pID, m_id, image.Skip(1000 * i).ToArray(), numMessages, i);
                     DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(1000 * i).ToArray()}");
                 }
-            }*/
-        }
+            }
+        }*/
 
         public override void HideContent()
         {

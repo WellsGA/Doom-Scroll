@@ -10,7 +10,7 @@ namespace Doom_Scroll
     {
         SENDPLAYERCANPOST = 249,
         SENDNEWS = 250,
-        SENDIMAGEPIECE = 251,
+        //SENDIMAGEPIECE = 251,
         DEATHNOTE = 252,
         SENDASSIGNEDTASK = 253,
         SENDSWC = 254,
@@ -21,7 +21,7 @@ namespace Doom_Scroll
     public static class PlayerControlPatch
     {
         static int count = 0;
-        private static Dictionary<String, DoomScrollImage> currentImagesAssembling = new Dictionary<String, DoomScrollImage>();
+        //private static Dictionary<String, DoomScrollImage> currentImagesAssembling = new Dictionary<String, DoomScrollImage>();
 
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
@@ -102,6 +102,19 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDIMAGE:
                     {
+                        byte[] screenshot = reader.ReadBytesAndSize();
+                        bool flag = DestroyableSingleton<HudManager>.Instance;
+                        if (flag)
+                        {
+                            ChatControllerPatch.screenshot = screenshot;
+                            string chatText = __instance.PlayerId.ToString() + "#" + ScreenshotManager.Instance.Screenshots.ToString();
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                        }
+                        break;
+                    }
+                /*
+                case (byte)CustomRPC.SENDIMAGE:
+                    {
                         DoomScroll._log.LogMessage("--------------\nReceiving RPC image\n--------------");
                         int numMessages = reader.ReadInt32();
                         byte pID = reader.ReadByte();
@@ -144,6 +157,7 @@ namespace Doom_Scroll
                         }
                         break;
                     }
+                */
             }
         }
     }
