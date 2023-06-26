@@ -31,13 +31,13 @@ namespace Doom_Scroll
         public static void PostfixActivate(ProgressionScreen __instance)
         {
             progressionScreenOpen = true;
-            DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.overallSWCResultsText());
-            CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.overallSWCResultsText());
+            DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.OverallSWCResultsText());
+            CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.OverallSWCResultsText());
             overallSWCText.SetColor(Color.white);
             overallSWCText.SetSize(2f);
             Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 1, overallSWCText.UIGameObject.transform.localPosition.z);
             overallSWCText.SetLocalPosition(textPos);
-            SecondaryWinConditionManager.gameOver();
+            SecondaryWinConditionManager.GameOver();
 
             //<<CREATE LINK BUTTON>>
             GameObject BloodSplat = GameObject.Find("UI_BloodSplat").gameObject;

@@ -178,12 +178,12 @@ namespace Doom_Scroll
         {
             int type = UnityEngine.Random.Range(0, 2); // random type of news
             int rand = UnityEngine.Random.Range(0, NewsStrings.trustedSources.Length);
-            int playerNr = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count); 
+            int playerNr = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count);
             PlayerControl player = PlayerControl.AllPlayerControls[playerNr]; //random player
             string headline = player.name;
             switch (type) 
             {
-                case 0: // get the number of completed tasks
+                case 0: // get the number of completed tasks // TEST THIS!!!! FOR NO SWCs TOO!!
                     int i = 0;
                     foreach (PlayerTask task in player.myTasks)
                     {  
@@ -193,12 +193,14 @@ namespace Doom_Scroll
                     break;
                 case 1:  // get their swc (if any)
                     List<SecondaryWinCondition> swcs = SecondaryWinConditionManager.GetSWCList();
-                    string swcString = "had no swc";
+                    DoomScroll._log.LogInfo("SWC length: " + swcs.Count);
+                    string swcString = "";  
                     foreach(SecondaryWinCondition swc in swcs)
                     {
                         if(player.PlayerId == swc.GetPayerId())
                         {
                             swcString = swc.SendableResultsText();
+                            DoomScroll._log.LogInfo("FOUND PLAYER: " + swc.GetPayerId());
                         }
                     }
                     headline = swcString;

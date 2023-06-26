@@ -52,7 +52,7 @@ namespace Doom_Scroll
                 }
             }
         }
-        private string getTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
+        private string GetTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -110,11 +110,11 @@ namespace Doom_Scroll
         {
             if (playerSWCGoal == Goal.Protect)
             {
-                return "Protect " + getTargetName();
+                return "Protect " + GetTargetName();
             }
             else if (playerSWCGoal == Goal.Frame)
             {
-                return "Frame " + getTargetName();
+                return "Frame " + GetTargetName();
             }
             return "No secondary win condition";
         }
@@ -137,15 +137,15 @@ namespace Doom_Scroll
         {
             if (playerSWCGoal == Goal.None)
             {
-                return ToString();
+                return GetPlayerName() + ": " + ToString() + "\n";
             }
             else if (swcSuccess)
             {
-                return GetPlayerName() + " " + ToString() + ": Success\n";
+                return GetPlayerName() + ": " + ToString() + ": Success\n";
             }
             else
             {
-                return GetPlayerName() + " " + ToString() + ": Failure\n";
+                return GetPlayerName() + ": " + ToString() + ": Failure\n";
             }
         }
 
@@ -158,7 +158,6 @@ namespace Doom_Scroll
             messageWriter.Write(playerSWCTarget);
             // we assume that the target is alive at this point // can it be disconnected tho?
             messageWriter.EndMessage();
-            DoomScroll._log.LogInfo("Sending local SWC");
             return true;
         }
 

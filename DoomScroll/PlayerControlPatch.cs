@@ -76,8 +76,7 @@ namespace Doom_Scroll
                         {
                             NewsFeedManager.Instance.CanPostNews(true);
                         }
-                        NewsFeedManager.Instance.PrintCurrentNewsPublisher(reader.ReadString());
-                        
+                        NewsFeedManager.Instance.PrintCurrentNewsPublisher(reader.ReadString());    
                         return;
                     }
                 case (byte)CustomRPC.SENDNEWS:
@@ -98,7 +97,7 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDSWC:
                     {
-                        SecondaryWinConditionManager.addToPlayerSWCList(new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte()));
+                        SecondaryWinConditionManager.AddToPlayerSWCList(new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte()));
                         return;
                     }
                 case (byte)CustomRPC.SENDIMAGE:

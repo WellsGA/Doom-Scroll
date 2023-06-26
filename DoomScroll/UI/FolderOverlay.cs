@@ -32,11 +32,12 @@ namespace Doom_Scroll.UI
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));       
             if (backgroundSR != null)
             {
-                folderOverlay.SetSize(backgroundSR.size);
+                folderOverlay.SetSize(backgroundSR.size * 0.85f);
+                folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-30));
             }
             else
             {
-                folderOverlay.SetScale(parent.transform.localScale * 0.4f);
+                folderOverlay.SetScale(parent.transform.localScale * 0.3f);
             }
             return folderOverlay;
         }
@@ -69,7 +70,7 @@ namespace Doom_Scroll.UI
         public static CustomText AddPath(GameObject parent)
         {
             CustomText pathText = new CustomText(parent, "PathName", "Home");
-            pathText.SetLocalPosition(new Vector3(0, 2.3f, -10));
+            pathText.SetLocalPosition(new Vector3(0, 2f, -10));
             pathText.SetSize(2.6f);
             return pathText;
         }

@@ -1,4 +1,5 @@
-﻿using Doom_Scroll.UI;
+﻿using AmongUs.GameOptions;
+using Doom_Scroll.UI;
 using System.Collections.Generic;
 
 namespace Doom_Scroll
@@ -8,33 +9,39 @@ namespace Doom_Scroll
         public static SecondaryWinCondition LocalPLayerSWC { get; private set; }
         private static List<SecondaryWinCondition> playerSWCList = new List<SecondaryWinCondition>();  // list of SecondaryWinConditions instead of strings
 
-        public static void InitSecondaryWinCondition(bool isImpostor)
+
+        public static void SetSecondaryWinConditions() // only called for the host
+        {
+            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+            {
+                InitSecondaryWinCondition(player.PlayerId, player.RoleType == RoleTypes.Impostor);
+            }
+        }
+        public static void InitSecondaryWinCondition(byte id, bool isImpostor)
         {
             // set local swc
-            playerSWCList = new List<SecondaryWinCondition>();
-            byte localPlayer = PlayerControl.LocalPlayer.PlayerId;
-            Goal localPlayerGoal = isImpostor ? Goal.None : assignGoal();
-            byte localPlayerTarget = isImpostor? byte.MaxValue : assignTarget();
-            LocalPLayerSWC = new SecondaryWinCondition(localPlayer, localPlayerGoal, localPlayerTarget);
-            addToPlayerSWCList(LocalPLayerSWC);
-
-            ///RPC local swc to others
+            // byte localPlayer = PlayerControl.LocalPlayer.PlayerId;
+            Goal localPlayerGoal = isImpostor ? Goal.None : AssignGoal();
+            byte localPlayerTarget = isImpostor? byte.MaxValue : AssignTarget();
+            LocalPLayerSWC = new SecondaryWinCondition(id, localPlayerGoal, localPlayerTarget);
+            AddToPlayerSWCList(LocalPLayerSWC);
+            // RPC local swc to others
             LocalPLayerSWC.RPCSendSWC();
         }
 
-        public static void gameOver()
+        public static void GameOver()
         {
             playerSWCList = new List<SecondaryWinCondition>();
             LocalPLayerSWC = null;
         }
 
-        public static void addToPlayerSWCList(SecondaryWinCondition swc)
+        public static void AddToPlayerSWCList(SecondaryWinCondition swc)
         {
             playerSWCList.Add(swc);
             DoomScroll._log.LogInfo("SWC added: " + swc.SendableResultsText());  // debug
         }
 
-        public static void UpdateSWCList(byte targetId, DeathReason reason)  // upadtes the dead targets and evaluates sucess
+        public static void UpdateSWCList(byte targetId, DeathReason reason)  // upadtes the dead targets and evaluates success
         {
             foreach (SecondaryWinCondition swc in playerSWCList) 
             {
@@ -42,23 +49,18 @@ namespace Doom_Scroll
             }
         }
 
-        public static string overallSWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure for all players is revealed
+        public static string OverallSWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure for all players is revealed
         {
             string overallResults = "";
             foreach (SecondaryWinCondition swc in playerSWCList)
             {
-                if (swc.ToString() != "No secondary win condition")
-                {
-                    overallResults += swc.SendableResultsText(); // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
-                    DoomScroll._log.LogInfo("Added " + swc.SendableResultsText() + " to overall Results.");
-                    DoomScroll._log.LogInfo("Overall results now is: " + overallResults + "");
-                }
+                overallResults += swc.SendableResultsText(); // will add each player's sent string, in the format of: "PlayerName Goal TargetName: SuccessOrFailure"
             }
             return overallResults;
         }
 
         // set up local player
-        private static Goal assignGoal()
+        private static Goal AssignGoal()
         {
             int goalNum = UnityEngine.Random.Range(1, 4); //min inclusive, max exclusive. Will return 1, 2, or 3
             if (goalNum == 1)
@@ -75,7 +77,7 @@ namespace Doom_Scroll
             }
         }
 
-        private static byte assignTarget()
+        private static byte AssignTarget()
         {
             int numPlayers = GameData.Instance.AllPlayers.Count;
             byte target = byte.MaxValue;

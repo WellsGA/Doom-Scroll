@@ -41,6 +41,7 @@ namespace Doom_Scroll
         [HarmonyPatch("Begin")] // only called when host
         public static void PostfixBegin()
         {
+            SecondaryWinConditionManager.SetSecondaryWinConditions();
             NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
         }
     }

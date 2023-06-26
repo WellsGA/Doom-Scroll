@@ -22,8 +22,8 @@ namespace Doom_Scroll.Common
             m_parent = parentPanel;
             m_parentSize = parentPanel.GetComponent<SpriteRenderer>().size;
             
-            Btn.Label.SetLocalPosition(new Vector3(0, 0.52f, 0));
-            Btn.Label.SetSize(3f);
+            Btn.Label.SetLocalPosition(new Vector3(0, 0.4f, 0));
+            Btn.Label.SetSize(2.5f);
         }
 
         public override void DisplayContent()
