@@ -1,11 +1,9 @@
 ﻿
-using Hazel.Dtls;
-using static Il2CppSystem.Xml.Schema.XsdDuration;
-
 namespace Doom_Scroll.Common
 {
     internal static class NewsStrings
     {
+
         public static string[] headlines1p = new string[]
         {
             "{0} Caught Loitering Near Vents.",

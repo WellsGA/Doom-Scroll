@@ -86,7 +86,7 @@ namespace Doom_Scroll
                 // selects new players to post news
                 NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
             }
-            DoomScroll._log.LogInfo(NewsFeedManager.Instance.DisplayNews());
+            DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString());
 
         }
     }

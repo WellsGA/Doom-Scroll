@@ -39,6 +39,7 @@ namespace Doom_Scroll.Common
                 case FileTextType.NEWS:
                     {
                         NewsFeedManager.Instance.DisplayNews();
+                        m_content = NewsFeedManager.Instance.ToString();
                         break;
                     }
             }
@@ -55,7 +56,7 @@ namespace Doom_Scroll.Common
                     }
                 case FileTextType.NEWS:
                     {
-                        m_content = NewsFeedManager.Instance.DisplayNews();
+                       NewsFeedManager.Instance.HideNews();
                         break;
                     }
             }

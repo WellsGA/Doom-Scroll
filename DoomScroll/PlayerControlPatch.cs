@@ -81,7 +81,7 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDNEWS:
                     {
-                        NewsFeedManager.Instance.AddNews(reader.ReadString());
+                        NewsFeedManager.Instance.AddNews(new NewsItem(reader.ReadByte(), reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
                         return;
                     }
                 case (byte)CustomRPC.DEATHNOTE:
