@@ -42,7 +42,6 @@ namespace Doom_Scroll
         public static void PostfixBegin()
         {
             SecondaryWinConditionManager.SetSecondaryWinConditions();
-            NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
         }
     }
 }

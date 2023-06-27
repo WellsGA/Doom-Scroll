@@ -43,7 +43,6 @@ namespace Doom_Scroll
         {
             m_togglePanelButton = NewsFeedOverlay.CreateNewsInputButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
-            newsOptions = new Dictionary<int, NewsItem>();
             newsButtons = new List<CustomButton>();
             Vector2 parentSize = m_inputPanel.GetSize();
             float inputHeight = 0.5f;
