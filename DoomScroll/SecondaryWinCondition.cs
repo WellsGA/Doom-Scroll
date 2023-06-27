@@ -161,13 +161,11 @@ namespace Doom_Scroll
             return true;
         }
 
-        public bool RPCDeathNote()
+        public bool RPCDeathNote(DeathReason reason)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DEATHNOTE, (SendOption)1);
-            messageWriter.Write(playerID);
-            messageWriter.Write((byte)playerSWCGoal);
             messageWriter.Write(playerSWCTarget);
-            messageWriter.Write((byte)targetState);
+            messageWriter.Write((byte)reason);
             messageWriter.EndMessage();
             return true;
         }

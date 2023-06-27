@@ -17,7 +17,7 @@ namespace Doom_Scroll
         public static void PrefixSetTaskText(ref string str)
         {
             // why did we check for game running?
-            if (SecondaryWinConditionManager.LocalPLayerSWC != null && SecondaryWinConditionManager.LocalPLayerSWC.ToString() != "No secondary win condition")
+            if (SecondaryWinConditionManager.LocalPLayerSWC != null)
             {
                 str = str + "<color=\"yellow\">\nSWC: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color>";
                 //DoomScroll._log.LogInfo("SWC ToString added to task list: " + SecondaryWinCondition.ToString());

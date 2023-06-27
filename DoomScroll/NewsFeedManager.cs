@@ -270,7 +270,7 @@ namespace Doom_Scroll
         {
             // to do: list it on a UI modal 
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 1.2f, -10);
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
             /* CustomText title = new CustomText(parent.UIGameObject, "title", "Assigned Tasks");
             title.SetLocalPosition(pos);
             title.SetSize(3f);*/

@@ -62,6 +62,7 @@ namespace Doom_Scroll
         {
             // local player dead, has to update swc list
             SecondaryWinConditionManager.UpdateSWCList(__instance.PlayerId, reason);
+            SecondaryWinConditionManager.LocalPLayerSWC.RPCDeathNote(reason);
         }
 
         [HarmonyPrefix]
@@ -97,7 +98,13 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDSWC:
                     {
-                        SecondaryWinConditionManager.AddToPlayerSWCList(new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte()));
+                        SecondaryWinCondition swc = new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte());
+                        // set local swc
+                        if (PlayerControl.LocalPlayer.PlayerId == swc.GetPayerId())
+                        {
+                            SecondaryWinConditionManager.LocalPLayerSWC = swc;
+                        }
+                        SecondaryWinConditionManager.AddToPlayerSWCList(swc);
                         return;
                     }
                 case (byte)CustomRPC.SENDIMAGE:

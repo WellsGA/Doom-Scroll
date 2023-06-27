@@ -6,7 +6,7 @@ namespace Doom_Scroll
 {
     public static class SecondaryWinConditionManager
     {
-        public static SecondaryWinCondition LocalPLayerSWC { get; private set; }
+        public static SecondaryWinCondition LocalPLayerSWC { get; set; }  // referencing local player swc
         private static List<SecondaryWinCondition> playerSWCList = new List<SecondaryWinCondition>();  // list of SecondaryWinConditions instead of strings
 
 
@@ -19,14 +19,17 @@ namespace Doom_Scroll
         }
         public static void InitSecondaryWinCondition(byte id, bool isImpostor)
         {
-            // set local swc
             // byte localPlayer = PlayerControl.LocalPlayer.PlayerId;
             Goal localPlayerGoal = isImpostor ? Goal.None : AssignGoal();
             byte localPlayerTarget = isImpostor? byte.MaxValue : AssignTarget();
-            LocalPLayerSWC = new SecondaryWinCondition(id, localPlayerGoal, localPlayerTarget);
-            AddToPlayerSWCList(LocalPLayerSWC);
+            SecondaryWinCondition swc = new SecondaryWinCondition(id, localPlayerGoal, localPlayerTarget);
+            AddToPlayerSWCList(swc);
             // RPC local swc to others
-            LocalPLayerSWC.RPCSendSWC();
+            swc.RPCSendSWC();
+            if (id == PlayerControl.LocalPlayer.PlayerId)
+            {
+                LocalPLayerSWC = swc;
+            }
         }
 
         public static void GameOver()
