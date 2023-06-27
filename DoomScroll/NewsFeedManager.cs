@@ -100,11 +100,21 @@ namespace Doom_Scroll
             if (canPostNews)
             {
                 newsOptions = new Dictionary<int, NewsItem>();
+                NewsItem news;
+                int rand = UnityEngine.Random.Range(0, newsButtons.Count);
                 for (int i = 0; i < newsButtons.Count; i++)
                 {
-                    NewsItem news = CreateFakeNews();
+                    if (i == rand)
+                    {
+                        news = CreateTrueNews();
+                    }
+                    else
+                    {
+                        news = CreateFakeNews();
+                    }
+
                     news.SetAuthorID(PlayerControl.LocalPlayer.PlayerId);
-                    newsButtons[i].Label.SetText(news.Title + ", by: " + news.Source);
+                    newsButtons[i].Label.SetText(news.Title + ", by: " + news.Source + ", " + news.IsTrue);
                     newsOptions.Add(i, news);
                 }
             }
@@ -192,7 +202,7 @@ namespace Doom_Scroll
         {
             int type = UnityEngine.Random.Range(0, 2); // random type of news
             int rand = UnityEngine.Random.Range(0, NewsStrings.trustedSources.Length);
-            string source = NewsStrings.fakeSources[rand];
+            string source = NewsStrings.trustedSources[rand];
             int playerNr = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count);
             PlayerControl player = PlayerControl.AllPlayerControls[playerNr]; //random player
             string headline = player.name;

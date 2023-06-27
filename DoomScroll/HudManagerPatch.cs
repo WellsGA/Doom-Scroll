@@ -21,6 +21,7 @@ namespace Doom_Scroll
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
             NewsFeedManager.Instance.Reset();
+            SecondaryWinConditionManager.Reset();
         }
 
         [HarmonyPostfix]

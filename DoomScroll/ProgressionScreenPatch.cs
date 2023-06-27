@@ -44,7 +44,7 @@ namespace Doom_Scroll
             overallSWCText.SetSize(size);
             Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.5f, overallSWCText.UIGameObject.transform.localPosition.z);
             overallSWCText.SetLocalPosition(textPos);
-            SecondaryWinConditionManager.GameOver();
+            SecondaryWinConditionManager.Reset();
 
             //<<CREATE LINK BUTTON>>
             GameObject BloodSplat = GameObject.Find("UI_BloodSplat").gameObject;

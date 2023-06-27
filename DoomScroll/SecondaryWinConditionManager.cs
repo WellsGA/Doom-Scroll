@@ -32,7 +32,7 @@ namespace Doom_Scroll
             }
         }
 
-        public static void GameOver()
+        public static void Reset()
         {
             playerSWCList = new List<SecondaryWinCondition>();
             LocalPLayerSWC = null;
