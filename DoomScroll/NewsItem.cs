@@ -13,7 +13,6 @@ namespace Doom_Scroll
         public string Source { get; private set; }
         
         public CustomModal Card { get; private set; }
-        private static Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
 
         public NewsItem(byte player, string headline, bool truth, string source)
         {
@@ -23,10 +22,10 @@ namespace Doom_Scroll
             Source = source;
         }
 
-        public void DisplayNewsCard(CustomModal parent)
+        public void DisplayNewsCard(CustomModal parent, Sprite spr)
         {
             Card = new CustomModal(parent.UIGameObject, "card item", spr);
-            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.4f, 0));
+            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0));
             CustomText title = new CustomText(Card.UIGameObject, "Headline", Title);
             CustomText source = new CustomText(Card.UIGameObject, "Source", Source);
             title.SetSize(1.5f);

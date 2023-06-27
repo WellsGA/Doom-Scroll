@@ -2,6 +2,7 @@
 using Doom_Scroll.UI;
 using Hazel;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace Doom_Scroll
         private Dictionary<CustomButton, NewsItem> newsOptions;
         // list of news created randomly and by the selected players -  will be displayed during meetings
         private List<NewsItem> allNewsList;
-
+        private Sprite spr;
         private NewsFeedManager()
         {
             Reset();
@@ -85,9 +86,10 @@ namespace Doom_Scroll
         {
             canPostNews = value;
             m_togglePanelButton.EnableButton(canPostNews);
+            newsOptions = new Dictionary<CustomButton, NewsItem>(); // reset dictionary
+
             if (value)
             {
-                newsOptions = new Dictionary<CustomButton, NewsItem>(); // new dictionary
                 Vector2 parentSize = m_inputPanel.GetSize();
                 float inputHeight = 0.5f;
 
@@ -276,8 +278,8 @@ namespace Doom_Scroll
             title.SetSize(3f);*/
             foreach (NewsItem news in allNewsList)
             {
-                news.DisplayNewsCard(parent);
-                pos.y -= news.Card.GetSize().y + 0.1f;
+                news.DisplayNewsCard(parent, spr);
+                pos.y -= news.Card.GetSize().y + 0.05f;
                 news.Card.SetLocalPosition(pos);
                 news.Card.ActivateCustomUI(true);
             }
@@ -311,6 +313,7 @@ namespace Doom_Scroll
             canPostNews = false;
             allNewsList = new List<NewsItem>();
             newsOptions = new Dictionary<CustomButton, NewsItem>();
+            spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             hudManagerInstance = HudManager.Instance;
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");

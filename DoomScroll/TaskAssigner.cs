@@ -33,6 +33,7 @@ namespace Doom_Scroll
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
         public bool isAssignerPanelActive;
+        private Sprite spr;
 
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
@@ -44,6 +45,7 @@ namespace Doom_Scroll
         private void InitTaskAssigner()
         {
             MaxAssignableTasks = 3;
+            spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             AssignableTasks = new List<uint>();
             AssignedTasks = new List<AssignedTask>();
             PlayerButtons = new Dictionary<byte, CustomButton>();
@@ -119,8 +121,8 @@ namespace Doom_Scroll
             title.SetSize(3f);*/
             foreach (AssignedTask task in AssignedTasks)
             {
-                task.DisplayTaskCard(parent);
-                pos.y -= task.Card.GetSize().y + 0.1f;
+                task.DisplayTaskCard(parent, spr);
+                pos.y -= task.Card.GetSize().y + 0.05f;
                 task.Card.SetLocalPosition(pos);
                 task.Card.ActivateCustomUI(true);
             }
