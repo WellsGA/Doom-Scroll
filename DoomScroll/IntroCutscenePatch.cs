@@ -13,35 +13,35 @@ namespace Doom_Scroll
         }
 */
         // displays SWC if local player is crewmate
-        /*[HarmonyPostfix]
+        [HarmonyPostfix]
         [HarmonyPatch("BeginCrewmate")]
         public static void PostfixBeginCrewmate(IntroCutscene __instance)
         {
             if (SecondaryWinConditionManager.LocalPLayerSWC == null) return;
             __instance.TeamTitle.text += "\n<size=20%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
-        }*/
+        }
 
-       /* // replaces SWC with empty SWC if local player is impostor (impostors can't have SWCs)
-        [HarmonyPrefix]
-        [HarmonyPatch("BeginImpostor")]
-        public static void PrefixBeginImpostor()
-        {
-            if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
-            {
-                SecondaryWinConditionManager.InitSecondaryWinCondition(true);
-            }
-        }*/
+        /* // replaces SWC with empty SWC if local player is impostor (impostors can't have SWCs)
+         [HarmonyPrefix]
+         [HarmonyPatch("BeginImpostor")]
+         public static void PrefixBeginImpostor()
+         {
+             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
+             {
+                 SecondaryWinConditionManager.InitSecondaryWinCondition(true);
+             }
+         }*/
 
         // displays SWC if local player is impostor
-        /*[HarmonyPostfix]
+        [HarmonyPostfix]
         [HarmonyPatch("BeginImpostor")]
         public static void PostfixBeginImpostor(IntroCutscene __instance)
         {
             if (SecondaryWinConditionManager.LocalPLayerSWC == null) return;
             __instance.TeamTitle.text += "\n<size=20%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
-        }*/
+        }
 
         // displays SWC on second role text screen
         // **NEED TO CHECK if this works!!**
