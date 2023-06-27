@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Doom_Scroll.Common;
+using Rewired.Utils;
 
 namespace Doom_Scroll.UI
 {
@@ -142,5 +143,6 @@ namespace Doom_Scroll.UI
                 m_spriteRenderer.color = new Color(1f, 1f, 1f, 0.4f);
             }
         }
+
     }
 }

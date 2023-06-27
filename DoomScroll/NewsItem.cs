@@ -28,10 +28,10 @@ namespace Doom_Scroll
             Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0));
             CustomText title = new CustomText(Card.UIGameObject, "Headline", Title);
             CustomText source = new CustomText(Card.UIGameObject, "Source", Source);
-            title.SetSize(1.5f);
-            source.SetSize(1f);
-            title.SetLocalPosition(new Vector3(0, 0.1f, -10));
-            source.SetLocalPosition(new Vector3(0, -0.1f, -10));
+            title.SetSize(1.2f);
+            source.SetSize(0.9f);
+            title.SetLocalPosition(new Vector3(0, 0.05f, -10));
+            source.SetLocalPosition(new Vector3(0, -0.05f, -10));
             source.SetColor(Color.gray);
             // source.SetTextAlignment(TMPro.TextAlignmentOptions.BaselineRight);
             Card.ActivateCustomUI(true);

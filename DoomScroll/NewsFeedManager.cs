@@ -43,6 +43,17 @@ namespace Doom_Scroll
             m_togglePanelButton = NewsFeedOverlay.CreateNewsInputButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
             newsOptions = new Dictionary<CustomButton, NewsItem>();
+            Vector2 parentSize = m_inputPanel.GetSize();
+            float inputHeight = 0.5f;
+            for (int i = 0; i < NumberOfNewsOptions; i++)
+            {
+                NewsItem news = CreateFakeNews();
+                CustomButton btn = NewsFeedOverlay.CreateNewsItemButton(m_inputPanel);
+                btn.SetLocalPosition(new Vector3(0, parentSize.y / 2 - inputHeight, -10));
+                btn.Label.SetText(news.ToString());
+                newsOptions.Add(btn, news);
+                inputHeight += btn.GetSize().y + 0.02f;
+            }
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
             ActivateNewsButton(false);
         }
@@ -86,21 +97,13 @@ namespace Doom_Scroll
         {
             canPostNews = value;
             m_togglePanelButton.EnableButton(canPostNews);
-            newsOptions = new Dictionary<CustomButton, NewsItem>(); // reset dictionary
-
             if (value)
             {
-                Vector2 parentSize = m_inputPanel.GetSize();
-                float inputHeight = 0.5f;
-
-                for (int i = 0; i < NumberOfNewsOptions; i++)
+                foreach (KeyValuePair<CustomButton, NewsItem> newsBtn in newsOptions)
                 {
                     NewsItem news = CreateFakeNews();
-                    CustomButton btn = NewsFeedOverlay.CreateNewsItemButton(m_inputPanel);
-                    btn.SetLocalPosition(new Vector3(0, parentSize.y / 2 - inputHeight, -10));
-                    btn.Label.SetText(news.ToString());
-                    newsOptions.Add(btn, news);
-                    inputHeight += btn.GetSize().y + 0.02f;
+                    newsBtn.Key.Label.SetText(news.ToString());
+                    newsOptions[newsBtn.Key] = news;
                 }
             }
         }
