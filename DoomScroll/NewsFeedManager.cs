@@ -28,7 +28,8 @@ namespace Doom_Scroll
         public bool IsInputpanelOpen { get; private set; }
         private bool canPostNews;
         // list of news created randomly if the player can create news
-        private Dictionary<CustomButton, NewsItem> newsOptions;
+        private Dictionary<int, NewsItem> newsOptions;
+        private List<CustomButton> newsButtons;
         // list of news created randomly and by the selected players -  will be displayed during meetings
         private List<NewsItem> allNewsList;
         private Sprite spr;
@@ -42,16 +43,14 @@ namespace Doom_Scroll
         {
             m_togglePanelButton = NewsFeedOverlay.CreateNewsInputButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
-            newsOptions = new Dictionary<CustomButton, NewsItem>();
+            newsOptions = new Dictionary<int, NewsItem>();
+            newsButtons = new List<CustomButton>();
             Vector2 parentSize = m_inputPanel.GetSize();
             float inputHeight = 0.5f;
             for (int i = 0; i < NumberOfNewsOptions; i++)
-            {
-                NewsItem news = CreateFakeNews();
+            {    
                 CustomButton btn = NewsFeedOverlay.CreateNewsItemButton(m_inputPanel);
                 btn.SetLocalPosition(new Vector3(0, parentSize.y / 2 - inputHeight, -10));
-                btn.Label.SetText(news.ToString());
-                newsOptions.Add(btn, news);
                 inputHeight += btn.GetSize().y + 0.02f;
             }
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
@@ -69,22 +68,22 @@ namespace Doom_Scroll
             if (IsInputpanelOpen)
             {
                 m_inputPanel.ActivateCustomUI(false);
-                foreach(KeyValuePair<CustomButton, NewsItem> newsBtn in newsOptions) { newsBtn.Key.EnableButton(false); }
+                foreach(CustomButton btn in newsButtons) { btn.EnableButton(false); }
                 IsInputpanelOpen = false;
             }
             else
             {
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
                 m_inputPanel.ActivateCustomUI(true);
-                foreach (KeyValuePair<CustomButton, NewsItem> newsBtn in newsOptions) { newsBtn.Key.EnableButton(true); }
+                foreach (CustomButton btn in newsButtons) { btn.EnableButton(true); }
                 IsInputpanelOpen = true;
             }
         }
 
-        public void OnSelectNewsItem(NewsItem news)
+        public void OnSelectNewsItem(int news)
         {
-            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + news.Title);
-            RPCShareNews(news);
+            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + newsOptions[news].Title);
+            RPCShareNews(newsOptions[news]);
             CanPostNews(false);
             ToggleNewsForm();
         }
@@ -97,13 +96,14 @@ namespace Doom_Scroll
         {
             canPostNews = value;
             m_togglePanelButton.EnableButton(canPostNews);
-            if (value)
+            if (canPostNews)
             {
-                foreach (KeyValuePair<CustomButton, NewsItem> newsBtn in newsOptions)
+                newsOptions = new Dictionary<int, NewsItem>();
+                for (int i = 0; i < newsButtons.Count; i++)
                 {
                     NewsItem news = CreateFakeNews();
-                    newsBtn.Key.Label.SetText(news.ToString());
-                    newsOptions[newsBtn.Key] = news;
+                    newsButtons[i].Label.SetText(news.ToString());
+                    newsOptions.Add(i, news);
                 }
             }
         }
@@ -124,13 +124,13 @@ namespace Doom_Scroll
                 // Invoke methods on mouse click - submit news
                 if(m_togglePanelButton.IsEnabled && IsInputpanelOpen)
                 {
-                    foreach (KeyValuePair<CustomButton, NewsItem> newsBtn in newsOptions)
+                    foreach (CustomButton btn in newsButtons)
                     {
-                        newsBtn.Key.ReplaceImgageOnHover();
-                        if (newsBtn.Key.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        btn.ReplaceImgageOnHover();
+                        if (btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                         {
-
-                            OnSelectNewsItem(newsBtn.Value);
+                            int index = newsButtons.IndexOf(btn);
+                            OnSelectNewsItem(index);
                         }
                     }
                 }
@@ -315,7 +315,7 @@ namespace Doom_Scroll
             IsInputpanelOpen = false;
             canPostNews = false;
             allNewsList = new List<NewsItem>();
-            newsOptions = new Dictionary<CustomButton, NewsItem>();
+            newsOptions = new Dictionary<int, NewsItem>();
             spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             hudManagerInstance = HudManager.Instance;
             InitializeInputPanel();
