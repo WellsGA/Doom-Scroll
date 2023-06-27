@@ -18,7 +18,7 @@ namespace Doom_Scroll
         public static void PostfixBeginCrewmate(IntroCutscene __instance)
         {
             if (SecondaryWinConditionManager.LocalPLayerSWC == null) return;
-            __instance.TeamTitle.text += "\n<size=20%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
+            __instance.TeamTitle.text += "\n<size=20%><color=\"orange\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
 
@@ -39,7 +39,7 @@ namespace Doom_Scroll
         public static void PostfixBeginImpostor(IntroCutscene __instance)
         {
             if (SecondaryWinConditionManager.LocalPLayerSWC == null) return;
-            __instance.TeamTitle.text += "\n<size=20%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
+            __instance.TeamTitle.text += "\n<size=20%><color=\"orange\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
 
@@ -50,7 +50,7 @@ namespace Doom_Scroll
         public static void PrefixShowRole(IntroCutscene __instance)
         {
             if (SecondaryWinConditionManager.LocalPLayerSWC == null) return;
-            __instance.RoleText.text += "\n<size=10%><color=\"yellow\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
+            __instance.RoleText.text += "\n<size=10%><color=\"orange\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under second role screen: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
     }
