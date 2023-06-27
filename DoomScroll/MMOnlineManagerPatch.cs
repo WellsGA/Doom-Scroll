@@ -13,9 +13,8 @@ using TMPro;
 
 namespace Doom_Scroll
 {
-    /*
-    [HarmonyPatch(typeof(MainMenuManager))]
-    class MainMenuManagerPatch
+    [HarmonyPatch(typeof(MMOnlineManager))]
+    class MMOnlineManagerPatch
     {
         private static Vector2 buttonSize = new Vector2(1.5f, 1.5f);
         public static CustomButton test_button;
@@ -29,12 +28,12 @@ namespace Doom_Scroll
             Application.OpenURL("https://www.google.com/");
         }
 
-        private static MainMenuManager mainMenuManagerInstance;
+        private static MMOnlineManager MMOnlineManagerInstance;
 
 
         public static CustomModal CreateCreditsOverlay(GameObject parent)
         {
-            SpriteRenderer bannerSR = mainMenuManagerInstance.DefaultButtonSelected.transform.gameObject.GetComponent<SpriteRenderer>();
+            SpriteRenderer backButtonSR = MMOnlineManagerInstance.BackButton.transform.gameObject.GetComponent<SpriteRenderer>();
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
 
             // create the overlay background
@@ -74,34 +73,41 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("opening");
             }
         }
-    
+
 
         [HarmonyPrefix]
-        [HarmonyPatch("LateUpdate")]
-        public static void PrefixLateUpdate(MainMenuManager __instance)
+        [HarmonyPatch("Update")]
+        public static void PrefixUpdate()
         {
-            //CheckButtonClicks();
+            CheckButtonClicks();
         }
 
 
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
-        public static void PostfixStart(MainMenuManager __instance)
+        public static void PostfixStart(MMOnlineManager __instance)
         {
+            DoomScroll._log.LogInfo("About to set MMOnlineManager instance...");
             AreCreditsOpen = false;
-            mainMenuManagerInstance = __instance;
+            MMOnlineManagerInstance = __instance;
 
-            GameObject m_UIParent = __instance.DefaultButtonSelected.transform.parent.gameObject;
-            GameObject inventoryButton = m_UIParent.transform.GetChild(2).gameObject;
-            Vector3 doomscrollBtnPos = inventoryButton.gameObject.transform.position;
-            SpriteRenderer doomscrollButtonSr = inventoryButton.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(doomscrollBtnPos.x - doomscrollButtonSr.size.x * inventoryButton.transform.localScale.x, doomscrollBtnPos.y, doomscrollBtnPos.z-10);
-            Vector2 scaledSize = doomscrollButtonSr.size * inventoryButton.transform.localScale;
-            scaledSize = scaledSize / 2;
+            DoomScroll._log.LogInfo("About to set up for credits toggle button...");
+            DoomScroll._log.LogInfo("Getting BackButton...");
+            GameObject m_UIParent = __instance.BackButton.transform.gameObject;
+            DoomScroll._log.LogInfo("Getting HelpButton from BackButton...");
+            GameObject helpButton = m_UIParent.transform.parent.transform.Find("HelpButton").gameObject;
+            DoomScroll._log.LogInfo("Got HelpButton");
+            Vector3 doomscrollBtnPos = helpButton.gameObject.transform.position;
+            SpriteRenderer doomscrollButtonSr = helpButton.GetComponent<SpriteRenderer>();
+            Vector3 position = new Vector3(doomscrollBtnPos.x+3, doomscrollBtnPos.y, doomscrollBtnPos.z - 10);
+            Vector2 scaledSize = doomscrollButtonSr.size * helpButton.transform.localScale;
+            //scaledSize = scaledSize / 2;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
 
+            DoomScroll._log.LogInfo("About to create credits toggle button...");
             test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
+            DoomScroll._log.LogInfo("Credits toggle button created");
 
             test_button.ActivateCustomUI(false);
             test_button.ActivateCustomUI(true);
@@ -110,8 +116,11 @@ namespace Doom_Scroll
 
             test_button.ButtonEvent.MyAction += OnClickDoomScroll;
 
-            credits_overlay = CreateCreditsOverlay(mainMenuManagerInstance.DefaultButtonSelected.transform.gameObject);
+            DoomScroll._log.LogInfo("About to create credits overlay...");
+            credits_overlay = CreateCreditsOverlay(GameObject.Find("NormalMenu").gameObject);
+            DoomScroll._log.LogInfo("Credits overlay created");
             close_button = AddCloseButton(credits_overlay.UIGameObject);
+            DoomScroll._log.LogInfo("Added close button");
             close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
             //<<CREATE CREDITS TEXT>>
@@ -133,7 +142,7 @@ namespace Doom_Scroll
             CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", creditsText);
             credits_text.SetColor(Color.black);
             credits_text.SetSize(3f);
-            Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f-3f, -10);
+            Vector3 textPos = new Vector3(0, credits_overlay.GetSize().x / 2 + 0.5f - 3f, -10);
             credits_text.SetLocalPosition(textPos);
             credits_text.TextMP.m_enableWordWrapping = false;
 
@@ -147,7 +156,7 @@ namespace Doom_Scroll
         }
         public static void CheckButtonClicks()
         {
-            if (mainMenuManagerInstance == null) return;
+            if (MMOnlineManagerInstance == null) return;
 
             test_button.ReplaceImgageOnHover();
 
@@ -194,5 +203,4 @@ namespace Doom_Scroll
             ToggleOurCredits();
         }
     }
-    */
 }
