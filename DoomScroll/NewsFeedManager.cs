@@ -103,7 +103,8 @@ namespace Doom_Scroll
                 for (int i = 0; i < newsButtons.Count; i++)
                 {
                     NewsItem news = CreateFakeNews();
-                    newsButtons[i].Label.SetText(news.ToString());
+                    news.SetAuthorID(PlayerControl.LocalPlayer.PlayerId);
+                    newsButtons[i].Label.SetText(news.Title + ", by: " + news.Source);
                     newsOptions.Add(i, news);
                 }
             }

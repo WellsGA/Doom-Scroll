@@ -44,7 +44,7 @@ namespace Doom_Scroll
 
         private void InitTaskAssigner()
         {
-            MaxAssignableTasks = 3;
+            MaxAssignableTasks = 2;
             spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             AssignableTasks = new List<uint>();
             AssignedTasks = new List<AssignedTask>();
