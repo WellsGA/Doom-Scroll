@@ -15,6 +15,7 @@ namespace Doom_Scroll
         //private static bool hasBeenClicked = false;
         public static bool progressionScreenOpen = false;
         public static bool ProgressionScreenOpen { get; private set; }
+        private static float fontSize = 2f;
 
         public static void OpenLink()
         {
@@ -31,11 +32,17 @@ namespace Doom_Scroll
         public static void PostfixActivate(ProgressionScreen __instance)
         {
             progressionScreenOpen = true;
+
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.OverallSWCResultsText());
             CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.OverallSWCResultsText());
             overallSWCText.SetColor(Color.white);
-            overallSWCText.SetSize(2f);
-            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 1, overallSWCText.UIGameObject.transform.localPosition.z);
+            float size = fontSize;
+            if (SecondaryWinConditionManager.GetSWCList().Count >= 8)
+            {
+                size = fontSize / 2f;
+            }
+            overallSWCText.SetSize(size);
+            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.5f, overallSWCText.UIGameObject.transform.localPosition.z);
             overallSWCText.SetLocalPosition(textPos);
             SecondaryWinConditionManager.GameOver();
 
