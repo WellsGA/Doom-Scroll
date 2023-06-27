@@ -21,7 +21,6 @@ namespace Doom_Scroll
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
             NewsFeedManager.Instance.Reset();
-            NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
         }
 
         [HarmonyPostfix]
@@ -87,7 +86,7 @@ namespace Doom_Scroll
                 // selects new players to post news
                 NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
             }
-            DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString());
+            DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString()); // debug
 
         }
     }

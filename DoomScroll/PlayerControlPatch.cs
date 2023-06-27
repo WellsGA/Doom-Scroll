@@ -77,7 +77,7 @@ namespace Doom_Scroll
                         {
                             NewsFeedManager.Instance.CanPostNews(true);
                         }
-                        NewsFeedManager.Instance.PrintCurrentNewsPublisher(reader.ReadString());    
+                       DoomScroll._log.LogInfo("==== CAN POST: " +reader.ReadString());    
                         return;
                     }
                 case (byte)CustomRPC.SENDNEWS:

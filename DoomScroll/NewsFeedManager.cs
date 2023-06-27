@@ -50,7 +50,9 @@ namespace Doom_Scroll
             {    
                 CustomButton btn = NewsFeedOverlay.CreateNewsItemButton(m_inputPanel);
                 btn.SetLocalPosition(new Vector3(0, parentSize.y / 2 - inputHeight, -10));
+                btn.Label.SetText("LABEL");
                 inputHeight += btn.GetSize().y + 0.02f;
+                newsButtons.Add(btn);
             }
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
             ActivateNewsButton(false);
@@ -159,6 +161,7 @@ namespace Doom_Scroll
                 allPlayer.RemoveAt(playerIndex);
             }
             RPCPLayerCanCreateNews(PlayerControl.LocalPlayer); //debug: host can always post
+            DoomScroll._log.LogInfo("============== SELECT PLAYER TP POST CALLED =============");
         }
 
         public void RPCPLayerCanCreateNews(PlayerControl player)
