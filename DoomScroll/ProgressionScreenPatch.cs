@@ -42,11 +42,12 @@ namespace Doom_Scroll
                 size = fontSize / 2f;
             }
             overallSWCText.SetSize(size);
-            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.5f, overallSWCText.UIGameObject.transform.localPosition.z);
+            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.75f, overallSWCText.UIGameObject.transform.localPosition.z);
             overallSWCText.SetLocalPosition(textPos);
             SecondaryWinConditionManager.Reset();
 
             //<<CREATE LINK BUTTON>>
+            /*
             GameObject BloodSplat = GameObject.Find("UI_BloodSplat").gameObject;
             SpriteRenderer BloodSplatSR = BloodSplat.GetComponent<SpriteRenderer>();
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
@@ -56,6 +57,7 @@ namespace Doom_Scroll
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
             link_button = new CustomButton(BloodSplat, "Close OurCredits", doomscrollBtnSprites, link_button_pos, buttonSize.x);
             link_button.ButtonEvent.MyAction += OpenLink;
+            */
             //hasBeenClicked = false;
         }
         /*
