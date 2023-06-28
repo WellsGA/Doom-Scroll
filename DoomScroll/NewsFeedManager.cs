@@ -203,6 +203,7 @@ namespace Doom_Scroll
             int type = UnityEngine.Random.Range(0, 2); // random type of news
             int rand = UnityEngine.Random.Range(0, NewsStrings.trustedSources.Length);
             string source = NewsStrings.trustedSources[rand];
+            
             int playerNr = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count);
             PlayerControl player = PlayerControl.AllPlayerControls[playerNr]; //random player
             string headline = player.name;
@@ -214,21 +215,32 @@ namespace Doom_Scroll
                     {  
                         if (task.IsComplete) i++;
                     }
-                    headline += " completed " + i + " tasks so far.";
+                    headline += " completed " + i.ToString() + " tasks.";
                     break;
                 case 1:  // get their swc (if any)
                     List<SecondaryWinCondition> swcs = SecondaryWinConditionManager.GetSWCList();
                     DoomScroll._log.LogInfo("SWC length: " + swcs.Count);
-                    string swcString = "";  
                     foreach(SecondaryWinCondition swc in swcs)
                     {
-                        if(player.PlayerId == swc.GetPayerId())
+                        DoomScroll._log.LogInfo("FOUND PLAYER: " + swc.GetPayerId());
+                        if (player.PlayerId == swc.GetPayerId())
                         {
-                            swcString = swc.SendableResultsText();
-                            DoomScroll._log.LogInfo("FOUND PLAYER: " + swc.GetPayerId());
+                            if(swc.GetGoal() == Goal.Protect)
+                            {
+                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect.Length);
+                                headline = NewsStrings.headlinesProtect[rnd];
+                                headline = headline.Replace("{0}", swc.GetPlayerName());
+                                headline = headline.Replace("{1}", swc.GetTargetName());
+                            }
+                            else if(swc.GetGoal() == Goal.Frame)
+                            {
+                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect.Length);
+                                headline = NewsStrings.headlinesProtect[rnd];
+                                headline = headline.Replace("{0}", swc.GetPlayerName());
+                                headline = headline.Replace("{1}", swc.GetTargetName());
+                            }
                         }
                     }
-                    headline = swcString;
                     break;
             }
             return new NewsItem(255, headline, true, source);
@@ -260,7 +272,7 @@ namespace Doom_Scroll
         {
             string headline = "";
             int rand;
-            int type = UnityEngine.Random.Range(0,3);
+            int type = UnityEngine.Random.Range(0,4);
             switch (type)
             {
                 case 0:
@@ -269,12 +281,18 @@ namespace Doom_Scroll
                     headline = NewsStrings.headlines1p[rand].Replace("{0}", player);
                     break;
                 case 1:
-                    rand = UnityEngine.Random.Range(0, NewsStrings.headlines2p.Length);
-                    headline = NewsStrings.headlines2p[rand];
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect.Length);
+                    headline = NewsStrings.headlinesProtect[rand];
                     headline = headline.Replace("{0}", GetRandomPlayerName());
                     headline = headline.Replace("{1}", GetRandomPlayerName());
                     break;
                 case 2:
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame.Length);
+                    headline = NewsStrings.headlinesFrame[rand];
+                    headline = headline.Replace("{0}", GetRandomPlayerName());
+                    headline = headline.Replace("{1}", GetRandomPlayerName());
+                    break;
+                case 3:
                     // rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p1n.Length);
                     int num = UnityEngine.Random.Range(0,6);
                     headline = NewsStrings.headlines1p1n[0].Replace("{0}", GetRandomPlayerName()); // currently one item

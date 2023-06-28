@@ -18,12 +18,16 @@ namespace Doom_Scroll.Common
             "{0} Caught Loitering Near Vents"
         };
 
-        public static string[] headlines2p = new string[]
+        public static string[] headlinesProtect = new string[]
+        {
+            "{0} and {1} Spotted Holding Hands During Meeting?!",
+            "{0} and {1} Caught Sharing Headphones at Lunch"
+        };
+
+        public static string[] headlinesFrame = new string[]
         {
             "{0} seen arguing with {1}",
-            "{0} and {1} Spotted Holding Hands During Meeting?!",
             "{0} Blames {1} for Slow Task Completion",
-            "{0} and {1} Caught Sharing Headphones at Lunch"
         };
 
         public static string[] headlines1p1n = new string[]
@@ -45,13 +49,13 @@ namespace Doom_Scroll.Common
 
         public static string[] fakeSources = new string[]
         {
-            "Old Task Archives",
             "SuspiciousMinds Website",
             "Red Tribunal",
             "Innocent Street Journal",
             "Spacehip News Network",
             "Imposter Kyle/'s Personal Blog",
             "@NotMe29",
+            "Amogus Weekly",
             "Bluffington Post",
             "@GLSNews",
             "The Selfless Report"

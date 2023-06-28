@@ -52,7 +52,7 @@ namespace Doom_Scroll
                 }
             }
         }
-        private string GetTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
+        public string GetTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -64,7 +64,7 @@ namespace Doom_Scroll
             return "";
         }
 
-        private string GetPlayerName()
+        public string GetPlayerName()
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -80,6 +80,12 @@ namespace Doom_Scroll
         {
             return playerID;
         }
+
+        public Goal GetGoal()
+        {
+            return playerSWCGoal;
+        }
+
         ///METHODS ADDED FROM SECONDARYWINCONDITIONHOLDER: 
 
         // replace voded out function with die patch - death reason
