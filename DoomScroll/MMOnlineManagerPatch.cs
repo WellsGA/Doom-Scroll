@@ -20,12 +20,18 @@ namespace Doom_Scroll
         public static CustomButton test_button;
         public static CustomModal credits_overlay;
         public static CustomButton close_button;
-        public static CustomButton link_button;
+        public static CustomButton link_button_pre;
+        public static CustomButton link_button_post;
         public static bool AreCreditsOpen { get; private set; }
 
-        public static void OpenLink()
+        public static void OpenPreLink()
         {
-            Application.OpenURL("https://www.google.com/");
+            Application.OpenURL("https://uci.co1.qualtrics.com/jfe/form/SV_6zo325uPNFDM2zQ");
+        }
+
+        public static void OpenPostLink()
+        {
+            Application.OpenURL("https://uci.co1.qualtrics.com/jfe/form/SV_eL2BZfLKHFZvgY6");
         }
 
         private static MMOnlineManager MMOnlineManagerInstance;
@@ -59,7 +65,7 @@ namespace Doom_Scroll
                 test_button.EnableButton(true);
                 credits_overlay.ActivateCustomUI(false);
                 close_button.EnableButton(false);
-                link_button.EnableButton(false);
+                link_button_pre.EnableButton(false);
                 AreCreditsOpen = false;
                 DoomScroll._log.LogInfo("Closing");
             }
@@ -68,7 +74,7 @@ namespace Doom_Scroll
                 test_button.EnableButton(false);
                 credits_overlay.ActivateCustomUI(true);
                 close_button.EnableButton(true);
-                link_button.EnableButton(true);
+                link_button_pre.EnableButton(true);
                 AreCreditsOpen = true;
                 DoomScroll._log.LogInfo("opening");
             }
@@ -93,6 +99,7 @@ namespace Doom_Scroll
                 AreCreditsOpen = false;
                 MMOnlineManagerInstance = __instance;
 
+                //<<CREATE DOOMSCROLL BUTTON>>
                 DoomScroll._log.LogInfo("About to set up for credits toggle button...");
                 DoomScroll._log.LogInfo("Getting BackButton...");
                 GameObject m_UIParent = __instance.BackButton.transform.gameObject;
@@ -101,9 +108,9 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("Got HelpButton");
                 Vector3 doomscrollBtnPos = helpButton.gameObject.transform.position;
                 SpriteRenderer doomscrollButtonSr = helpButton.GetComponent<SpriteRenderer>();
-                Vector3 position = new Vector3(doomscrollBtnPos.x + 3, doomscrollBtnPos.y, doomscrollBtnPos.z - 10);
+                Vector3 position = new Vector3(doomscrollBtnPos.x + 4f, doomscrollBtnPos.y+0.3f, doomscrollBtnPos.z - 10);
                 Vector2 scaledSize = doomscrollButtonSr.size * helpButton.transform.localScale;
-                //scaledSize = scaledSize / 2;
+                scaledSize = scaledSize * 3;
                 Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
                 Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
 
@@ -118,6 +125,7 @@ namespace Doom_Scroll
 
                 test_button.ButtonEvent.MyAction += OnClickDoomScroll;
 
+                //<<CREATE CREDITS OVERLAY>>
                 DoomScroll._log.LogInfo("About to create credits overlay...");
                 credits_overlay = CreateCreditsOverlay(GameObject.Find("NormalMenu").gameObject);
                 DoomScroll._log.LogInfo("Credits overlay created");
@@ -148,12 +156,23 @@ namespace Doom_Scroll
                 credits_text.SetLocalPosition(textPos);
                 credits_text.TextMP.m_enableWordWrapping = false;
 
+                //<<CREATE LINK BUTTON LABEL TEXT>>
+                string linkText = "<b><----</b>Take the <b>Pre-Test</b> on the left before playing\nTake the <b>Post-Test</b> on the right after playing<b>----></b>";
+                CustomText link_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", linkText);
+                link_text.SetColor(Color.black);
+                link_text.SetSize(3f);
+                Vector3 linkTextPos = textPos + new Vector3(0, - 5.7f, 0);
+                link_text.SetLocalPosition(linkTextPos);
+                link_text.TextMP.m_enableWordWrapping = false;
+
                 //<<CREATE LINK BUTTON>>
-                SpriteRenderer sr = credits_overlay.UIGameObject.GetComponent<SpriteRenderer>();
-                Vector3 link_button_pos = textPos + new Vector3(0, -5.8f, 0);
-                Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-                link_button = new CustomButton(credits_overlay.UIGameObject, "Close OurCredits", doomscrollBtnSprites, link_button_pos, buttonSize.x);
-                link_button.ButtonEvent.MyAction += OpenLink;
+                Vector3 link_button_pre_pos = textPos + new Vector3(-5, -5.8f, 0);
+                link_button_pre = new CustomButton(credits_overlay.UIGameObject, "Open Pre Survey", doomscrollBtnSprites, link_button_pre_pos, buttonSize.x);
+                link_button_pre.ButtonEvent.MyAction += OpenPreLink;
+
+                Vector3 link_button_post_pos = textPos + new Vector3(5, -5.8f, 0);
+                link_button_post = new CustomButton(credits_overlay.UIGameObject, "Open Post Survey", doomscrollBtnSprites, link_button_post_pos, buttonSize.x);
+                link_button_post.ButtonEvent.MyAction += OpenPostLink;
             }
 
         }
@@ -190,9 +209,21 @@ namespace Doom_Scroll
 
             try
             {
-                if (link_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (link_button_pre.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    link_button.ButtonEvent.InvokeAction();
+                    link_button_pre.ButtonEvent.InvokeAction();
+                }
+            }
+            catch (System.Exception e)
+            {
+                DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+            }
+
+            try
+            {
+                if (link_button_post.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    link_button_post.ButtonEvent.InvokeAction();
                 }
             }
             catch (System.Exception e)
