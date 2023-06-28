@@ -129,11 +129,11 @@ namespace Doom_Scroll
         {
             if (swcSuccess)
             {
-                return ToString() + ": <size=40%>Success</size>";
+                return ToString() + " <size=40%>Success</size>";
             }
             else if (!swcSuccess)
             {
-                return ToString() + ": <size=40%>Failure</size>";
+                return ToString() + " <size=40%>Failure</size>";
             }
             // if swc goal is null (unassigned)
             return ToString();
@@ -147,11 +147,11 @@ namespace Doom_Scroll
             }
             else if (swcSuccess)
             {
-                return GetPlayerName() + ": " + ToString() + ": Success\n";
+                return GetPlayerName() + ": " + ToString() + " Success\n";
             }
             else
             {
-                return GetPlayerName() + ": " + ToString() + ": Failure\n";
+                return GetPlayerName() + ": " + ToString() + " Failure\n";
             }
         }
 
