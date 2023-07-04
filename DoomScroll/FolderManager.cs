@@ -222,6 +222,16 @@ namespace Doom_Scroll
             ChangeDirectory(m_previous);
         }
 
+        public void CloseFolderOverlay()
+        {
+            if (m_isFolderOverlayOpen)
+            {
+                ActivateFolderOverlay(false);
+                m_current.HideContent();
+                DoomScroll._log.LogInfo("MEETING OVER, FOLDER CLOSED");
+            }
+        }
+
         public void AddImageToScreenshots(string name, byte[] img)
         {
             m_screenshots.AddItem(new FileScreenshot(m_screenshots.Path, name, m_folderArea.UIGameObject, img));

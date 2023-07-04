@@ -12,11 +12,10 @@ namespace Doom_Scroll
             FolderManager.Instance.CheckForButtonClicks();
         }
         [HarmonyPostfix]
-        [HarmonyPatch("Start")]
-        public static void PostfixStart()
+        [HarmonyPatch("Close")]
+        public static void PostfixClose()
         {
-            // TaskAssigner.Instance.DisplayAssignedTasks();  // debug purposes
-            
+            FolderManager.Instance.CloseFolderOverlay();
         }
 
     }
