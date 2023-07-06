@@ -42,7 +42,7 @@ namespace Doom_Scroll
                 size = fontSize / 2f;
             }
             overallSWCText.SetSize(size);
-            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.75f, overallSWCText.UIGameObject.transform.localPosition.z);
+            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.9f, overallSWCText.UIGameObject.transform.localPosition.z);
             overallSWCText.SetLocalPosition(textPos);
             SecondaryWinConditionManager.Reset();
 
