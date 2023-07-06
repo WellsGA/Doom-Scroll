@@ -25,7 +25,7 @@ namespace Doom_Scroll.UI
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
             CustomModal inputForm = new CustomModal(hud.gameObject, "News Form Overlay", spr);
-            inputForm.SetSize(5f);
+            inputForm.SetSize(new Vector2(5.2f, 2.5f));
             Vector2 size = inputForm.GetSize();
             inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2-1f, size.y/2, -5));
             // deactivate by default
