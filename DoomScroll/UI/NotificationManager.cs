@@ -8,13 +8,12 @@ namespace Doom_Scroll.UI
     public static class NotificationManager
     {
 
-
         // Thread.Sleep() // will stop the app from responding?
         public static async void ShowNotification(string notification)
         {
             // code before delay       
             CustomModal infoModal = CreateInfoModal(notification);
-            await Task.Delay(5000);
+            await Task.Delay(3000);
             // code after delay
             Object.Destroy(infoModal.UIGameObject);
         }
