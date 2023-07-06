@@ -22,6 +22,9 @@ namespace Doom_Scroll
         public static CustomButton close_button;
         public static CustomButton link_button_pre;
         public static CustomButton link_button_post;
+        public static GameObject gameCreationOptionsMenu;
+        public static GameObject joinGameMenu;
+        public static bool hostCreatingGame;
         public static bool AreCreditsOpen { get; private set; }
 
         public static void OpenPreLink()
@@ -85,7 +88,10 @@ namespace Doom_Scroll
         [HarmonyPatch("Update")]
         public static void PrefixUpdate()
         {
-            CheckButtonClicks();
+            if (!hostCreatingGame)
+            {
+                CheckButtonClicks();
+            }
         }
 
 
@@ -93,6 +99,7 @@ namespace Doom_Scroll
         [HarmonyPatch("Start")]
         public static void PostfixStart(MMOnlineManager __instance)
         {
+            hostCreatingGame = false;
             if (__instance.HelpMenu != null && __instance.HelpMenu.gameObject.activeSelf == false)
             {
                 DoomScroll._log.LogInfo("About to set MMOnlineManager instance...");
