@@ -82,7 +82,7 @@ namespace Doom_Scroll
             }
             else if (playerSWCGoal == Goal.Frame)
             {
-                if (targetState == TargetState.VOTEDOUT)
+                if (targetState != TargetState.ALIVE) // reason of death doesn't matter for now
                 {
                     DoomScroll._log.LogInfo("Frame successful.");
                     swcSuccess = true;
