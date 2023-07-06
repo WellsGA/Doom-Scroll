@@ -92,7 +92,7 @@ namespace Doom_Scroll
                 {
                     AssignedTask assTask = new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID);
                     AssignedTasks.Add(assTask);
-                    NotificationManager.ShowNotification("New task assigned to " + assTask.AssigneeName);
+                    NotificationManager.ShowNotification(assTask.AssigneeName + " signed into a task.");
                     DoomScroll._log.LogInfo("New task assigned\n player: " + assTask.AssigneeName + ", task: " + assTask.Type);
                 }
             }

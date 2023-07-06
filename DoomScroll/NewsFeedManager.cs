@@ -249,8 +249,6 @@ namespace Doom_Scroll
         public void RPCShareNews(NewsItem news)
         {
             AddNews(news); // add locally
-            NotificationManager.ShowNotification("News posted\n " + news.Title + " [" + news.Source + "]");
-
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
             messageWriter.Write(news.Author);
             messageWriter.Write(news.Title);
@@ -261,6 +259,7 @@ namespace Doom_Scroll
 
         public void AddNews(NewsItem news) 
         {
+            NotificationManager.ShowNotification("News posted\n " + news.Title + " [" + news.Source + "]");
             allNewsList.Add(news);
         }
 
