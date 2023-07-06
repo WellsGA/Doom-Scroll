@@ -5,13 +5,7 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(IntroCutscene))]
     class IntroCutscenePatch
     {
-        /*[HarmonyPrefix]
-        [HarmonyPatch("BeginCrewmate")]
-        public static void PrefixBeginCrewmate()
-        {
-            SecondaryWinConditionManager.InitSecondaryWinCondition(false);
-        }
-*/
+        
         // displays SWC if local player is crewmate
         [HarmonyPostfix]
         [HarmonyPatch("BeginCrewmate")]
@@ -21,17 +15,6 @@ namespace Doom_Scroll
             __instance.TeamTitle.text += "\n<size=20%><color=\"orange\">Secondary Win Condition: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color></size>";
             DoomScroll._log.LogInfo("SecondaryWinCondition showing under role assignment: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString());
         }
-
-        /* // replaces SWC with empty SWC if local player is impostor (impostors can't have SWCs)
-         [HarmonyPrefix]
-         [HarmonyPatch("BeginImpostor")]
-         public static void PrefixBeginImpostor()
-         {
-             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
-             {
-                 SecondaryWinConditionManager.InitSecondaryWinCondition(true);
-             }
-         }*/
 
         // displays SWC if local player is impostor
         [HarmonyPostfix]

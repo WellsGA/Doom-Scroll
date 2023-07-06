@@ -13,13 +13,13 @@ namespace Doom_Scroll
         {
             // no prefab or not a player task or no assignable tasks
             if (__instance == null || __instance.TaskType == TaskTypes.None || TaskAssigner.Instance.AssignableTasks == null) return;
-            DoomScroll._log.LogInfo("Beging called");
+            DoomScroll._log.LogInfo("MiniGame Begin method called");
             foreach (uint pt in TaskAssigner.Instance.AssignableTasks)
             {
-                DoomScroll._log.LogInfo("task id: " + task.Id + "pt id" + pt);
                 if (pt == task.Id)
                 {
-                    DoomScroll._log.LogInfo("Task Assignable");
+                    DoomScroll._log.LogInfo("Task Assignable - task id: " + task.Id + ", pt id" + pt);
+
                     TaskAssigner.Instance.ActivatePanel(true);
                     TaskAssigner.Instance.SetCurrentMinigameTask(pt); //set the active assignable task id
                     break;

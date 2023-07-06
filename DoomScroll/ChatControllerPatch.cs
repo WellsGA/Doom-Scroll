@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Doom_Scroll
 {
     // in the 2023.2.28 release ChatBubble is an internal class,
-    // so we have to access the Gamobject that has the ChatBubble scrip on it and set the image to be displayed
+    // so we have to access the Gamobject that has the ChatBubble script on it and set the image to be displayed
     [HarmonyPatch(typeof(ChatController))]
     public class ChatControllerPatch
     {
@@ -56,7 +56,7 @@ namespace Doom_Scroll
                             if (nameText != null && background != null && maskArea != null)
                             {
                                 background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight() + sr.size.y);
-                                maskArea.size = background.size - new Vector2(0f, 0.03f);
+                                maskArea.size = background.size - new Vector2(0f, 0.08f);
                                 background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y/3, background.transform.localPosition.z);
                             }
                             screenshot = null;

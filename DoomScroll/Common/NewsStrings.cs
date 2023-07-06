@@ -12,7 +12,7 @@ namespace Doom_Scroll.Common
             "{0} saves Puppy from Burning Building!",
             "{0} Isn't Doing Their Fair Share!",
             "{0} Caught Stealing Lunches from Fridge",
-            "/'{0} CANNOT Be Trusted/', Local Ghost Warns",
+            "\'{0} CANNOT Be Trusted\', Local Ghost Warns",
             "HERO: {0} Saves Ship from Sabotage",
             "{0} Parties 'Til 4am, Keeps Shipmates Awake",
             "{0} Caught Loitering Near Vents"
@@ -53,7 +53,7 @@ namespace Doom_Scroll.Common
             "Red Tribunal",
             "Innocent Street Journal",
             "Spacehip News Network",
-            "Imposter Kyle/'s Personal Blog",
+            "Imposter Kyle\'s Personal Blog",
             "@NotMe29",
             "Amogus Weekly",
             "Bluffington Post",

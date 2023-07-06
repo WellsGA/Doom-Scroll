@@ -4,6 +4,10 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
+using System.Threading.Tasks;
+using static Il2CppSystem.Runtime.Remoting.RemotingServices;
+using Sentry.Internal;
+using static Il2CppMono.Security.X509.X520;
 
 namespace Doom_Scroll
 {
@@ -33,7 +37,7 @@ namespace Doom_Scroll
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
         public bool isAssignerPanelActive;
-        private Sprite spr;
+        private Sprite cardSprite;
 
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
@@ -45,7 +49,7 @@ namespace Doom_Scroll
         private void InitTaskAssigner()
         {
             MaxAssignableTasks = 2;
-            spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
+            cardSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             AssignableTasks = new List<uint>();
             AssignedTasks = new List<AssignedTask>();
             PlayerButtons = new Dictionary<byte, CustomButton>();
@@ -75,8 +79,9 @@ namespace Doom_Scroll
                 AssignableTasks.Remove(task);
             }
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)1);
-            messageWriter.Write(player);
-            messageWriter.Write(task);
+            messageWriter.Write(PlayerControl.LocalPlayer.PlayerId); // assigner
+            messageWriter.Write(player); // assignee
+            messageWriter.Write(task); //task
             messageWriter.EndMessage();
         }
         public void AddToAssignedTasks(PlayerControl sender, byte playerID, uint taskId)
@@ -85,8 +90,10 @@ namespace Doom_Scroll
             {
                 if (task.Id == taskId) // check if sender really had that task and get the type
                 {
-                    AssignedTasks.Add(new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID));
-                    DoomScroll._log.LogInfo("TASK ASSIGNED TO PLAYER: " + playerID + ", TASK TYPE:" + task.TaskType);
+                    AssignedTask assTask = new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID);
+                    AssignedTasks.Add(assTask);
+                    ShowNotification("New task assigned\n player: " + assTask.AssigneeName + ", task: " + assTask.Type);
+                    DoomScroll._log.LogInfo("New task assigned\n player: " + assTask.AssigneeName + ", task: " + assTask.Type);
                 }
             }
         }
@@ -121,7 +128,7 @@ namespace Doom_Scroll
             title.SetSize(3f);*/
             foreach (AssignedTask task in AssignedTasks)
             {
-                task.DisplayTaskCard(parent, spr);
+                task.DisplayTaskCard(parent, cardSprite);
                 pos.y -= task.Card.GetSize().y + 0.05f;
                 task.Card.SetLocalPosition(pos);
                 task.Card.ActivateCustomUI(true);
@@ -193,5 +200,31 @@ namespace Doom_Scroll
             // inactive at first, gets activated on task completition
             ActivatePanel(false);
         }
+
+        // Thread.Sleep() // will stop the app from responding?
+        public async void ShowNotification(string notification)
+        {
+            // code before delay       
+            CustomModal infoModal = CreateInfoModal(notification);
+            await Task.Delay(5000);
+            // code after delay
+            Object.Destroy(infoModal.UIGameObject);
+        }
+
+        private CustomModal CreateInfoModal(string notification)
+        {
+            Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
+            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.notificationModal.png");
+            CustomModal infoModal = new CustomModal(HudManager.Instance.gameObject, "Notification modal", spr);
+            Vector3 pos = HudManager.Instance.SettingsButton.transform.localPosition;
+            infoModal.SetSize(5f);
+            Vector2 size = infoModal.GetSize();
+            infoModal.SetLocalPosition(new Vector3(pos.x - size.x/2 -0.2f, pos.y, -50));
+            CustomText infoText = new CustomText(infoModal.UIGameObject, "notification", notification);
+            infoText.SetSize(1.5f);
+            infoText.SetLocalPosition(new Vector3(0, 0, -10));
+            return infoModal;
+        }
+
     }
 }

@@ -75,6 +75,7 @@
     <EmbeddedResource Include="Assets\dontShareButton.png" />
     <EmbeddedResource Include="Assets\openButton.png" />
     <EmbeddedResource Include="Assets\panel.png" />
+    <EmbeddedResource Include="Assets\notificationModal.png" />
     <EmbeddedResource Include="Assets\card.png" />
     <EmbeddedResource Include="Assets\input.png" />
     <EmbeddedResource Include="Assets\emptyBtn.png" />

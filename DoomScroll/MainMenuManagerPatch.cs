@@ -35,10 +35,10 @@ namespace Doom_Scroll
         public static CustomModal CreateCreditsOverlay(GameObject parent)
         {
             SpriteRenderer bannerSR = mainMenuManagerInstance.DefaultButtonSelected.transform.gameObject.GetComponent<SpriteRenderer>();
-            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
+            Sprite cardSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
 
             // create the overlay background
-            CustomModal creditsOverlay = new CustomModal(parent, "CreditsOverlay", spr);
+            CustomModal creditsOverlay = new CustomModal(parent, "CreditsOverlay", cardSprite);
             creditsOverlay.SetLocalPosition(new Vector3(0f, 0f, -50f));
             creditsOverlay.SetScale(parent.transform.localScale * 0.4f);
             // deactivate by default
