@@ -16,7 +16,7 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(LobbyBehaviour))]
     class LobbyBehaviourPatch
     {
-        public static GameObject pingText;
+        public static GameObject bottomCodeText;
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
 
@@ -24,15 +24,15 @@ namespace Doom_Scroll
         [HarmonyPatch("Start")]
         public static void PostfixStart(LobbyBehaviour __instance)
         {
-            pingText = GameObject.Find("PingTrackerTMP");
+            bottomCodeText = GameObject.Find("GameRoomButton");
             lobbyBehaviourInstance = __instance;
-            DoomScroll._log.LogInfo("Meeting Hud starting! Trying to add tooltip.");
-            GameObject uiParent = pingText;
+            DoomScroll._log.LogInfo("Lobby starting! Trying to add tooltip.");
+            GameObject uiParent = bottomCodeText;
             lobbyToolTipText = new CustomText(uiParent, "LobbyTooltip", "<b>Recommended Rules</b>:\r\n-No Voice Chat! To simulate a social media discussion,\n only use the text chat during meetings.\r\n-Add 30 seconds to Meetings. Use the extra time to \nexamine the evidence in the folder.");
             lobbyToolTipText.SetColor(Color.yellow);
-            lobbyToolTipText.SetSize(3f);
+            lobbyToolTipText.SetSize(2f);
             Vector3 textPos = uiParent.transform.localPosition;
-            textPos = new Vector3(uiParent.transform.localPosition.x*0.3f, -uiParent.transform.localPosition.y*0.5f, -10);
+            textPos = new Vector3(uiParent.transform.localPosition.x, -uiParent.transform.localPosition.y*0.1f+5, -10);
             //Vector3 textPos = new Vector3(-3, -1.5f, -10);
             lobbyToolTipText.SetLocalPosition(textPos);
             lobbyToolTipText.ActivateCustomUI(true);
