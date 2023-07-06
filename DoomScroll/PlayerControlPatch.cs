@@ -60,9 +60,9 @@ namespace Doom_Scroll
         [HarmonyPatch("Die")]
         public static void PostfixDie(PlayerControl __instance, DeathReason reason)
         {
-            // local player dead, has to update swc list
+            // local player dead, has to update swc list for themself and the other players
             SecondaryWinConditionManager.UpdateSWCList(__instance.PlayerId, reason);
-            SecondaryWinConditionManager.LocalPLayerSWC.RPCDeathNote(reason);
+            SecondaryWinConditionManager.RPCDeathNote(__instance.PlayerId, reason);
         }
 
         [HarmonyPrefix]
@@ -98,13 +98,7 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDSWC:
                     {
-                        SecondaryWinCondition swc = new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte());
-                        // set local swc
-                        if (PlayerControl.LocalPlayer.PlayerId == swc.GetPayerId())
-                        {
-                            SecondaryWinConditionManager.LocalPLayerSWC = swc;
-                        }
-                        SecondaryWinConditionManager.AddToPlayerSWCList(swc);
+                        SecondaryWinConditionManager.AddToPlayerSWCList(new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte()));
                         return;
                     }
                 case (byte)CustomRPC.SENDIMAGE:

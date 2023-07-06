@@ -1,5 +1,5 @@
 ﻿using AmongUs.GameOptions;
-using Doom_Scroll.UI;
+using Hazel;
 using System.Collections.Generic;
 
 namespace Doom_Scroll
@@ -9,26 +9,16 @@ namespace Doom_Scroll
         public static SecondaryWinCondition LocalPLayerSWC { get; set; }  // referencing local player swc
         private static List<SecondaryWinCondition> playerSWCList = new List<SecondaryWinCondition>();  // list of SecondaryWinConditions instead of strings
 
-
-        public static void SetSecondaryWinConditions() // only called for the host
+        public static void SetSecondaryWinConditions() // only called for the host in ShipStatus Begin()
         {
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
-                InitSecondaryWinCondition(player.PlayerId, player.RoleType == RoleTypes.Impostor);
-            }
-        }
-        public static void InitSecondaryWinCondition(byte id, bool isImpostor)
-        {
-            // byte localPlayer = PlayerControl.LocalPlayer.PlayerId;
-            Goal localPlayerGoal = isImpostor ? Goal.None : AssignGoal();
-            byte localPlayerTarget = isImpostor? byte.MaxValue : AssignTarget();
-            SecondaryWinCondition swc = new SecondaryWinCondition(id, localPlayerGoal, localPlayerTarget);
-            AddToPlayerSWCList(swc);
-            // RPC local swc to others
-            swc.RPCSendSWC();
-            if (id == PlayerControl.LocalPlayer.PlayerId)
-            {
-                LocalPLayerSWC = swc;
+                bool isImpostor =  player.RoleType == RoleTypes.Impostor ? true : false;
+                Goal playerGoal = isImpostor ? Goal.None : AssignGoal();
+                byte playerTarget = isImpostor ? byte.MaxValue : AssignTarget();
+                SecondaryWinCondition swc = new SecondaryWinCondition(player.PlayerId, playerGoal, playerTarget);  
+                AddToPlayerSWCList(swc); // add locally - host's list
+                RPCSendSWC(swc); // send RPC swc to others
             }
         }
 
@@ -40,6 +30,10 @@ namespace Doom_Scroll
 
         public static void AddToPlayerSWCList(SecondaryWinCondition swc)
         {
+            if (swc.GetPayerId() == PlayerControl.LocalPlayer.PlayerId)
+            {
+                LocalPLayerSWC = swc;
+            }
             playerSWCList.Add(swc);
             DoomScroll._log.LogInfo("SWC added: " + swc.SendableResultsText());  // debug
         }
@@ -48,7 +42,10 @@ namespace Doom_Scroll
         {
             foreach (SecondaryWinCondition swc in playerSWCList) 
             {
-                swc.TargetDead(targetId, reason);
+                if(swc.GetTargetId() == targetId)
+                {
+                    swc.TargetDead(reason);
+                }
             }
         }
 
@@ -82,36 +79,40 @@ namespace Doom_Scroll
 
         private static byte AssignTarget()
         {
-            int numPlayers = GameData.Instance.AllPlayers.Count;
-            byte target = byte.MaxValue;
-            int playerindex = -1;
-            for (int i = 0; i < numPlayers; i++)
-            {
-                if (GameData.Instance.AllPlayers[i].PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                {
-                    playerindex = i;
-                    break;
-                }
-            }
+            int numPlayers = PlayerControl.AllPlayerControls.Count;
+            int playerindex = PlayerControl.AllPlayerControls.IndexOf(PlayerControl.LocalPlayer);
+            // select a target different from the local player
             int targetNum = UnityEngine.Random.Range(0, numPlayers);
             while (targetNum == playerindex)
             {
                 targetNum = UnityEngine.Random.Range(0, numPlayers);
             }
-
-            for (int i = 0; i < numPlayers; i++)
-            {
-                if (i == targetNum)
-                {
-                    target = GameData.Instance.AllPlayers[i].PlayerId;
-                }
-            }
+            byte target = PlayerControl.AllPlayerControls[targetNum].PlayerId;
             return target;
         }
 
         public static List<SecondaryWinCondition> GetSWCList()
         {
             return playerSWCList;
+        }
+
+        //RPCs
+        public static bool RPCDeathNote(byte plyaerID, DeathReason reason)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DEATHNOTE, (SendOption)1);
+            messageWriter.Write(plyaerID);
+            messageWriter.Write((byte)reason);
+            messageWriter.EndMessage();
+            return true;
+        }
+        public static bool RPCSendSWC(SecondaryWinCondition swc)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSWC, (SendOption)1);
+            messageWriter.Write(swc.GetPayerId());
+            messageWriter.Write((byte)swc.GetGoal());
+            messageWriter.Write(swc.GetTargetId());
+            messageWriter.EndMessage();
+            return true;
         }
     }
 }

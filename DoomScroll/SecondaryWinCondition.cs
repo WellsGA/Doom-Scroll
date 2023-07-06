@@ -1,5 +1,4 @@
-﻿using Hazel;
-
+﻿
 namespace Doom_Scroll
 {
     public enum Goal : byte
@@ -21,7 +20,6 @@ namespace Doom_Scroll
         private Goal playerSWCGoal;
         private byte playerSWCTarget;
         private TargetState targetState;
-
         private bool swcSuccess;
 
         public SecondaryWinCondition(byte player, Goal goal, byte target)
@@ -33,25 +31,6 @@ namespace Doom_Scroll
             swcSuccess = goal != Goal.Frame  ? true : false; // if protect or none they start on success
         }
 
-        public void Evaluate()
-        {
-            if (playerSWCGoal == Goal.Protect)
-            {
-                if (targetState != TargetState.ALIVE) //player is dead
-                 {
-                     DoomScroll._log.LogInfo("Protect failed.");
-                      swcSuccess = false;
-                 }
-            }
-            else if (playerSWCGoal == Goal.Frame)
-            {
-                if (targetState == TargetState.VOTEDOUT)
-                {
-                    DoomScroll._log.LogInfo("Frame successful.");
-                    swcSuccess = true;
-                }
-            }
-        }
         public string GetTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
         {
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
@@ -81,33 +60,51 @@ namespace Doom_Scroll
             return playerID;
         }
 
+        public byte GetTargetId()
+        {
+            return playerSWCTarget;
+        }
+
         public Goal GetGoal()
         {
             return playerSWCGoal;
         }
 
-        ///METHODS ADDED FROM SECONDARYWINCONDITIONHOLDER: 
-
-        // replace voded out function with die patch - death reason
-        public void TargetDead(byte id, DeathReason reason)
+        public void Evaluate()
         {
-            if(playerSWCTarget == id)
+            if (playerSWCGoal == Goal.Protect)
             {
-                switch (reason)
+                if (targetState != TargetState.ALIVE) //player is dead
                 {
-                    case DeathReason.Kill:
-                        targetState = TargetState.KILLED;
-                        break;
-                    case DeathReason.Exile:
-                        targetState = TargetState.VOTEDOUT;
-                        break;
-                    case DeathReason.Disconnect:            // This is not evaluated correctly rn! 
-                    default:
-                        targetState = TargetState.DISCONNECTED;
-                        break;
+                    DoomScroll._log.LogInfo("Protect failed.");
+                    swcSuccess = false;
                 }
-                Evaluate();
             }
+            else if (playerSWCGoal == Goal.Frame)
+            {
+                if (targetState == TargetState.VOTEDOUT)
+                {
+                    DoomScroll._log.LogInfo("Frame successful.");
+                    swcSuccess = true;
+                }
+            }
+        }
+        public void TargetDead(DeathReason reason)
+        {
+            switch (reason)
+            {
+                 case DeathReason.Kill:
+                    targetState = TargetState.KILLED;
+                    break;
+                 case DeathReason.Exile:
+                    targetState = TargetState.VOTEDOUT;
+                    break;
+                case DeathReason.Disconnect:            // This is not evaluated correctly rn! 
+                default:
+                    targetState = TargetState.DISCONNECTED;
+                    break;
+            }
+            Evaluate();
         }
 
         public override string ToString()
@@ -153,27 +150,6 @@ namespace Doom_Scroll
             {
                 return GetPlayerName() + ": " + ToString() + " Failure\n";
             }
-        }
-
-        // RPCs
-        public bool RPCSendSWC()
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSWC, (SendOption)1);
-            messageWriter.Write(playerID);
-            messageWriter.Write((byte)playerSWCGoal);
-            messageWriter.Write(playerSWCTarget);
-            // we assume that the target is alive at this point // can it be disconnected tho?
-            messageWriter.EndMessage();
-            return true;
-        }
-
-        public bool RPCDeathNote(DeathReason reason)
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DEATHNOTE, (SendOption)1);
-            messageWriter.Write(playerSWCTarget);
-            messageWriter.Write((byte)reason);
-            messageWriter.EndMessage();
-            return true;
         }
     }
 }
