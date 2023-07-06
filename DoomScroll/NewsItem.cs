@@ -25,7 +25,7 @@ namespace Doom_Scroll
         public void DisplayNewsCard(CustomModal parent, Sprite spr)
         {
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(Author);
-            string playerName =  playerInfo == null ? "" : playerInfo.PlayerName + ": ";
+            string playerName =  playerInfo == null ? "" : playerInfo.PlayerName + " posted: ";
             Card = new CustomModal(parent.UIGameObject, "card item", spr);
             Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0));
             CustomText title = new CustomText(Card.UIGameObject, "Headline", playerName + Title);
