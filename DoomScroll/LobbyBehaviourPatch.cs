@@ -32,7 +32,7 @@ namespace Doom_Scroll
             lobbyToolTipText.SetColor(Color.yellow);
             lobbyToolTipText.SetSize(2f);
             Vector3 textPos = uiParent.transform.localPosition;
-            textPos = new Vector3(uiParent.transform.localPosition.x, -uiParent.transform.localPosition.y*0.1f+5, -10);
+            textPos = new Vector3(uiParent.transform.localPosition.x, 4.6f, -10);
             //Vector3 textPos = new Vector3(-3, -1.5f, -10);
             lobbyToolTipText.SetLocalPosition(textPos);
             lobbyToolTipText.ActivateCustomUI(true);
