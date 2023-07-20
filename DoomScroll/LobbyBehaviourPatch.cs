@@ -19,6 +19,9 @@ namespace Doom_Scroll
         public static GameObject bottomCodeText;
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
+        public static TutorialBookletManager tutorialBookletManagerInstance;
+        public static CustomButton tutorialBookletButton;
+        public static CustomModal tutorialBookletOverlay;
 
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
@@ -26,6 +29,7 @@ namespace Doom_Scroll
         {
             bottomCodeText = GameObject.Find("GameRoomButton");
             lobbyBehaviourInstance = __instance;
+            //Create tooltip
             DoomScroll._log.LogInfo("Lobby starting! Trying to add tooltip.");
             GameObject uiParent = bottomCodeText;
             lobbyToolTipText = new CustomText(uiParent, "LobbyTooltip", "<b>Recommended Rules</b>:\r\n-No Voice Chat! To simulate a social media discussion,\n only use the text chat during meetings.\r\n-Add 30 seconds to Meetings. Use the extra time to \nexamine the evidence in the folder.");
@@ -37,6 +41,20 @@ namespace Doom_Scroll
             lobbyToolTipText.SetLocalPosition(textPos);
             lobbyToolTipText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Text should be activated!");
+
+            tutorialBookletManagerInstance = TutorialBookletManager.Instance;
+
+            //Create tutorial booklet button
+            //tutorialBookletButton = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
+
+            //Create overlay
+            //tutorialBookletOverlay = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch("Update")]
+        public static void PostfixUpdate()
+        {
+            tutorialBookletManagerInstance.CheckForButtonClicks();
         }
     }
 }
