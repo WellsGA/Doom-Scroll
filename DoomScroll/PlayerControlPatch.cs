@@ -103,13 +103,22 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDIMAGE:
                     {
-                        byte[] screenshot = reader.ReadBytesAndSize();
-                        bool flag = DestroyableSingleton<HudManager>.Instance;
-                        if (flag)
+                        bool canSend = reader.ReadBoolean();
+                        if (canSend)
                         {
-                            ChatControllerPatch.screenshot = screenshot;
-                            string chatText = __instance.PlayerId.ToString() + "#" + ScreenshotManager.Instance.Screenshots.ToString();
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                            byte[] screenshot = reader.ReadBytesAndSize();
+                            if (DestroyableSingleton<HudManager>.Instance)
+                            {
+                                ChatControllerPatch.content = ChatContent.SCREENSHOT;
+                                ChatControllerPatch.screenshot = screenshot;
+                                string chatText = __instance.PlayerId.ToString() + "#" + ScreenshotManager.Instance.Screenshots.ToString();
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                            }
+                        }
+                        else
+                        {
+                            ChatControllerPatch.content = ChatContent.TEXT;
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, "Sorry. Failed to send image.");
                         }
                         break;
                     }

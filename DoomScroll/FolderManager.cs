@@ -2,7 +2,6 @@
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
-using MS.Internal.Xml.XPath;
 
 namespace Doom_Scroll
 {
@@ -61,11 +60,11 @@ namespace Doom_Scroll
             m_backBtn.ReplaceImgageOnHover();
 
             // Activate FolderToggle Button if Chat is open and hide if it's closed
-            if (hudManagerInstance.Chat.IsOpen && !m_folderToggleBtn.IsActive)
+            if (hudManagerInstance.Chat.IsOpenOrOpening && !m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateCustomUI(true);
             }
-            else if (!hudManagerInstance.Chat.IsOpen && m_folderToggleBtn.IsActive)
+            else if (hudManagerInstance.Chat.IsClosedOrClosing && m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateCustomUI(false);
                 // hide overlay and current folders too if it was still open
@@ -76,7 +75,7 @@ namespace Doom_Scroll
             }
 
             // If chat is open and the foder toggle button is active invoke toggle on mouse click 
-            if (hudManagerInstance.Chat.IsOpen && m_folderToggleBtn.IsActive)
+            if (hudManagerInstance.Chat.IsOpenOrOpening && m_folderToggleBtn.IsActive)
             {
                 try
                 {
@@ -91,7 +90,7 @@ namespace Doom_Scroll
                 }
             }
             // If chat and folder overlay are open invoke events on button clicks
-            if (hudManagerInstance.Chat.IsOpen && m_isFolderOverlayOpen)
+            if (hudManagerInstance.Chat.State == ChatControllerState.Open && m_isFolderOverlayOpen)
             {
                 try
                 {
@@ -138,7 +137,7 @@ namespace Doom_Scroll
         }
         private void CreateFolderOverlayUI()
         {
-            GameObject chatScreen = hudManagerInstance.Chat.OpenKeyboardButton.transform.parent.gameObject;
+            GameObject chatScreen = hudManagerInstance.Chat.GetComponentInChildren<Scroller>().gameObject.transform.parent.gameObject;
             m_isFolderOverlayOpen = false;
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);

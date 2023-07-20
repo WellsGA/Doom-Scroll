@@ -10,11 +10,11 @@ namespace Doom_Scroll.UI
         private static Vector2 buttonSize = new Vector2(0.5f, 0.5f);
         public static CustomButton CreateFolderBtn(GameObject parent)
         {
-            GameObject keyboardBtn = HudManager.Instance.Chat.OpenKeyboardButton;
+            GameObject keyboardBtn = HudManager.Instance.Chat.GetComponentInChildren<BanMenu>().gameObject;
             Vector3 pos = keyboardBtn.transform.localPosition;
             SpriteRenderer sr = keyboardBtn.GetComponent<SpriteRenderer>();
             Vector2 size = sr ? sr.size : new Vector2(0.5f, 0.5f);
-            Vector3 position = new(pos.x, pos.y + size.y * 2 + 0.05f, pos.z);
+            Vector3 position = new(pos.x, pos.y + size.y + 0.05f, pos.z);
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", slices);
             CustomButton folderBtn = new CustomButton(parent, "FolderToggleButton", btnSprites, position, size.x);

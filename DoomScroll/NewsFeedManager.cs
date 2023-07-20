@@ -250,7 +250,7 @@ namespace Doom_Scroll
         {
             AddNews(news); // add locally
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
-            messageWriter.Write(news.Author);
+            messageWriter.Write(news.AuthorID);
             messageWriter.Write(news.Title);
             messageWriter.Write(news.IsTrue);
             messageWriter.Write(news.Source);

@@ -1,5 +1,4 @@
-﻿using AmongUs.GameOptions;
-using Doom_Scroll.UI;
+﻿using Doom_Scroll.UI;
 using HarmonyLib;
 using UnityEngine;
 
@@ -16,11 +15,11 @@ namespace Doom_Scroll
         public static void PostfixUpdate()
         {
             FolderManager.Instance.CheckForButtonClicks();
-            if (currentToolTipText.TextMP.text != "" && meetingHudInstance.state != MeetingHud.VoteStates.Discussion && meetingHudInstance.state != MeetingHud.VoteStates.Animating)
+            if (currentToolTipText.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
             {
                 currentToolTipText.TextMP.text = "";
                 currentToolTipText.ActivateCustomUI(false);
-                DoomScroll._log.LogInfo($"MeetingHud state is {meetingHudInstance.state}. Text should be deactivated!");
+                DoomScroll._log.LogInfo($"MeetingHud state is {meetingHudInstance.CurrentState}. Text should be deactivated!");
             }
         }
         [HarmonyPostfix]
