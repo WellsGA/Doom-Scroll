@@ -245,8 +245,7 @@ namespace Doom_Scroll
             if (lobbyBehaviourInstance == null)
             {
                 lobbyBehaviourInstance = LobbyBehaviour.Instance;
-                InitializeTutorialBookletManager();
-                ActivateTutorialBookletOverlay(false);
+                _instance = new TutorialBookletManager();
             }
             DoomScroll._log.LogInfo("TUTORIAL BOOKLET MANAGER RESET");
         }

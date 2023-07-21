@@ -42,6 +42,10 @@ namespace Doom_Scroll
             lobbyToolTipText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Text should be activated!");
 
+            if (tutorialBookletManagerInstance != null)
+            {
+                tutorialBookletManagerInstance.Reset();
+            }
             tutorialBookletManagerInstance = TutorialBookletManager.Instance;
 
             //Create tutorial booklet button
