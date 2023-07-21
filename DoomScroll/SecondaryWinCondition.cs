@@ -42,6 +42,10 @@ namespace Doom_Scroll
             }
             return "";
         }
+        public bool CheckSuccess()
+        {
+            return swcSuccess;
+        }
 
         public string GetPlayerName()
         {
