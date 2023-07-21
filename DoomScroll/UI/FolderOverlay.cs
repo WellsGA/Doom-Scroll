@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using System.Reflection; 
 using UnityEngine;
 using Doom_Scroll.Common;
 
@@ -10,34 +10,43 @@ namespace Doom_Scroll.UI
         private static Vector2 buttonSize = new Vector2(0.5f, 0.5f);
         public static CustomButton CreateFolderBtn(GameObject parent)
         {
-            GameObject keyboardBtn = HudManager.Instance.Chat.GetComponentInChildren<BanMenu>().gameObject;
-            Vector3 pos = keyboardBtn.transform.localPosition;
-            SpriteRenderer sr = keyboardBtn.GetComponent<SpriteRenderer>();
-            Vector2 size = sr ? sr.size : new Vector2(0.5f, 0.5f);
-            Vector3 position = new(pos.x, pos.y + size.y + 0.05f, pos.z);
+            PassiveButton[] srs = parent.gameObject.GetComponentsInChildren<PassiveButton>(true);
+            foreach (PassiveButton r in srs)
+            {
+                DoomScroll._log.LogInfo(r.gameObject.transform.parent.name); 
+                DoomScroll._log.LogInfo(r.gameObject.transform.parent.transform.parent.name);
+
+            }
+            GameObject chatScreen = parent.transform.Find("ChatScreenRoot/ChatScreenContainer").gameObject;
+            GameObject banButton = parent.GetComponentInChildren<BanMenu>(true).gameObject;
+            Vector3 pos = banButton.transform.localPosition;
+            SpriteRenderer sr = banButton.GetComponent<SpriteRenderer>();
+            Vector2 size = sr ? sr.size * 2 : new Vector2(.85f, .85f);
+            Vector3 position = new(pos.x, pos.y + size.y / 2 + 0.05f, pos.z);
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", slices);
-            CustomButton folderBtn = new CustomButton(parent, "FolderToggleButton", btnSprites, position, size.x);
+            CustomButton folderBtn = new CustomButton(chatScreen, "FolderToggleButton", btnSprites, position, size.x);
             folderBtn.ActivateCustomUI(false);
             return folderBtn;
         }
 
         public static CustomModal CreateFolderOverlay(GameObject parent)
         {
-            SpriteRenderer backgroundSR = parent.transform.Find("Background").GetComponent<SpriteRenderer>();
+            GameObject cahtScreen = parent.transform.Find("ChatScreenRoot/ChatScreenContainer").gameObject;
+            SpriteRenderer backgroundSR = cahtScreen.transform.Find("Background").GetComponent<SpriteRenderer>();
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
 
             // create the overlay background
-            CustomModal folderOverlay = new CustomModal(parent, "FolderOverlay", spr);  
+            CustomModal folderOverlay = new CustomModal(cahtScreen, "FolderOverlay", spr);  
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));       
             if (backgroundSR != null)
             {
-                folderOverlay.SetSize(backgroundSR.size * 0.85f);
-                folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-30));
+               folderOverlay.SetSize(backgroundSR.size * 0.85f);
+               folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-30));
             }
             else
             {
-                folderOverlay.SetScale(parent.transform.localScale * 0.3f);
+                folderOverlay.SetScale(parent.transform.localScale * 0.5f);
             }
             return folderOverlay;
         }

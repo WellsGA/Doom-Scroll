@@ -137,7 +137,8 @@ namespace Doom_Scroll
         }
         private void CreateFolderOverlayUI()
         {
-            GameObject chatScreen = hudManagerInstance.Chat.GetComponentInChildren<Scroller>().gameObject.transform.parent.gameObject;
+            GameObject chatScreen = hudManagerInstance.Chat.gameObject;
+            if(chatScreen != null) { DoomScroll._log.LogInfo("Scroller ???? " + chatScreen.name); }
             m_isFolderOverlayOpen = false;
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);
