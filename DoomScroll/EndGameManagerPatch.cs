@@ -17,7 +17,7 @@ namespace Doom_Scroll
         [HarmonyPatch("SetEverythingUp")]
         public static void PostfixSetEverythingUp(EndGameManager __instance)
         {
-            if (__instance.WinText.text != DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Victory, (Il2CppSystem.Object[])Array.Empty<object>()) && !SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess()) //If won but SWC not successful
+            if (__instance.WinText.text == DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Victory, (Il2CppSystem.Object[])Array.Empty<object>()) && !SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess()) //If won but SWC not successful
             {
                 StatsManager.Instance.AddLoseReason(TempData.EndReason);
                 __instance.WinText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Defeat, (Il2CppSystem.Object[])Array.Empty<object>());
