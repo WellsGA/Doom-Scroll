@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Doom_Scroll.UI;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -90,5 +91,24 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString()); // debug
 
         }
+        /*
+        [HarmonyPostfix]
+        [HarmonyPatch("ShowEmblem")]
+        public static void PostfixShowEmblem(HudManager __instance, bool shhh)
+        {
+            if (!shhh)
+            {
+                DoomScroll._log.LogInfo("Discussion Behavior emblem animating!");
+                GameObject uiParent = __instance.discussEmblem.Text.gameObject;
+                CustomText toolTipText = new CustomText(uiParent, "DiscussionTimeTooltip", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>");
+                toolTipText.SetColor(Color.red);
+                toolTipText.SetSize(3f);
+                Vector3 textPos = new Vector3(0, 0, -10);
+                toolTipText.SetLocalPosition(textPos);
+                toolTipText.ActivateCustomUI(true);
+                DoomScroll._log.LogInfo("Text should be activated!");
+            }
+        }
+        */
     }
 }
