@@ -14,8 +14,8 @@ namespace Doom_Scroll
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
                 bool isImpostor =  player.RoleType == RoleTypes.Impostor ? true : false;
-                Goal playerGoal = isImpostor ? Goal.None : AssignGoal();
-                byte playerTarget = isImpostor ? byte.MaxValue : AssignTarget();
+                Goal playerGoal = AssignGoal();
+                byte playerTarget = AssignTarget(player.PlayerId);
                 SecondaryWinCondition swc = new SecondaryWinCondition(player.PlayerId, playerGoal, playerTarget);  
                 AddToPlayerSWCList(swc); // add locally - host's list
                 RPCSendSWC(swc); // send RPC swc to others
@@ -62,26 +62,21 @@ namespace Doom_Scroll
         // set up local player
         private static Goal AssignGoal()
         {
-            int goalNum = UnityEngine.Random.Range(1, 4); //min inclusive, max exclusive. Will return 1, 2, or 3
+            int goalNum = UnityEngine.Random.Range(1, 3); //min inclusive, max exclusive. Will return 1 or 2
             if (goalNum == 1)
             {
                 return Goal.Protect;
             }
-            else if (goalNum == 2)
+            else
             {
                 return Goal.Frame;
             }
-            else
-            {
-                return Goal.None;
-            }
         }
 
-        private static byte AssignTarget()
+        private static byte AssignTarget(int playerindex)
         {
             int numPlayers = PlayerControl.AllPlayerControls.Count;
-            int playerindex = PlayerControl.AllPlayerControls.IndexOf(PlayerControl.LocalPlayer);
-            // select a target different from the local player
+            // select a target different from the current player being assigned
             int targetNum = UnityEngine.Random.Range(0, numPlayers);
             while (targetNum == playerindex)
             {
