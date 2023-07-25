@@ -17,7 +17,7 @@ namespace Doom_Scroll
         [HarmonyPatch("SetEverythingUp")]
         public static void PostfixSetEverythingUp(EndGameManager __instance)
         {
-            if (__instance.WinText.color != Color.red && !SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess()) //If won but SWC not successful
+            if (__instance.WinText.text != DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Victory, (Il2CppSystem.Object[])Array.Empty<object>()) && !SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess()) //If won but SWC not successful
             {
                 StatsManager.Instance.AddLoseReason(TempData.EndReason);
                 __instance.WinText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Defeat, (Il2CppSystem.Object[])Array.Empty<object>());
@@ -26,7 +26,7 @@ namespace Doom_Scroll
             }
             else
             {
-                __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"cyan\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
+                __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"blue\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
             }
         }
     }
