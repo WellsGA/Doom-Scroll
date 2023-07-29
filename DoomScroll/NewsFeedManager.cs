@@ -112,8 +112,6 @@ namespace Doom_Scroll
                     {
                         news = CreateFakeNews();
                     }
-
-                    news.SetAuthorID(PlayerControl.LocalPlayer.PlayerId);
                     newsButtons[i].Label.SetText(news.Title + ", by: " + news.Source + ", " + news.IsTrue);
                     newsOptions.Add(i, news);
                 }
@@ -248,7 +246,10 @@ namespace Doom_Scroll
 
         public void RPCShareNews(NewsItem news)
         {
-            AddNews(news); // add locally
+            // set locally
+            news.SetAuthorID(PlayerControl.LocalPlayer.PlayerId);
+            AddNews(news);
+            // share
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
             messageWriter.Write(news.AuthorID);
             messageWriter.Write(news.Title);

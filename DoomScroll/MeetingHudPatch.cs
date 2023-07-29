@@ -9,6 +9,7 @@ namespace Doom_Scroll
     {
         public static CustomText currentToolTipText;
         public static MeetingHud meetingHudInstance;
+        public static GameObject playerIcon;
 
         [HarmonyPostfix]
         [HarmonyPatch("Update")]
@@ -42,6 +43,9 @@ namespace Doom_Scroll
             currentToolTipText.SetLocalPosition(textPos);
             currentToolTipText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Text should be activated!");
+
+            playerIcon = __instance.PlayerVotePrefab.gameObject;
+            DoomScroll._log.LogInfo("PLAYER ICON: " + playerIcon.name);
         }
     }
 }
