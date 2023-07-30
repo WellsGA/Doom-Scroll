@@ -4,8 +4,7 @@ namespace Doom_Scroll
     public enum Goal : byte
     {
         Protect,
-        Frame,
-        None
+        Frame
     }
     public enum TargetState : byte
     {
@@ -28,7 +27,7 @@ namespace Doom_Scroll
             playerSWCGoal = goal;
             playerSWCTarget = target;
             targetState = TargetState.ALIVE;
-            swcSuccess = goal != Goal.Frame  ? true : false; // if protect or none they start on success
+            swcSuccess = goal != Goal.Frame  ? true : false; // if protect, they start on success
         }
 
         public string GetTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
@@ -84,7 +83,7 @@ namespace Doom_Scroll
                     swcSuccess = false;
                 }
             }
-            else if (playerSWCGoal == Goal.Frame)
+            else // if (playerSWCGoal == Goal.Frame)
             {
                 if (targetState != TargetState.ALIVE) // reason of death doesn't matter for now
                 {
@@ -119,11 +118,10 @@ namespace Doom_Scroll
             {
                 return "Protect " + GetTargetName();
             }
-            else if (playerSWCGoal == Goal.Frame)
+            else // if frame
             {
                 return "Frame " + GetTargetName();
             }
-            return "No secondary win condition";
         }
 
         public string SWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure is revealed
@@ -132,21 +130,15 @@ namespace Doom_Scroll
             {
                 return ToString() + " <size=40%>Success</size>";
             }
-            else if (!swcSuccess)
+            else // if !swcSuccess
             {
                 return ToString() + " <size=40%>Failure</size>";
             }
-            // if swc goal is null (unassigned)
-            return ToString();
         }
 
         public string SendableResultsText()
         {
-            if (playerSWCGoal == Goal.None)
-            {
-                return GetPlayerName() + ": " + ToString() + "\n";
-            }
-            else if (swcSuccess)
+            if (swcSuccess)
             {
                 return GetPlayerName() + ": " + ToString() + " Success\n";
             }

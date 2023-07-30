@@ -13,9 +13,8 @@ namespace Doom_Scroll
         {
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
-                bool isImpostor =  player.RoleType == RoleTypes.Impostor ? true : false;
                 Goal playerGoal = AssignGoal();
-                byte playerTarget = AssignTarget(player.PlayerId);
+                byte playerTarget = AssignTarget(player);
                 SecondaryWinCondition swc = new SecondaryWinCondition(player.PlayerId, playerGoal, playerTarget);  
                 AddToPlayerSWCList(swc); // add locally - host's list
                 RPCSendSWC(swc); // send RPC swc to others
@@ -73,8 +72,9 @@ namespace Doom_Scroll
             }
         }
 
-        private static byte AssignTarget(int playerindex)
+        private static byte AssignTarget(GameData.PlayerInfo playerInfo)
         {
+            int playerindex = PlayerControl.AllPlayerControls.IndexOf(playerInfo._object); // accesses a private variable? We'll see if it works.
             int numPlayers = PlayerControl.AllPlayerControls.Count;
             // select a target different from the current player being assigned
             int targetNum = UnityEngine.Random.Range(0, numPlayers);
