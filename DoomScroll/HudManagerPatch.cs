@@ -91,11 +91,17 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString()); // debug
 
         }
-        /*
+        
         [HarmonyPostfix]
         [HarmonyPatch("ShowEmblem")]
         public static void PostfixShowEmblem(HudManager __instance, bool shhh)
         {
+            if (shhh)
+            {
+                LobbyBehaviourPatch.gameBegun = true;
+            }
+
+            /*
             if (!shhh)
             {
                 DoomScroll._log.LogInfo("Discussion Behavior emblem animating!");
@@ -108,7 +114,8 @@ namespace Doom_Scroll
                 toolTipText.ActivateCustomUI(true);
                 DoomScroll._log.LogInfo("Text should be activated!");
             }
+            */
         }
-        */
+        
     }
 }

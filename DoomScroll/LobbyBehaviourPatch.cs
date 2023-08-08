@@ -22,11 +22,13 @@ namespace Doom_Scroll
         public static TutorialBookletManager tutorialBookletManagerInstance;
         public static CustomButton tutorialBookletButton;
         public static CustomModal tutorialBookletOverlay;
+        public static bool gameBegun = false;
 
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
         public static void PostfixStart(LobbyBehaviour __instance)
         {
+            gameBegun = false;
             bottomCodeText = GameObject.Find("GameRoomButton");
             lobbyBehaviourInstance = __instance;
             //Create tooltip
@@ -53,12 +55,22 @@ namespace Doom_Scroll
 
             //Create overlay
             //tutorialBookletOverlay = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
+
+            //CODE FOR FINDING ALL THE OBJECTS IN THE SCENE
+            /*GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+            foreach (GameObject go in allObjects)
+            {
+                DoomScroll._log.LogInfo(go.name + " is an object in the scene");
+            }*/
         }
         [HarmonyPostfix]
         [HarmonyPatch("Update")]
         public static void PostfixUpdate()
         {
-            tutorialBookletManagerInstance.CheckForButtonClicks();
+            if (!gameBegun)
+            {
+                tutorialBookletManagerInstance.CheckForButtonClicks();
+            }
         }
     }
 }
