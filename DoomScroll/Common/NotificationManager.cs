@@ -1,9 +1,9 @@
-﻿using Doom_Scroll.Common;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Reflection;
 using UnityEngine;
+using Doom_Scroll.UI;
 
-namespace Doom_Scroll.UI
+namespace Doom_Scroll.Common
 {
     public static class NotificationManager
     {

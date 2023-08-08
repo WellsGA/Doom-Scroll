@@ -25,7 +25,7 @@ namespace Doom_Scroll.Common
             Dir.transform.SetParent(parentOverlay.UIGameObject.transform);
             Dir.transform.localScale = Vector3.one;*/
 
-            //set title text
+            //set titleUI text
             titleText = new CustomText(parentOverlay.UIGameObject, $"TitleText{title}", $"<b>{title}</b>");
             titleText.SetColor(Color.black);
             titleText.SetSize(5f);

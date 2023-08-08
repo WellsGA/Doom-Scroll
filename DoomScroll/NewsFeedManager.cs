@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Doom_Scroll
-{  
+{
     // Singleton with static initialization: thread safe without explicitly coding for it,
     // relies on the common language runtime to initialize the variable
     public class NewsFeedManager
@@ -32,7 +32,6 @@ namespace Doom_Scroll
         private List<CustomButton> newsButtons;
         // list of news created randomly and by the selected players -  will be displayed during meetings
         private List<NewsItem> allNewsList;
-        private Sprite spr;
         private NewsFeedManager()
         {
             Reset();
@@ -84,6 +83,7 @@ namespace Doom_Scroll
         public void OnSelectNewsItem(int news)
         {
             DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + newsOptions[news].Title);
+            newsOptions[news].SetAuthor(PlayerControl.LocalPlayer.PlayerId);
             RPCShareNews(newsOptions[news]);
             CanPostNews(false);
             ToggleNewsForm();
@@ -247,7 +247,6 @@ namespace Doom_Scroll
         public void RPCShareNews(NewsItem news)
         {
             // set locally
-            news.SetAuthorID(PlayerControl.LocalPlayer.PlayerId);
             AddNews(news);
             // share
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
@@ -309,17 +308,14 @@ namespace Doom_Scroll
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-            /* CustomText title = new CustomText(parent.UIGameObject, "title", "Assigned Tasks");
-            title.SetLocalPosition(pos);
-            title.SetSize(3f);*/
             foreach (NewsItem news in allNewsList)
             {
-                news.DisplayNewsCard(parent, spr);
+                news.DisplayNewsCard();
                 pos.y -= news.Card.GetSize().y + 0.05f;
                 news.Card.SetLocalPosition(pos);
                 news.Card.ActivateCustomUI(true);
             }
-            DoomScroll._log.LogInfo("NEWS POSTED SO FAR:\n " + ToString()); // debug
+            DoomScroll._log.LogInfo(ToString()); // debug
         }
 
         public void HideNews()
@@ -331,7 +327,7 @@ namespace Doom_Scroll
         }
         public override string ToString()
         {
-            string allnews = "\nNEWS FEED\n\n";
+            string allnews = "\nNEWS POSTED\n";
             foreach (NewsItem news in allNewsList)
             {
                 allnews += news.ToString() + "\n";
@@ -349,7 +345,6 @@ namespace Doom_Scroll
             canPostNews = false;
             allNewsList = new List<NewsItem>();
             newsOptions = new Dictionary<int, NewsItem>();
-            spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             hudManagerInstance = HudManager.Instance;
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");
