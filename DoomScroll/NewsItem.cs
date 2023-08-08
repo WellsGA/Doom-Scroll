@@ -52,6 +52,11 @@ namespace Doom_Scroll
         public void SetAuthor(byte id) // set player name and icon if not an automated post
         {
             AuthorID = id;
+            CreateAuthorIcon();
+        }
+
+        public void CreateAuthorIcon() 
+        {
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(AuthorID);
             if (playerInfo != null)
             {
@@ -66,15 +71,14 @@ namespace Doom_Scroll
                 sr.sprite = playerSprite;
                 sr.size = new Vector2(Card.GetSize().y, sr.sprite.rect.height * Card.GetSize().y / sr.sprite.rect.width);
                 sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
-                AuthorIcon.transform.localPosition = new Vector3(-Card.GetSize().x/2 + sr.size.x, 0.08f, -10);
+                AuthorIcon.transform.localPosition = new Vector3(-Card.GetSize().x / 2 + sr.size.x, 0.08f, -10);
                 AuthorIcon.transform.localScale = Vector3.one;
                 CustomText label = new CustomText(AuthorIcon, playerInfo.PlayerName + "- icon label", playerInfo.PlayerName);
                 label.SetLocalPosition(new Vector3(0, -sr.size.y / 2 - 0.05f, -10));
                 label.SetSize(0.8f);
-               /* titleUI.SetLocalPosition(new Vector3(sr.size.x, 0.05f, -10));
-                sourceUI.SetLocalPosition(new Vector3(sr.size.x, -0.05f, -10));*/
+                /* titleUI.SetLocalPosition(new Vector3(sr.size.x, 0.05f, -10));
+                 sourceUI.SetLocalPosition(new Vector3(sr.size.x, -0.05f, -10));*/
             }
-
         }
         public override string ToString()
         {
