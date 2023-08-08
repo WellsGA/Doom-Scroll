@@ -72,21 +72,13 @@ namespace Doom_Scroll
             //DoomScroll._log.LogInfo("Checking for tutorial booklet manager button clicks.");
             if (lobbyBehaviourInstance == null) return;
             // Change buttons icon on hover
-            if (m_tutorialBookletToggleBtn != null && m_tutorialBookletToggleBtn.IsActive && m_tutorialBookletToggleBtn.UIGameObject.gameObject.activeSelf)
+            if (m_tutorialBookletToggleBtn != null)
             {
                 m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
             }
-            if (m_nextBtn != null && m_nextBtn.IsActive && m_nextBtn.UIGameObject.gameObject.activeSelf)
-            {
-                m_nextBtn.ReplaceImgageOnHover();
-            }
-            if (m_backBtn != null && m_backBtn.IsActive && m_backBtn.UIGameObject.gameObject.activeSelf)
-            {
-                m_backBtn.ReplaceImgageOnHover();
-            }
 
             // If the TutorialBooklet toggle button is active invoke toggle on mouse click 
-            if (m_tutorialBookletToggleBtn != null && m_tutorialBookletToggleBtn.IsActive && m_tutorialBookletToggleBtn.UIGameObject.gameObject.activeSelf)
+            if (m_tutorialBookletToggleBtn != null)
             {
                 try
                 {
@@ -105,15 +97,25 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    if (m_closeBtn != null && m_closeBtn.UIGameObject.gameObject.activeSelf && m_closeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    //hovers
+                    if (m_nextBtn != null)
+                    {
+                        m_nextBtn.ReplaceImgageOnHover();
+                    }
+                    if (m_backBtn != null)
+                    {
+                        m_backBtn.ReplaceImgageOnHover();
+                    }
+                    //clicks
+                    if (m_closeBtn != null && m_closeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_tutorialBookletToggleBtn.ButtonEvent.InvokeAction();
                     }
-                    if (m_nextBtn != null && m_nextBtn.UIGameObject.gameObject.activeSelf && m_nextBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_nextBtn != null && m_nextBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_nextBtn.ButtonEvent.InvokeAction();
                     }
-                    if (m_backBtn != null && m_backBtn.UIGameObject.gameObject.activeSelf && m_backBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_backBtn != null && m_backBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_backBtn.ButtonEvent.InvokeAction();
                     }

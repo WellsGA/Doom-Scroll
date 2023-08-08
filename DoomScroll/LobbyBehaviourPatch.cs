@@ -68,7 +68,7 @@ namespace Doom_Scroll
         [HarmonyPatch("Update")]
         public static void PostfixUpdate()
         {
-            if (!gameBegun && bottomCodeText.activeSelf)
+            if (!gameBegun && bottomCodeText != null && bottomCodeText.activeSelf)
             {
                 tutorialBookletManagerInstance.CheckForButtonClicks();
             }
