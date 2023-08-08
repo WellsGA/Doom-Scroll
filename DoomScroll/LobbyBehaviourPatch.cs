@@ -29,16 +29,17 @@ namespace Doom_Scroll
         public static void PostfixStart(LobbyBehaviour __instance)
         {
             gameBegun = false;
-            bottomCodeText = GameObject.Find("GameRoomButton");
+            //bottomCodeText = GameObject.Find("GameRoomButton");
+            bottomCodeText = GameObject.Find("PlayerCounter_TMP");
             lobbyBehaviourInstance = __instance;
             //Create tooltip
             DoomScroll._log.LogInfo("Lobby starting! Trying to add tooltip.");
             GameObject uiParent = bottomCodeText;
             lobbyToolTipText = new CustomText(uiParent, "LobbyTooltip", "<b>Recommended Rules</b>:\r\n-No Voice Chat! To simulate a social media discussion,\n only use the text chat during meetings.\r\n-Add 30 seconds to Meetings. Use the extra time to \nexamine the evidence in the folder.");
             lobbyToolTipText.SetColor(Color.yellow);
-            lobbyToolTipText.SetSize(2f);
+            lobbyToolTipText.SetSize(3f);
             Vector3 textPos = uiParent.transform.localPosition;
-            textPos = new Vector3(uiParent.transform.localPosition.x, 4.6f, -10);
+            textPos = new Vector3(uiParent.transform.localPosition.x-5f, 7.6f, -10);
             //Vector3 textPos = new Vector3(-3, -1.5f, -10);
             lobbyToolTipText.SetLocalPosition(textPos);
             lobbyToolTipText.ActivateCustomUI(true);
@@ -55,7 +56,7 @@ namespace Doom_Scroll
 
             //Create overlay
             //tutorialBookletOverlay = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
-
+            
             //CODE FOR FINDING ALL THE OBJECTS IN THE SCENE
             /*GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
             foreach (GameObject go in allObjects)
@@ -67,7 +68,7 @@ namespace Doom_Scroll
         [HarmonyPatch("Update")]
         public static void PostfixUpdate()
         {
-            if (!gameBegun)
+            if (!gameBegun && bottomCodeText.activeSelf)
             {
                 tutorialBookletManagerInstance.CheckForButtonClicks();
             }
