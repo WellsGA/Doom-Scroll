@@ -153,12 +153,12 @@ namespace Doom_Scroll
         private void InitTutorialBookletStructure()
         {
             m_titlePage = new Page("DoomScroll Tutorial Booklet", "Doom_Scroll.Assets.MainMenu_Button_Basic.png", m_titlePageText, m_tutorialBookletArea);
-            m_headlines = new Page("Headlines", "Doom_Scroll.Assets.postNews.png", m_headlinesText, m_tutorialBookletArea); ;
-            m_signInForms = new Page("Sign-In Forms", "Doom_Scroll.Assets.playerIcon.png", m_signInFormsText, m_tutorialBookletArea); ;
-            m_infiniteChatLogs = new Page("Infinite Chat Logs", "Doom_Scroll.Assets.file.png", m_infiniteChatLogsText, m_tutorialBookletArea); ;
-            m_swcs = new Page("SWCs", "Doom_Scroll.Assets.file.png", m_swcText, m_tutorialBookletArea);
+            m_headlines = new Page("Headlines", "Doom_Scroll.Assets.newsSelect.png", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsFolder.png");
+            m_signInForms = new Page("Sign-In Forms", "Doom_Scroll.Assets.taskSelect.png", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskFolder.png");
+            m_infiniteChatLogs = new Page("Infinite Chat Logs", "Doom_Scroll.Assets.infiniteChatAfter.png", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatBefore.png"); ;
+            m_swcs = new Page("SWCs", "Doom_Scroll.Assets.SWCInTaskList_WithArrow.png", m_swcText, m_tutorialBookletArea, "Doom_Scroll.Assets.SWCStartScreen.png");
             //m_screenshots = new Page("Images", "Doom_Scroll.Assets.file.png", m_screenshotsText, m_tutorialBookletArea);
-            m_folderSystem = new Page("Folder System", "Doom_Scroll.Assets.file.png", m_folderSystemText, m_tutorialBookletArea);
+            m_folderSystem = new Page("Folder System", "Doom_Scroll.Assets.folderWhereInChat_WithArrow.png", m_folderSystemText, m_tutorialBookletArea, "Doom_Scroll.Assets.folderOpen.png");
 
             m_pageOrder = new List<Page>();
             m_pageOrder.Add(m_titlePage);

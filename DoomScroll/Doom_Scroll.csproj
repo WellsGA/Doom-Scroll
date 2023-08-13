@@ -84,5 +84,15 @@
 	  <EmbeddedResource Include="Assets\MainMenu_Button_Green.png" />
     <EmbeddedResource Include="Assets\playerIcon.png" />
     <EmbeddedResource Include="Assets\tutorialBookletToggle.png" />
+	  <EmbeddedResource Include="Assets\newsSelect.png"/>
+	  <EmbeddedResource Include="Assets\newsFolder.png"/>
+	  <EmbeddedResource Include="Assets\taskSelect.png"/>
+	  <EmbeddedResource Include="Assets\taskFolder.png"/>
+	  <EmbeddedResource Include="Assets\infiniteChatAfter.png"/>
+	  <EmbeddedResource Include="Assets\infiniteChatBefore.png"/>
+	  <EmbeddedResource Include="Assets\SWCStartScreen.png"/>
+	  <EmbeddedResource Include="Assets\SWCInTaskList_WithArrow.png"/>
+	  <EmbeddedResource Include="Assets\folderWhereInChat_WithArrow.png"/>
+	  <EmbeddedResource Include="Assets\folderOpen.png"/>
   </ItemGroup>
 </Project>
