@@ -54,24 +54,6 @@ namespace Doom_Scroll.UI
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
             return new CustomButton(parent, "Close Overlay", closeBtnImg, position, buttonSize.x);
         }
-        public static CustomButton AddLeftButton(GameObject parent)
-        {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
-            Vector3 backPosition = new Vector3(sr.size.x*0.4f, 4.5f, -5f);
-            return new CustomButton(parent, "Flip to prior page", backBtnImg, backPosition, buttonSize.x);
-
-        }
-        public static CustomButton AddRightButton(GameObject parent)
-        {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
-            Vector3 forwardPosition = new Vector3(-sr.size.x*0.4f, 4.5f, -5f);
-            return new CustomButton(parent, "Flip to next page", backBtnImg, forwardPosition, -buttonSize.x);
-
-        }
 
     }
 }

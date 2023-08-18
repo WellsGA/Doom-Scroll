@@ -118,6 +118,11 @@ namespace Doom_Scroll
                             }
                         }
                     }
+                    // code for checking page turns in task folder
+                    if (m_current is FileText && TaskAssigner.Instance != null) // Trying to see if currently displaying tasks??
+                    {
+                        TaskAssigner.Instance.CheckForDisplayedTasksButtonClicks();
+                    }
                 }
                 catch (Exception e)
                 {

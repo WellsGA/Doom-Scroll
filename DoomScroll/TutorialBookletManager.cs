@@ -146,9 +146,9 @@ namespace Doom_Scroll
             m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
             m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
             m_closeBtn = TutorialBookletOverlay.AddCloseButton(m_tutorialBookletArea.UIGameObject);
-            m_nextBtn = TutorialBookletOverlay.AddLeftButton(m_tutorialBookletArea.UIGameObject);
+            m_nextBtn = Page.AddRightButton(m_tutorialBookletArea.UIGameObject, false);
+            m_backBtn = Page.AddLeftButton(m_tutorialBookletArea.UIGameObject, false);
             m_nextBtn.SetScale(new Vector3(-1, 1, 1));
-            m_backBtn = TutorialBookletOverlay.AddRightButton(m_tutorialBookletArea.UIGameObject);
         }
         private void InitTutorialBookletStructure()
         {
