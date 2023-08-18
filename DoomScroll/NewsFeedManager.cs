@@ -2,7 +2,6 @@
 using Doom_Scroll.UI;
 using Hazel;
 using System;
-using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,7 +39,7 @@ namespace Doom_Scroll
 
         private void InitializeInputPanel()
         {
-            m_togglePanelButton = NewsFeedOverlay.CreateNewsInputButton(hudManagerInstance);
+            m_togglePanelButton = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
             newsButtons = new List<CustomButton>();
             Vector2 parentSize = m_inputPanel.GetSize();
@@ -49,7 +48,7 @@ namespace Doom_Scroll
             {    
                 CustomButton btn = NewsFeedOverlay.CreateNewsItemButton(m_inputPanel);
                 btn.SetLocalPosition(new Vector3(0, parentSize.y / 2 - inputHeight, -10));
-                btn.Label.SetText("LABEL");
+                // btn.Label.SetText("LABEL");
                 inputHeight += btn.GetSize().y + 0.02f;
                 newsButtons.Add(btn);
             }
@@ -151,6 +150,30 @@ namespace Doom_Scroll
             }
         }
 
+        public void CheckForShareClicks()
+        {
+            if (hudManagerInstance == null) return;
+            // If chat and folder overlay are open invoke events on button clicks
+            if (hudManagerInstance.Chat.State == ChatControllerState.Open && FolderManager.Instance.IsFolderOpen())
+            {
+                try
+                {
+                    foreach (NewsItem news in allNewsList)
+                    {
+                        news.PostButton.ReplaceImgageOnHover();
+                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        {
+                            news.PostButton.ButtonEvent.InvokeAction(); 
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+                }
+            }
+
+        }
         // Sets CanPostNews for player by host
         // the host selects the player(s) who can create news - at the beginning and after each meeting
         public void SelectPLayersWhoCanPostNews()

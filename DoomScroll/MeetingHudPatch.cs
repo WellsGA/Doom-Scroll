@@ -16,6 +16,7 @@ namespace Doom_Scroll
         public static void PostfixUpdate()
         {
             FolderManager.Instance.CheckForButtonClicks();
+            NewsFeedManager.Instance.CheckForShareClicks();
             if (currentToolTipText.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
             {
                 currentToolTipText.TextMP.text = "";

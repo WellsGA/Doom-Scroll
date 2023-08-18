@@ -7,7 +7,7 @@ namespace Doom_Scroll.UI
 {
     internal class NewsFeedOverlay
     {
-        public static CustomButton CreateNewsInputButton(HudManager hud)
+        public static CustomButton CreateNewsButton(HudManager hud)
         {
             GameObject UIParent = hud.MapButton.gameObject;
             SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();

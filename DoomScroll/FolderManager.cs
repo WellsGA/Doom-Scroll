@@ -241,6 +241,10 @@ namespace Doom_Scroll
         {
             return m_folderArea;
         }
+        public bool IsFolderOpen()
+        {
+            return m_isFolderOverlayOpen;
+        }
         public void Reset()
         {
             if (hudManagerInstance == null)

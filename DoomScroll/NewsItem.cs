@@ -2,6 +2,7 @@
 using Doom_Scroll.UI;
 using UnityEngine;
 using System.Reflection;
+using Sentry.Internal;
 
 namespace Doom_Scroll
 {
@@ -32,7 +33,7 @@ namespace Doom_Scroll
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             Card = new CustomModal(parent.UIGameObject, "card item", spr);
-            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0));  
+            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.4f, 0));  
             titleUI = new CustomText(Card.UIGameObject, "Headline", Title);
             sourceUI = new CustomText(Card.UIGameObject, "Source", Source);
             titleUI.SetSize(1.2f);
@@ -41,6 +42,12 @@ namespace Doom_Scroll
             sourceUI.SetLocalPosition(new Vector3(0, -0.05f, -10));
             sourceUI.SetColor(Color.gray);
             // sourceUI.SetTextAlignment(TMPro.TextAlignmentOptions.BaselineRight);
+            float shareBtnSize = Card.GetSize().y - 0.02f;
+            Vector3 position = new Vector3(Card.GetSize().x /2 - Card.GetSize().y /2, 0, -20);
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", slices);
+            PostButton = new CustomButton(Card.UIGameObject, "Post News", BtnSprites, position, shareBtnSize);
+            PostButton.ButtonEvent.MyAction += OnClickShare;
             Card.ActivateCustomUI(false);
         }
 
@@ -79,6 +86,11 @@ namespace Doom_Scroll
                 /* titleUI.SetLocalPosition(new Vector3(sr.size.x, 0.05f, -10));
                  sourceUI.SetLocalPosition(new Vector3(sr.size.x, -0.05f, -10));*/
             }
+        }
+        public void OnClickShare()
+        {
+            DoomScroll._log.LogInfo("POST SHARED IN CHAT");
+            PostButton.EnableButton(false);
         }
         public override string ToString()
         {
