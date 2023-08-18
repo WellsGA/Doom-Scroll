@@ -4,6 +4,7 @@ using Doom_Scroll.UI;
 
 namespace Doom_Scroll.Common
 {
+    //currently, maximum posts/tasks displayable is 9 (formatting looks good) or 10 (technically doesn't go out of folder window, but maybe cutting it too close)
     enum FileTextType
     {
         TASKS,
@@ -11,6 +12,7 @@ namespace Doom_Scroll.Common
     }
     internal class FileText : File
     {
+        public static int maxNumTextItems = 9; // Same for every folder. Maximum number of test-based evidence items (i.e. posts or tasks).
         private FileTextType m_type;
         private string m_content;
         private GameObject m_parent;

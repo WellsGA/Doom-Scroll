@@ -10,6 +10,7 @@ namespace Doom_Scroll.Common
 {
     public class Page
     {
+        private static Vector2 buttonSize = new Vector2(1.5f, 1.5f);
         //public GameObject Dir { get; private set; }
         //public string Path { get; private set; }
         //public CustomButton Btn { get; set; }
@@ -93,6 +94,26 @@ namespace Doom_Scroll.Common
             //if (imageTwo != null) { UnityEngine.Object.Destroy(imageTwo.UIGameObject); }
             descriptionText.ActivateCustomUI(false);
             DoomScroll._log.LogInfo("Closing page");
+        }
+        public static CustomButton AddLeftButton(GameObject parent, bool buttonInMiddle)
+        {
+            float yPos = buttonInMiddle ? 0 : 4.5f;
+            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
+            Vector3 backPosition = new Vector3(-sr.size.x*0.4f, yPos, -5f);
+            return new CustomButton(parent, "Flip to prior page", backBtnImg, backPosition, buttonSize.x);
+
+        }
+        public static CustomButton AddRightButton(GameObject parent, bool buttonInMiddle)
+        {
+            float yPos = buttonInMiddle ? 0 : 4.5f;
+            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
+            Vector3 forwardPosition = new Vector3(sr.size.x*0.4f, yPos, -5f);
+            return new CustomButton(parent, "Flip to next page", backBtnImg, forwardPosition, -buttonSize.x);
+
         }
     }
 }
