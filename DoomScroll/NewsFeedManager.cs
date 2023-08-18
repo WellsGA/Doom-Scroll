@@ -32,6 +32,13 @@ namespace Doom_Scroll
         private List<CustomButton> newsButtons;
         // list of news created randomly and by the selected players -  will be displayed during meetings
         private List<NewsItem> allNewsList;
+
+        // elements added by Alaina for flipping between pages of news
+        private int numPages = 1;
+        private int currentPage = 1;
+        private CustomButton m_nextBtn;
+        private CustomButton m_backBtn;
+
         private NewsFeedManager()
         {
             Reset();
@@ -55,6 +62,22 @@ namespace Doom_Scroll
             }
             m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
             ActivateNewsButton(false);
+
+            // set up stuff for folder display, paging through. Set it false for now because not necessary yet.
+            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            numPages = 1;
+            currentPage = 1;
+            m_nextBtn = Page.AddRightButton(parent.UIGameObject, true);
+            DoomScroll._log.LogInfo("Task page right button added");
+            m_backBtn = Page.AddLeftButton(parent.UIGameObject, true);
+            m_nextBtn.SetScale(new Vector3(-1, 1, 1));
+            DoomScroll._log.LogInfo("Task page left button added");
+            m_nextBtn.ButtonEvent.MyAction += OnClickRightButton;
+            m_backBtn.ButtonEvent.MyAction += OnClickLeftButton;
+            DoomScroll._log.LogInfo("Task page button events added");
+            m_nextBtn.ActivateCustomUI(false);
+            m_backBtn.ActivateCustomUI(false);
+            DoomScroll._log.LogInfo("Task page buttons deactivated");
         }
 
         public void OnClickNews()
@@ -311,22 +334,138 @@ namespace Doom_Scroll
         public void DisplayNews()
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-            foreach (NewsItem news in allNewsList)
+            if (allNewsList.Count <= FileText.maxNumTextItems)
             {
+                Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                foreach (NewsItem news in allNewsList)
+                {
+                    news.DisplayNewsCard();
+                    pos.y -= news.Card.GetSize().y + 0.05f;
+                    news.Card.SetLocalPosition(pos);
+                    news.Card.ActivateCustomUI(true);
+                }
+                DoomScroll._log.LogInfo(ToString()); // debug
+            }
+            else
+            {
+                // set allowed number of pages
+                numPages = (int)Math.Ceiling((float)(allNewsList.Count) / FileText.maxNumTextItems);
+                DoomScroll._log.LogInfo("Number of pages of tasks: " + numPages);
+
+                // show buttons for flipping between pages
+                m_nextBtn.ActivateCustomUI(true);
+                m_backBtn.ActivateCustomUI(true);
+                DoomScroll._log.LogInfo("Task page buttons activated");
+
+                // to do: list it on a UI modal
+                // always show page 1 first
+                DisplayNews(1);
+            }
+        }
+        //MESSY SOLUTION: PRACTICALLY A COPY-PASTE OF TASK METHOD. CAN CONDENSE METHODS LATER.
+        public void DisplayNews(int displayPageNum)
+        {
+
+            DoomScroll._log.LogInfo($"Displaying page {displayPageNum} of tasks.");
+            //this case probably won't happen; checking in meantime for first few tests
+            if (displayPageNum < 1 || displayPageNum > numPages)
+            {
+                DisplayNews(1);
+            }
+
+            // to do: list it on a UI modal
+            int currentNewsIndex = (displayPageNum - 1) * FileText.maxNumTextItems;
+            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            while (currentNewsIndex < allNewsList.Count && currentNewsIndex < displayPageNum * FileText.maxNumTextItems)
+            // stops before index out of range and before printing tasks that should be on next page
+            {
+                NewsItem news = allNewsList[currentNewsIndex];
                 news.DisplayNewsCard();
                 pos.y -= news.Card.GetSize().y + 0.05f;
                 news.Card.SetLocalPosition(pos);
                 news.Card.ActivateCustomUI(true);
+                currentNewsIndex++;
             }
-            DoomScroll._log.LogInfo(ToString()); // debug
+
+            currentPage = displayPageNum;
+
+            if (currentPage == 1)
+            {
+                m_backBtn.EnableButton(false);
+            }
+            else
+            {
+
+                m_backBtn.EnableButton(true);
+            }
+            if (currentPage == numPages)
+            {
+                m_nextBtn.EnableButton(false);
+            }
+            else
+            {
+                m_nextBtn.EnableButton(true);
+            }
+
+            DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString()); // debug
         }
+
+        public void OnClickRightButton()
+        {
+            HideNews();
+            DisplayNews(currentPage + 1);
+        }
+
+        public void OnClickLeftButton()
+        {
+            HideNews();
+            DisplayNews(currentPage - 1);
+        }
+
+        public void CheckForDisplayedNewsPageButtonClicks()
+        {
+            try
+            {
+                //hovers
+                if (m_nextBtn != null)
+                {
+                    m_nextBtn.ReplaceImgageOnHover();
+                }
+                if (m_backBtn != null)
+                {
+                    m_backBtn.ReplaceImgageOnHover();
+                }
+                //clicks
+                if (m_nextBtn != null && m_nextBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    m_nextBtn.ButtonEvent.InvokeAction();
+                }
+                if (m_backBtn != null && m_backBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    m_backBtn.ButtonEvent.InvokeAction();
+                }
+            }
+            catch (Exception e)
+            {
+                DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+            }
+        }
+        public void HidePageButtons()
+        {
+            m_nextBtn.ActivateCustomUI(false);
+            m_backBtn.ActivateCustomUI(false);
+            DoomScroll._log.LogInfo("Task page buttons deactivated");
+        }
+
 
         public void HideNews()
         {
-            foreach (NewsItem news in allNewsList)
+            int currentNewsIndex = (currentPage - 1) * FileText.maxNumTextItems;
+            while (currentNewsIndex < allNewsList.Count && currentNewsIndex < currentPage * FileText.maxNumTextItems)
             {
-                news.Card.ActivateCustomUI(false);
+                allNewsList[currentNewsIndex].Card.ActivateCustomUI(false);
+                currentNewsIndex++;
             }
         }
         public override string ToString()
