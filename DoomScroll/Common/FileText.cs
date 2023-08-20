@@ -54,11 +54,13 @@ namespace Doom_Scroll.Common
                 case FileTextType.TASKS:
                     {
                         TaskAssigner.Instance.HideAssignedTasks();
+                        TaskAssigner.Instance.HidePageButtons();
                         break;
                     }
                 case FileTextType.NEWS:
                     {
                        NewsFeedManager.Instance.HideNews();
+                        NewsFeedManager.Instance.HidePageButtons();
                         break;
                     }
             }

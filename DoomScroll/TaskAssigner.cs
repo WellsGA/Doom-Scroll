@@ -233,7 +233,7 @@ namespace Doom_Scroll
             DisplayAssignedTasks(currentPage - 1);
         }
 
-        public void CheckForDisplayedTasksButtonClicks()
+        public void CheckForDisplayedTasksPageButtonClicks()
         {
             try
             {
@@ -260,6 +260,12 @@ namespace Doom_Scroll
             {
                 DoomScroll._log.LogError("Error invoking overlay button method: " + e);
             }
+        }
+        public void HidePageButtons()
+        {
+            m_nextBtn.ActivateCustomUI(false);
+            m_backBtn.ActivateCustomUI(false);
+            DoomScroll._log.LogInfo("Task page buttons deactivated");
         }
 
         public void HideAssignedTasks()

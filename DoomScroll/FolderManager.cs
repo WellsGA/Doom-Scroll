@@ -121,7 +121,11 @@ namespace Doom_Scroll
                     // code for checking page turns in task folder
                     if (m_current is FileText && TaskAssigner.Instance != null) // Trying to see if currently displaying tasks??
                     {
-                        TaskAssigner.Instance.CheckForDisplayedTasksButtonClicks();
+                        TaskAssigner.Instance.CheckForDisplayedTasksPageButtonClicks();
+                    }
+                    if (m_current is FileText && NewsFeedManager.Instance != null) // Trying to see if currently displaying tasks??
+                    {
+                        NewsFeedManager.Instance.CheckForDisplayedNewsPageButtonClicks();
                     }
                 }
                 catch (Exception e)
