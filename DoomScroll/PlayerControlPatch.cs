@@ -77,9 +77,10 @@ namespace Doom_Scroll
                     {
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
-                            ChatControllerPatch.content = ChatContent.POSTSHARING;
-                            ChatControllerPatch.authorID = reader.ReadByte();
-                            string chatText = reader.ReadString() + "\n\t" + reader.ReadString();
+                            ChatControllerPatch.content = ChatContent.TEXT;
+                            string author = reader.ReadString();
+                            string chatText = author.Length > 0 ? author + " posted: " : "";
+                            chatText += "<color=#366999><i>" + reader.ReadString() + "</i>\n\t" + reader.ReadString();
                             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
                         }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Reflection;
 using Sentry.Internal;
 using Hazel;
+using static GameData;
 
 namespace Doom_Scroll
 {
@@ -23,6 +24,7 @@ namespace Doom_Scroll
         {
             
             AuthorID = player; // 255 for the automated news - no player
+            AuthorName = "";
             Title = headline;
             IsTrue = truth;
             Source = source;
@@ -91,9 +93,9 @@ namespace Doom_Scroll
         {
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
-                ChatControllerPatch.content = ChatContent.POSTSHARING;
-                ChatControllerPatch.authorID = AuthorID;
-                string chatText = Title + "\n\t" + Source;
+                string chatText = AuthorName.Length > 0 ?  AuthorName + " posted: " : "";
+                ChatControllerPatch.content = ChatContent.TEXT;
+                chatText += "<color=#366999><i>" + Title + "</i>\n\t" + Source;
                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText);
             }
             RpcPostNews();
@@ -102,7 +104,7 @@ namespace Doom_Scroll
         private void RpcPostNews()
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWSTOCHAT, (SendOption)1);
-            messageWriter.Write(AuthorID);  // author
+            messageWriter.Write(AuthorName);  // author
             messageWriter.Write(Title);     // post
             messageWriter.Write(Source);    // source
             messageWriter.EndMessage();

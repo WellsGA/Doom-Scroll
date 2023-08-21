@@ -2,8 +2,6 @@
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
-using System.Reflection;
-using static Il2CppSystem.Uri;
 
 namespace Doom_Scroll
 {
@@ -11,7 +9,6 @@ namespace Doom_Scroll
     {
         TEXT,
         SCREENSHOT,
-        POSTSHARING
     }
 
     // in the 2023.2.28 release ChatBubble is an internal class,
@@ -20,7 +17,6 @@ namespace Doom_Scroll
     public class ChatControllerPatch
     {
         public static byte[] screenshot = null; // for sharing images
-        public static byte authorID = 255; // for sharing posts, default is no author
         public static ChatContent content = ChatContent.TEXT;
 
         [HarmonyPostfix]
@@ -79,44 +75,6 @@ namespace Doom_Scroll
                                     screenshot = null;
                                 }
                                 break;
-                            }
-                        }
-                    }
-                    return;
-
-                case ChatContent.POSTSHARING:
-                    // get the author, if any and add the player spr to the chatbubble
-                    GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(authorID);
-                    if (playerInfo != null && texts != null)
-                    {
-                        foreach (TextMeshPro text in texts)
-                        {
-                            if (text.text == chatText)
-                            {
-                                Transform chatbubble = text.transform.parent;
-                                if (chatbubble != null)
-                                {
-                                    SpriteRenderer chatbg = chatbubble.Find("Background").gameObject.GetComponent<SpriteRenderer>();
-                                    if (chatbg != null)
-                                    {
-                                        chatbg.color = new Color(220, 220, 220);
-                                        Sprite playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
-                                        GameObject authorIcon = new GameObject("AuthorIcon");
-                                        authorIcon.layer = LayerMask.NameToLayer("UI");
-                                        authorIcon.transform.SetParent(chatbubble);
-                                        SpriteRenderer spr = authorIcon.AddComponent<SpriteRenderer>();
-                                        authorIcon.transform.localPosition = new Vector3(0,0,-10);
-                                        spr.drawMode = SpriteDrawMode.Sliced;
-                                        spr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                                        spr.sprite = playerSprite;
-                                        spr.size = new Vector2(0.4f, spr.sprite.rect.height / spr.sprite.rect.width * 0.4f);
-                                        spr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
-                                        // authorIcon.transform.localPosition = new Vector3(0, 0, -10);
-                                        authorIcon.transform.localScale = Vector3.one;
-                                        text.text = ": <color=#366999>" + text.text + " by:" + spr.color.ToTextColor() + playerInfo.PlayerName;
-                                    }
-                                    break;
-                                }
                             }
                         }
                     }
