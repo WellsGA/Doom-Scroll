@@ -39,7 +39,7 @@ namespace Doom_Scroll
         }
         public bool IsTaskFinished()
         {
-            // chack if task is completed
+            // TO DO: chack if task is completed
             return true;
         }
     }

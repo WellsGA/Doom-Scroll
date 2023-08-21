@@ -184,7 +184,7 @@ namespace Doom_Scroll
                     foreach (NewsItem news in allNewsList)
                     {
                         news.PostButton.ReplaceImgageOnHover();
-                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKey(KeyCode.Mouse0))
                         {
                             news.PostButton.ButtonEvent.InvokeAction(); 
                         }
@@ -366,6 +366,7 @@ namespace Doom_Scroll
                     pos.y -= news.Card.GetSize().y + 0.05f;
                     news.Card.SetLocalPosition(pos);
                     news.Card.ActivateCustomUI(true);
+                    news.PostButton.ActivateCustomUI(true);
                 }
                 DoomScroll._log.LogInfo(ToString()); // debug
             }
@@ -408,6 +409,7 @@ namespace Doom_Scroll
                 pos.y -= news.Card.GetSize().y + 0.05f;
                 news.Card.SetLocalPosition(pos);
                 news.Card.ActivateCustomUI(true);
+                news.PostButton.ActivateCustomUI(true);
                 currentNewsIndex++;
             }
 
@@ -488,6 +490,7 @@ namespace Doom_Scroll
             while (currentNewsIndex < allNewsList.Count && currentNewsIndex < currentPage * FileText.maxNumTextItems)
             {
                 allNewsList[currentNewsIndex].Card.ActivateCustomUI(false);
+                allNewsList[currentNewsIndex].PostButton.ActivateCustomUI(false);
                 currentNewsIndex++;
             }
         }

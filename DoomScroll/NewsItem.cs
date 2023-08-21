@@ -3,6 +3,7 @@ using Doom_Scroll.UI;
 using UnityEngine;
 using System.Reflection;
 using Sentry.Internal;
+using Hazel;
 
 namespace Doom_Scroll
 {
@@ -27,8 +28,7 @@ namespace Doom_Scroll
             Source = source;
             CreateNewsCard();
         }
-        // to do: display as a share button
-        public void CreateNewsCard()
+        private void CreateNewsCard()
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             CustomModal parent = FolderManager.Instance.GetFolderArea();
@@ -87,11 +87,27 @@ namespace Doom_Scroll
                  sourceUI.SetLocalPosition(new Vector3(sr.size.x, -0.05f, -10));*/
             }
         }
-        public void OnClickShare()
+        private void OnClickShare()
         {
-            DoomScroll._log.LogInfo("POST SHARED IN CHAT");
+            if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
+            {
+                ChatControllerPatch.content = ChatContent.POSTSHARING;
+                ChatControllerPatch.authorID = AuthorID;
+                string chatText = Title + "\n\t" + Source;
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText);
+            }
+            RpcPostNews();
             PostButton.EnableButton(false);
         }
+        private void RpcPostNews()
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWSTOCHAT, (SendOption)1);
+            messageWriter.Write(AuthorID);  // author
+            messageWriter.Write(Title);     // post
+            messageWriter.Write(Source);    // source
+            messageWriter.EndMessage();
+        }
+
         public override string ToString()
         {
             if (AuthorName == null)

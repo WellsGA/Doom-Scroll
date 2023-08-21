@@ -3,11 +3,13 @@ using Hazel;
 using UnityEngine;
 using System.Collections.Generic;
 using Il2CppSystem;
+using static Il2CppMono.Security.X509.X520;
 
 namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
+        SENDNEWSTOCHAT = 248,
         SENDPLAYERCANPOST = 249,
         SENDNEWS = 250,
         //SENDIMAGEPIECE = 251,
@@ -71,6 +73,18 @@ namespace Doom_Scroll
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDNEWSTOCHAT:
+                    {
+                        if (DestroyableSingleton<HudManager>.Instance)
+                        {
+                            ChatControllerPatch.content = ChatContent.POSTSHARING;
+                            ChatControllerPatch.authorID = reader.ReadByte();
+                            string chatText = reader.ReadString() + "\n\t" + reader.ReadString();
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                        }
+
+                        return;
+                    }
                 case (byte)CustomRPC.SENDPLAYERCANPOST:
                     {
                         if(reader.ReadByte() == PlayerControl.LocalPlayer.PlayerId)
