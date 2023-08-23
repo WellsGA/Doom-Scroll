@@ -17,11 +17,13 @@ namespace Doom_Scroll.Common
         public CustomText titleText { get; private set; }
         public Sprite tutorialPictureOne { get; private set; }
         public Sprite tutorialPictureTwo { get; private set; }
+        public Sprite tutorialPictureThree { get; private set; }
         public CustomModal imageOne { get; private set; }
         public CustomModal imageTwo { get; private set; }
+        public CustomModal imageThree { get; private set; }
         public CustomText descriptionText { get; private set; }
 
-        public Page(string title, string imgName, string description, CustomModal parentOverlay, string secondImgName = null)
+        public Page(string title, string imgName, string description, CustomModal parentOverlay, string secondImgName = null, Tuple<string, float> iconButton = null)
         {
             /*Dir = new GameObject(name);
             Dir.layer = LayerMask.NameToLayer("UI");
@@ -65,6 +67,14 @@ namespace Doom_Scroll.Common
                 imageTwo = new CustomModal(parentOverlay.UIGameObject, $"TutorialPictureTwo{title}", tutorialPictureTwo);
                 imageTwo.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x)); // landscape 2:3 ratio
                 imageTwo.SetLocalPosition(new Vector3(3.8f, 0f, -50f));
+                if (iconButton != null)
+                {
+                    //set third image;
+                    tutorialPictureThree = ImageLoader.ReadImageFromAssembly(assembly, iconButton.Item1); //will appear as default file icon for now
+                    imageThree = new CustomModal(parentOverlay.UIGameObject, $"TutorialPictureThree{title}", tutorialPictureThree);
+                    imageThree.SetSize(new Vector3(parentOverlay.GetSize().x, parentOverlay.GetSize().x * iconButton.Item2)*((2f - iconButton.Item2)/2.5f)); // uses provided ratio
+                    imageThree.SetLocalPosition(new Vector3(0f, 3.5f, -50f));
+                }
             }
 
             //Btn.SetLocalPosition(Vector3.zero);
@@ -82,6 +92,7 @@ namespace Doom_Scroll.Common
             titleText.ActivateCustomUI(true);
             imageOne.ActivateCustomUI(true);
             if (imageTwo != null) { imageTwo.ActivateCustomUI(true); }
+            if (imageThree != null) { imageThree.ActivateCustomUI(true); }
             descriptionText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Opening page");
         }
@@ -90,6 +101,7 @@ namespace Doom_Scroll.Common
             titleText.ActivateCustomUI(false);
             imageOne.ActivateCustomUI(false);
             if (imageTwo != null) { imageTwo.ActivateCustomUI(false); }
+            if (imageThree != null) { imageThree.ActivateCustomUI(false); }
             //UnityEngine.Object.Destroy(imageOne.UIGameObject);
             //if (imageTwo != null) { UnityEngine.Object.Destroy(imageTwo.UIGameObject); }
             descriptionText.ActivateCustomUI(false);

@@ -94,5 +94,8 @@
 	  <EmbeddedResource Include="Assets\SWCInTaskList_WithArrow.png"/>
 	  <EmbeddedResource Include="Assets\folderWhereInChat_WithArrow.png"/>
 	  <EmbeddedResource Include="Assets\folderOpen.png"/>
+	  <EmbeddedResource Include="Assets\newsButtonExample.png"/>
+	  <EmbeddedResource Include="Assets\taskButtonsExample.png"/>
+	  <EmbeddedResource Include="Assets\folderButtonExample.png"/>
   </ItemGroup>
 </Project>
