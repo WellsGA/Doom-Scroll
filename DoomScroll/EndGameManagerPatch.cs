@@ -19,7 +19,6 @@ namespace Doom_Scroll
         {
             if (__instance.WinText.text == DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Victory) && !SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess()) //If won but SWC not successful
             {
-                StatsManager.Instance.AddLoseReason(TempData.EndReason);
                 __instance.WinText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Defeat);
                 __instance.WinText.color = Color.red;
                 __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"red\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
