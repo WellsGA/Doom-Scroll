@@ -136,46 +136,60 @@ namespace Doom_Scroll
         {
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
-                string chatText = AuthorName.Length > 0 ?  AuthorName + " posted: " : "";
                 ChatControllerPatch.content = ChatContent.TEXT;
-                chatText += "<color=#366999><i>" + Title + "</i>\n\t" + Source + "\n <color=#000> \U0001F600 " + TotalEndorsement + " \U0001F611 " + TotalDenouncement;
+                string chatText = NewsToChatText();
                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText);
             }
             RpcPostNews();
             PostButton.EnableButton(false);
         }
+
+        public string NewsToChatText()
+        {
+            string chatText = AuthorName.Length > 0 ? AuthorName + " posted: " : "";
+            chatText += "<color=#366999><i>" + Title + "</i>\n\t" + Source + "\n <color=#00ff00> :) " + TotalEndorsement + "<color=#ff0000> :( " + TotalDenouncement;
+            return chatText;
+        }
+
         private void RpcPostNews()
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWSTOCHAT, (SendOption)1);
-            messageWriter.Write(AuthorName);    // author
-            messageWriter.Write(Title);         // post
-            messageWriter.Write(Source);        // source
+            messageWriter.Write(NewsID);    // id
             messageWriter.EndMessage();
         }
 
         private void OnClickEndorse()
         {
+            if (localPlayerDenounced) // if already denounced, it has to change too
+            {
+                OnClickUnEndorse();
+            }
             TotalEndorsement = localPlayerEndorsed ? TotalEndorsement - 1 : TotalEndorsement + 1;
             localPlayerEndorsed = !localPlayerEndorsed;
             Endorselable.SetText(TotalEndorsement.ToString());
             DoomScroll._log.LogInfo("Endorsed: " + TotalEndorsement);
-            RpcShareEndorsement(true);
+            RpcShareEndorsement(true, localPlayerEndorsed);
         }
 
         private void OnClickUnEndorse()
         {
+            if (localPlayerEndorsed) // if already denounced, it has to change too
+            {
+                OnClickEndorse();
+            }
             TotalDenouncement = localPlayerDenounced ? TotalDenouncement - 1 : TotalDenouncement + 1;
             localPlayerDenounced = !localPlayerDenounced;
             DenounceLable.SetText(TotalDenouncement.ToString());
             DoomScroll._log.LogInfo("Un-Endorsed: " + TotalDenouncement);
-            RpcShareEndorsement(false);
+            RpcShareEndorsement(false, localPlayerDenounced);
         }
 
-        private void RpcShareEndorsement(bool endorse)
+        private void RpcShareEndorsement(bool endorse, bool up)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDENDORSEMENT, (SendOption)1);
             messageWriter.Write(NewsID);        // id 
-            messageWriter.Write(endorse);       // up vote or down vote
+            messageWriter.Write(endorse);       // endorse or denounce
+            messageWriter.Write(up);       // plus or minus
             messageWriter.EndMessage();
         }
 

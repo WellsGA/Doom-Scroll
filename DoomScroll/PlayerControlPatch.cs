@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 using Hazel;
-using UnityEngine;
 using System.Collections.Generic;
-using Il2CppSystem;
 using static Il2CppMono.Security.X509.X520;
 
 namespace Doom_Scroll
@@ -100,13 +98,14 @@ namespace Doom_Scroll
                     {
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
-                            ChatControllerPatch.content = ChatContent.TEXT;
-                            string author = reader.ReadString();
-                            string chatText = author.Length > 0 ? author + " posted: " : "";
-                            chatText += "<color=#366999><i>" + reader.ReadString() + "</i>\n\t" + reader.ReadString();
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                            NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
+                            if(news != null)
+                            {
+                                ChatControllerPatch.content = ChatContent.TEXT;
+                                string chatText = news.NewsToChatText();
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                            }
                         }
-
                         return;
                     }
                 case (byte)CustomRPC.SENDPLAYERCANPOST:
