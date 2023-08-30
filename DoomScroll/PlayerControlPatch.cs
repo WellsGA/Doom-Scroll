@@ -9,6 +9,7 @@ namespace Doom_Scroll
 {
     public enum CustomRPC : byte
     {
+        SENDENDORSEMENT = 247,
         SENDNEWSTOCHAT = 248,
         SENDPLAYERCANPOST = 249,
         SENDNEWS = 250,
@@ -73,6 +74,28 @@ namespace Doom_Scroll
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDENDORSEMENT:
+                    {
+                        NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
+                        if(news != null)
+                        {
+                            if (reader.ReadBoolean())
+                            {
+                                news.TotalEndorsement++;
+                                news.Endorselable.SetText(news.TotalEndorsement.ToString());
+                            }
+                            else
+                            {
+                                news.TotalDenouncement++;
+                                news.DenounceLable.SetText(news.TotalDenouncement.ToString());
+                            }
+                        }
+                        else
+                        {
+                            DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
+                        }
+                        return;
+                    }
                 case (byte)CustomRPC.SENDNEWSTOCHAT:
                     {
                         if (DestroyableSingleton<HudManager>.Instance)
@@ -97,7 +120,7 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDNEWS:
                     {
-                        NewsFeedManager.Instance.AddNews(new NewsItem(reader.ReadByte(), reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
+                        NewsFeedManager.Instance.AddNews(new NewsItem(reader.ReadInt32(), reader.ReadByte(), reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
                         return;
                     }
                 case (byte)CustomRPC.DEATHNOTE:

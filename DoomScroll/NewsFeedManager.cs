@@ -3,6 +3,7 @@ using Doom_Scroll.UI;
 using Hazel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Doom_Scroll
@@ -35,6 +36,7 @@ namespace Doom_Scroll
         private List<NewsItem> allNewsList;
         private Pageable newsPageHolder;
         private int numPages = 1;
+        public int NewsPostedByLocalPLayer { get; set; }
 
         private NewsFeedManager()
         {
@@ -44,6 +46,7 @@ namespace Doom_Scroll
 
         private void InitializeInputPanel()
         {
+            NewsPostedByLocalPLayer = 0;
             m_togglePanelButton = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
             newsButtons = new List<CustomButton>();
@@ -90,7 +93,7 @@ namespace Doom_Scroll
         {
             DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + newsOptions[news].Title);
             newsOptions[news].SetAuthor(PlayerControl.LocalPlayer.PlayerId);
-            RPCShareNews(newsOptions[news]);
+            RPCSandNews(newsOptions[news]);
             CanPostNews(false);
             ToggleNewsForm();
         }
@@ -157,7 +160,7 @@ namespace Doom_Scroll
             }
         }
 
-        public void CheckForShareClicks()
+        public void CheckForShareAndEndorseClicks()
         {
             if (hudManagerInstance == null) return;
             // If chat and folder overlay are open invoke events on button clicks
@@ -168,9 +171,19 @@ namespace Doom_Scroll
                     foreach (NewsItem news in allNewsList)
                     {
                         news.PostButton.ReplaceImgageOnHover();
-                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKey(KeyCode.Mouse0))
+                        news.EndorseButton.ReplaceImgageOnHover();
+                        news.DenounceButton.ReplaceImgageOnHover();
+                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             news.PostButton.ButtonEvent.InvokeAction(); 
+                        }
+                        if (news.EndorseButton.IsEnabled && news.EndorseButton.IsActive && news.EndorseButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        {
+                            news.EndorseButton.ButtonEvent.InvokeAction();
+                        }
+                        if (news.DenounceButton.IsEnabled && news.DenounceButton.IsActive && news.DenounceButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        {
+                            news.DenounceButton.ButtonEvent.InvokeAction();
                         }
                     }
                 }
@@ -223,7 +236,8 @@ namespace Doom_Scroll
             int rand = UnityEngine.Random.Range(0, NewsStrings.fakeSources.Length);
             string source = NewsStrings.fakeSources[rand];
             string headline = GetRandomHeadline();
-            return new NewsItem(255, headline, false, source);
+            int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;
+            return new NewsItem(id, 255, headline, false, source);
         }
 
         public NewsItem CreateTrueNews() 
@@ -271,15 +285,18 @@ namespace Doom_Scroll
                     }
                     break;
             }
-            return new NewsItem(255, headline, true, source);
+            int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;
+            return new NewsItem(id, 255, headline, true, source);
         }
 
-        public void RPCShareNews(NewsItem news)
+        public void RPCSandNews(NewsItem news)
         {
             // set locally
+            NewsPostedByLocalPLayer++;
             AddNews(news);
             // share
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
+            messageWriter.Write(news.NewsID);
             messageWriter.Write(news.AuthorID);
             messageWriter.Write(news.Title);
             messageWriter.Write(news.IsTrue);
@@ -295,6 +312,18 @@ namespace Doom_Scroll
                 news.CreateAuthorIcon();
             }
             allNewsList.Insert(0, news);
+        }
+
+        public NewsItem GetNewsByID(int id)
+        { 
+            foreach(NewsItem news in allNewsList)
+            {
+                if(news.NewsID == id)
+                {
+                    return news;
+                }
+            }
+            return null;
         }
 
         private string GetRandomPlayerName() 
