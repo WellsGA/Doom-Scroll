@@ -237,7 +237,7 @@ namespace Doom_Scroll
             string headline = player.name;
             switch (type) 
             {
-                case 0: // get the number of completed tasks // TEST THIS!!!! FOR NO SWCs TOO!!
+                case 0: // get the number of completed tasks 
                     int i = 0;
                     foreach (PlayerTask task in player.myTasks)
                     {  
@@ -262,8 +262,8 @@ namespace Doom_Scroll
                             }
                             else if(swc.GetGoal() == Goal.Frame)
                             {
-                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect.Length);
-                                headline = NewsStrings.headlinesProtect[rnd];
+                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame.Length);
+                                headline = NewsStrings.headlinesFrame[rnd];
                                 headline = headline.Replace("{0}", swc.GetPlayerName());
                                 headline = headline.Replace("{1}", swc.GetTargetName());
                             }
