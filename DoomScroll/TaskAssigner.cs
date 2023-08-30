@@ -17,6 +17,8 @@ namespace Doom_Scroll
     // relies on the common language runtime to initialize the variable
     public sealed class TaskAssigner
     {
+        private int maxTaskItemsPerPage = 9; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+
         private static readonly TaskAssigner _instance = new TaskAssigner(); // readonly: can be assigned only during static initialization
         public static TaskAssigner Instance
         {
@@ -42,10 +44,8 @@ namespace Doom_Scroll
         private Sprite cardSprite;
 
         // elements added by Alaina for flipping between pages of tasks
+        private Pageable taskPageHolder;
         private int numPages = 1;
-        private int currentPage = 1;
-        private CustomButton m_nextBtn;
-        private CustomButton m_backBtn;
 
         // private constructor: the class cannot be instantiated outside of itself; therefore, this is the only instance that can exist in the system
         private TaskAssigner()
@@ -65,19 +65,7 @@ namespace Doom_Scroll
 
             // set up stuff for folder display, paging through. Set it false for now because not necessary yet.
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            numPages = 1;
-            currentPage = 1;
-            m_nextBtn = Page.AddRightButton(parent.UIGameObject, true);
-            DoomScroll._log.LogInfo("Task page right button added");
-            m_backBtn = Page.AddLeftButton(parent.UIGameObject, true);
-            m_nextBtn.SetScale(new Vector3(-1, 1, 1));
-            DoomScroll._log.LogInfo("Task page left button added");
-            m_nextBtn.ButtonEvent.MyAction += OnClickRightButton;
-            m_backBtn.ButtonEvent.MyAction += OnClickLeftButton;
-            DoomScroll._log.LogInfo("Task page button events added");
-            m_nextBtn.ActivateCustomUI(false);
-            m_backBtn.ActivateCustomUI(false);
-            DoomScroll._log.LogInfo("Task page buttons deactivated");
+            taskPageHolder = new Pageable(parent.UIGameObject, new List<CustomUI>(), maxTaskItemsPerPage); // sets up an empty pageable 
         }
 
         public void ActivatePanel(bool flag) 
@@ -115,7 +103,7 @@ namespace Doom_Scroll
                 if (task.Id == taskId) // check if sender really had that task and get the type
                 {
                     AssignedTask assTask = new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID);
-                    AssignedTasks.Add(assTask);
+                    AssignedTasks.Insert(0, assTask);
                     NotificationManager.ShowNotification(assTask.AssigneeName + " signed into a task.");
                     DoomScroll._log.LogInfo("New task assigned\n player: " + assTask.AssigneeName + ", task: " + assTask.Type);
                 }
@@ -145,136 +133,56 @@ namespace Doom_Scroll
         public void DisplayAssignedTasks()
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            if (AssignedTasks.Count <= FileText.maxNumTextItems)
+
+            numPages = (int)Math.Ceiling((float)(AssignedTasks.Count) / FileText.maxNumTextItems);
+            DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
+
+            List<CustomUI> taskCards = new List<CustomUI>();
+            for (int displayPageNum = 1; displayPageNum <= numPages; displayPageNum++)
             {
-                // to do: list it on a UI modal
                 Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-                foreach (AssignedTask task in AssignedTasks)
+                for (int currentTaskIndex = (displayPageNum - 1) * maxTaskItemsPerPage; currentTaskIndex < AssignedTasks.Count && currentTaskIndex < displayPageNum * maxTaskItemsPerPage; currentTaskIndex++)
+                // stops before index out of range and before printing tasks that should be on next page
                 {
+                    DoomScroll._log.LogInfo($"Current task Index: {currentTaskIndex}, AssignedTasks list Count: {AssignedTasks.Count}");
+                    AssignedTask task = AssignedTasks[currentTaskIndex];
                     task.DisplayTaskCard(parent, cardSprite);
                     pos.y -= task.Card.GetSize().y + 0.05f;
                     task.Card.SetLocalPosition(pos);
                     task.Card.ActivateCustomUI(true);
+
+                    taskCards.Add(task.Card);
+                    task.Card.ActivateCustomUI(false); // unsure if necessary>
                 }
-            }
-            else
-            {
-                // set allowed number of pages
-                numPages = (int)Math.Ceiling((float)(AssignedTasks.Count) / FileText.maxNumTextItems);
-                DoomScroll._log.LogInfo("Number of pages of tasks: " + numPages);
-
-                // show buttons for flipping between pages
-                m_nextBtn.ActivateCustomUI(true);
-                m_backBtn.ActivateCustomUI(true);
-                DoomScroll._log.LogInfo("Task page buttons activated");
-
-                // to do: list it on a UI modal
-                // always show page 1 first
-                DisplayAssignedTasks(1);
-            }
-            DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString()); // debug
-        }
-        public void DisplayAssignedTasks(int displayPageNum)
-        {
-            DoomScroll._log.LogInfo($"Displaying page {displayPageNum} of tasks.");
-            //this case probably won't happen; checking in meantime for first few tests
-            if (displayPageNum < 1 || displayPageNum > numPages)
-            {
-                DisplayAssignedTasks(1);
             }
 
             // to do: list it on a UI modal
-            int currentTaskIndex = (displayPageNum-1)*FileText.maxNumTextItems;
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-            while (currentTaskIndex < AssignedTasks.Count && currentTaskIndex < displayPageNum * FileText.maxNumTextItems)
-                // stops before index out of range and before printing tasks that should be on next page
+            // always show page 1 first
+            if (taskPageHolder == null)
             {
-                AssignedTask task = AssignedTasks[currentTaskIndex];
-                task.DisplayTaskCard(parent, cardSprite);
-                pos.y -= task.Card.GetSize().y + 0.05f;
-                task.Card.SetLocalPosition(pos);
-                task.Card.ActivateCustomUI(true);
-                currentTaskIndex++;
-            }
-
-            currentPage = displayPageNum;
-
-            if (currentPage == 1)
-            {
-                m_backBtn.EnableButton(false);
+                DoomScroll._log.LogInfo($"Creating new pageable");
+                taskPageHolder = new Pageable(parent.UIGameObject, taskCards, maxTaskItemsPerPage); // sets up an empty pageable 
             }
             else
             {
-
-                m_backBtn.EnableButton(true);
+                DoomScroll._log.LogInfo($"Updating pageable");
+                taskPageHolder.UpdatePages(taskCards);
             }
-            if (currentPage == numPages)
-            {
-                m_nextBtn.EnableButton(false);
-            }
-            else
-            {
-                m_nextBtn.EnableButton(true);
-            }
-
-            DoomScroll._log.LogInfo("TASKS ASSIGNED SO FAR:\n " + ToString()); // debug
+            taskPageHolder.DisplayPage(1);
         }
-
-        public void OnClickRightButton()
-        {
-            HideAssignedTasks();
-            DisplayAssignedTasks(currentPage + 1);
-        }
-
-        public void OnClickLeftButton()
-        {
-            HideAssignedTasks();
-            DisplayAssignedTasks(currentPage - 1);
-        }
-
         public void CheckForDisplayedTasksPageButtonClicks()
         {
-            try
+            if (taskPageHolder != null)
             {
-                //hovers
-                if (m_nextBtn != null)
-                {
-                    m_nextBtn.ReplaceImgageOnHover();
-                }
-                if (m_backBtn != null)
-                {
-                    m_backBtn.ReplaceImgageOnHover();
-                }
-                //clicks
-                if (m_nextBtn != null && m_nextBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                {
-                    m_nextBtn.ButtonEvent.InvokeAction();
-                }
-                if (m_backBtn != null && m_backBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                {
-                    m_backBtn.ButtonEvent.InvokeAction();
-                }
+                taskPageHolder.CheckForDisplayedPageButtonClicks();
             }
-            catch (Exception e)
-            {
-                DoomScroll._log.LogError("Error invoking overlay button method: " + e);
-            }
-        }
-        public void HidePageButtons()
-        {
-            m_nextBtn.ActivateCustomUI(false);
-            m_backBtn.ActivateCustomUI(false);
-            DoomScroll._log.LogInfo("Task page buttons deactivated");
         }
 
         public void HideAssignedTasks()
         {
-            int currentTaskIndex = (currentPage - 1) * FileText.maxNumTextItems;
-            while (currentTaskIndex < AssignedTasks.Count && currentTaskIndex < currentPage * FileText.maxNumTextItems)
+            if (taskPageHolder != null)
             {
-                AssignedTasks[currentTaskIndex].Card.ActivateCustomUI(false);
-                currentTaskIndex++;
+                taskPageHolder.HidePage();
             }
         }
         public override string ToString()

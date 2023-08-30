@@ -11,37 +11,39 @@ namespace Doom_Scroll
     // basic singleton pattern - not thread safe
     public sealed class TutorialBookletManager
     {
+        private Pageable tutorialBookletPager;
+
         //buttons
         private CustomButton m_tutorialBookletToggleBtn;
         private CustomButton m_closeBtn;
-        private CustomButton m_nextBtn;
-        private CustomButton m_backBtn;
 
         //modal
         private bool m_isTutorialBookletOverlayOpen;
         private CustomModal m_tutorialBookletArea;
 
         // pages
-        private Page m_titlePage;
-        private Page m_headlines;
-        private Page m_signInForms;
+        private TutorialBookletPage m_titlePage;
+        private TutorialBookletPage m_headlines;
+        private TutorialBookletPage m_headlinesTwo;
+        private TutorialBookletPage m_signInForms;
         //private Page m_screenshots;
-        private Page m_infiniteChatLogs;
-        private Page m_swcs;
-        private Page m_folderSystem;
+        private TutorialBookletPage m_infiniteChatLogs;
+        private TutorialBookletPage m_swcs;
+        private TutorialBookletPage m_folderSystem;
 
-        private List<Page> m_pageOrder;
+        private List<CustomUI> m_pageOrder;
 
         private int m_currentIndex;
 
         // text for different pages
         private String m_titlePageText = "Click through the following pages to learn more about DoomScroll and its\n misinformation features!";
-        private String m_headlinesText = "Headlines can provide useful clues, but are they always trustworthy? When\n the NEWS button is yellow, click to choose a headline that will\n help your fellow crewmates (or trick them).\n";
-        private String m_signInFormsText = "Sign in to your tasks! You’ll be prompted to sign in to random tasks.\n Click on a player to confirm who completed it. This can create\n evidence that you (or others) are a contributing crewmate.\n";
+        private String m_headlinesText = "Headlines can provide useful clues, but are they always trustworthy? When\n the NEWS button is yellow, click to choose a headline that will\n help your fellow crewmates (or trick them).\r\nTIP: Evaluate the evidence thoroughly to look for mistakes or inconsistencies.\r\n";
+        private String m_headlinesTextTwo = "Common signs of fake news:\r\n* Emotionally provocative/polarizing content          * Hyperbolic claims\r\n* Many claims at once          * Hyperpartisan bias\r\n* Misleading/biased statistics          * Conspiracy theories\r\n* Trolling          * Discredits or attacks opposing individuals/groups\r\n* Common signs of untrustworthy sources:          * Domains impersonating more reputable sources\r\n* Fake/Misleading domains          * Less trustworthy sponsors (e.g. blogs)\r\n\r\n";
+        private String m_signInFormsText = "Sign in to your tasks! You’ll be prompted to sign in to random tasks.\n Click on a player to confirm who completed it. This can create\n evidence that you (or others) are a contributing crewmate.\r\nTIP: Compare everyone’s arguments with the available\r\nevidence to help determine who you trust.";
         //private String m_screenshotsText = "These are screenshots! They don't work right now.";
-        private String m_infiniteChatLogsText = "Chat logs from earlier meetings remain available throughout the match.\n Look back at old messages to see if everyone’s arguments stay consistent.\r\n";
-        private String m_swcText = "SWCs are secondary objectives for you to complete along with your role as \ncrewmate or imposter. To win, you must do your duties as crewmate or\n imposter AND either PROTECT or FRAME your randomly assigned target player.\r\n* Protect - Keep the player alive       \r\n* Frame - Get the player eliminated\r\n\r\n";
-        private String m_folderSystemText = "Headline Reports and the Sign-In Sheet are saved in the Folder System.\n During meetings, take a moment to investigate the evidence and see how\n it can help support your argument (or how it refutes someone else’s).\n";
+        private String m_infiniteChatLogsText = "Chat logs from earlier meetings remain available throughout the match.\n Look back at old messages to see if everyone’s arguments stay consistent.\r\nTIP: What are everyone’s motivations? How is that influencing their arguments?";
+        private String m_swcText = "SWCs are secondary objectives for you to complete along with your role as \ncrewmate or imposter. To win, you must do your duties as crewmate or\n imposter AND either PROTECT or FRAME your randomly assigned target player.\r\n* Protect - Keep the player alive       \r\n* Frame - Get the player eliminated\r\nTIP: How might information be being taken out of context?";
+        private String m_folderSystemText = "Headline Reports and the Sign-In Sheet are saved in the Folder System.\n During meetings, take a moment to investigate the evidence and see how\n it can help support your argument (or how it refutes someone else’s).\r\nTIP: Evaluating the evidence first will strengthen your arguments.";
 
         private LobbyBehaviour lobbyBehaviourInstance;
 
@@ -93,32 +95,11 @@ namespace Doom_Scroll
                 }
             }
             // If TutorialBooklet overlay is open invoke events on button clicks
-            if (m_isTutorialBookletOverlayOpen)
+            if (m_isTutorialBookletOverlayOpen && tutorialBookletPager != null)
             {
                 try
                 {
-                    //hovers
-                    if (m_nextBtn != null)
-                    {
-                        m_nextBtn.ReplaceImgageOnHover();
-                    }
-                    if (m_backBtn != null)
-                    {
-                        m_backBtn.ReplaceImgageOnHover();
-                    }
-                    //clicks
-                    if (m_closeBtn != null && m_closeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        m_tutorialBookletToggleBtn.ButtonEvent.InvokeAction();
-                    }
-                    if (m_nextBtn != null && m_nextBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        m_nextBtn.ButtonEvent.InvokeAction();
-                    }
-                    if (m_backBtn != null && m_backBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        m_backBtn.ButtonEvent.InvokeAction();
-                    }
+                    tutorialBookletPager.CheckForDisplayedPageButtonClicks();
                 }
                 catch (Exception e)
                 {
@@ -133,8 +114,6 @@ namespace Doom_Scroll
             CreateTutorialBookletOverlayUI();
             InitTutorialBookletStructure();
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += OnClickTutorialBookletBtn;
-            m_nextBtn.ButtonEvent.MyAction += OnClickRightButton;
-            m_backBtn.ButtonEvent.MyAction += OnClickLeftButton;
             m_tutorialBookletToggleBtn.EnableButton(true);
             m_tutorialBookletToggleBtn.ActivateCustomUI(true);
         }
@@ -146,27 +125,34 @@ namespace Doom_Scroll
             m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
             m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
             m_closeBtn = TutorialBookletOverlay.AddCloseButton(m_tutorialBookletArea.UIGameObject);
-            m_nextBtn = Page.AddRightButton(m_tutorialBookletArea.UIGameObject, false);
-            m_backBtn = Page.AddLeftButton(m_tutorialBookletArea.UIGameObject, false);
-            m_nextBtn.SetScale(new Vector3(-1, 1, 1));
+
+            m_tutorialBookletArea.ActivateCustomUI(true);
+            tutorialBookletPager = new Pageable(m_tutorialBookletArea.UIGameObject, new List<CustomUI>(), 1, false);
+            m_tutorialBookletArea.ActivateCustomUI(false);
         }
         private void InitTutorialBookletStructure()
         {
-            m_titlePage = new Page("DoomScroll Tutorial Booklet", "Doom_Scroll.Assets.MainMenu_Button_Basic.png", m_titlePageText, m_tutorialBookletArea);
-            m_headlines = new Page("Headlines", "Doom_Scroll.Assets.newsSelect.png", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
-            m_signInForms = new Page("Sign-In Forms", "Doom_Scroll.Assets.taskSelect.png", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
-            m_infiniteChatLogs = new Page("Infinite Chat Logs", "Doom_Scroll.Assets.infiniteChatAfter.png", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatBefore.png");
-            m_swcs = new Page("SWCs", "Doom_Scroll.Assets.SWCInTaskList_WithArrow.png", m_swcText, m_tutorialBookletArea, "Doom_Scroll.Assets.SWCStartScreen.png");
+            m_titlePage = new TutorialBookletPage("DoomScroll Tutorial Booklet", "Doom_Scroll.Assets.MainMenu_Button_Basic.png", m_titlePageText, m_tutorialBookletArea);
+            m_headlines = new TutorialBookletPage("Headlines", "Doom_Scroll.Assets.newsSelect.png", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
+            m_headlinesTwo = new TutorialBookletPage("Headlines", "Doom_Scroll.Assets.newsButtonExample.png", m_headlinesTextTwo, m_tutorialBookletArea);
+            m_signInForms = new TutorialBookletPage("Sign-In Forms", "Doom_Scroll.Assets.taskSelect.png", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
+            m_infiniteChatLogs = new TutorialBookletPage("Infinite Chat Logs", "Doom_Scroll.Assets.infiniteChatAfter.png", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatBefore.png");
+            m_swcs = new TutorialBookletPage("SWCs", "Doom_Scroll.Assets.SWCInTaskList_WithArrow.png", m_swcText, m_tutorialBookletArea, "Doom_Scroll.Assets.SWCStartScreen.png");
             //m_screenshots = new Page("Images", "Doom_Scroll.Assets.file.png", m_screenshotsText, m_tutorialBookletArea);
-            m_folderSystem = new Page("Folder System", "Doom_Scroll.Assets.folderWhereInChat_WithArrow.png", m_folderSystemText, m_tutorialBookletArea, "Doom_Scroll.Assets.folderOpen.png", new Tuple<string, float>("Doom_Scroll.Assets.folderButtonExample.png", 0.75f));
+            m_folderSystem = new TutorialBookletPage("Folder System", "Doom_Scroll.Assets.folderWhereInChat_WithArrow.png", m_folderSystemText, m_tutorialBookletArea, "Doom_Scroll.Assets.folderOpen.png", new Tuple<string, float>("Doom_Scroll.Assets.folderButtonExample.png", 0.75f));
 
-            m_pageOrder = new List<Page>();
-            m_pageOrder.Add(m_titlePage);
-            m_pageOrder.Add(m_headlines);
-            m_pageOrder.Add(m_signInForms);
-            m_pageOrder.Add(m_infiniteChatLogs);
-            m_pageOrder.Add(m_swcs);
-            m_pageOrder.Add(m_folderSystem);
+            m_pageOrder = new List<CustomUI>
+            {
+                m_titlePage,
+                m_headlines,
+                m_headlinesTwo,
+                m_signInForms,
+                m_infiniteChatLogs,
+                m_swcs,
+                m_folderSystem
+            };
+
+            tutorialBookletPager.UpdatePages(m_pageOrder);
 
             m_currentIndex = 0;
         }
@@ -176,7 +162,7 @@ namespace Doom_Scroll
             if (m_isTutorialBookletOverlayOpen)
             {
                 ActivateTutorialBookletOverlay(false);
-                m_pageOrder[m_currentIndex].HidePage();
+                tutorialBookletPager.HidePage();
                 DoomScroll._log.LogInfo("CURRENT PAGE CLOSED");
             }
             else
@@ -185,7 +171,7 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("ROOT PAGE OPEN");
                 // (re)sets root as the current and m_previous folder and displays its content
                 m_currentIndex = 0;
-                m_pageOrder[m_currentIndex].DisplayPage();
+                tutorialBookletPager.DisplayPage(1);
             }
         }
 
@@ -195,30 +181,6 @@ namespace Doom_Scroll
             m_tutorialBookletArea.ActivateCustomUI(value);
         }
 
-        private void FlipPage(int leftOrRight) //negative means left, positive means left
-        {
-            if (m_tutorialBookletToggleBtn.IsActive && m_isTutorialBookletOverlayOpen)
-            {
-                if (leftOrRight < 0)
-                {
-                    if (m_currentIndex > 0)
-                    {
-                        m_pageOrder[m_currentIndex].HidePage();
-                        m_currentIndex--;
-                        m_pageOrder[m_currentIndex].DisplayPage();
-                    }
-                }
-                else if (leftOrRight > 0)
-                {
-                    if (m_currentIndex < m_pageOrder.Count-1)
-                    {
-                        m_pageOrder[m_currentIndex].HidePage();
-                        m_currentIndex++;
-                        m_pageOrder[m_currentIndex].DisplayPage();
-                    }
-                }
-            }
-        }
         public void OnClickTutorialBookletBtn()
         {
             if (m_tutorialBookletToggleBtn.IsActive)
@@ -227,22 +189,12 @@ namespace Doom_Scroll
             }
         }
 
-        public void OnClickRightButton()
-        {
-            FlipPage(1);
-        }
-
-        public void OnClickLeftButton()
-        {
-            FlipPage(-1);
-        }
-
         public void CloseTutorialBookletOverlay()
         {
             if (m_isTutorialBookletOverlayOpen)
             {
                 ActivateTutorialBookletOverlay(false);
-                m_pageOrder[m_currentIndex].HidePage();
+                tutorialBookletPager.HidePage();
                 DoomScroll._log.LogInfo("TUTORIAL BOOKLET OVERLAY CLOSED");
             }
         }
