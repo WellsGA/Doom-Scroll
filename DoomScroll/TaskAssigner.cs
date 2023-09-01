@@ -232,7 +232,7 @@ namespace Doom_Scroll
                     CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
                     label.SetLocalPosition(new Vector3(0, -btn.GetSize().x/2 - 0.05f, -10));
                     label.SetSize(1.2f);
-                    SpriteRenderer sr = btn.AddIconToButton(playerSprite, 0.7f);
+                    SpriteRenderer sr = btn.AddButtonIcon(playerSprite, 0.7f);
                     sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
                     PlayerButtons.Add(playerInfo.PlayerId, btn);
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName);

@@ -99,5 +99,6 @@
 	  <EmbeddedResource Include="Assets\folderButtonExample.png"/>
     <EmbeddedResource Include="Assets\endorse.png"/>
     <EmbeddedResource Include="Assets\unEndorse.png"/>
+    <EmbeddedResource Include="Assets\radioButton.png"/>
   </ItemGroup>
 </Project>

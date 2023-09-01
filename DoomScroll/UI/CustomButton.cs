@@ -24,6 +24,9 @@ namespace Doom_Scroll.UI
         public bool IsActive { get; private set; }
         public CustomText Label { get; private set; }
 
+        private GameObject btnIcon;
+        private SpriteRenderer iconSpriterenderer;
+
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
             BasicButton(images);
@@ -46,6 +49,11 @@ namespace Doom_Scroll.UI
             Label = new CustomText(UIGameObject, "label", ""); //empty button label
             Label.SetScale(Vector3.one);
             Label.SetSize(1f);
+            btnIcon = new GameObject("Icon");
+            btnIcon.layer = LayerMask.NameToLayer("UI");
+            btnIcon.transform.SetParent(UIGameObject.transform.parent.transform);
+            iconSpriterenderer = btnIcon.AddComponent<SpriteRenderer>();
+            iconSpriterenderer.drawMode = SpriteDrawMode.Sliced;
             ActivateCustomUI(true);
             EnableButton(true);
         }
@@ -63,18 +71,17 @@ namespace Doom_Scroll.UI
             m_spriteRenderer.color = color;
         }
 
-        public SpriteRenderer AddIconToButton(Sprite icon, float rim)
+        public SpriteRenderer AddButtonIcon(Sprite icon, float rim)
         {
-            GameObject iconGo = new GameObject("Icon");
-            iconGo.layer = LayerMask.NameToLayer("UI");
-            iconGo.transform.SetParent(UIGameObject.transform.parent.transform);
-            SpriteRenderer sr = iconGo.AddComponent<SpriteRenderer>();
-            sr.drawMode = SpriteDrawMode.Sliced;
-            sr.sprite = icon;
-            sr.size = m_spriteRenderer.size * rim;
-            iconGo.transform.position = UIGameObject.transform.position;
-            iconGo.transform.localPosition = UIGameObject.transform.localPosition + new Vector3(0,0,-10);
-            return sr;
+            iconSpriterenderer.sprite = icon;
+            iconSpriterenderer.size = m_spriteRenderer.size * rim;
+            btnIcon.transform.position = UIGameObject.transform.position;
+            btnIcon.transform.localPosition = UIGameObject.transform.localPosition + new Vector3(0, 0, -10);
+            return iconSpriterenderer;
+        }
+        public void RemoveButtonIcon()
+        {
+            iconSpriterenderer.sprite = null;
         }
         public override void ActivateCustomUI(bool value)
         {

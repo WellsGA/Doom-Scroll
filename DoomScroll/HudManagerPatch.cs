@@ -12,12 +12,6 @@ namespace Doom_Scroll
         [HarmonyPatch("Start")]
         public static void PostfixStart(HudManager __instance)
         {
-            // adding Canvas to the Hud
-            /*__instance.gameObject.AddComponent<Canvas>();
-            CanvasScaler cs = __instance.gameObject.AddComponent<CanvasScaler>();
-            cs.m_UiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            __instance.gameObject.AddComponent<GraphicRaycaster>();*/
-
             ScreenshotManager.Instance.Reset();
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
@@ -79,11 +73,11 @@ namespace Doom_Scroll
                 // create a random news
                 if (Random.Range(0, 2) == 0)
                 {
-                    NewsFeedManager.Instance.RPCSandNews(NewsFeedManager.Instance.CreateTrueNews());
+                    NewsFeedManager.Instance.RPCSandNews(NewsFeedManager.Instance.CreateRandomTrueNews());
                 }
                 else
                 {
-                    NewsFeedManager.Instance.RPCSandNews(NewsFeedManager.Instance.CreateFakeNews());
+                    NewsFeedManager.Instance.RPCSandNews(NewsFeedManager.Instance.CreateRandomFakeNews());
                 }
                 // selects new players to post news
                 NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
