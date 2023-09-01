@@ -197,7 +197,7 @@ namespace Doom_Scroll
                 Vector3 nextPos = new Vector3(-m_newsModal.GetSize().x /2 + 0.5f, 0, -10);
                 foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
                 {
-                    if (!playerInfo.IsDead)
+                    if (!playerInfo.IsDead && !playerInfo.Disconnected)
                     {
                         DoomScroll._log.LogInfo("Player name: " + playerInfo.PlayerName);
                         CustomButton btn = new CustomButton(m_newsModal.UIGameObject, playerInfo.PlayerName, butttonSprite, nextPos, 0.45f);
