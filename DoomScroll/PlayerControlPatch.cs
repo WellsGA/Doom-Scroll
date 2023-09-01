@@ -75,18 +75,16 @@ namespace Doom_Scroll
                 case (byte)CustomRPC.SENDENDORSEMENT:
                     {
                         NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
-                        bool endorse = reader.ReadBoolean();
-                        bool up = reader.ReadBoolean();
                         if (news != null)
                         {
-                            if (endorse)
+                            if (reader.ReadBoolean())
                             {
-                                news.TotalEndorsement = up ? news.TotalEndorsement++ : news.TotalEndorsement--;
+                                news.TotalEndorsement = reader.ReadBoolean() ? news.TotalEndorsement++ : news.TotalEndorsement--;
                                 news.Endorselable.SetText(news.TotalEndorsement.ToString());
                             }
                             else
                             {
-                                news.TotalDenouncement = up ? news.TotalDenouncement++ : news.TotalDenouncement--; ;
+                                news.TotalDenouncement = reader.ReadBoolean() ? news.TotalDenouncement++ : news.TotalDenouncement--; ;
                                 news.DenounceLable.SetText(news.TotalDenouncement.ToString());
                             }
                         }

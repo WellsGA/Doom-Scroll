@@ -184,6 +184,9 @@ namespace Doom_Scroll
             isTargetelected = false;
             isprotectSelected = false;
             isFrameSelected = false;
+            frameButton.RemoveButtonIcon();
+            protectButton.RemoveButtonIcon();
+
             if (canPostNews)
             {
                 // player buttons
