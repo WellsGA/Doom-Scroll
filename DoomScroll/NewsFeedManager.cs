@@ -99,16 +99,21 @@ namespace Doom_Scroll
             if (IsInputpanelOpen)
             {
                 m_newsModal.ActivateCustomUI(false);
-                // to do: protect and frame button activation
-
-                foreach(KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(false); }
+                targetPlayer = 255;
+                isTargetelected = false;
+                isprotectSelected = false;
+                isFrameSelected = false;
+                protectButton.EnableButton(false);
+                frameButton.EnableButton(false);
+                foreach (KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(false); }
                 IsInputpanelOpen = false;
             }
             else
             {
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
                 m_newsModal.ActivateCustomUI(true);
-                // to do: protect and frame button activation
+                protectButton.EnableButton(true);
+                frameButton.EnableButton(true);
                 foreach (KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(true); }
                 IsInputpanelOpen = true;
             }
@@ -166,7 +171,8 @@ namespace Doom_Scroll
         public void OnSelectNewsItem()
         {
             bool protect = isprotectSelected ? true : false;
-            NewsItem news = CreateRandomNews(protect, targetPlayer);
+            string name = PlayerControl.AllPlayerControls[targetPlayer] != null ? PlayerControl.AllPlayerControls[targetPlayer].name : "Disconnected Player";
+            NewsItem news = CreateRandomNews(protect, name);
             RPCSandNews(news);
             CanPostNews(false);
             ToggleNewsForm();
@@ -180,10 +186,6 @@ namespace Doom_Scroll
         {
             canPostNews = value;
             m_toggleModalBtn.EnableButton(canPostNews);
-            targetPlayer = 255;
-            isTargetelected = false;
-            isprotectSelected = false;
-            isFrameSelected = false;
             frameButton.RemoveButtonIcon();
             protectButton.RemoveButtonIcon();
 
@@ -333,7 +335,7 @@ namespace Doom_Scroll
         }
 
         // Create post by player
-        private NewsItem CreateRandomNews(bool protect, byte playerId)
+        private NewsItem CreateRandomNews(bool protect, string name)
         {
             string headline = "";
             string source = "";
@@ -341,14 +343,14 @@ namespace Doom_Scroll
             {
                 int rand = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect1p.Length);
                 headline = NewsStrings.headlinesProtect1p[rand];
-                headline = headline.Replace("{0}", PlayerControl.AllPlayerControls[playerId].name);
+                headline = headline.Replace("{0}", name);
 
             }
             else
             {
                 int rand = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame1p.Length);
                 headline = NewsStrings.headlinesFrame1p[rand];
-                headline = headline.Replace("{0}", PlayerControl.AllPlayerControls[playerId].name);
+                headline = headline.Replace("{0}", name);
             }
             // TO DO: ADD SOURCE!!!
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;

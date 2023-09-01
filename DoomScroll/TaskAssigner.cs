@@ -226,7 +226,7 @@ namespace Doom_Scroll
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
-                if (!playerInfo.IsDead)
+                if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
                     CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, butttonSprite, topLeftPos, 0.45f);
                     CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
