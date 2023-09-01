@@ -197,6 +197,7 @@ namespace Doom_Scroll
                 hudManagerInstance = HudManager.Instance;
                 InitializeManager();
             }
+            PlayerControlPatch.ResetImageDictionary();
             DoomScroll._log.LogInfo("SCREENSHOT MANAGER RESET");
         }
     }

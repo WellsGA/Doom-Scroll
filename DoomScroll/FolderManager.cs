@@ -28,6 +28,10 @@ namespace Doom_Scroll
         private FileText m_posts;
         private Folder m_screenshots;
 
+        // image sending
+        private GameObject m_imageSenderParent;
+        private ImageSender m_imageSender;
+
         private HudManager hudManagerInstance;
 
         private static FolderManager _instance;
@@ -140,6 +144,7 @@ namespace Doom_Scroll
             if (hudManagerInstance == null) return;
             CreateFolderOverlayUI();
             InitFolderStructure();
+            CreateImageSender();
             m_folderToggleBtn.ButtonEvent.MyAction += OnClickFolderBtn;
             m_homeBtn.ButtonEvent.MyAction += OnClickHomeButton;
             m_backBtn.ButtonEvent.MyAction += OnClickBackButton;
@@ -168,6 +173,17 @@ namespace Doom_Scroll
 
             m_current = m_root;
             m_previous = m_root;
+        }
+        private void CreateImageSender()
+        {
+            if (m_imageSenderParent != null)
+            {
+                UnityEngine.Object.Destroy(m_imageSenderParent);
+            }
+            //Il2CppSystem.Type[] componenetList = { ImageSender };
+            m_imageSenderParent = new GameObject("imageSenderParent"); //tried to set parameter components to: Il2CppSystem.Type[typeof(ImageSender)]
+            //m_imageSender = m_imageSenderParent.GetComponent<ImageSender>(); // Using folderArea game object as the holder for this component.
+            DoomScroll._log.LogInfo("m_imageSender created: " + m_imageSender);
         }
 
         private void ToggleFolderOverlay()
@@ -243,7 +259,16 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(string name, byte[] img)
         {
-            m_screenshots.AddItem(new FileScreenshot(m_screenshots.Path, name, m_folderArea.UIGameObject, img));
+            FileScreenshot file = new FileScreenshot(m_screenshots.Path, name, m_folderArea.UIGameObject, img);
+            m_screenshots.AddItem(file);
+            if (m_imageSender != null)
+            {
+                m_imageSender.SendCurrentImageMethod(file, img);
+            }
+            else
+            {
+                DoomScroll._log.LogInfo("Could not send image in background. ImageSender was null.");
+            }
         }
 
         public CustomModal GetFolderArea()
