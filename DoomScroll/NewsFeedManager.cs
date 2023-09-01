@@ -2,8 +2,8 @@
 using Doom_Scroll.UI;
 using Hazel;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Doom_Scroll
@@ -22,17 +22,21 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
-        public int NumberOfNewsOptions { get; private set; } = 5;
-
+     
         private HudManager hudManagerInstance;
-        private CustomModal m_inputPanel;
-        private CustomButton m_togglePanelButton;
+        private CustomModal m_newsModal;
+        private CustomButton m_toggleModalBtn;
+        private Dictionary<byte, CustomButton> playerButtons;
+        private CustomButton protectButton;
+        private CustomButton frameButton;
+        Sprite[] BtnSprites;
+        private bool isprotectSelected;
+        private bool isFrameSelected;
+        private bool isTargetelected;
+        private byte targetPlayer;
+
         public bool IsInputpanelOpen { get; private set; }
         private bool canPostNews;
-        // list of news created randomly if the player can create news
-        private Dictionary<int, NewsItem> newsOptions;
-        private List<CustomButton> newsButtons;
-        // list of news created randomly and by the selected players -  will be displayed during meetings
         private List<NewsItem> allNewsList;
         private Pageable newsPageHolder;
         private int numPages = 1;
@@ -46,22 +50,40 @@ namespace Doom_Scroll
 
         private void InitializeInputPanel()
         {
-            NewsPostedByLocalPLayer = 0;
-            m_togglePanelButton = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
-            m_inputPanel = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
-            newsButtons = new List<CustomButton>();
-            Vector2 parentSize = m_inputPanel.GetSize();
-            float inputHeight = 0.5f;
-            for (int i = 0; i < NumberOfNewsOptions; i++)
-            {    
-                CustomButton btn = NewsFeedOverlay.CreateNewsItemButton(m_inputPanel);
-                btn.SetLocalPosition(new Vector3(0, parentSize.y / 2 - inputHeight, -10));
-                // btn.Label.SetText("LABEL");
-                inputHeight += btn.GetSize().y + 0.02f;
-                newsButtons.Add(btn);
-            }
-            m_togglePanelButton.ButtonEvent.MyAction += OnClickNews;
+            // news modal toggle button
+            m_toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
+            m_toggleModalBtn.ButtonEvent.MyAction += OnClickNews;
             ActivateNewsButton(false);
+            
+            // news modal
+            m_newsModal = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
+            Vector2 parentSize = m_newsModal.GetSize();
+            CustomText title = new CustomText(m_newsModal.UIGameObject, "News Modal Title", "Create a Headline");
+            title.SetLocalPosition(new Vector3(0, parentSize.y/2 - 0.3f, -10));
+            title.SetSize(1.5f);
+            CustomText subtitle = new CustomText(m_newsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
+            subtitle.SetLocalPosition(new Vector3(0, parentSize.y / 2 - 0.5f, -10));
+            subtitle.SetSize(1.2f);            
+            
+            // frame or protect buttons
+            Vector4[] slices = { new Vector4(0, 0.66f, 1, 1), new Vector4(0, 0.33f, 1, 0.66f), new Vector4(0, 0, 1, 0.33f) };
+            BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", slices);
+            protectButton = new CustomButton(m_newsModal.UIGameObject, "Protect Radio", BtnSprites);
+            protectButton.SetSize(0.25f);
+            protectButton.SetLocalPosition(new Vector3(-1.2f, 0.5f, -10));
+            CustomText protectLable = new CustomText(protectButton.UIGameObject, "Protect Lable", "Protect");
+            protectLable.SetSize(1.5f);
+            protectLable.SetLocalPosition(new Vector3(protectButton.GetSize().x + 0.2f, 0, -10));
+            protectButton.ButtonEvent.MyAction += OnclickProtect;
+
+            frameButton = new CustomButton(m_newsModal.UIGameObject, "Frame Radio", BtnSprites);
+            frameButton.SetSize(0.25f);
+            frameButton.SetLocalPosition(new Vector3(0.5f, 0.5f, -10));
+            CustomText frameLable = new CustomText(frameButton.UIGameObject, "Frame Lable", "Frame");
+            frameLable.SetSize(1.5f);
+            frameLable.SetLocalPosition(new Vector3(frameButton.GetSize().x + 0.2f, 0, -10));
+            frameButton.ButtonEvent.MyAction += OnclickFrame; 
+            
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             newsPageHolder = new Pageable(parent.UIGameObject, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable 
         }
@@ -73,84 +95,162 @@ namespace Doom_Scroll
 
         public void ToggleNewsForm()
         {
-            if (!m_inputPanel.UIGameObject) { return; }
+            if (!m_newsModal.UIGameObject) { return; }
             if (IsInputpanelOpen)
             {
-                m_inputPanel.ActivateCustomUI(false);
-                foreach(CustomButton btn in newsButtons) { btn.EnableButton(false); }
+                m_newsModal.ActivateCustomUI(false);
+                // to do: protect and frame button activation
+
+                foreach(KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(false); }
                 IsInputpanelOpen = false;
             }
             else
             {
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
-                m_inputPanel.ActivateCustomUI(true);
-                foreach (CustomButton btn in newsButtons) { btn.EnableButton(true); }
+                m_newsModal.ActivateCustomUI(true);
+                // to do: protect and frame button activation
+                foreach (KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(true); }
                 IsInputpanelOpen = true;
             }
         }
 
-        public void OnSelectNewsItem(int news)
+        private void OnclickProtect()
         {
-            DoomScroll._log.LogInfo("NEWS FORM SUBMITTED" + newsOptions[news].Title);
-            newsOptions[news].SetAuthor(PlayerControl.LocalPlayer.PlayerId);
-            RPCSandNews(newsOptions[news]);
+            if(isprotectSelected)
+            {
+                protectButton.RemoveButtonIcon();
+            }
+            else
+            {
+                if(isFrameSelected) OnclickFrame();
+                protectButton.AddButtonIcon(BtnSprites[2], 0.6f);
+            }
+            isprotectSelected = !isprotectSelected;
+            DoomScroll._log.LogInfo("protect: " + isprotectSelected + ", frame: " + isFrameSelected);
+        }
+
+        private void OnclickFrame()
+        {
+            if (isFrameSelected)
+            {
+                frameButton.RemoveButtonIcon();
+            }
+            else
+            {
+                if (isprotectSelected) OnclickProtect();
+                frameButton.AddButtonIcon(BtnSprites[2], 0.6f);
+            }
+            isFrameSelected = !isFrameSelected;
+            DoomScroll._log.LogInfo("protect: " + isprotectSelected + ", frame: " + isFrameSelected);
+
+        }
+        
+        private void OnSelectTargetPlayer(byte id)
+        {
+            if (isTargetelected)
+            {
+                playerButtons[targetPlayer].SetColor(Color.white);
+                if (targetPlayer == id)
+                {
+                    isTargetelected = false; // deselect player
+                    targetPlayer = 255;
+                    return;
+                }
+            }
+            playerButtons[id].SetColor(Color.green);
+            targetPlayer = id;
+            isTargetelected = true;
+            DoomScroll._log.LogInfo("target id: " + targetPlayer);
+        }
+
+        public void OnSelectNewsItem()
+        {
+            bool protect = isprotectSelected ? true : false;
+            NewsItem news = CreateRandomNews(protect, targetPlayer);
+            RPCSandNews(news);
             CanPostNews(false);
             ToggleNewsForm();
         }
         public void ActivateNewsButton(bool value)
         {
-            m_togglePanelButton.ActivateCustomUI(value); ;
+            m_toggleModalBtn.ActivateCustomUI(value); ;
         }
 
         public void CanPostNews(bool value)
         {
             canPostNews = value;
-            m_togglePanelButton.EnableButton(canPostNews);
+            m_toggleModalBtn.EnableButton(canPostNews);
+            targetPlayer = 255;
+            isTargetelected = false;
+            isprotectSelected = false;
+            isFrameSelected = false;
             if (canPostNews)
             {
-                newsOptions = new Dictionary<int, NewsItem>();
-                NewsItem news;
-                int rand = UnityEngine.Random.Range(0, newsButtons.Count);
-                for (int i = 0; i < newsButtons.Count; i++)
+                // player buttons
+                playerButtons = new Dictionary<byte, CustomButton>();
+                Vector4[] slices2 = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+                Sprite[] butttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png", slices2);
+                Sprite playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
+                Vector3 nextPos = new Vector3(-m_newsModal.GetSize().x /2 + 0.5f, 0, -10);
+                foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
                 {
-                    if (i == rand)
+                    if (!playerInfo.IsDead)
                     {
-                        news = CreateTrueNews();
+                        DoomScroll._log.LogInfo("Player name: " + playerInfo.PlayerName);
+                        CustomButton btn = new CustomButton(m_newsModal.UIGameObject, playerInfo.PlayerName, butttonSprite, nextPos, 0.45f);
+                        CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
+                        label.SetLocalPosition(new Vector3(0, -btn.GetSize().x / 2 - 0.05f, -10));
+                        label.SetSize(1.2f);
+                        SpriteRenderer sr = btn.AddButtonIcon(playerSprite, 0.7f);
+                        sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
+                        playerButtons.Add(playerInfo.PlayerId, btn);
+                        nextPos.x += 0.6f;
                     }
-                    else
-                    {
-                        news = CreateFakeNews();
-                    }
-                    newsButtons[i].Label.SetText(news.Title + ", by: " + news.Source + ", " + news.IsTrue);
-                    newsOptions.Add(i, news);
                 }
             }
         }
 
         public void CheckButtonClicks()
         {
-            if (hudManagerInstance == null || !m_togglePanelButton.IsActive || !canPostNews) return;
+            if (hudManagerInstance == null || !m_toggleModalBtn.IsActive || !canPostNews) return;
             
             // Replace sprite on mouse hover for both buttons
-            m_togglePanelButton.ReplaceImgageOnHover();
+            m_toggleModalBtn.ReplaceImgageOnHover();
+
             try
             {
                 // Invoke methods on mouse click - open news form overlay
-                if (m_togglePanelButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (m_toggleModalBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    m_togglePanelButton.ButtonEvent.InvokeAction();
+                    m_toggleModalBtn.ButtonEvent.InvokeAction();
                 }
                 // Invoke methods on mouse click - submit news
-                if(m_togglePanelButton.IsEnabled && IsInputpanelOpen)
+                if(m_toggleModalBtn.IsEnabled && IsInputpanelOpen)
                 {
-                    foreach (CustomButton btn in newsButtons)
+                    protectButton.ReplaceImgageOnHover();
+                    frameButton.ReplaceImgageOnHover();
+
+                    if (protectButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
-                        btn.ReplaceImgageOnHover();
-                        if (btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        protectButton.ButtonEvent.InvokeAction();
+                    }
+                    if (frameButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        frameButton.ButtonEvent.InvokeAction();
+                    }
+                   
+                    foreach (KeyValuePair<byte, CustomButton> item in playerButtons)
+                    {
+                        item.Value.ReplaceImgageOnHover();
+                        if (item.Value.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                         {
-                            int index = newsButtons.IndexOf(btn);
-                            OnSelectNewsItem(index);
+                            OnSelectTargetPlayer(item.Key);
                         }
+                    }
+
+                    if( isTargetelected && (isFrameSelected || isprotectSelected))
+                    {
+                        OnSelectNewsItem();
                     }
                 }
             }
@@ -173,7 +273,7 @@ namespace Doom_Scroll
                         news.PostButton.ReplaceImgageOnHover();
                         news.EndorseButton.ReplaceImgageOnHover();
                         news.DenounceButton.ReplaceImgageOnHover();
-                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKey(KeyCode.Mouse0))
                         {
                             news.PostButton.ButtonEvent.InvokeAction(); 
                         }
@@ -213,7 +313,6 @@ namespace Doom_Scroll
                 allPlayer.RemoveAt(playerIndex);
             }
             RPCPLayerCanCreateNews(PlayerControl.LocalPlayer); //debug: host can always post
-            DoomScroll._log.LogInfo("============== SELECT PLAYER TP POST CALLED =============");
         }
 
         public void RPCPLayerCanCreateNews(PlayerControl player)
@@ -230,8 +329,31 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
+        // Create post by player
+        private NewsItem CreateRandomNews(bool protect, byte playerId)
+        {
+            string headline = "";
+            string source = "";
+            if (protect)
+            {
+                int rand = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect1p.Length);
+                headline = NewsStrings.headlinesProtect1p[rand];
+                headline = headline.Replace("{0}", PlayerControl.AllPlayerControls[playerId].name);
+
+            }
+            else
+            {
+                int rand = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame1p.Length);
+                headline = NewsStrings.headlinesFrame1p[rand];
+                headline = headline.Replace("{0}", PlayerControl.AllPlayerControls[playerId].name);
+            }
+            // TO DO: ADD SOURCE!!!
+            int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;
+            return new NewsItem(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);   
+        }
+
         // Automatic News Creation - Only if player is host!
-        public NewsItem CreateFakeNews() 
+        public NewsItem CreateRandomFakeNews() 
         {
             int rand = UnityEngine.Random.Range(0, NewsStrings.fakeSources.Length);
             string source = NewsStrings.fakeSources[rand];
@@ -240,7 +362,7 @@ namespace Doom_Scroll
             return new NewsItem(id, 255, headline, false, source);
         }
 
-        public NewsItem CreateTrueNews() 
+        public NewsItem CreateRandomTrueNews() 
         {
             int type = UnityEngine.Random.Range(0, 2); // random type of news
             int rand = UnityEngine.Random.Range(0, NewsStrings.trustedSources.Length);
@@ -269,15 +391,15 @@ namespace Doom_Scroll
                         {
                             if(swc.GetGoal() == Goal.Protect)
                             {
-                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect.Length);
-                                headline = NewsStrings.headlinesProtect[rnd];
+                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect2p.Length);
+                                headline = NewsStrings.headlinesProtect2p[rnd];
                                 headline = headline.Replace("{0}", swc.GetPlayerName());
                                 headline = headline.Replace("{1}", swc.GetTargetName());
                             }
                             else if(swc.GetGoal() == Goal.Frame)
                             {
-                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame.Length);
-                                headline = NewsStrings.headlinesFrame[rnd];
+                                int rnd = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame2p.Length);
+                                headline = NewsStrings.headlinesFrame2p[rnd];
                                 headline = headline.Replace("{0}", swc.GetPlayerName());
                                 headline = headline.Replace("{1}", swc.GetTargetName());
                             }
@@ -336,27 +458,32 @@ namespace Doom_Scroll
         {
             string headline = "";
             int rand;
-            int type = UnityEngine.Random.Range(0,4);
+            int type = UnityEngine.Random.Range(0,5);
             switch (type)
             {
                 case 0:
-                    rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p.Length);
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect1p.Length);
                     string player = GetRandomPlayerName();
-                    headline = NewsStrings.headlines1p[rand].Replace("{0}", player);
+                    headline = NewsStrings.headlinesProtect1p[rand].Replace("{0}", player);
                     break;
                 case 1:
-                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect.Length);
-                    headline = NewsStrings.headlinesProtect[rand];
-                    headline = headline.Replace("{0}", GetRandomPlayerName());
-                    headline = headline.Replace("{1}", GetRandomPlayerName());
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame1p.Length);
+                    string player2 = GetRandomPlayerName();
+                    headline = NewsStrings.headlinesFrame1p[rand].Replace("{0}", player2);
                     break;
-                case 2:
-                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame.Length);
-                    headline = NewsStrings.headlinesFrame[rand];
+                case 22:
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesProtect2p.Length);
+                    headline = NewsStrings.headlinesProtect2p[rand];
                     headline = headline.Replace("{0}", GetRandomPlayerName());
                     headline = headline.Replace("{1}", GetRandomPlayerName());
                     break;
                 case 3:
+                    rand = UnityEngine.Random.Range(0, NewsStrings.headlinesFrame2p.Length);
+                    headline = NewsStrings.headlinesFrame2p[rand];
+                    headline = headline.Replace("{0}", GetRandomPlayerName());
+                    headline = headline.Replace("{1}", GetRandomPlayerName());
+                    break;
+                case 4:
                     // rand = UnityEngine.Random.Range(0, NewsStrings.headlines1p1n.Length);
                     int num = UnityEngine.Random.Range(0,6);
                     headline = NewsStrings.headlines1p1n[0].Replace("{0}", GetRandomPlayerName()); // currently one item
@@ -454,7 +581,11 @@ namespace Doom_Scroll
             IsInputpanelOpen = false;
             canPostNews = false;
             allNewsList = new List<NewsItem>();
-            newsOptions = new Dictionary<int, NewsItem>();
+            NewsPostedByLocalPLayer = 0;
+            targetPlayer = 255;
+            isTargetelected = false;
+            isprotectSelected = false;
+            isFrameSelected = false;
             hudManagerInstance = HudManager.Instance;
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");

@@ -33,6 +33,7 @@ namespace Doom_Scroll.UI
             return inputForm;
         }
 
+
         public static CustomButton CreateNewsItemButton(CustomModal parent)
         {
             Vector2 parentSize = parent.GetSize();

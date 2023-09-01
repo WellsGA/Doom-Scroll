@@ -3,28 +3,30 @@ namespace Doom_Scroll.Common
 {
     internal static class NewsStrings
     {
-
-        public static string[] headlines1p = new string[]
+        public static string[] headlinesProtect1p = new string[]
         {
+            "{0} saves Puppy from Burning Building!",
+            "HERO: {0} Saves Ship from Sabotage",
+        };
+
+        public static string[] headlinesFrame1p = new string[]
+       {
             "{0} Caught Loitering Near Vents.",
             "{0} Seen Stealing Food from Puppies!",
             "Is {0} Really Who They Say They Are?",
-            "{0} saves Puppy from Burning Building!",
             "{0} Isn't Doing Their Fair Share!",
             "{0} Caught Stealing Lunches from Fridge",
             "\'{0} CANNOT Be Trusted\', Local Ghost Warns",
-            "HERO: {0} Saves Ship from Sabotage",
             "{0} Parties 'Til 4am, Keeps Shipmates Awake",
-            "{0} Caught Loitering Near Vents"
-        };
+       };
 
-        public static string[] headlinesProtect = new string[]
+        public static string[] headlinesProtect2p = new string[]
         {
             "{0} and {1} Spotted Holding Hands During Meeting?!",
             "{0} and {1} Caught Sharing Headphones at Lunch"
         };
 
-        public static string[] headlinesFrame = new string[]
+        public static string[] headlinesFrame2p = new string[]
         {
             "{0} seen arguing with {1}",
             "{0} Blames {1} for Slow Task Completion",
