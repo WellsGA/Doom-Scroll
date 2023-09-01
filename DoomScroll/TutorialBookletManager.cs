@@ -106,6 +106,20 @@ namespace Doom_Scroll
                     DoomScroll._log.LogError("Error invoking overlay button method: " + e);
                 }
             }
+            if (m_isTutorialBookletOverlayOpen && m_closeBtn != null)
+            {
+                try
+                {
+                    if (m_closeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        m_closeBtn.ButtonEvent.InvokeAction();
+                    }
+                }
+                catch (Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+                }
+            }
         }
 
         private void InitializeTutorialBookletManager()
@@ -114,6 +128,7 @@ namespace Doom_Scroll
             CreateTutorialBookletOverlayUI();
             InitTutorialBookletStructure();
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += OnClickTutorialBookletBtn;
+            m_closeBtn.ButtonEvent.MyAction += CloseTutorialBookletOverlay;
             m_tutorialBookletToggleBtn.EnableButton(true);
             m_tutorialBookletToggleBtn.ActivateCustomUI(true);
         }

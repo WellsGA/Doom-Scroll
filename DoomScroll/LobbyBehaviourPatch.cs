@@ -16,7 +16,7 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(LobbyBehaviour))]
     class LobbyBehaviourPatch
     {
-        public static GameObject bottomCodeText;
+        public static GameObject playerCountText;
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
         public static TutorialBookletManager tutorialBookletManagerInstance;
@@ -30,11 +30,11 @@ namespace Doom_Scroll
         {
             gameBegun = false;
             //bottomCodeText = GameObject.Find("GameRoomButton");
-            bottomCodeText = GameObject.Find("PlayerCounter_TMP");
+            playerCountText = GameObject.Find("PlayerCounter_TMP");
             lobbyBehaviourInstance = __instance;
             //Create tooltip
             DoomScroll._log.LogInfo("Lobby starting! Trying to add tooltip.");
-            GameObject uiParent = bottomCodeText;
+            GameObject uiParent = playerCountText;
             lobbyToolTipText = new CustomText(uiParent, "LobbyTooltip", "<b>Recommended Rules</b>:\r\n-No Voice Chat! To simulate a social media discussion,\n only use the text chat during meetings.\r\n-Add 30 seconds to Meetings. Use the extra time to \nexamine the evidence in the folder.");
             lobbyToolTipText.SetColor(Color.yellow);
             lobbyToolTipText.SetSize(3f);
@@ -68,7 +68,7 @@ namespace Doom_Scroll
         [HarmonyPatch("Update")]
         public static void PostfixUpdate()
         {
-            if (!gameBegun && bottomCodeText != null && bottomCodeText.activeSelf)
+            if (!gameBegun && playerCountText != null && playerCountText.activeSelf)
             {
                 tutorialBookletManagerInstance.CheckForButtonClicks();
             }
