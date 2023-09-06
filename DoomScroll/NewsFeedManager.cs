@@ -73,15 +73,16 @@ namespace Doom_Scroll
             newsModal = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
 
             // frame and protect buttons
-            protectButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(-1.2f, 0.5f, -10), true);
+            protectButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(-1.2f, 0.3f, -10), true);
             protectButton.ButtonEvent.MyAction += OnclickProtect;
-            frameButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(0.5f, 0.5f, -10), false);
+            frameButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(0.5f, 0.3f, -10), false);
             frameButton.ButtonEvent.MyAction += OnclickFrame;
 
             // player buttons
             playerButtonParent = new GameObject("Player buttons");
             playerButtonParent.layer = LayerMask.NameToLayer("UI");
             playerButtonParent.transform.SetParent(newsModal.UIGameObject.transform);
+            playerButtonParent.transform.localPosition = new Vector3(0, 0, -10);
 
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
@@ -129,7 +130,7 @@ namespace Doom_Scroll
 
         private void CreatePlayerButtons()
         {
-            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, 0, -10);
+            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, -0.5f, -10);
 
             playerButtons.Clear();
             while (playerButtonParent.transform.childCount > 0)

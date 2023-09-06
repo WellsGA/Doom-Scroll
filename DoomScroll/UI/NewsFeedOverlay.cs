@@ -25,9 +25,9 @@ namespace Doom_Scroll.UI
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
             CustomModal newsModal = new CustomModal(hud.gameObject, "News Form Overlay", spr);
-            Vector2 size = new Vector2(bounds.x * 0.8f, bounds.x * 0.8f);
+            Vector2 size = new Vector2(bounds.x, bounds.y);
             newsModal.SetSize(size);
-            newsModal.SetLocalPosition(new Vector3(bounds.x /2, size.y/2, -10));
+            newsModal.SetLocalPosition(new Vector3(0, 0, -10));
 
             CustomText title = new CustomText(newsModal.UIGameObject, "News Modal Title", "Create a Headline");
             title.SetLocalPosition(new Vector3(0, size.y / 2 - 0.3f, -10));
