@@ -49,7 +49,9 @@ namespace Doom_Scroll
 
         private NewsFeedManager()
         {
-           // init
+            // init
+            playerButtons = new Dictionary<byte, CustomButton>();
+            allNewsList = new List<NewsItem>();
             Reset();
             DoomScroll._log.LogInfo("NEWS FEED MANAGER CONSTRUCTOR");
         }
@@ -592,6 +594,7 @@ namespace Doom_Scroll
         }
         public void Reset()
         {
+            hudManagerInstance = HudManager.Instance;
             IsInputpanelOpen = false;
             canPostNews = false;
             NewsPostedByLocalPLayer = 0;
@@ -601,7 +604,7 @@ namespace Doom_Scroll
             isFrameSelected = false;
             playerButtons.Clear();
             allNewsList.Clear();
-            hudManagerInstance = HudManager.Instance;
+           
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");
         }
