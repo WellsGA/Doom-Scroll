@@ -49,6 +49,13 @@ namespace Doom_Scroll
 
         private NewsFeedManager()
         {
+           // init
+            Reset();
+            DoomScroll._log.LogInfo("NEWS FEED MANAGER CONSTRUCTOR");
+        }
+
+        private void InitializeInputPanel()
+        {  
             // button sprites
             Vector4[] slices = { new Vector4(0, 0.66f, 1, 1), new Vector4(0, 0.33f, 1, 0.66f), new Vector4(0, 0, 1, 0.33f) };
             radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", slices);
@@ -57,13 +64,7 @@ namespace Doom_Scroll
             playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
             playerButtons = new Dictionary<byte, CustomButton>();
             allNewsList = new List<NewsItem>();
-            // init
-            Reset();
-            DoomScroll._log.LogInfo("NEWS FEED MANAGER CONSTRUCTOR");
-        }
 
-        private void InitializeInputPanel()
-        {
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += OnClickNews;
