@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Il2CppSystem;
 using Il2CppSystem.Text;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(TaskPanelBehaviour))]
     class TaskPanelBehaviorPatch

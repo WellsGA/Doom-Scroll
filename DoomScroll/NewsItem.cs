@@ -3,6 +3,7 @@ using Doom_Scroll.UI;
 using UnityEngine;
 using System.Reflection;
 using Hazel;
+using Doom_Scroll.Patches;
 
 namespace Doom_Scroll
 {
@@ -22,7 +23,7 @@ namespace Doom_Scroll
         
         // endorsement
         public CustomButton EndorseButton { get; private set; }
-        public CustomText Endorselable { get; private set; }
+        public CustomText EndorseLable { get; private set; }
         public CustomButton DenounceButton { get; private set; }
         public CustomText DenounceLable { get; private set; }
         public int TotalEndorsement { get; set; }
@@ -81,10 +82,10 @@ namespace Doom_Scroll
             Sprite[] endorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.endorse.png", slices);
             EndorseButton = new CustomButton(Card.UIGameObject, "Emdorse News", endorseSprites, pos, endorseBtnSize);
             EndorseButton.ButtonEvent.MyAction += OnClickEndorse;
-            Endorselable = new CustomText(EndorseButton.UIGameObject, "Endorse Label", TotalEndorsement.ToString());
-            Endorselable.SetLocalPosition(new Vector3(0, -EndorseButton.GetSize().x / 2 - 0.05f, -10));
-            Endorselable.SetSize(1.2f);
-            Endorselable.SetColor(Color.green);
+            EndorseLable = new CustomText(EndorseButton.UIGameObject, "Endorse Label", TotalEndorsement.ToString());
+            EndorseLable.SetLocalPosition(new Vector3(0, -EndorseButton.GetSize().x / 2 - 0.05f, -10));
+            EndorseLable.SetSize(1.2f);
+            EndorseLable.SetColor(Color.green);
 
             Vector3 pos2 = new Vector3(Card.GetSize().x / 2 - endorseBtnSize - 0.1f, +0.05f, -20);
             Sprite[] unEndorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.unEndorse.png", slices);
@@ -166,21 +167,21 @@ namespace Doom_Scroll
             }
             TotalEndorsement = localPlayerEndorsed ? TotalEndorsement - 1 : TotalEndorsement + 1;
             localPlayerEndorsed = !localPlayerEndorsed;
-            Endorselable.SetText(TotalEndorsement.ToString());
+            EndorseLable.SetText(TotalEndorsement.ToString());
             DoomScroll._log.LogInfo("Endorsed: " + TotalEndorsement);
             RpcShareEndorsement(true, localPlayerEndorsed);
         }
 
         private void OnClickUnEndorse()
         {
-            if (localPlayerEndorsed) // if already denounced, it has to change too
+            if (localPlayerEndorsed) // if already endorsed, it has to change too
             {
                 OnClickEndorse();
             }
             TotalDenouncement = localPlayerDenounced ? TotalDenouncement - 1 : TotalDenouncement + 1;
             localPlayerDenounced = !localPlayerDenounced;
             DenounceLable.SetText(TotalDenouncement.ToString());
-            DoomScroll._log.LogInfo("Un-Endorsed: " + TotalDenouncement);
+            DoomScroll._log.LogInfo("Denounced: " + TotalDenouncement);
             RpcShareEndorsement(false, localPlayerDenounced);
         }
 
@@ -189,7 +190,7 @@ namespace Doom_Scroll
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDENDORSEMENT, (SendOption)1);
             messageWriter.Write(NewsID);        // id 
             messageWriter.Write(endorse);       // endorse or denounce
-            messageWriter.Write(up);       // plus or minus
+            messageWriter.Write(up);            // plus or minus
             messageWriter.EndMessage();
         }
 

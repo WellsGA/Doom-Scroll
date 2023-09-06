@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(ShipStatus))]
     class ShipStatusPatch

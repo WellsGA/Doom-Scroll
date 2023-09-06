@@ -11,7 +11,7 @@ using System.Reflection;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(LobbyBehaviour))]
     class LobbyBehaviourPatch
@@ -39,7 +39,7 @@ namespace Doom_Scroll
             lobbyToolTipText.SetColor(Color.yellow);
             lobbyToolTipText.SetSize(3f);
             Vector3 textPos = uiParent.transform.localPosition;
-            textPos = new Vector3(uiParent.transform.localPosition.x-5f, 7.6f, -10);
+            textPos = new Vector3(uiParent.transform.localPosition.x - 5f, 7.6f, -10);
             //Vector3 textPos = new Vector3(-3, -1.5f, -10);
             lobbyToolTipText.SetLocalPosition(textPos);
             lobbyToolTipText.ActivateCustomUI(true);
@@ -56,7 +56,7 @@ namespace Doom_Scroll
 
             //Create overlay
             //tutorialBookletOverlay = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
-            
+
             //CODE FOR FINDING ALL THE OBJECTS IN THE SCENE
             /*GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
             foreach (GameObject go in allObjects)

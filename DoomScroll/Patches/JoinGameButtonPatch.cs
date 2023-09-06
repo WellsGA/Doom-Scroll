@@ -12,7 +12,7 @@ using System.Reflection;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     //ONLY WORKS when actaul arrow is clicked. So slightly helpful, but not super necessary and kinda useless.
     [HarmonyPatch(typeof(JoinGameButton))]

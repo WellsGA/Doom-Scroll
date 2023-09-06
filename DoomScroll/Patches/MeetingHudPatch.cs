@@ -2,7 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(MeetingHud))]
     static class MeetingHudPatch

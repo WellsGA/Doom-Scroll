@@ -4,12 +4,8 @@ using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
 using System.Reflection;
-using System.Threading.Tasks;
-using static Il2CppSystem.Runtime.Remoting.RemotingServices;
-using Sentry.Internal;
-using static Il2CppMono.Security.X509.X520;
 using System;
-using Il2CppSystem.Threading.Tasks;
+using Doom_Scroll.Patches;
 
 namespace Doom_Scroll
 {

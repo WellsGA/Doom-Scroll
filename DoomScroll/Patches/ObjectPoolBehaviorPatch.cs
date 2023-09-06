@@ -5,7 +5,7 @@ using HarmonyLib;
 using UnityEngine;
 using Doom_Scroll.Common;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     //NEW Disable chat scrolling limit
 

@@ -1,4 +1,4 @@
-﻿namespace Doom_Scroll
+﻿namespace Doom_Scroll.Patches
 {
     //Disable chat scrolling limit:
     //[HarmonyPatch(typeof(Scroller), nameof(Scroller.Update))]

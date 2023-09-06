@@ -2,14 +2,14 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(Minigame))]
     public static class MiniGamePatch
     {
         [HarmonyPostfix]
         [HarmonyPatch("Begin")]
-        public static void PostfixBegin(Minigame __instance, PlayerTask task) 
+        public static void PostfixBegin(Minigame __instance, PlayerTask task)
         {
             // no prefab or not a player task or no assignable tasks
             if (__instance == null || __instance.TaskType == TaskTypes.None || TaskAssigner.Instance.AssignableTasks == null) return;

@@ -5,7 +5,7 @@ using Il2CppSystem;
 using static Il2CppMono.Security.X509.X520;
 using System.Linq;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
@@ -38,21 +38,21 @@ namespace Doom_Scroll
         [HarmonyPatch("SetTasks")]
         public static void PostfixSetTasks(PlayerControl __instance)
         {
-            
+
             if (__instance.myTasks != null && __instance.myTasks.Count > 0)
             {
                 if (AmongUsClient.Instance.AmClient)
                 {
                     TaskAssigner.Instance.CreateTaskAssignerPanel(); // players are ready, create the panel
-                }  
+                }
                 // check for impostor
                 if (__instance.AmOwner && PlayerControl.LocalPlayer.Data.Role.Role != AmongUs.GameOptions.RoleTypes.Impostor)
                 {
                     List<uint> taskIds = new List<uint>();
                     List<uint> assignableTasks = new List<uint>();
-                    foreach(PlayerTask task in __instance.myTasks)
+                    foreach (PlayerTask task in __instance.myTasks)
                     {
-                        taskIds.Add(task.Id); 
+                        taskIds.Add(task.Id);
                     }
                     for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
                     {
@@ -60,9 +60,9 @@ namespace Doom_Scroll
                         assignableTasks.Add(taskIds[taskIndex]);
                         taskIds.RemoveAt(taskIndex);
                     }
-                        TaskAssigner.Instance.SetAssignableTasks(assignableTasks);
-                        DoomScroll._log.LogInfo("original " + __instance.myTasks.Count + " copy: " + assignableTasks.Count);
-                }                    
+                    TaskAssigner.Instance.SetAssignableTasks(assignableTasks);
+                    DoomScroll._log.LogInfo("original " + __instance.myTasks.Count + " copy: " + assignableTasks.Count);
+                }
                 DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
             }
         }
@@ -115,12 +115,12 @@ namespace Doom_Scroll
                         {
                             if (reader.ReadBoolean())
                             {
-                                news.TotalEndorsement = reader.ReadBoolean() ? news.TotalEndorsement++ : news.TotalEndorsement--;
-                                news.Endorselable.SetText(news.TotalEndorsement.ToString());
+                                news.TotalEndorsement = reader.ReadBoolean() ? news.TotalEndorsement + 1 : news.TotalEndorsement - 1;
+                                news.EndorseLable.SetText(news.TotalEndorsement.ToString());
                             }
                             else
                             {
-                                news.TotalDenouncement = reader.ReadBoolean() ? news.TotalDenouncement++ : news.TotalDenouncement--; ;
+                                news.TotalDenouncement = reader.ReadBoolean() ? news.TotalDenouncement + 1 : news.TotalDenouncement - 1; ;
                                 news.DenounceLable.SetText(news.TotalDenouncement.ToString());
                             }
                         }
@@ -135,7 +135,7 @@ namespace Doom_Scroll
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
                             NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
-                            if(news != null)
+                            if (news != null)
                             {
                                 ChatControllerPatch.content = ChatContent.TEXT;
                                 string chatText = news.NewsToChatText();
@@ -146,11 +146,11 @@ namespace Doom_Scroll
                     }
                 case (byte)CustomRPC.SENDPLAYERCANPOST:
                     {
-                        if(reader.ReadByte() == PlayerControl.LocalPlayer.PlayerId)
+                        if (reader.ReadByte() == PlayerControl.LocalPlayer.PlayerId)
                         {
                             NewsFeedManager.Instance.CanPostNews(true);
                         }
-                       DoomScroll._log.LogInfo("==== CAN POST: " +reader.ReadString());    
+                        DoomScroll._log.LogInfo("==== CAN POST: " + reader.ReadString());
                         return;
                     }
                 case (byte)CustomRPC.SENDNEWS:

@@ -1,4 +1,5 @@
 ﻿using AmongUs.GameOptions;
+using Doom_Scroll.Patches;
 using Hazel;
 using System.Collections.Generic;
 
@@ -14,7 +15,7 @@ namespace Doom_Scroll
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
                 Goal playerGoal = AssignGoal();
-                byte playerTarget = AssignTarget(player);
+                byte playerTarget = AssignTarget(player.PlayerId);
                 SecondaryWinCondition swc = new SecondaryWinCondition(player.PlayerId, playerGoal, playerTarget);  
                 AddToPlayerSWCList(swc); // add locally - host's list
                 RPCSendSWC(swc); // send RPC swc to others
@@ -72,17 +73,19 @@ namespace Doom_Scroll
             }
         }
 
-        private static byte AssignTarget(GameData.PlayerInfo playerInfo)
+        private static byte AssignTarget(byte id)
         {
-            int playerindex = PlayerControl.AllPlayerControls.IndexOf(playerInfo._object); // accesses a private variable? We'll see if it works.
+            // int playerindex = PlayerControl.AllPlayerControls.IndexOf(playerInfo.Object); // accesses a private variable? We'll see if it works.  
             int numPlayers = PlayerControl.AllPlayerControls.Count;
             // select a target different from the current player being assigned
             int targetNum = UnityEngine.Random.Range(0, numPlayers);
-            while (targetNum == playerindex)
+            byte target = PlayerControl.AllPlayerControls[targetNum].PlayerId;
+            while (target == id)
             {
                 targetNum = UnityEngine.Random.Range(0, numPlayers);
+                target = PlayerControl.AllPlayerControls[targetNum].PlayerId;
             }
-            byte target = PlayerControl.AllPlayerControls[targetNum].PlayerId;
+           
             return target;
         }
 

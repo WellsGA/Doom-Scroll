@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(IntroCutscene))]
     class IntroCutscenePatch
     {
-        
+
         // displays SWC if local player is crewmate
         [HarmonyPostfix]
         [HarmonyPatch("BeginCrewmate")]

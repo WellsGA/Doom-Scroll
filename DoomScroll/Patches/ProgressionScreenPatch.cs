@@ -5,7 +5,7 @@ using Doom_Scroll.Common;
 using System.Reflection;
 using Il2CppSystem.Collections;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(ProgressionScreen))]
     class ProgressionScreenPatch

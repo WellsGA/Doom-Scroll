@@ -3,7 +3,7 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(HudManager))]
     public static class HudManagerPatch
@@ -29,16 +29,17 @@ namespace Doom_Scroll
             if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
             {
                 TaskAssigner.Instance.CheckForPlayerButtonClick();
-            } 
+            }
             else if (Minigame.Instance == null && TaskAssigner.Instance.isAssignerPanelActive)
             {
                 // close the panel if no player was selected but the game is closed
                 TaskAssigner.Instance.ActivatePanel(false);
             }
+
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(HudManager.SetHudActive),new[] { typeof(bool) })]
+        [HarmonyPatch(nameof(HudManager.SetHudActive), new[] { typeof(bool) })]
         public static void PostfixSetHudActive(bool isActive)
         {
             if (!ScreenshotManager.Instance.IsCameraOpen)
@@ -59,7 +60,7 @@ namespace Doom_Scroll
             if (ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ToggleCamera();
-                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED" );
+                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED");
             }
             if (NewsFeedManager.Instance.IsInputpanelOpen)
             {
@@ -85,7 +86,7 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString()); // debug
 
         }
-        
+
         [HarmonyPostfix]
         [HarmonyPatch("ShowEmblem")]
         public static void PostfixShowEmblem(HudManager __instance, bool shhh)
@@ -110,6 +111,6 @@ namespace Doom_Scroll
             }
             */
         }
-        
+
     }
 }

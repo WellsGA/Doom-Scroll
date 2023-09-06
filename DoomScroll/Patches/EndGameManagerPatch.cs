@@ -2,7 +2,7 @@
 using Il2CppSystem;
 using UnityEngine;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     public enum CustomGameOverReason : byte
     {
@@ -12,7 +12,7 @@ namespace Doom_Scroll
     [HarmonyPatch(typeof(EndGameManager))]
     class EndGameManagerPatch
     {
-        
+
         [HarmonyPostfix]
         [HarmonyPatch("SetEverythingUp")]
         public static void PostfixSetEverythingUp(EndGameManager __instance)
@@ -23,7 +23,7 @@ namespace Doom_Scroll
                 __instance.WinText.color = Color.red;
                 __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"red\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
             }
-            else if(!SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess())
+            else if (!SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess())
             {
                 __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"red\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
             }
@@ -31,6 +31,7 @@ namespace Doom_Scroll
             {
                 __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"blue\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
             }
+
         }
     }
 }

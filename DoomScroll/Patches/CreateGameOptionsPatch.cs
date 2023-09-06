@@ -11,7 +11,7 @@ using System.Reflection;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(CreateGameOptions))]
     class CreateGameOptionsPatch

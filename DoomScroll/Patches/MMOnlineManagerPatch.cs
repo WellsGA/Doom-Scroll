@@ -11,7 +11,7 @@ using System.Reflection;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(MMOnlineManager))]
     class MMOnlineManagerPatch
@@ -115,7 +115,7 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("Got HelpButton");
                 Vector3 doomscrollBtnPos = helpButton.gameObject.transform.position;
                 SpriteRenderer doomscrollButtonSr = helpButton.GetComponent<SpriteRenderer>();
-                Vector3 position = new Vector3(doomscrollBtnPos.x + 4f, doomscrollBtnPos.y+0.3f, doomscrollBtnPos.z - 10);
+                Vector3 position = new Vector3(doomscrollBtnPos.x + 4f, doomscrollBtnPos.y + 0.3f, doomscrollBtnPos.z - 10);
                 Vector2 scaledSize = doomscrollButtonSr.size * helpButton.transform.localScale;
                 scaledSize = scaledSize * 3;
                 Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
@@ -168,7 +168,7 @@ namespace Doom_Scroll
                 CustomText link_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", linkText);
                 link_text.SetColor(Color.black);
                 link_text.SetSize(3f);
-                Vector3 linkTextPos = textPos + new Vector3(0, - 5.7f, 0);
+                Vector3 linkTextPos = textPos + new Vector3(0, -5.7f, 0);
                 link_text.SetLocalPosition(linkTextPos);
                 link_text.TextMP.m_enableWordWrapping = false;
 

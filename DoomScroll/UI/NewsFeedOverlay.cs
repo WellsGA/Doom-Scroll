@@ -24,15 +24,35 @@ namespace Doom_Scroll.UI
         {
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
-            CustomModal inputForm = new CustomModal(hud.gameObject, "News Form Overlay", spr);
-            inputForm.SetSize(new Vector2(5.2f, 2.5f));
-            Vector2 size = inputForm.GetSize();
-            inputForm.SetLocalPosition(new Vector3(bounds.x-size.x/2-1f, size.y/2, -5));
+            CustomModal newsModal = new CustomModal(hud.gameObject, "News Form Overlay", spr);
+            Vector2 size = new Vector2(bounds.x * 0.8f, bounds.x * 0.8f);
+            newsModal.SetSize(size);
+            newsModal.SetLocalPosition(new Vector3(bounds.x /2, size.y/2, -10));
+
+            CustomText title = new CustomText(newsModal.UIGameObject, "News Modal Title", "Create a Headline");
+            title.SetLocalPosition(new Vector3(0, size.y / 2 - 0.3f, -10));
+            title.SetSize(1.5f);
+            CustomText subtitle = new CustomText(newsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
+            subtitle.SetLocalPosition(new Vector3(0, size.y / 2 - 0.5f, -10));
+            subtitle.SetSize(1.2f);
+
             // deactivate by default
-            inputForm.ActivateCustomUI(false);
-            return inputForm;
+            newsModal.ActivateCustomUI(false);
+            return newsModal;
         }
 
+        public static CustomButton CreateRadioButtons(CustomModal parent, Sprite[] radioSprites, Vector3 pos, bool protect)
+        {
+            string label = protect ? "Protect" : "Frame";
+            CustomButton protectButton = new CustomButton(parent.UIGameObject, label + " Radio", radioSprites);
+            protectButton.SetSize(0.25f);
+            protectButton.SetLocalPosition(pos);
+            CustomText protectLable = new CustomText(protectButton.UIGameObject, label + " Lable", label);
+            protectLable.SetSize(1.5f);
+            protectLable.SetLocalPosition(new Vector3(protectButton.GetSize().x + 0.2f, 0, -10));
+
+            return protectButton;
+        }
 
         public static CustomButton CreateNewsItemButton(CustomModal parent)
         {

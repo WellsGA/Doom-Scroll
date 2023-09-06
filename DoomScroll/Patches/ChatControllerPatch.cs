@@ -3,7 +3,7 @@ using HarmonyLib;
 using TMPro;
 using UnityEngine;
 
-namespace Doom_Scroll
+namespace Doom_Scroll.Patches
 {
     public enum ChatContent
     {
