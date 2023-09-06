@@ -29,7 +29,6 @@ namespace Doom_Scroll
         private Folder m_screenshots;
 
         // image sending
-        private GameObject m_imageSenderParent;
         private ImageSender m_imageSender;
 
         private HudManager hudManagerInstance;
@@ -176,14 +175,8 @@ namespace Doom_Scroll
         }
         private void CreateImageSender()
         {
-            if (m_imageSenderParent != null)
-            {
-                UnityEngine.Object.Destroy(m_imageSenderParent);
-            }
-            //Il2CppSystem.Type[] componenetList = { ImageSender };
-            m_imageSenderParent = new GameObject("imageSenderParent"); //tried to set parameter components to: Il2CppSystem.Type[typeof(ImageSender)]
-            //m_imageSender = m_imageSenderParent.GetComponent<ImageSender>(); // Using folderArea game object as the holder for this component.
-            DoomScroll._log.LogInfo("m_imageSender created: " + m_imageSender);
+            m_imageSender = new ImageSender();
+            DoomScroll._log.LogInfo("m_imageSender created: " + m_imageSender.ToString());
         }
 
         private void ToggleFolderOverlay()

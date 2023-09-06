@@ -10,60 +10,62 @@ using Doom_Scroll.Patches;
 
 namespace Doom_Scroll
 {
-    public class ImageSender: MonoBehaviour
+    public class ImageSender
     {
-        private static float TimeBetweenPieces = 0.1f;
+        private static int TimeBetweenPieces = 500;
+        public ImageSender() { }
+
         //this method should be called in FileScreenshot
         public void SendCurrentImageMethod(FileScreenshot imageFile, byte[] content)
         {
-            StartCoroutine((Il2CppSystem.Collections.IEnumerator)SendCurrentImage(imageFile, content));
+            SendCurrentImage(imageFile, content);
         }
-        IEnumerator SendCurrentImage(FileScreenshot imageFile, byte[] content)
+        public async void SendCurrentImage(FileScreenshot imageFile, byte[] content)
         {
             //preparing arguments for RPCs
             int imgSectionLength = FileScreenshot.ImageSectionLength;
-            int numMessages = (int)Math.Ceiling(content.Length / imgSectionLength * 1f);
             byte pID = PlayerControl.LocalPlayer.PlayerId;
             Sprite img = ImageLoader.ReadImageFromByteArray(content);
             byte[] image = img.texture.EncodeToJPG(FileScreenshot.ImageSize);
+            int numMessages = (int)Math.Ceiling(image.Length / imgSectionLength * 1f);
 
             DoomScroll._log.LogInfo("file size: " + image.Length);
 
             //sending RPCs
             
-           RpcSendImageFile(pID, imageFile.Id, image, numMessages);
+           RpcSendImageFile(pID, imageFile.Id, image.Length, numMessages);
            foreach (int i in Enumerable.Range(0, numMessages))
             {
                 if (i != numMessages - 1)
                 {
                     RPCSendImageFilePiece(pID, imageFile.Id, image.Skip(imgSectionLength * i).Take(imgSectionLength).ToArray(), numMessages, i);
-                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(imgSectionLength * i).Take(imgSectionLength).ToArray()}");
-                    yield return new WaitForSeconds(TimeBetweenPieces);
+                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(imgSectionLength * i).Take(imgSectionLength).ToArray().Length}");
+                    await Task.Delay(TimeBetweenPieces);
                 }
                 else
                 {
                     RPCSendImageFilePiece(pID, imageFile.Id, image.Skip(imgSectionLength * i).ToArray(), numMessages, i);
-                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(imgSectionLength * i).ToArray()}");
-                    yield return new WaitForSeconds(TimeBetweenPieces);
+                    DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(imgSectionLength * i).ToArray().Length}");
+                    await Task.Delay(TimeBetweenPieces);
                 }
             }
 
             // only after it's done sending out all the pieces, it makes the file shareable.
             imageFile.Btn.EnableButton(true);
         }
-        public static bool RpcSendImageFile(byte playerID, int imageID, byte[] image, int numMessages)
+        public static bool RpcSendImageFile(byte playerID, int imageID, int imgLength, int numMessages)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGE, (SendOption)1);
-            DoomScroll._log.LogInfo("image: " + image.Length + ", buffer: " + messageWriter.Buffer.Length + ", Pos " + messageWriter.Position);
+            DoomScroll._log.LogInfo("image length: " + imgLength + ", buffer: " + messageWriter.Buffer.Length + ", Pos " + messageWriter.Position);
             int buffer = messageWriter.Buffer.Length - messageWriter.Position - 3;
 
             // CURRENT RESIZE OF THE IMAGE IS 15, BUT CAN BE CHANGED AS NEEDED
-            int numBytes = image.Length;
+            int numBytes = imgLength;
 
-            DoomScroll._log.LogInfo("New image size: " + numBytes + ", byte array length: " + image.Length + ", buffer: " + buffer);
+            DoomScroll._log.LogInfo("New image size: " + numBytes + ", byte array length: " + imgLength + ", buffer: " + buffer);
 
 
-            DoomScroll._log.LogMessage($"Image is {image.Length} bytes long, so there will be {numMessages} messages to send.");
+            DoomScroll._log.LogMessage($"Image is {imgLength} bytes long, so there will be {numMessages} messages to send.");
 
             messageWriter.Write(numMessages);
             messageWriter.Write(playerID);
@@ -86,6 +88,11 @@ namespace Doom_Scroll
             messageWriter.WriteBytesAndSize(section);
             messageWriter.EndMessage();
             return true;
+        }
+
+        public override String ToString()
+        {
+            return "Image sender yay!";
         }
     }
 }
