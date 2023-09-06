@@ -66,5 +66,9 @@ namespace Doom_Scroll
 			}
 			return list;
 		}
+		public override String ToString()
+		{
+			return $"player id is {sender}, image id is {imgNumber}";
+		}
 	}
 }

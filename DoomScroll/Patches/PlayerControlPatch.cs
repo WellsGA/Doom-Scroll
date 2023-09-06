@@ -185,9 +185,9 @@ namespace Doom_Scroll.Patches
                         currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
                         DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary items: ");
-                        foreach (DoomScrollImage dictImage in currentImagesAssembling.Values)
+                        foreach (String key in currentImagesAssembling.Keys)
                         {
-                            DoomScroll._log.LogMessage($"{dictImage}");
+                            DoomScroll._log.LogMessage($"- item key: {key}, item info: {currentImagesAssembling[key].ToString()}");
                         }
                         DoomScroll._log.LogMessage($"Current Dictionary over.");
                         return;
