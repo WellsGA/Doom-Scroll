@@ -24,7 +24,7 @@ namespace Doom_Scroll.Common
         public CustomModal imageThree { get; private set; }
         public CustomText descriptionText { get; private set; }
 
-        public TutorialBookletPage(string title, string imgName, string description, CustomModal parentOverlay, string secondImgName = null, Tuple<string, float> iconButton = null) : base(parentOverlay.UIGameObject, title)
+        public TutorialBookletPage(string title, string description, CustomModal parentOverlay, string imgName = null, string secondImgName = null, Tuple<string, float> iconButton = null) : base(parentOverlay.UIGameObject, title)
         {
             /*Dir = new GameObject(name);
             Dir.layer = LayerMask.NameToLayer("UI");
@@ -48,14 +48,20 @@ namespace Doom_Scroll.Common
             descriptionText.SetLocalPosition(descTextPos);
             descriptionText.TextMP.m_enableWordWrapping = false;
             Assembly assembly = Assembly.GetExecutingAssembly();
-
             if (secondImgName == null)
             {
-                //set image;
-                tutorialPictureOne = ImageLoader.ReadImageFromAssembly(assembly, imgName); //will appear as default file icon for now
-                imageOne = new CustomModal(parentOverlay.UIGameObject, $"TutorialPictureOne{title}", tutorialPictureOne);
-                imageOne.SetSize(parentOverlay.GetSize().x); // square ratio
-                imageOne.SetLocalPosition(new Vector3(0f, 1.5f, -50f));
+                if (imgName != null)
+                {
+                    //set image;
+                    tutorialPictureOne = ImageLoader.ReadImageFromAssembly(assembly, imgName); //will appear as default file icon for now
+                    imageOne = new CustomModal(parentOverlay.UIGameObject, $"TutorialPictureOne{title}", tutorialPictureOne);
+                    imageOne.SetSize(parentOverlay.GetSize().x); // square ratio
+                    imageOne.SetLocalPosition(new Vector3(0f, 1.5f, -50f));
+                }
+                else
+                {
+                    descriptionText.SetLocalPosition(new Vector3(0, parentOverlay.GetSize().y - 4f, -10));
+                }
             }
             else
             {
@@ -105,7 +111,7 @@ namespace Doom_Scroll.Common
         public void DisplayPage()
         {
             titleText.ActivateCustomUI(true);
-            imageOne.ActivateCustomUI(true);
+            if (imageOne != null) { imageOne.ActivateCustomUI(true); }
             if (imageTwo != null) { imageTwo.ActivateCustomUI(true); }
             if (imageThree != null) { imageThree.ActivateCustomUI(true); }
             descriptionText.ActivateCustomUI(true);
@@ -114,7 +120,7 @@ namespace Doom_Scroll.Common
         public void HidePage()
         {
             titleText.ActivateCustomUI(false);
-            imageOne.ActivateCustomUI(false);
+            if (imageOne != null) { imageOne.ActivateCustomUI(false); }
             if (imageTwo != null) { imageTwo.ActivateCustomUI(false); }
             if (imageThree != null) { imageThree.ActivateCustomUI(false); }
             //UnityEngine.Object.Destroy(imageOne.UIGameObject);
