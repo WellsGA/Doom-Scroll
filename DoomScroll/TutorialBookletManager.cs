@@ -38,7 +38,7 @@ namespace Doom_Scroll
         // text for different pages
         private String m_titlePageText = "Click through the following pages to learn more about DoomScroll and its\n misinformation features!";
         private String m_headlinesText = "Headlines can provide useful clues, but are they always trustworthy? When\n the NEWS button is yellow, click to choose a headline that will\n help your fellow crewmates (or trick them).\r\nTIP: Evaluate the evidence thoroughly to look for mistakes or inconsistencies.\r\n";
-        private String m_headlinesTextTwo = "Common signs of fake news:\r\n* Emotionally provocative/polarizing content          * Hyperbolic claims\r\n* Many claims at once          * Hyperpartisan bias\r\n* Misleading/biased statistics          * Conspiracy theories\r\n* Trolling          * Discredits or attacks opposing individuals/groups\r\n* Common signs of untrustworthy sources:          * Domains impersonating more reputable sources\r\n* Fake/Misleading domains          * Less trustworthy sponsors (e.g. blogs)\r\n\r\n";
+        private String m_headlinesTextTwo = "Common signs of fake news:\r\n\r\n* Emotionally provocative/polarizing content          \r\n* Hyperbolic claims\r\n* Many claims at once          \r\n* Hyperpartisan bias\r\n* Misleading/biased statistics          \r\n* Conspiracy theories\r\n* Trolling          \r\n* Discredits or attacks opposing individuals/groups\r\n* Common signs of untrustworthy sources:          \r\n* Domains impersonating more reputable sources\r\n* Fake/Misleading domains          \r\n* Less trustworthy sponsors (e.g. blogs)\r\n\r\n";
         private String m_signInFormsText = "Sign in to your tasks! You’ll be prompted to sign in to random tasks.\n Click on a player to confirm who completed it. This can create\n evidence that you (or others) are a contributing crewmate.\r\nTIP: Compare everyone’s arguments with the available\r\nevidence to help determine who you trust.";
         //private String m_screenshotsText = "These are screenshots! They don't work right now.";
         private String m_infiniteChatLogsText = "Chat logs from earlier meetings remain available throughout the match.\n Look back at old messages to see if everyone’s arguments stay consistent.\r\nTIP: What are everyone’s motivations? How is that influencing their arguments?";
@@ -147,14 +147,14 @@ namespace Doom_Scroll
         }
         private void InitTutorialBookletStructure()
         {
-            m_titlePage = new TutorialBookletPage("DoomScroll Tutorial Booklet", "Doom_Scroll.Assets.MainMenu_Button_Basic.png", m_titlePageText, m_tutorialBookletArea);
-            m_headlines = new TutorialBookletPage("Headlines", "Doom_Scroll.Assets.newsSelect.png", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
-            m_headlinesTwo = new TutorialBookletPage("Headlines", "Doom_Scroll.Assets.newsButtonExample.png", m_headlinesTextTwo, m_tutorialBookletArea);
-            m_signInForms = new TutorialBookletPage("Sign-In Forms", "Doom_Scroll.Assets.taskSelect.png", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
-            m_infiniteChatLogs = new TutorialBookletPage("Infinite Chat Logs", "Doom_Scroll.Assets.infiniteChatAfter.png", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatBefore.png");
-            m_swcs = new TutorialBookletPage("SWCs", "Doom_Scroll.Assets.SWCInTaskList_WithArrow.png", m_swcText, m_tutorialBookletArea, "Doom_Scroll.Assets.SWCStartScreen.png");
+            m_titlePage = new TutorialBookletPage("DoomScroll Tutorial Booklet", m_titlePageText, m_tutorialBookletArea, "Doom_Scroll.Assets.MainMenu_Button_Basic.png");
+            m_headlines = new TutorialBookletPage("Headlines", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsSelect.png", "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
+            m_headlinesTwo = new TutorialBookletPage("Headlines", m_headlinesTextTwo, m_tutorialBookletArea);
+            m_signInForms = new TutorialBookletPage("Sign-In Forms", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
+            m_infiniteChatLogs = new TutorialBookletPage("Infinite Chat Logs", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatAfter.png", "Doom_Scroll.Assets.infiniteChatBefore.png");
+            m_swcs = new TutorialBookletPage("SWCs", m_swcText, m_tutorialBookletArea, "Doom_Scroll.Assets.SWCInTaskList_WithArrow.png", "Doom_Scroll.Assets.SWCStartScreen.png");
             //m_screenshots = new Page("Images", "Doom_Scroll.Assets.file.png", m_screenshotsText, m_tutorialBookletArea);
-            m_folderSystem = new TutorialBookletPage("Folder System", "Doom_Scroll.Assets.folderWhereInChat_WithArrow.png", m_folderSystemText, m_tutorialBookletArea, "Doom_Scroll.Assets.folderOpen.png", new Tuple<string, float>("Doom_Scroll.Assets.folderButtonExample.png", 0.75f));
+            m_folderSystem = new TutorialBookletPage("Folder System", m_folderSystemText, m_tutorialBookletArea, "Doom_Scroll.Assets.folderWhereInChat_WithArrow.png", "Doom_Scroll.Assets.folderOpen.png", new Tuple<string, float>("Doom_Scroll.Assets.folderButtonExample.png", 0.75f));
 
             m_pageOrder = new List<CustomUI>
             {
