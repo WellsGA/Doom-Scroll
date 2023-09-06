@@ -184,7 +184,12 @@ namespace Doom_Scroll.Patches
                         String currentImageKey = $"{pID}{imgID}";
                         currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
-                        DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary: {currentImagesAssembling}");
+                        DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary items: ");
+                        foreach (DoomScrollImage dictImage in currentImagesAssembling.Values)
+                        {
+                            DoomScroll._log.LogMessage($"{dictImage}");
+                        }
+                        DoomScroll._log.LogMessage($"Current Dictionary over.");
                         return;
                     }
                 case (byte)CustomRPC.SENDIMAGEPIECE:
