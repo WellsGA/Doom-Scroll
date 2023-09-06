@@ -96,7 +96,7 @@ namespace Doom_Scroll
 
         public void ToggleNewsForm()
         {
-            if (!newsModal.UIGameObject || !canPostNews) { return; }
+            if (!newsModal.UIGameObject) { return; }
             if (IsInputpanelOpen)
             {
                 ClearInputSelection();
