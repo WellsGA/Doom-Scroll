@@ -26,11 +26,26 @@ namespace Doom_Scroll.Patches
     {
         static int count = 0;
 
-        private static Dictionary<String, DoomScrollImage> currentImagesAssembling = new Dictionary<String, DoomScrollImage>();
+        private static Dictionary<string, DoomScrollImage> currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
 
         public static void ResetImageDictionary()
         {
-            currentImagesAssembling = new Dictionary<String, DoomScrollImage>();
+            currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
+            /* TESTING PURPOSES
+            byte pID = 3;
+            int imgID = 3;
+            DoomScrollImage currentImage = new DoomScrollImage(20, pID, imgID);
+            string currentImageKey = $"{pID}{imgID}";
+            currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
+            DoomScroll._log.LogInfo($"HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEEE IS THE COMMMMMMMMMMMMMMEEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNNNNNNNNNNNNNTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT!");
+            DoomScroll._log.LogInfo($"Added test placeholder image info, inserted to currentImagesAssembling as DoomScrollImage(20, {pID}, {imgID})");
+            DoomScroll._log.LogInfo($"Image stored at key {currentImageKey}. Current Dictionary items: ");
+            foreach (string key in currentImagesAssembling.Keys)
+            {
+                DoomScroll._log.LogInfo($"- item key: {key}, item info: {currentImagesAssembling[key].ToString()}");
+            }
+            DoomScroll._log.LogInfo($"{currentImagesAssembling[(string)$"{pID}{imgID}"].ToString()}");
+            */
         }
 
 
@@ -86,12 +101,12 @@ namespace Doom_Scroll.Patches
                     {
                         byte playerid = reader.ReadByte();
                         int imageid = reader.ReadInt32();
-                        if (currentImagesAssembling[$"{playerid}{imageid}"].CompileImage())
+                        if (currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage())
                         {
                             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
                             {
                                 ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                                ChatControllerPatch.screenshot = currentImagesAssembling[$"{playerid}{imageid}"].Image;
+                                ChatControllerPatch.screenshot = currentImagesAssembling[(string)$"{playerid}{imageid}"].Image;
                                 string chatText = PlayerControl.LocalPlayer.PlayerId.ToString() + "#" + ScreenshotManager.Instance.Screenshots.ToString();
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText);
                                 DoomScroll._log.LogMessage("Should have added image locally!");
@@ -101,7 +116,7 @@ namespace Doom_Scroll.Patches
                         else
                         {
                             DoomScroll._log.LogMessage("TRIED TO SEND IMAGE IN CHAT, BUT IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[$"{playerid}{imageid}"].GetMissingLines()}");
+                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[(string)$"{playerid}{imageid}"].GetMissingLines()}");
 
                             DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {playerid} AND imgID {imageid}\n");
                             // LATER HERE WE CAN FIX THIS
@@ -181,11 +196,11 @@ namespace Doom_Scroll.Patches
                         byte pID = reader.ReadByte();
                         int imgID = reader.ReadByte();
                         DoomScrollImage currentImage = new DoomScrollImage(numMessages, pID, imgID);
-                        String currentImageKey = $"{pID}{imgID}";
-                        currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
+                        string currentImageKey = $"{pID}{imgID}";
+                        currentImagesAssembling.Add((string)$"{pID}{imgID}", currentImage);
                         DoomScroll._log.LogMessage($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
                         DoomScroll._log.LogMessage($"Image stored at key {currentImageKey}. Current Dictionary items: ");
-                        foreach (String key in currentImagesAssembling.Keys)
+                        foreach (string key in currentImagesAssembling.Keys)
                         {
                             DoomScroll._log.LogMessage($"- item key: {key}, item info: {currentImagesAssembling[key].ToString()}");
                         }
@@ -199,10 +214,10 @@ namespace Doom_Scroll.Patches
                         int sectionIndex = reader.ReadInt32();
                         byte[] imageBytesSection = reader.ReadBytesAndSize();
                         DoomScroll._log.LogMessage($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
-                        currentImagesAssembling[$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
+                        currentImagesAssembling[(string)$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
                         DoomScroll._log.LogMessage($"Received image chunk #{sectionIndex}, inserted to current DoomScrollImage");
 
-                        if (sectionIndex == currentImagesAssembling[$"{playerid}{imageid}"].Image.Count() && currentImagesAssembling[$"{playerid}{imageid}"].CompileImage())
+                        if (sectionIndex == currentImagesAssembling[(string)$"{playerid}{imageid}"].Image.Count() && currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage())
                         {
                             DoomScroll._log.LogMessage("IMAGE COMPLETELY RECEIVED.");
                             return;
@@ -210,7 +225,7 @@ namespace Doom_Scroll.Patches
                         else
                         {
                             DoomScroll._log.LogMessage("TRIED TO RECEIVE AND COMPILE IMAGE, BUT IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[$"{playerid}{imageid}"].GetMissingLines()}");
+                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[(string)$"{playerid}{imageid}"].GetMissingLines()}");
 
                             DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {playerid} AND imgID {imageid}\n");
                             // LATER HERE WE CAN FIX THIS
