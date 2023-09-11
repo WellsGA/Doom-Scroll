@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Doom_Scroll.Common;
 
 namespace Doom_Scroll;
 

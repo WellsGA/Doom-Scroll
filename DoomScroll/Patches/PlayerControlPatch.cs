@@ -24,7 +24,7 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(PlayerControl))]
     public static class PlayerControlPatch
     {
-        static int count = 0;
+        // static int count = 0; // debug
 
         private static Dictionary<string, DoomScrollImage> currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
 
@@ -61,9 +61,9 @@ namespace Doom_Scroll.Patches
                         taskIds.RemoveAt(taskIndex);
                     }
                     TaskAssigner.Instance.SetAssignableTasks(assignableTasks);
-                    DoomScroll._log.LogInfo("original " + __instance.myTasks.Count + " copy: " + assignableTasks.Count);
+                    // DoomScroll._log.LogInfo("original " + __instance.myTasks.Count + " copy: " + assignableTasks.Count);
                 }
-                DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
+               // DoomScroll._log.LogInfo("SelectRandomTasks Function called " + ++count + " times");
             }
         }
 

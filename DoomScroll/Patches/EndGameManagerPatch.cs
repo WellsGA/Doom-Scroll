@@ -31,7 +31,6 @@ namespace Doom_Scroll.Patches
             {
                 __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"blue\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
             }
-
         }
     }
 }

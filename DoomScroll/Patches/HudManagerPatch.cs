@@ -1,4 +1,5 @@
-﻿using Doom_Scroll.UI;
+﻿using Doom_Scroll.Common;
+using Doom_Scroll.UI;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,7 +55,7 @@ namespace Doom_Scroll.Patches
 
         [HarmonyPrefix]
         [HarmonyPatch("OpenMeetingRoom")]
-        public static void PrefixOpenMeetingRoom()
+        public static void PrefixOpenMeetingRoom(PlayerControl reporter)
         {
             DoomScroll._log.LogInfo("MEETING OPENED");
             if (ScreenshotManager.Instance.IsCameraOpen)
@@ -82,6 +83,9 @@ namespace Doom_Scroll.Patches
                 }
                 // selects new players to post news
                 NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
+
+                // game log 
+                GameLogger.Write(GameLogger.GetTime() + " - " + ((reporter != null) ? reporter.ToString() + " called for a meeting." : " Meeting was called"));
             }
             DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString()); // debug
 
