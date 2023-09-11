@@ -31,21 +31,6 @@ namespace Doom_Scroll.Patches
         public static void ResetImageDictionary()
         {
             currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
-            /* TESTING PURPOSES
-            byte pID = 3;
-            int imgID = 3;
-            DoomScrollImage currentImage = new DoomScrollImage(20, pID, imgID);
-            string currentImageKey = $"{pID}{imgID}";
-            currentImagesAssembling.Add($"{pID}{imgID}", currentImage);
-            DoomScroll._log.LogInfo($"HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEEE IS THE COMMMMMMMMMMMMMMEEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNNNNNNNNNNNNNTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT!");
-            DoomScroll._log.LogInfo($"Added test placeholder image info, inserted to currentImagesAssembling as DoomScrollImage(20, {pID}, {imgID})");
-            DoomScroll._log.LogInfo($"Image stored at key {currentImageKey}. Current Dictionary items: ");
-            foreach (string key in currentImagesAssembling.Keys)
-            {
-                DoomScroll._log.LogInfo($"- item key: {key}, item info: {currentImagesAssembling[key].ToString()}");
-            }
-            DoomScroll._log.LogInfo($"{currentImagesAssembling[(string)$"{pID}{imgID}"].ToString()}");
-            */
         }
 
 
