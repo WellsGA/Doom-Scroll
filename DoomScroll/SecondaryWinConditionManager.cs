@@ -12,7 +12,7 @@ namespace Doom_Scroll
 
         public static void SetSecondaryWinConditions() // only called for the host in ShipStatus Begin()
         {
-            GameLogger.Write("========================================= \n" + GameLogger.GetTime() + " - Secondary Win Conditions"); 
+            GameLogger.Write(GameLogger.GetTime() + " - Secondary Win Conditions"); 
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
                 Goal playerGoal = AssignGoal();
@@ -22,7 +22,7 @@ namespace Doom_Scroll
                 RPCSendSWC(swc); // send RPC swc to others
 
                 // game log
-                GameLogger.Write(player.PlayerName + ": " + playerGoal + swc.GetTargetName());
+                GameLogger.Write("\t" + player.PlayerName + ": " + playerGoal + " " + swc.GetTargetName());
 
             }
         }

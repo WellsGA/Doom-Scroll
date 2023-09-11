@@ -31,7 +31,7 @@ namespace Doom_Scroll.Patches
                              "\n  PLayer names and roles:\n");
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers) 
             {
-                GameLogger.Write(player.PlayerName + " [" + player.Role.Role + "]");
+                GameLogger.Write("\t" + player.PlayerName + " [" + player.Role.Role + "]");
             }
 
             SecondaryWinConditionManager.SetSecondaryWinConditions();
