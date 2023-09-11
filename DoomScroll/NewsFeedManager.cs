@@ -46,6 +46,10 @@ namespace Doom_Scroll
         private Pageable newsPageHolder;
         private int numPages = 1;
         public int NewsPostedByLocalPLayer { get; set; }
+        public List<NewsItem> GetAllNewsList()
+        {
+            return new List<NewsItem>(allNewsList);
+        }
 
         private NewsFeedManager()
         {

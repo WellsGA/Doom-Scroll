@@ -45,6 +45,20 @@ namespace Doom_Scroll
             localPlayerEndorsed = false;
             localPlayerDenounced = false;
         }
+        public int EndorsedCorrectly()
+        {
+            //returns 0 if didn't vote at all. Returns 1 if voted correctly. Returns -1 if voted incorrectly.
+            int endorsedCorrectly = 0;
+            if (localPlayerEndorsed)
+            {
+                endorsedCorrectly = IsTrue ? 1 : -1;
+            }
+            else if (localPlayerDenounced)
+            {
+                endorsedCorrectly = IsTrue ? -1 : 1;
+            }
+            return endorsedCorrectly;
+        }
         private void CreateNewsCard()
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
