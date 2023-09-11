@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using Il2CppSystem;
 using static Il2CppMono.Security.X509.X520;
 using System.Linq;
+using Doom_Scroll.Common;
+using System.Diagnostics.Metrics;
 
 namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        SENDVOTE = 245,
         SENDIMAGETOCHAT = 246,
         SENDENDORSEMENT = 247,
         SENDNEWSTOCHAT = 248,
@@ -82,6 +85,12 @@ namespace Doom_Scroll.Patches
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDVOTE:
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        GameLogger.Write(GameLogger.GetTime() + " - " + reader.ReadString() + " has voted for " + reader.ReadString());
+                    }
+                    return;
                 case (byte)CustomRPC.SENDIMAGETOCHAT:
                     {
                         byte playerid = reader.ReadByte();
