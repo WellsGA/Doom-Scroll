@@ -343,6 +343,9 @@ namespace Doom_Scroll
             messageWriter.Write(player.PlayerId);
             messageWriter.Write(player.name);
             messageWriter.EndMessage();
+
+            // game log
+            GameLogger.Write(GameLogger.GetTime() + " - " + player.name + " can create a headline.");
         }
 
         // Create post by player
@@ -450,6 +453,13 @@ namespace Doom_Scroll
                 news.CreateAuthorIcon();
             }
             allNewsList.Insert(0, news);
+
+            // game log
+            if (AmongUsClient.Instance.AmHost)
+            {
+                string author = news.AuthorID == 255 ? "System" : news.AuthorName;
+                GameLogger.Write(GameLogger.GetTime() + " - " + author + " created a headline: " + news.Title + " [" + news.Source + "]");
+            }
         }
 
         public NewsItem GetNewsByID(int id)

@@ -46,7 +46,7 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo("Text should be activated!");
 
             playerIcon = __instance.PlayerVotePrefab.gameObject;
-            DoomScroll._log.LogInfo("PLAYER ICON: " + playerIcon.name);
+            DoomScroll._log.LogInfo("PLAYER PREFAB ICON: " + playerIcon.name);
         }
     }
 }
