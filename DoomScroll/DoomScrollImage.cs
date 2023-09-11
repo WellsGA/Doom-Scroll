@@ -22,9 +22,17 @@ namespace Doom_Scroll
 			sender = send;
 			imgNumber = num;
 			imageList = new List<byte[]>(numMessages);
+        }
+		public int GetNumByteArraysExpected()
+		{
+			return imageList.Count;
 		}
+        public List<byte[]> GetImageList()
+        {
+            return new List<byte[]>(imageList);
+        }
 
-		public bool SameImage(byte send, byte num)
+        public bool SameImage(byte send, byte num)
 		{
 			return sender == send && imgNumber == (int)num;
 		}
