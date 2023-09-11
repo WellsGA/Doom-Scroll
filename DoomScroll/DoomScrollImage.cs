@@ -11,7 +11,7 @@ namespace Doom_Scroll
         private byte sender;
         private int imgNumber;
         private byte[] image;
-        private List<byte[]> imageList;
+        private byte[][] imageArray;
 
 		// public gets
         public byte Sender { get; }
@@ -21,21 +21,19 @@ namespace Doom_Scroll
 		{
 			sender = send;
 			imgNumber = num;
-			imageList = new List<byte[]>(numMessages);
-			while (imageList.Count < numMessages)
-			{
-				imageList.Add(null);
-			}
-			DoomScroll._log.LogInfo($"imageList Count is {imageList.Count}");
+			imageArray = new byte[numMessages][];
+			DoomScroll._log.LogInfo($"imageList Count is {imageArray.Length}");
 
         }
 		public int GetNumByteArraysExpected()
 		{
-			return imageList.Count;
+			return imageArray.Length;
 		}
-        public List<byte[]> GetImageList()
+        public byte[][] GetImageArray()
         {
-            return new List<byte[]>(imageList);
+            byte[][] newArray = new byte[imageArray.Length][];
+			System.Array.Copy(imageArray, newArray, imageArray.Length);
+			return newArray;
         }
 
         public bool SameImage(byte send, byte num)
@@ -44,16 +42,17 @@ namespace Doom_Scroll
 		}
 		public void InsertByteChunk(int sectionIndex, byte[] byteChunk)
 		{
-			imageList.Insert(sectionIndex, byteChunk);
-		}
+			imageArray[sectionIndex] = byteChunk;
+            DoomScroll._log.LogInfo($"Value at section index #{sectionIndex} is now {byteChunk}");
+        }
 		public bool CompileImage()
 		{
-			bool flag = imageList.IndexOf(null) == -1;
+			bool flag = System.Array.IndexOf(imageArray, null) == -1;
 			bool result;
 			if (flag)
 			{
 				List<byte> list = new List<byte>();
-				foreach (byte[] collection in imageList)
+				foreach (byte[] collection in imageArray)
 				{
 					list.AddRange(collection);
 				}
@@ -69,10 +68,10 @@ namespace Doom_Scroll
 		public List<int> GetMissingLines()
 		{
 			List<int> list = new List<int>();
-			IEnumerable<int> enumerable = Enumerable.Range(0, imageList.Count);
+			IEnumerable<int> enumerable = Enumerable.Range(0, imageArray.Length);
 			foreach (int num in enumerable)
 			{
-				bool flag = imageList[num] == null;
+				bool flag = imageArray[num] == null;
 				if (flag)
 				{
 					list.Add(num);
