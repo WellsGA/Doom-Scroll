@@ -22,6 +22,12 @@ namespace Doom_Scroll
 			sender = send;
 			imgNumber = num;
 			imageList = new List<byte[]>(numMessages);
+			while (imageList.Count <= numMessages)
+			{
+				imageList.Add(null);
+			}
+			DoomScroll._log.LogInfo($"imageList Count is {imageList.Count}");
+
         }
 		public int GetNumByteArraysExpected()
 		{
