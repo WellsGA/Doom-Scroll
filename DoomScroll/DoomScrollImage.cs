@@ -22,7 +22,7 @@ namespace Doom_Scroll
 			sender = send;
 			imgNumber = num;
 			imageList = new List<byte[]>(numMessages);
-			while (imageList.Count <= numMessages)
+			while (imageList.Count < numMessages)
 			{
 				imageList.Add(null);
 			}

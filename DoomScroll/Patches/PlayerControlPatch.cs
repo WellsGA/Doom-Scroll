@@ -110,7 +110,11 @@ namespace Doom_Scroll.Patches
                         else
                         {
                             DoomScroll._log.LogMessage("TRIED TO SEND IMAGE IN CHAT, BUT IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogMessage($"MISSING SECTIONS: {currentImagesAssembling[(string)$"{playerid}{imageid}"].GetMissingLines()}");
+                            DoomScroll._log.LogMessage($"MISSING SECTIONS:");
+                            foreach (int line in currentImagesAssembling[(string)$"{playerid}{imageid}"].GetMissingLines())
+                            {
+                                DoomScroll._log.LogMessage($"{line.ToString()}");
+                            }
 
                             DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {playerid} AND imgID {imageid}\n");
                             // LATER HERE WE CAN FIX THIS
@@ -221,11 +225,8 @@ namespace Doom_Scroll.Patches
                         }
                         else
                         {
-                            DoomScroll._log.LogInfo("TRIED TO RECEIVE AND COMPILE IMAGE, BUT IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogInfo($"MISSING SECTIONS: {currentImagesAssembling[(string)$"{playerid}{imageid}"].GetMissingLines()}");
-
-                            DoomScroll._log.LogInfo($"ENDING RPC FOR IMAGE WITH pID {playerid} AND imgID {imageid}\n");
-                            // LATER HERE WE CAN FIX THIS
+                            DoomScroll._log.LogInfo("CAN'T COMPILE IMAGE YET, IMAGE MISSING SECTION(S)");
+                            DoomScroll._log.LogInfo("IMAGE NOT COMPLETELY RECEIVED.");
                         }
                         break;
                     }
