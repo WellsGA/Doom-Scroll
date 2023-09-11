@@ -23,6 +23,11 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("AddChat")]
         public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText)
         {
+            if (AmongUsClient.Instance.AmHost)
+            {
+                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + chatText);
+            }
+
             bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
             GameObject scroller = __instance.GetComponentInChildren<Scroller>().gameObject;
             TextMeshPro[] texts = scroller.gameObject.GetComponentsInChildren<TextMeshPro>();

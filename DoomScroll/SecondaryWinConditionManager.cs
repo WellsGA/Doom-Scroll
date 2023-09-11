@@ -1,4 +1,4 @@
-﻿using AmongUs.GameOptions;
+﻿using Doom_Scroll.Common;
 using Doom_Scroll.Patches;
 using Hazel;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ namespace Doom_Scroll
 
         public static void SetSecondaryWinConditions() // only called for the host in ShipStatus Begin()
         {
+            GameLogger.Write("========================================= \n" + GameLogger.GetTime() + " - Secondary Win Conditions"); 
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
                 Goal playerGoal = AssignGoal();
@@ -19,6 +20,10 @@ namespace Doom_Scroll
                 SecondaryWinCondition swc = new SecondaryWinCondition(player.PlayerId, playerGoal, playerTarget);  
                 AddToPlayerSWCList(swc); // add locally - host's list
                 RPCSendSWC(swc); // send RPC swc to others
+
+                // game log
+                GameLogger.Write(player.PlayerName + ": " + playerGoal + swc.GetTargetName());
+
             }
         }
 
@@ -47,6 +52,13 @@ namespace Doom_Scroll
                     swc.TargetDead(reason);
                 }
             }
+
+            // game log
+            if (AmongUsClient.Instance.AmHost)
+            {
+                string name = GameData.Instance.GetPlayerById(targetId).PlayerName;
+                GameLogger.Write(GameLogger.GetTime() + " - " + name + " is dead. Reason: " + reason.ToString());
+            } 
         }
 
         public static string OverallSWCResultsText() // text to put in to TMP object at end, when vicotory/defeat and success/failure for all players is revealed

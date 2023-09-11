@@ -41,6 +41,10 @@ namespace Doom_Scroll.Patches
             progressionScreenOpen = true;
 
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.OverallSWCResultsText());
+            if (AmongUsClient.Instance.AmHost)
+            {
+                GameLogger.Write(GameLogger.GetTime() + " - Game results\n" + SecondaryWinConditionManager.OverallSWCResultsText());
+            }
             CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.OverallSWCResultsText());
             overallSWCText.SetColor(Color.white);
             float size = fontSize;
