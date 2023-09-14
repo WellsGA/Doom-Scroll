@@ -214,6 +214,7 @@ namespace Doom_Scroll.Patches
                         int sectionIndex = reader.ReadInt32();
                         byte[] imageBytesSection = reader.ReadBytesAndSize();
                         DoomScroll._log.LogInfo($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
+                        DoomScroll._log.LogInfo($"Accessed DoomScrollImage successfully: {currentImagesAssembling[(string)$"{playerid}{imageid}"]}");
                         currentImagesAssembling[(string)$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
                         DoomScroll._log.LogInfo($"Received image chunk #{sectionIndex}, inserted to current DoomScrollImage");
 
