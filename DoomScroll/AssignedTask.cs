@@ -67,7 +67,7 @@ namespace Doom_Scroll
 
         private void OnClickShare()
         {
-            string chatText = "<color=#366999><i>" + cardText;
+            string chatText = "<color=#366999><i>" + cardText.TextMP.text;
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
                 ChatControllerPatch.content = ChatContent.TEXT;
