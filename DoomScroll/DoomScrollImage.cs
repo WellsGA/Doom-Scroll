@@ -42,8 +42,16 @@ namespace Doom_Scroll
 		}
 		public void InsertByteChunk(int sectionIndex, byte[] byteChunk)
 		{
-			imageArray[sectionIndex] = byteChunk;
-            DoomScroll._log.LogInfo($"Value at section index #{sectionIndex} is now {byteChunk}");
+			if (sectionIndex >= 0 && sectionIndex < imageArray.GetLength(0))
+			{
+                DoomScroll._log.LogInfo($"Value at section index #{sectionIndex} is {imageArray[sectionIndex]}");
+                imageArray[sectionIndex] = byteChunk;
+				DoomScroll._log.LogInfo($"Value at section index #{sectionIndex} is now {byteChunk}");
+			}
+			else
+			{
+				DoomScroll._log.LogInfo($"sectionIndex {sectionIndex} either < 0 or >= {imageArray.GetLength(0)}. Second dimension of array has length {imageArray.GetLength(1)}.");
+			}
         }
 		public bool CompileImage()
 		{
