@@ -25,7 +25,11 @@ namespace Doom_Scroll.Patches
                 SecondaryWinCondition swc = SecondaryWinConditionManager.GetSwcByPlayerID(player.PlayerId);
                 if (swc != null)
                 {
-                    results += swc.SendableResultsText() + NewsFeedManager.Instance.CalculateEndorsementScores(player.PlayerId);
+                    results += swc.SendableResultsText();
+                    if (NewsFeedManager.Instance.PlayerScores.ContainsKey(player.PlayerId))
+                    {
+                        results += NewsFeedManager.Instance.PlayerScores[player.PlayerId];
+                    }
                 }
             }
             // game log

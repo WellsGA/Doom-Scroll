@@ -37,7 +37,6 @@ namespace Doom_Scroll
         private Sprite[] butttonSprite;
         private Sprite playerSprite;
         public bool isAssignerPanelActive;
-        private Sprite cardSprite;
 
         // elements added by Alaina for flipping between pages of tasks
         private Pageable taskPageHolder;
@@ -53,7 +52,6 @@ namespace Doom_Scroll
         private void InitTaskAssigner()
         {
             MaxAssignableTasks = 2;
-            cardSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             AssignableTasks = new List<uint>();
             AssignedTasks = new List<AssignedTask>();
             PlayerButtons = new Dictionary<byte, CustomButton>();
@@ -171,10 +169,11 @@ namespace Doom_Scroll
                 {
                     DoomScroll._log.LogInfo($"Current task Index: {currentTaskIndex}, AssignedTasks list Count: {AssignedTasks.Count}");
                     AssignedTask task = AssignedTasks[currentTaskIndex];
-                    task.DisplayTaskCard(parent, cardSprite);
+                    task.DisplayTaskCard();
                     pos.y -= task.Card.GetSize().y + 0.05f;
                     task.Card.SetLocalPosition(pos);
                     task.Card.ActivateCustomUI(true);
+                    task.PostButton.ActivateCustomUI(true);
 
                     taskCards.Add(task.Card);
                     task.Card.ActivateCustomUI(false); // unsure if necessary>

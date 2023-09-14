@@ -47,11 +47,13 @@ namespace Doom_Scroll
         private int numPages = 1;
         public int NewsPostedByLocalPLayer { get; set; }
 
+        public Dictionary<byte, string> PlayerScores;
         private NewsFeedManager()
         {
             // init
             playerButtons = new Dictionary<byte, CustomButton>();
             AllNewsList = new List<NewsItem>();
+            PlayerScores = new Dictionary<byte, string>();
             Reset();
             DoomScroll._log.LogInfo("NEWS FEED MANAGER CONSTRUCTOR");
         }
@@ -594,7 +596,9 @@ namespace Doom_Scroll
                     else numIncorrect++;
                 }
             }
-            return "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of" + AllNewsList.Count + "]\n";
+            string score = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of" + AllNewsList.Count + "]\n";
+            PlayerScores[playerID] = score;
+            return score;
         }
 
         public void CheckForDisplayedNewsPageButtonClicks()
@@ -630,7 +634,7 @@ namespace Doom_Scroll
             isFrameSelected = false;
             playerButtons.Clear();
             AllNewsList.Clear();
-           
+            PlayerScores.Clear();
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");
         }

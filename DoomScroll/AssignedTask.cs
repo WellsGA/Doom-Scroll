@@ -17,7 +17,7 @@ namespace Doom_Scroll
         public byte AssigneeId { get; private set; }
         public string AssigneeName { get; private set; }
 
-        private string cardText;
+        private CustomText cardText;
         private bool isTaskDone;
 
         public CustomButton PostButton { get; private set; }
@@ -35,20 +35,26 @@ namespace Doom_Scroll
             AssigneeId = assignee;   
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(assignee);
             AssigneeName = playerInfo == null ? "Unknown player": playerInfo.PlayerName;  // if player has left, we don't know;
+            CreateTaskCard();
         }
-        public void DisplayTaskCard(CustomModal parent, Sprite spr)
+        public void DisplayTaskCard()
         {
-            Card = new CustomModal(parent.UIGameObject, "card item", spr);
-            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0));
             if (!isTaskDone) isTaskDone = CheckIfFinished(); // checking state again before displaying
             string taskState = isTaskDone ? " finished " : " is working on ";
-            cardText = AssigneeName + taskState + Type.ToString();
-            CustomText assignedTask = new CustomText(Card.UIGameObject, "task", cardText);
-            assignedTask.SetSize(1.5f);
+            cardText.SetText(AssigneeName + taskState + Type.ToString());
+            Card.ActivateCustomUI(true);
+        }
+        public void CreateTaskCard()
+        {
+            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
+            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            Card = new CustomModal(parent.UIGameObject, "card item", spr);
+            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0)); 
+            cardText = new CustomText(Card.UIGameObject, "task", "Default");
+            cardText.SetSize(1.5f);
             AddShareButton();
             Card.ActivateCustomUI(false); // not yet active in case sizing and positioning is needed
         }
-
         private void AddShareButton()
         {
             float shareBtnSize = Card.GetSize().y - 0.02f;

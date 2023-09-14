@@ -33,14 +33,13 @@ namespace Doom_Scroll.Patches
         {
             FolderManager.Instance.CloseFolderOverlay();
             
-            // debug endorsement scores
-            string results = "ENDORSEMENT RESULTS SO FAR: \n";
+            string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
                 results += player.name + ": " + NewsFeedManager.Instance.CalculateEndorsementScores(player.PlayerId);
             }
-            DoomScroll._log.LogInfo(results);
-            // en of debug -- can be removed later
+            DoomScroll._log.LogInfo(results); // debug
+
         }
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
