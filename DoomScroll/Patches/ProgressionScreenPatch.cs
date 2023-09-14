@@ -2,9 +2,7 @@
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
-using System.Reflection;
 using System.Collections.Generic;
-using Il2CppSystem.Collections;
 
 namespace Doom_Scroll.Patches
 {
@@ -13,55 +11,40 @@ namespace Doom_Scroll.Patches
     {
         public static bool progressionScreenOpen = false;
         private static float fontSize = 2f;
-        private static string calculateEndorsementScores()
-        {
-            int numCorrect = 0;
-            int numIncorrect = 0;
-            List<NewsItem> newsList = NewsFeedManager.Instance.GetAllNewsList();
-            foreach (NewsItem newsPost in newsList)
-            {
-                if (newsPost.EndorsedCorrectly() == 1)
-                {
-                    numCorrect++;
-                }
-                else if (newsPost.EndorsedCorrectly() == -1)
-                {
-                    numIncorrect++;
-                }
-            }
-            return $"<size=120%>News Endorsement Scores:</size>\r\n" +
-                $"You correctly voted true or false on {numCorrect}/{newsList.Count} news posts\r\n" +
-                $"You incorrectly voted true or false on {numIncorrect}/{newsList.Count} news posts";
-        }
 
         [HarmonyPostfix]
         [HarmonyPatch("Activate")]
         public static void PostfixActivate(ProgressionScreen __instance)
         {
             progressionScreenOpen = true;
-
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.OverallSWCResultsText());
+            
+            string results = "";
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                SecondaryWinCondition swc = SecondaryWinConditionManager.GetSwcByPlayerID(player.PlayerId);
+                if (swc != null)
+                {
+                    results += swc.SendableResultsText() + NewsFeedManager.Instance.CalculateEndorsementScores(player.PlayerId);
+                }
+            }
+            // game log
             if (AmongUsClient.Instance.AmHost)
             {
-                GameLogger.Write(GameLogger.GetTime() + " - Game results\n" + SecondaryWinConditionManager.OverallSWCResultsText() + "========================================= \n" );
+                GameLogger.Write(GameLogger.GetTime() + " - GAME ENDED - RESULTS \n" + results);
             }
-            CustomText overallSWCText = new CustomText(__instance.XpBar.gameObject, "SWCResults", SecondaryWinConditionManager.OverallSWCResultsText());
-            overallSWCText.SetColor(Color.white);
+
+            CustomText overallResult = new CustomText(__instance.XpBar.gameObject, "SWCResults", results);
+            overallResult.SetColor(Color.white);
             float size = fontSize;
             if (SecondaryWinConditionManager.GetSWCList().Count >= 8)
             {
                 size = fontSize / 2f;
             }
-            overallSWCText.SetSize(size);
-            Vector3 textPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x, overallSWCText.UIGameObject.transform.localPosition.y - 0.9f, overallSWCText.UIGameObject.transform.localPosition.z);
-            overallSWCText.SetLocalPosition(textPos);
-
-            //Voting info
-            CustomText newsVotingResultsText = new CustomText(__instance.XpBar.gameObject, "NewsVotingResults", calculateEndorsementScores());
-            newsVotingResultsText.SetColor(Color.white);
-            newsVotingResultsText.SetSize(fontSize);
-            Vector3 newsTextPos = new Vector3(overallSWCText.UIGameObject.transform.localPosition.x + 2f, overallSWCText.UIGameObject.transform.localPosition.y + 1f, overallSWCText.UIGameObject.transform.localPosition.z);
-            newsVotingResultsText.SetLocalPosition(newsTextPos);
+            overallResult.SetSize(size);
+            Vector3 textPos = new Vector3(overallResult.UIGameObject.transform.localPosition.x, overallResult.UIGameObject.transform.localPosition.y - 0.9f, overallResult.UIGameObject.transform.localPosition.z);
+            overallResult.SetLocalPosition(textPos);
+            
             SecondaryWinConditionManager.Reset();
         }
     }

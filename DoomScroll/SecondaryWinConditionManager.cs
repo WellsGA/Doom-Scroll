@@ -2,6 +2,7 @@
 using Doom_Scroll.Patches;
 using Hazel;
 using System.Collections.Generic;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Doom_Scroll
 {
@@ -41,6 +42,18 @@ namespace Doom_Scroll
             }
             playerSWCList.Add(swc);
             DoomScroll._log.LogInfo("SWC added: " + swc.SendableResultsText());  // debug
+        }
+
+        public static SecondaryWinCondition GetSwcByPlayerID(byte id)
+        {
+            foreach (SecondaryWinCondition swc in playerSWCList)
+            {
+                if (swc.GetPayerId() == id)
+                {
+                    return swc;
+                }
+            }
+            return null;
         }
 
         public static void UpdateSWCList(byte targetId, DeathReason reason)  // upadtes the dead targets and evaluates success

@@ -19,6 +19,7 @@ namespace Doom_Scroll.Patches
         {
             FolderManager.Instance.CheckForButtonClicks();
             NewsFeedManager.Instance.CheckForShareAndEndorseClicks();
+            TaskAssigner.Instance.CheckForShareTaskClicks();
             if (currentToolTipText.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
             {
                 currentToolTipText.TextMP.text = "";
@@ -31,6 +32,15 @@ namespace Doom_Scroll.Patches
         public static void PostfixClose()
         {
             FolderManager.Instance.CloseFolderOverlay();
+            
+            // debug endorsement scores
+            string results = "ENDORSEMENT RESULTS SO FAR: \n";
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                results += player.name + ": " + NewsFeedManager.Instance.CalculateEndorsementScores(player.PlayerId);
+            }
+            DoomScroll._log.LogInfo(results);
+            // en of debug -- can be removed later
         }
         [HarmonyPostfix]
         [HarmonyPatch("Start")]

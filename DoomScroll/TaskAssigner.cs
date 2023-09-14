@@ -124,6 +124,31 @@ namespace Doom_Scroll
             }
         }
 
+        public void CheckForShareTaskClicks()
+        {
+            if (HudManager.Instance == null) return;
+            // If chat and folder overlay are open invoke events on button clicks
+            if (HudManager.Instance.Chat.State == ChatControllerState.Open && FolderManager.Instance.IsFolderOpen())
+            {
+                try
+                {
+                    foreach (AssignedTask task in AssignedTasks)
+                    {
+                        task.PostButton.ReplaceImgageOnHover();
+                        if (task.PostButton.IsEnabled && task.PostButton.IsActive && task.PostButton.isHovered() && Input.GetKey(KeyCode.Mouse0))
+                        {
+                            task.PostButton.ButtonEvent.InvokeAction();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking share task button method: " + e);
+                }
+            }
+
+        }
+
         public void Reset()
         {
             InitTaskAssigner();

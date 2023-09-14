@@ -126,15 +126,17 @@ namespace Doom_Scroll.Patches
                         NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
                         if (news != null)
                         {
-                            if (reader.ReadBoolean())
+                            if (reader.ReadBoolean()) // endorse
                             {
                                 news.TotalEndorsement = reader.ReadBoolean() ? news.TotalEndorsement + 1 : news.TotalEndorsement - 1;
                                 news.EndorseLable.SetText(news.TotalEndorsement.ToString());
+                                news.EndorsementList[__instance.PlayerId] = reader.ReadBoolean();
                             }
-                            else
+                            else  // denounce
                             {
                                 news.TotalDenouncement = reader.ReadBoolean() ? news.TotalDenouncement + 1 : news.TotalDenouncement - 1; ;
                                 news.DenounceLable.SetText(news.TotalDenouncement.ToString());
+                                news.EndorsementList[__instance.PlayerId] = reader.ReadBoolean();
                             }
                         }
                         else

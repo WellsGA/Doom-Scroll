@@ -42,20 +42,16 @@ namespace Doom_Scroll
 
         public bool IsInputpanelOpen { get; private set; }
         private bool canPostNews;
-        private List<NewsItem> allNewsList;
+        public List<NewsItem> AllNewsList { get; private set; }
         private Pageable newsPageHolder;
         private int numPages = 1;
         public int NewsPostedByLocalPLayer { get; set; }
-        public List<NewsItem> GetAllNewsList()
-        {
-            return new List<NewsItem>(allNewsList);
-        }
 
         private NewsFeedManager()
         {
             // init
             playerButtons = new Dictionary<byte, CustomButton>();
-            allNewsList = new List<NewsItem>();
+            AllNewsList = new List<NewsItem>();
             Reset();
             DoomScroll._log.LogInfo("NEWS FEED MANAGER CONSTRUCTOR");
         }
@@ -69,7 +65,7 @@ namespace Doom_Scroll
             emptyButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png", slices2);
             playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
             playerButtons = new Dictionary<byte, CustomButton>();
-            allNewsList = new List<NewsItem>();
+            AllNewsList = new List<NewsItem>();
 
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
@@ -288,7 +284,7 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    foreach (NewsItem news in allNewsList)
+                    foreach (NewsItem news in AllNewsList)
                     {
                         news.PostButton.ReplaceImgageOnHover();
                         news.EndorseButton.ReplaceImgageOnHover();
@@ -372,7 +368,7 @@ namespace Doom_Scroll
             }
             // TO DO: ADD SOURCE!!!
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;
-            return new NewsItem(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);   
+            return new NewsItem(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);   //// PLAYER CREATED NEWS ARE ALWAYS FALSE?
         }
 
         // Automatic News Creation - Only if player is host!
@@ -456,7 +452,7 @@ namespace Doom_Scroll
             {
                 news.CreateAuthorIcon();
             }
-            allNewsList.Insert(0, news);
+            AllNewsList.Insert(0, news);
 
             // game log
             if (AmongUsClient.Instance.AmHost)
@@ -468,7 +464,7 @@ namespace Doom_Scroll
 
         public NewsItem GetNewsByID(int id)
         { 
-            foreach(NewsItem news in allNewsList)
+            foreach(NewsItem news in AllNewsList)
             {
                 if(news.NewsID == id)
                 {
@@ -528,18 +524,18 @@ namespace Doom_Scroll
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
 
-            numPages = (int)Math.Ceiling((float)(allNewsList.Count) / FileText.maxNumTextItems);
+            numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
 
             List<CustomUI> newsCards = new List<CustomUI>();
             for (int displayPageNum = 1; displayPageNum <= numPages; displayPageNum++)
             {
                 Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-                for (int currentNewsIndex = (displayPageNum-1)*maxNewsItemsPerPage; currentNewsIndex < allNewsList.Count && currentNewsIndex < displayPageNum * maxNewsItemsPerPage; currentNewsIndex++)
+                for (int currentNewsIndex = (displayPageNum-1)*maxNewsItemsPerPage; currentNewsIndex < AllNewsList.Count && currentNewsIndex < displayPageNum * maxNewsItemsPerPage; currentNewsIndex++)
                 // stops before index out of range and before printing tasks that should be on next page
                 {
-                    DoomScroll._log.LogInfo($"Current News Index: {currentNewsIndex}, allnewsList Count: {allNewsList.Count}");
-                    NewsItem news = allNewsList[currentNewsIndex];
+                    DoomScroll._log.LogInfo($"Current News Index: {currentNewsIndex}, allnewsList Count: {AllNewsList.Count}");
+                    NewsItem news = AllNewsList[currentNewsIndex];
                     news.DisplayNewsCard();
                     pos.y -= news.Card.GetSize().y + 0.05f;
                     news.Card.SetLocalPosition(pos);
@@ -577,14 +573,30 @@ namespace Doom_Scroll
             /*
             if (numPages > 1)
             int currentNewsIndex = (currentPage - 1) * FileText.maxNumTextItems;
-            while (currentNewsIndex < allNewsList.Count && currentNewsIndex < currentPage * FileText.maxNumTextItems)
+            while (currentNewsIndex < AllNewsList.Count && currentNewsIndex < currentPage * FileText.maxNumTextItems)
             {
-                allNewsList[currentNewsIndex].Card.ActivateCustomUI(false);
-                allNewsList[currentNewsIndex].PostButton.ActivateCustomUI(false);
+                AllNewsList[currentNewsIndex].Card.ActivateCustomUI(false);
+                AllNewsList[currentNewsIndex].PostButton.ActivateCustomUI(false);
                 currentNewsIndex++;
             }
             */
         }
+
+        public string CalculateEndorsementScores(byte playerID)
+        {
+            int numCorrect = 0;
+            int numIncorrect = 0;
+            foreach (NewsItem newsPost in AllNewsList)
+            {
+                if (newsPost.EndorsementList.ContainsKey(playerID))
+                {
+                    if (newsPost.EndorsementList[playerID] == true) numCorrect++;
+                    else numIncorrect++;
+                }
+            }
+            return "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of" + AllNewsList.Count + "]\n";
+        }
+
         public void CheckForDisplayedNewsPageButtonClicks()
         {
             if (newsPageHolder != null)
@@ -595,7 +607,7 @@ namespace Doom_Scroll
         public override string ToString()
         {
             string allnews = "\nNEWS POSTED\n";
-            foreach (NewsItem news in allNewsList)
+            foreach (NewsItem news in AllNewsList)
             {
                 allnews += news.ToString() + "\n";
             }
@@ -617,7 +629,7 @@ namespace Doom_Scroll
             isprotectSelected = false;
             isFrameSelected = false;
             playerButtons.Clear();
-            allNewsList.Clear();
+            AllNewsList.Clear();
            
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");

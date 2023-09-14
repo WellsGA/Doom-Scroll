@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Reflection;
 using Hazel;
 using Doom_Scroll.Patches;
+using Il2CppSystem.Collections.Generic;
 
 namespace Doom_Scroll
 {
@@ -31,6 +32,8 @@ namespace Doom_Scroll
         private bool localPlayerEndorsed;
         private bool localPlayerDenounced;
 
+        public Dictionary<byte, bool> EndorsementList;
+ 
         public NewsItem(int id, byte player, string headline, bool truth, string source)
         {
             NewsID = id;
@@ -44,21 +47,9 @@ namespace Doom_Scroll
             TotalDenouncement = 0;
             localPlayerEndorsed = false;
             localPlayerDenounced = false;
+            EndorsementList = new Dictionary<byte, bool>();
         }
-        public int EndorsedCorrectly()
-        {
-            //returns 0 if didn't vote at all. Returns 1 if voted correctly. Returns -1 if voted incorrectly.
-            int endorsedCorrectly = 0;
-            if (localPlayerEndorsed)
-            {
-                endorsedCorrectly = IsTrue ? 1 : -1;
-            }
-            else if (localPlayerDenounced)
-            {
-                endorsedCorrectly = IsTrue ? -1 : 1;
-            }
-            return endorsedCorrectly;
-        }
+       
         private void CreateNewsCard()
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
@@ -180,10 +171,11 @@ namespace Doom_Scroll
                 OnClickUnEndorse();
             }
             TotalEndorsement = localPlayerEndorsed ? TotalEndorsement - 1 : TotalEndorsement + 1;
+            bool isCorrect = IsTrue ? true : false;
             localPlayerEndorsed = !localPlayerEndorsed;
             EndorseLable.SetText(TotalEndorsement.ToString());
             DoomScroll._log.LogInfo("Endorsed: " + TotalEndorsement);
-            RpcShareEndorsement(true, localPlayerEndorsed);
+            RpcShareEndorsement(true, localPlayerEndorsed, isCorrect);
         }
 
         private void OnClickUnEndorse()
@@ -193,18 +185,24 @@ namespace Doom_Scroll
                 OnClickEndorse();
             }
             TotalDenouncement = localPlayerDenounced ? TotalDenouncement - 1 : TotalDenouncement + 1;
+            bool isCorrect = IsTrue ? true : false;
             localPlayerDenounced = !localPlayerDenounced;
             DenounceLable.SetText(TotalDenouncement.ToString());
             DoomScroll._log.LogInfo("Denounced: " + TotalDenouncement);
-            RpcShareEndorsement(false, localPlayerDenounced);
+            RpcShareEndorsement(false, localPlayerDenounced, isCorrect);
         }
 
-        private void RpcShareEndorsement(bool endorse, bool up)
+        private void RpcShareEndorsement(bool endorse, bool up, bool isCorrect)
         {
+            // update local dictionary 
+            EndorsementList[PlayerControl.LocalPlayer.PlayerId] = isCorrect;
+
+            // share with others
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDENDORSEMENT, (SendOption)1);
-            messageWriter.Write(NewsID);        // id 
+            messageWriter.Write(NewsID);        // id
             messageWriter.Write(endorse);       // endorse or denounce
             messageWriter.Write(up);            // plus or minus
+            messageWriter.Write(isCorrect); 
             messageWriter.EndMessage();
         }
 
