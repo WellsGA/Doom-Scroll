@@ -210,7 +210,7 @@ namespace Doom_Scroll.Patches
                 case (byte)CustomRPC.SENDIMAGEPIECE:
                     {
                         byte playerid = reader.ReadByte();
-                        int imageid = reader.ReadByte();
+                        int imageid = reader.ReadInt32();
                         int sectionIndex = reader.ReadInt32();
                         byte[] imageBytesSection = reader.ReadBytesAndSize();
                         DoomScroll._log.LogInfo($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
