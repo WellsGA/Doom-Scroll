@@ -50,7 +50,7 @@ namespace Doom_Scroll
 			}
 			else
 			{
-				DoomScroll._log.LogInfo($"sectionIndex {sectionIndex} either < 0 or >= {imageArray.GetLength(0)}. Second dimension of array has length {imageArray.GetLength(1)}.");
+				DoomScroll._log.LogInfo($"sectionIndex {sectionIndex} either < 0 or >= {imageArray.GetLength(0)}. Default Length measure: {imageArray.Length}");
 			}
         }
 		public bool CompileImage()
