@@ -79,7 +79,7 @@ namespace Doom_Scroll
 
         private void RpcPostTask(string text)
         {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWSTOCHAT, (SendOption)1);
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDTASKTOCHAT, (SendOption)1);
             messageWriter.Write(text);
             messageWriter.EndMessage();
         }

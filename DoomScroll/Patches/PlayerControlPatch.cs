@@ -11,6 +11,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        SENDTASKTOCHAT = 244,
         SENDVOTE = 245,
         SENDIMAGETOCHAT = 246,
         SENDENDORSEMENT = 247,
@@ -85,6 +86,13 @@ namespace Doom_Scroll.Patches
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDTASKTOCHAT:
+                    if (DestroyableSingleton<HudManager>.Instance)
+                    {
+                        ChatControllerPatch.content = ChatContent.TEXT;
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, reader.ReadString());
+                    }
+                    return;
                 case (byte)CustomRPC.SENDVOTE:
                     if (AmongUsClient.Instance.AmHost)
                     {
