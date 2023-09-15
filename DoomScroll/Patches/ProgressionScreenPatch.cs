@@ -20,18 +20,15 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo("On Progression Screen, playerSWClist = " + SecondaryWinConditionManager.OverallSWCResultsText());
             
             string results = "";
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            foreach (SecondaryWinCondition swc in SecondaryWinConditionManager.GetSWCList())
             {
-                SecondaryWinCondition swc = SecondaryWinConditionManager.GetSwcByPlayerID(player.PlayerId);
-                if (swc != null)
+                results += swc.SendableResultsText();
+                if (NewsFeedManager.Instance.PlayerScores.ContainsKey(swc.GetPayerId()))
                 {
-                    results += swc.SendableResultsText();
-                    if (NewsFeedManager.Instance.PlayerScores.ContainsKey(player.PlayerId))
-                    {
-                        results += NewsFeedManager.Instance.PlayerScores[player.PlayerId];
-                    }
+                    results += NewsFeedManager.Instance.PlayerScores[swc.GetPayerId()];
                 }
             }
+
             // game log
             if (AmongUsClient.Instance.AmHost)
             {
