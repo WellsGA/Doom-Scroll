@@ -202,7 +202,7 @@ namespace Doom_Scroll.Patches
                         DoomScroll._log.LogInfo("--------------\nReceiving RPC image\n--------------");
                         int numMessages = reader.ReadInt32();
                         byte pID = reader.ReadByte();
-                        int imgID = reader.ReadByte();
+                        int imgID = reader.ReadInt32();
                         DoomScrollImage currentImage = new DoomScrollImage(numMessages, pID, imgID);
                         string currentImageKey = $"{pID}{imgID}";
                         currentImagesAssembling.Add((string)$"{pID}{imgID}", currentImage);
@@ -218,7 +218,7 @@ namespace Doom_Scroll.Patches
                 case (byte)CustomRPC.SENDIMAGEPIECE:
                     {
                         byte playerid = reader.ReadByte();
-                        int imageid = reader.ReadByte();
+                        int imageid = reader.ReadInt32();
                         int sectionIndex = reader.ReadInt32();
                         byte[] imageBytesSection = reader.ReadBytesAndSize();
                         DoomScroll._log.LogInfo($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");

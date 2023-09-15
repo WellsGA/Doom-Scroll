@@ -38,13 +38,13 @@ namespace Doom_Scroll
             {
                 if (i != numMessages - 1)
                 {
-                    RPCSendImageFilePiece(pID, imageFile.Id, image.Skip(imgSectionLength * i).Take(imgSectionLength).ToArray(), numMessages, i);
+                    RPCSendImageFilePiece(pID, imageFile.Id, image.Skip(imgSectionLength * i).Take(imgSectionLength).ToArray(), i);
                     DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(imgSectionLength * i).Take(imgSectionLength).ToArray().Length}");
                     await Task.Delay(TimeBetweenPieces);
                 }
                 else
                 {
-                    RPCSendImageFilePiece(pID, imageFile.Id, image.Skip(imgSectionLength * i).ToArray(), numMessages, i);
+                    RPCSendImageFilePiece(pID, imageFile.Id, image.Skip(imgSectionLength * i).ToArray(), i);
                     DoomScroll._log.LogMessage($"Bytearray # {i} of image bytearray sections sent. Length is {image.Skip(imgSectionLength * i).ToArray().Length}");
                     await Task.Delay(TimeBetweenPieces);
                 }
@@ -79,7 +79,7 @@ namespace Doom_Scroll
             return true;
         }
 
-        public static bool RPCSendImageFilePiece(byte playerID, int imageID, byte[] section, int numMessages, int sectionID)
+        public static bool RPCSendImageFilePiece(byte playerID, int imageID, byte[] section, int sectionID)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGEPIECE, (SendOption)1);
             messageWriter.Write(playerID);
