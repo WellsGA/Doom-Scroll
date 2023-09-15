@@ -3,78 +3,138 @@ namespace Doom_Scroll.Common
 {
     internal static class NewsStrings
     {
-        public static string[] headlinesProtect1p = new string[]
+
+        // 1) PLAYER GENERATED
+        // TRUSTWORTHY - protect
+        public static string[] trustProtect = new string[]
         {
-            "{0} saves Puppy from Burning Building!",
-            "HERO: {0} Saves Ship from Sabotage",
+            "I've seen {X} do several tasks. Crewest mate I've ever seen.",
+            "My cat Sir Wigglesworth loves {X}, and Big Wigs hates everyone.",
+            "I've done {#} tasks! I'M INNOCENT.",
+            "I'm crew I'm clean I'm vibin.",
+            "I'm signed in to {#} tasks obviously I'm crew."
         };
 
-        public static string[] headlinesFrame1p = new string[]
+        // TRUSTWORTHY - frame
+        public static string[] trustFrame = new string[]
+        {
+            "{X} is looking pretty sus",
+            "I might be imposter tbh"
+        };
+        // UNTRUSTWORTHY - protect
+        public static string[] unTrustProtect = new string[]
+        {
+            "My cat trusts {X}, I trust {X}. Ms. Meatball can sense good auras",
+            "{X} just saved my puppy from a burning building!",
+            "{X} just saved the ship from sabotage #hero",
+            "I can't believe {X} and {Y} are DATING #scandalous"
+        };
+        // UNTRUSTWORTHY - frame
+        public static string[] unTrustFrame = new string[]
+        {
+            "{X} seen stealing food from puppies!",
+            "Is {X} really who they say they are?",
+            "{X} Isn't doing their fair share!",
+            "{X} just stole my lunch from the fridge :(",
+            "{X} KEPT ME UP ALL NIGHT! STOP PARTYING PLEASE",
+            "[S] says {X} hasn't done ANY tasks???? INSANE",
+            "I just caught {X} loitering near vents???"
+        };
+
+        // 2) AUTO GENERATED
+        // TRUSTWORTHY - protect
+        public static string[] autoTrustProtect = new string[]  // NEEDS VALIDATION
+        {
+            "{X} has signed in to {#} tasks.",
+            "{X} Saves Ship from Sabotage.",
+            "{X} Has Completed Several Tasks.",
+            "Security Records Reveal {X} Has Prevented # Sabotages",
+            "{X} has completed {#} tasks"
+        };
+        // TRUSTWORTHY - frame
+        public static string[] autoTrustFrame = new string[]
        {
-            "{0} Caught Loitering Near Vents.",
-            "{0} Seen Stealing Food from Puppies!",
-            "Is {0} Really Who They Say They Are?",
-            "{0} Isn't Doing Their Fair Share!",
-            "{0} Caught Stealing Lunches from Fridge",
-            "\'{0} CANNOT Be Trusted\', Local Ghost Warns",
-            "{0} Parties 'Til 4am, Keeps Shipmates Awake",
+            "Task Records Show {X} Hasn't Completed Their Tasks",
+            "{X} is Missing from Sign-In Sheet",
+            "{X} Seen Loitering Near Vents.",
+            "Report: {X} Committed Sabotage.",
+            "'{X} CANNOT Be Trusted', Local Ghost Warns."
+       };
+        // UNTRUSTWORTHY - protect
+        public static string[] autoUnTrustProtect = new string[]
+       {
+           "HERO: {X} Saves Ship from Sabotage.",
+           "{X} saves Puppy from Burning Building!"
+       };
+        // UNTRUSTWORTHY - frame
+         public static string[] autoUnTrustFrame = new string[]
+        {
+            "{X} Seen Stealing Food from Puppies!",
+            "Is {X} Really Who They Say They Are?",
+            "{X} Isn't Doing Their Fair Share!",
+            "{X} Caught Stealing Lunches from Fridge.",
+            "'{X} CANNOT Be Trusted', Local Ghost Warns.",
+            "{X} Parties 'Til 4am, Keeps Shipmates Awake.",
+            "LAZY??? Task Records Reveal {X} Hasn't Completed Their Tasks",
+            "Imposter Among Us? {X} is Missing from Sign-In Sheet",
+            "LIGHTS OUT: Security Records Suggest {X} Sabotaging Crew",
+            "BUSY BEE: {X} Has Completed More Tasks Than {Y}.",
+            "X Caught Loitering Near Vents, \"Like a Rat\" Says Witness",
+            "{X} and {Y} Caught Sharing Headphones at Lunch",
+            "{X} seen arguing with {Y}, Calls Them \"Smallest Bean\"",
+            "{X} and {Y} Spotted Holding Hands During Meeting?!",
+            "Anonymous Source: \"{X} is the imposter\"",
+            "BREAKING: {X} has only signed in to {#} tasks all game",
+            "{X} Seen Loitering Near Vents.",
+            "{X} Frustrated, Blames {Y} for Slow Task Completion",
+            "TENSION ON THE SHIP! {X} seen arguing with Y."
+        };
+
+        // SOURCES
+        public static string[] trustSource = new string[]
+       {
+           "{C} Crewmate",
+           "@[N]"
        };
 
-        public static string[] headlinesProtect2p = new string[]
+        public static string[] unTrustSource = new string[]
         {
-            "{0} and {1} Spotted Holding Hands During Meeting?!",
-            "{0} and {1} Caught Sharing Headphones at Lunch"
-        };
-
-        public static string[] headlinesFrame2p = new string[]
-        {
-            "{0} seen arguing with {1}",
-            "{0} Blames {1} for Slow Task Completion",
-        };
-
-        public static string[] headlines1p1n = new string[]
-        {
-            "{0} has completed {1} tasks",
-        };
-
-        public static string[] trustedSources = new string[]
-        {
-            "Spaceship News Network",
-            "Amogus Weekly",
-            "Bluffington Post",
-            "Crewmate Community Board",
-            "ZotZotZot Chronicles",
-            "Julia the Journalist",
-            "Crews News",
-            "The Gopher Report"
-        };
-
-        public static string[] fakeSources = new string[]
-        {
-            "SuspiciousMinds Website",
-            "Red Tribunal",
-            "Innocent Street Journal",
-            "Spacehip News Network",
-            "Imposter Kyle\'s Personal Blog",
+            "{C} Crewm8_",
             "@NotMe29",
-            "Amogus Weekly",
-            "Bluffington Post",
-            "@GLSNews",
-            "The Selfless Report"
+            "@FreddyGazebo1922830485",
+            "@xXCrewhateXx",
+            "{C} Grewmate",
+            "@{N}_1515386",
+            "@REAL{N}",
+            "@{N}official"
         };
 
-        public static string[] PropagandaSources = new string[]
-        {
-            "Minnie from Accounting",
-            "AmonGossip",
-            "Bean Scene Magazine",
-            "Polus Weekly",
-            "The Vent Sesh",
-            "From the Abyss",
-            "Brian's Room",
-            "Pasta Sauce Post",
-            "MeetingNotes Website",
-            "The Ejected Editorial"
-        };
-    }
+
+        public static string[] autoTrustSource = new string[]
+       {
+           "Spaceship News Network",
+           "Amongus Weekly",
+           "Buffington Post",
+           "Crewmate Community Board",
+           "ZotZotZot Chronicles",
+           "Julia the Journalist",
+           "Crews News",
+           "The Gopher Report"
+
+       };
+
+        public static string[] autoUnTrustSource = new string[]
+       {
+           "SusAmongUs on reddit",
+           "RedNewsMedia.blogsite.web",
+           "Innocent Street Journal",
+           "Spacehip News Network",
+           "Imposter Kyle's Personal Blog",
+           "Amogus Weekly",
+           "Bluffington Post",
+           "@GLSNews",
+           "The Selfless Report"
+       };
+
+  }
 }
