@@ -24,6 +24,7 @@ namespace Doom_Scroll
         // pages
         private TutorialBookletPage m_titlePage;
         private TutorialBookletPage m_headlines;
+        private TutorialBookletPage m_headlinesThree;
         private TutorialBookletPage m_headlinesTwo;
         private TutorialBookletPage m_signInForms;
         //private Page m_screenshots;
@@ -38,8 +39,9 @@ namespace Doom_Scroll
         // text for different pages
         private String m_titlePageText = "Click through the following pages to learn more about DoomScroll and its\n misinformation features!";
         private String m_headlinesText = "Headlines can provide useful clues, but are they always trustworthy? When\n the NEWS button is yellow, click to choose a headline that will\n help your fellow crewmates (or trick them).\r\nTIP: Evaluate the evidence thoroughly to look for mistakes or inconsistencies.\r\n";
-        private String m_headlinesTextTwo = "Common signs of fake news:\r\n\r\n* Emotionally provocative/polarizing content          \r\n* Hyperbolic claims\r\n* Many claims at once          \r\n* Hyperpartisan bias\r\n* Misleading/biased statistics          \r\n* Conspiracy theories\r\n* Trolling          \r\n* Discredits or attacks opposing individuals/groups\r\n* Common signs of untrustworthy sources:          \r\n* Domains impersonating more reputable sources\r\n* Fake/Misleading domains          \r\n* Less trustworthy sponsors (e.g. blogs)\r\n\r\n";
-        private String m_signInFormsText = "Sign in to your tasks! You’ll be prompted to sign in to random tasks.\n Click on a player to confirm who completed it. This can create\n evidence that you (or others) are a contributing crewmate.\r\nTIP: Compare everyone’s arguments with the available\r\nevidence to help determine who you trust.";
+        private String m_headlinesTextThree = "* During meetings, use the like :) and dislike :( buttons to share your opinions\r\n on different posts. Then click the arrow to share to the chat.\r\n"; //* Click the T or F button to vote whether you think the post is TRUE\r\n or FALSE. Everyone’s scores will be revealed at the end of the game!\r\n";
+        private String m_headlinesTextTwo = "Common signs of fake news:\r\n\r\n* Emotionally provocative/polarizing content          \r\n* Hyperbolic claims\r\n* Many claims at once          \r\n* Hyperpartisan bias\r\n* Misleading/biased statistics          \r\n* Conspiracy theories\r\n* Trolling          \r\n* Discredits or attacks opposing individuals/groups\r\n* Common signs of untrustworthy sources:          \r\n* Domains impersonating more reputable sources\r\n* Fake/Misleading domains          \r\n* Less trustworthy sponsors (e.g. blogs, forums)\r\n\r\n";
+        private String m_signInFormsText = "Sign in to your tasks! You’ll be prompted to sign in to random tasks.\n Click on a player to confirm who completed it. This can create\n evidence that you (or others) are a contributing crewmate.\nYou can share sign-ins in the chat during meetings.\r\nTIP: Compare everyone’s arguments with the available\r\nevidence to help determine who you trust.";
         //private String m_screenshotsText = "These are screenshots! They don't work right now.";
         private String m_infiniteChatLogsText = "Chat logs from earlier meetings remain available throughout the match.\n Look back at old messages to see if everyone’s arguments stay consistent.\r\nTIP: What are everyone’s motivations? How is that influencing their arguments?";
         private String m_swcText = "SWCs are secondary objectives for you to complete along with your role as \ncrewmate or imposter. To win, you must do your duties as crewmate or\n imposter AND either PROTECT or FRAME your randomly assigned target player.\r\n* Protect - Keep the player alive       \r\n* Frame - Get the player eliminated\r\nTIP: How might information be being taken out of context?";
@@ -149,6 +151,7 @@ namespace Doom_Scroll
         {
             m_titlePage = new TutorialBookletPage("DoomScroll Tutorial Booklet", m_titlePageText, m_tutorialBookletArea, "Doom_Scroll.Assets.MainMenu_Button_Basic.png");
             m_headlines = new TutorialBookletPage("Headlines", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsSelect.png", "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
+            m_headlinesThree = new TutorialBookletPage("Headlines", m_headlinesTextThree, m_tutorialBookletArea);
             m_headlinesTwo = new TutorialBookletPage("Headlines", m_headlinesTextTwo, m_tutorialBookletArea);
             m_signInForms = new TutorialBookletPage("Sign-In Forms", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
             m_infiniteChatLogs = new TutorialBookletPage("Infinite Chat Logs", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatAfter.png", "Doom_Scroll.Assets.infiniteChatBefore.png");
@@ -160,6 +163,7 @@ namespace Doom_Scroll
             {
                 m_titlePage,
                 m_headlines,
+                m_headlinesThree,
                 m_headlinesTwo,
                 m_signInForms,
                 m_infiniteChatLogs,
