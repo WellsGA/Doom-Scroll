@@ -352,16 +352,20 @@ namespace Doom_Scroll
 
         private string ReplaceSymbolsInHeadline(string raw, string name, int taskCount) 
         {
-            raw = raw.Replace("{X}", name);
-            raw = raw.Replace("{Y}", GetRandomPlayerName());
-            raw = raw.Replace("{#}", taskCount.ToString());
+            if(raw.Contains("{X}")) raw = raw.Replace("{X}", name);
+
+            if (raw.Contains("{Y}")) raw = raw.Replace("{Y}", GetRandomPlayerName());
+
+            if (raw.Contains("{#}")) raw = raw.Replace("{#}", taskCount.ToString());
             return raw;
         }
 
         private string ReplaceSymbolsInSource(string raw, string color, string name)
         {
-            raw = raw.Replace("{C}", color);
-            raw = raw.Replace("{N}",name);
+
+            if (raw.Contains("{C}")) raw = raw.Replace("{C}", color);
+
+            if (raw.Contains("{N}")) raw = raw.Replace("{N}",name);
             return raw;
         }
 
