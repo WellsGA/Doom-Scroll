@@ -28,7 +28,7 @@ namespace Doom_Scroll.Patches
                     results += NewsFeedManager.Instance.PlayerScores[swc.GetPayerId()];
                 }
             }
-
+            results = SecondaryWinConditionManager.OverallSWCResultsText();
             // game log
             if (AmongUsClient.Instance.AmHost)
             {

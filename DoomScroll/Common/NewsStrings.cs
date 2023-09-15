@@ -94,7 +94,7 @@ namespace Doom_Scroll.Common
         public static string[] trustSource = new string[]
        {
            "{C} Crewmate",
-           "@[N]"
+           "@{N}"
        };
 
         public static string[] unTrustSource = new string[]
