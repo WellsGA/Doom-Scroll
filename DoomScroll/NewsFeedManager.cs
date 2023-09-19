@@ -371,11 +371,11 @@ namespace Doom_Scroll
         {
             string headline = "";
             string source = "";
-            int trustOruntrust = UnityEngine.Random.Range(0, 2);
+            bool isTrustworthy = UnityEngine.Random.value > 0.5f;
             
-            switch (trustOruntrust)
+            switch (isTrustworthy)
             {
-                case 0:
+                case true:
                     if (protect)
                     {
                         int rand1 = UnityEngine.Random.Range(0, NewsStrings.trustProtect.Length);
@@ -389,7 +389,7 @@ namespace Doom_Scroll
                     int randSource = UnityEngine.Random.Range(0, NewsStrings.trustSource.Length);
                     source = NewsStrings.trustSource[randSource];
                     break; ;
-                case 1:
+                case false:
                     if (protect)
                     {
                         int rand1 = UnityEngine.Random.Range(0, NewsStrings.unTrustProtect.Length);
@@ -408,7 +408,7 @@ namespace Doom_Scroll
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(player.PlayerId);
             source = ReplaceSymbolsInSource(source, playerInfo.GetPlayerColorString(), player.name);
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;
-            return new NewsItem(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);   //// PLAYER CREATED NEWS ARE ALWAYS FALSE?
+            return new NewsItem(id, PlayerControl.LocalPlayer.PlayerId, headline, isTrustworthy, source);
         }
 
         // Automatic News Creation - Only if player is host!
@@ -459,7 +459,7 @@ namespace Doom_Scroll
             PlayerControl pl = GetRandomPlayer();
             headline = ReplaceSymbolsInHeadline(headline, pl.name, GetFinishedTaskCount(pl.PlayerId));
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsPostedByLocalPLayer;
-            return new NewsItem(id, 255, headline, false, source);
+            return new NewsItem(id, 255, headline, true, source);
         }
 
         public void RPCSandNews(NewsItem news)
