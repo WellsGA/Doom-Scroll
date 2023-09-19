@@ -85,7 +85,6 @@ namespace Doom_Scroll
                 AssignableTasks.Remove(task);
             }
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDASSIGNEDTASK, (SendOption)1);
-            messageWriter.Write(PlayerControl.LocalPlayer.PlayerId); // assigner
             messageWriter.Write(player); // assignee
             messageWriter.Write(task); //task
             messageWriter.EndMessage();
