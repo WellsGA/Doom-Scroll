@@ -109,8 +109,9 @@ namespace Doom_Scroll.Patches
                             {
                                 ChatControllerPatch.content = ChatContent.SCREENSHOT;
                                 ChatControllerPatch.screenshot = currentImagesAssembling[(string)$"{playerid}{imageid}"].Image;
-                                string chatText = __instance.PlayerId.ToString() + "#" + ScreenshotManager.Instance.Screenshots.ToString();
+                                string chatText = playerid + "#" + imageid;
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                                ChatControllerPatch.PostfixAddChat(DestroyableSingleton<HudManager>.Instance.Chat, __instance, chatText);
                                 DoomScroll._log.LogMessage("Should have added image locally!");
                             }
                             return;
