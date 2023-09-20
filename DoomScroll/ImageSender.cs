@@ -32,8 +32,15 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("file size: " + image.Length);
 
             //sending RPCs
-            
-           RpcSendImageFile(pID, imageFile.Id, image.Length, numMessages);
+            /*string arrayString = "";
+            foreach (byte b in image)
+            {
+                arrayString += " " + b.ToString();
+            }
+            DoomScroll._log.LogInfo("Byte array: " + arrayString);*/
+
+
+            RpcSendImageFile(pID, imageFile.Id, image.Length, numMessages);
            foreach (int i in Enumerable.Range(0, numMessages))
             {
                 if (i != numMessages - 1)

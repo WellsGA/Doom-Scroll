@@ -233,6 +233,19 @@ namespace Doom_Scroll.Patches
                         if (sectionIndex == currentImagesAssembling[(string)$"{playerid}{imageid}"].GetNumByteArraysExpected()-1 && currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage())
                         {
                             DoomScroll._log.LogInfo("IMAGE COMPLETELY RECEIVED.");
+                            /*string arrayString = "";
+                            foreach (byte b in currentImagesAssembling[(string)$"{playerid}{imageid}"].Image)
+                            {
+                                arrayString += " " + b.ToString();
+                            }
+                            DoomScroll._log.LogInfo("Byte array: " + arrayString);*/
+                            if (FolderManager.Instance != null && ScreenshotManager.Instance != null)
+                            {
+                                DoomScroll._log.LogInfo("Adding screenshot to images folder.");
+                                FolderManager.Instance.AddImageToScreenshots("evidence_#" + ScreenshotManager.Instance.Screenshots + ".jpg", currentImagesAssembling[(string)$"{playerid}{imageid}"].Image);
+                                ScreenshotManager.Instance.IncrementScreenshots();
+                                DoomScroll._log.LogInfo("number of screenshots: " + ScreenshotManager.Instance.Screenshots);
+                            }
                             return;
                         }
                         else

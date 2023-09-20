@@ -187,6 +187,10 @@ namespace Doom_Scroll
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
         }
+        public void IncrementScreenshots()
+        {
+            Screenshots++;
+        }
 
         public void Reset()
         {
