@@ -237,6 +237,11 @@ namespace Doom_Scroll.Patches
                                 arrayString += " " + b.ToString();
                             }
                             DoomScroll._log.LogInfo("Byte array: " + arrayString);*/
+                            DoomScroll._log.LogInfo("Byte array:");
+                            foreach (byte b in image)
+                            {
+                                DoomScroll._log.LogInfo($"{b}");
+                            }
                             if (FolderManager.Instance != null && ScreenshotManager.Instance != null)
                             {
                                 DoomScroll._log.LogInfo("Adding screenshot to images folder.");

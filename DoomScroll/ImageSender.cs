@@ -38,6 +38,11 @@ namespace Doom_Scroll
                 arrayString += " " + b.ToString();
             }
             DoomScroll._log.LogInfo("Byte array: " + arrayString);*/
+            DoomScroll._log.LogInfo("Byte array:");
+            foreach (byte b in image)
+            {
+                DoomScroll._log.LogInfo($"{b}");
+            }
 
 
             RpcSendImageFile(pID, imageFile.Id, image.Length, numMessages);
