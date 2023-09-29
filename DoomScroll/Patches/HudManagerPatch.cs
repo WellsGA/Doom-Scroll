@@ -75,11 +75,11 @@ namespace Doom_Scroll.Patches
                 // create a random news
                 if (Random.Range(0, 2) == 0)
                 {
-                    NewsFeedManager.Instance.RPCSandNews(NewsFeedManager.Instance.CreateRandomTrueNews());
+                    NewsFeedManager.Instance.RPCSandNews(NewsCreator.CreateRandomTrueNews());
                 }
                 else
                 {
-                    NewsFeedManager.Instance.RPCSandNews(NewsFeedManager.Instance.CreateRandomFakeNews());
+                    NewsFeedManager.Instance.RPCSandNews(NewsCreator.CreateRandomFakeNews());
                 }
                 // selects new players to post news
                 NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();

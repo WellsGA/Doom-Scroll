@@ -2,6 +2,7 @@
 using Hazel;
 using System.Collections.Generic;
 using Doom_Scroll.Common;
+using Doom_Scroll.UI;
 
 namespace Doom_Scroll.Patches
 {
@@ -128,27 +129,28 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SENDENDORSEMENT:
                     {
-                        NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
-                        if (news != null)
+                        foreach(PostEndorsement post in ChatControllerPatch.endorsemntList)
                         {
-                            if (reader.ReadBoolean()) // endorse
+                            if(post.Id == reader.ReadString())
                             {
-                                news.TotalEndorsement = reader.ReadBoolean() ? news.TotalEndorsement + 1 : news.TotalEndorsement - 1;
-                                news.EndorseLable.SetText(news.TotalEndorsement.ToString());
-                                news.EndorsementList[__instance.PlayerId] = reader.ReadBoolean();
+                                if (reader.ReadBoolean()) // endorse
+                                {
+                                    post.TotalEndorsement = reader.ReadBoolean() ? post.TotalEndorsement + 1 : post.TotalEndorsement - 1;
+                                    post.EndorseLable.SetText(post.TotalEndorsement.ToString());
+                                }
+                                else  // denounce
+                                {
+                                    post.TotalDenouncement = reader.ReadBoolean() ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
+                                    post.DenounceLable.SetText(post.TotalDenouncement.ToString());
+                                }
                             }
-                            else  // denounce
+                            else
                             {
-                                news.TotalDenouncement = reader.ReadBoolean() ? news.TotalDenouncement + 1 : news.TotalDenouncement - 1; ;
-                                news.DenounceLable.SetText(news.TotalDenouncement.ToString());
-                                news.EndorsementList[__instance.PlayerId] = reader.ReadBoolean();
+                                DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
                             }
+                            return;
                         }
-                        else
-                        {
-                            DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
-                        }
-                        return;
+                        break;
                     }
                 case (byte)CustomRPC.SENDNEWSTOCHAT:
                     {

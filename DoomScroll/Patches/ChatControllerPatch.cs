@@ -1,5 +1,7 @@
 ﻿using Doom_Scroll.Common;
+using Doom_Scroll.UI;
 using HarmonyLib;
+using Il2CppSystem.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +10,7 @@ namespace Doom_Scroll.Patches
     public enum ChatContent
     {
         TEXT,
+        HEADLINE,
         SCREENSHOT,
     }
 
@@ -18,6 +21,7 @@ namespace Doom_Scroll.Patches
     {
         public static byte[] screenshot = null; // for sharing images
         public static ChatContent content = ChatContent.TEXT;
+        public static List<PostEndorsement> endorsemntList = new List<PostEndorsement>();
 
         [HarmonyPostfix]
         [HarmonyPatch("AddChat")]
@@ -36,7 +40,24 @@ namespace Doom_Scroll.Patches
             {
                 case ChatContent.TEXT:
                     return;
-
+                case ChatContent.HEADLINE:
+                    if (texts != null)
+                    {
+                        foreach (TextMeshPro text in texts)
+                        {
+                            if(text.text == chatText)
+                            {
+                                GameObject chatbubble = text.transform.parent.gameObject;
+                                SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
+                                if (chatbubble != null && background != null)
+                                {
+                                    PostEndorsement endorsement = new PostEndorsement(chatbubble, background, sourcePlayer.PlayerId);
+                                    endorsemntList.Add(endorsement);
+                                }
+                            }
+                        }
+                    }
+                    break;
                 case ChatContent.SCREENSHOT:
                     if (screenshot == null) return;
                     if (texts != null)
