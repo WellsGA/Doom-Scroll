@@ -129,7 +129,9 @@ namespace Doom_Scroll
                         }
                     default: // none of the headlines appeared correct ...
                         {
-                            headline = "My cat Sir Wigglesworth loves " + pl.name + ", and Big Wigs hates everyone";
+                            headline = protect ? 
+                                "My cat Sir Wigglesworth loves " + pl.name + ", and Big Wigs hates everyone" :
+                                "My cat Santiago hates "  + pl.name + " and baby Teegs can see your soul.";
                             foundNews = true;
                             break;
                         }
