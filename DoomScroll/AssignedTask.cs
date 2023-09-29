@@ -2,10 +2,8 @@
 using Doom_Scroll.UI;
 using UnityEngine;
 using System.Reflection;
-using static Il2CppSystem.Runtime.Remoting.RemotingServices;
 using Doom_Scroll.Patches;
 using Hazel;
-using static Il2CppMono.Security.X509.X520;
 
 namespace Doom_Scroll
 {

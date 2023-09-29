@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Reflection;
+using System.Collections.Generic;
 using UnityEngine;
 using Doom_Scroll.UI;
 
@@ -7,12 +8,13 @@ namespace Doom_Scroll.Common
 {
     public static class NotificationManager
     {
-
+        // private static List<CustomModal> newsList = new List<CustomModal>(); 
         // Thread.Sleep() // will stop the app from responding?
         public static async void ShowNotification(string notification)
         {
             // code before delay       
             CustomModal infoModal = CreateInfoModal(notification);
+            // newsList.Add(infoModal);
             await Task.Delay(3000);
             // code after delay
             Object.Destroy(infoModal.UIGameObject);

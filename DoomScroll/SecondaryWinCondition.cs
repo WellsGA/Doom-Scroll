@@ -140,11 +140,11 @@ namespace Doom_Scroll
         {
             if (swcSuccess)
             {
-                return "\t" + GetPlayerName() + ": " + ToString() + " Success\n";
+                return "\n" + GetPlayerName() + ": " + ToString() + " Success";
             }
             else
             {
-                return "\t" + GetPlayerName() + ": " + ToString() + " Failure\n";
+                return "\n" + GetPlayerName() + ": " + ToString() + " Failure";
             }
         }
     }

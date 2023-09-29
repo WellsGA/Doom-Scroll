@@ -1,11 +1,7 @@
 ﻿using HarmonyLib;
 using Hazel;
 using System.Collections.Generic;
-using Il2CppSystem;
-using static Il2CppMono.Security.X509.X520;
-using System.Linq;
 using Doom_Scroll.Common;
-using System.Diagnostics.Metrics;
 
 namespace Doom_Scroll.Patches
 {
