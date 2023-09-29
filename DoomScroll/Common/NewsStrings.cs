@@ -7,9 +7,9 @@ namespace Doom_Scroll.Common
         // UNTRUSTWORTHY - protect
         public static string[] unTrustProtect = new string[]
         {
-            "{S} is complete mainstream propaganda fake news",
-            "I can't believe anyone trusts {S}",
-            "Anyone who believes {S} is a sheep a baby baby lamb",
+            "{X} is complete mainstream propaganda fake news",
+            "I can't believe anyone trusts {X}",
+            "Anyone who believes what {X} says is a sheep, a baby baby lamb",
             "My cat trusts {X}, I trust {X}. Ms. Meatball can sense good auras",
             "{X} just saved my puppy from a burning building!",
             "{X} just saved the ship from sabotage #hero",
@@ -20,9 +20,10 @@ namespace Doom_Scroll.Common
         // UNTRUSTWORTHY - frame
         public static string[] unTrustFrame = new string[]
         {
-            "{S} is complete mainstream propaganda fake news",
-            "I can't believe anyone trusts {S}",
-            "Anyone who believes {S} is a sheep a baby baby lamb","{X} seen stealing food from puppies!",
+            "{X} is complete mainstream propaganda fake news",
+            "I can't believe anyone trusts {X}",
+            "Anyone who believes what {X} says is a sheep, a baby baby lamb",
+            "{X} seen stealing food from puppies!",
             "Is {X} really who they say they are?",
             "{X} Isn't doing their fair share!",
             "{X} just stole my lunch from the fridge :(",
