@@ -238,7 +238,7 @@ namespace Doom_Scroll.Patches
                             }
                             DoomScroll._log.LogInfo("Byte array: " + arrayString);*/
                             DoomScroll._log.LogInfo("Byte array:");
-                            foreach (byte b in image)
+                            foreach (byte b in currentImagesAssembling[(string)$"{playerid}{imageid}"].Image)
                             {
                                 DoomScroll._log.LogInfo($"{b}");
                             }
