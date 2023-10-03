@@ -18,6 +18,9 @@ namespace Doom_Scroll
         public string Source { get; private set; }
         public CustomModal Card { get; private set; }
         public CustomButton PostButton { get; private set; }
+        public CustomButton TrustButton { get; private set; }
+        public CustomButton NotTrustButton { get; private set; }
+
         private CustomText titleUI;
         private CustomText sourceUI;
  
@@ -46,17 +49,22 @@ namespace Doom_Scroll
             sourceUI.SetLocalPosition(new Vector3(0, -0.05f, -10));
             sourceUI.SetColor(Color.gray);
             // sourceUI.SetTextAlignment(TMPro.TextAlignmentOptions.BaselineRight);
-            AddShareButton();
+            AddButtons();
             Card.ActivateCustomUI(false);
         }
-        private void AddShareButton()
+        private void AddButtons()
         {
-            float shareBtnSize = Card.GetSize().y - 0.02f;
-            Vector3 position = new Vector3(Card.GetSize().x / 2 - 0.05f, 0, -20);
+            // share btn
+            float btnSize = Card.GetSize().y - 0.02f;
+            Vector3 sharBtnPos = new Vector3(Card.GetSize().x / 2 - btnSize/2 - 0.02f, 0, -20);
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", slices);
-            PostButton = new CustomButton(Card.UIGameObject, "Post News", BtnSprites, position, shareBtnSize);
+            PostButton = new CustomButton(Card.UIGameObject, "Post News", BtnSprites, sharBtnPos, btnSize);
             PostButton.ButtonEvent.MyAction += OnClickShare;
+
+            // trust & not trust
+            Vector3 trustBtnPos = new Vector3(sharBtnPos.x - btnSize / 2 - 0.02f, 0, -20);
+
         }
 
         public void DisplayNewsCard()

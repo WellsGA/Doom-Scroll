@@ -138,6 +138,11 @@ namespace Doom_Scroll.UI
             SetScale(Vector3.one);
         }
 
+        public void SetVisibleInsideMask()
+        {
+            m_spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        }
+
         public void EnableButton(bool value)
         {
             IsEnabled = value;

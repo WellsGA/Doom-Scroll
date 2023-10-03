@@ -7,6 +7,7 @@ namespace Doom_Scroll.Common
     public static class GameLogger
     {
         private static string path = "GameLog.txt";  // default file  name at the app root
+        public static readonly DateTime startTime = DateTime.Now;
         public static void InitFileWriter(string dirpath)
         {
             try
@@ -22,6 +23,7 @@ namespace Doom_Scroll.Common
                 DirectoryInfo dir = Directory.CreateDirectory(dirpath);
                 path = Path.Combine(dir.FullName + "\\GameLog-" + DateTime.Today.Date.ToString("yyyy-MM-dd") + ".txt");
                 DoomScroll._log.LogInfo("Directory successfully created at: " + Directory.GetCreationTime(path));
+                Write(GetTime() + " Game started: " + startTime);
             }
             catch (Exception e)
             {
@@ -39,7 +41,7 @@ namespace Doom_Scroll.Common
 
         public static string GetTime()
         {
-            return DateTime.Now.ToString("t", CultureInfo.CreateSpecificCulture("en-us"));
+            return (startTime - DateTime.Now).ToString("T", CultureInfo.CreateSpecificCulture("en-GB"));
         }
     }
 }

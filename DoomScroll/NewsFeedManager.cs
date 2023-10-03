@@ -275,7 +275,7 @@ namespace Doom_Scroll
             }
         }
 
-        public void CheckForShareAndEndorseClicks()
+        public void CheckForShareClicks()
         {
             if (hudManagerInstance == null) return;
             // If chat and folder overlay are open invoke events on button clicks

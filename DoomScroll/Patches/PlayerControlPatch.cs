@@ -108,7 +108,7 @@ namespace Doom_Scroll.Patches
                                 ChatControllerPatch.screenshot = currentImagesAssembling[(string)$"{playerid}{imageid}"].Image;
                                 string chatText = playerid + "#" + imageid;
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
-                                ChatControllerPatch.PostfixAddChat(DestroyableSingleton<HudManager>.Instance.Chat, __instance, chatText);
+                               // ChatControllerPatch.PostfixAddChat(DestroyableSingleton<HudManager>.Instance.Chat, __instance, chatText);
                                 DoomScroll._log.LogMessage("Should have added image locally!");
                             }
                             return;
@@ -136,12 +136,12 @@ namespace Doom_Scroll.Patches
                                 if (reader.ReadBoolean()) // endorse
                                 {
                                     post.TotalEndorsement = reader.ReadBoolean() ? post.TotalEndorsement + 1 : post.TotalEndorsement - 1;
-                                    post.EndorseLable.SetText(post.TotalEndorsement.ToString());
+                                    post.EndorseButton.Label.SetText(post.TotalEndorsement.ToString());
                                 }
                                 else  // denounce
                                 {
                                     post.TotalDenouncement = reader.ReadBoolean() ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
-                                    post.DenounceLable.SetText(post.TotalDenouncement.ToString());
+                                    post.DenounceButton.Label.SetText(post.TotalDenouncement.ToString());
                                 }
                             }
                             else
@@ -159,7 +159,7 @@ namespace Doom_Scroll.Patches
                             NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
                             if (news != null)
                             {
-                                ChatControllerPatch.content = ChatContent.TEXT;
+                                ChatControllerPatch.content = ChatContent.HEADLINE;
                                 string chatText = news.NewsToChatText();
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
                             }

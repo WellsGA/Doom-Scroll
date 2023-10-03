@@ -12,9 +12,7 @@ namespace Doom_Scroll.UI
         // endorsement
         public string Id { get; private set; }
         public CustomButton EndorseButton { get; private set; }
-        public CustomText EndorseLable { get; private set; }
         public CustomButton DenounceButton { get; private set; }
-        public CustomText DenounceLable { get; private set; }
         public int TotalEndorsement { get; set; }
         public int TotalDenouncement { get; set; }
         private bool localPlayerEndorsed;
@@ -23,11 +21,10 @@ namespace Doom_Scroll.UI
         private GameObject chatBubble;
         private SpriteRenderer chatBubbleSR;
 
-        public PostEndorsement(GameObject parent, SpriteRenderer parentRenderer, byte playerId)
+        public PostEndorsement(GameObject parent, string id)
         {
-            Id = playerId.ToString() + Time.deltaTime;
+            Id = id;
             chatBubble = parent;
-            chatBubbleSR = parentRenderer;
             TotalEndorsement = 0;
             TotalDenouncement = 0;
             localPlayerEndorsed = false;
@@ -37,28 +34,17 @@ namespace Doom_Scroll.UI
 
         public void AddEndorseButtons()
         {
-            float endorseBtnSize = 0.15f; //???
-            Vector3 pos = new Vector3(chatBubbleSR.size.x / 2 - endorseBtnSize * 2 - 0.2f, +0.05f, -20);
+            float endorseBtnSize = 0.3f;
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-
             Sprite[] endorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.endorse.png", slices);
-            EndorseButton = new CustomButton(chatBubble, "Emdorse News", endorseSprites, pos, endorseBtnSize);
-            EndorseButton.ButtonEvent.MyAction += OnClickEndorse;
-            EndorseLable = new CustomText(EndorseButton.UIGameObject, "Endorse Label", TotalEndorsement.ToString());
-            EndorseLable.SetLocalPosition(new Vector3(0, -EndorseButton.GetSize().x / 2 - 0.05f, -10));
-            EndorseLable.SetSize(1.2f);
-            EndorseLable.SetColor(Color.green);
-
-            Vector3 pos2 = new Vector3(chatBubbleSR.size.x / 2 - endorseBtnSize - 0.1f, +0.05f, -20);
             Sprite[] unEndorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.unEndorse.png", slices);
-            DenounceButton = new CustomButton(chatBubble, "UnEndorse News", unEndorseSprites, pos2, endorseBtnSize);
-            DenounceLable = new CustomText(DenounceButton.UIGameObject, "Un-Endorse Label", TotalEndorsement.ToString());
-            DenounceLable.SetLocalPosition(new Vector3(0, -DenounceButton.GetSize().x / 2 - 0.05f, -10));
-            DenounceLable.SetSize(1.2f);
-            DenounceLable.SetColor(Color.red);
+
+            EndorseButton = CreateEndorsementButton(endorseSprites, endorseBtnSize, Color.green);
+            EndorseButton.ButtonEvent.MyAction += OnClickEndorse;
+
+            DenounceButton = CreateEndorsementButton(unEndorseSprites, endorseBtnSize, Color.red);
             DenounceButton.ButtonEvent.MyAction += OnClickUnEndorse;
         }
-
 
         private void OnClickEndorse()
         {
@@ -68,7 +54,7 @@ namespace Doom_Scroll.UI
             }
             TotalEndorsement = localPlayerEndorsed ? TotalEndorsement - 1 : TotalEndorsement + 1;
             localPlayerEndorsed = !localPlayerEndorsed;
-            EndorseLable.SetText(TotalEndorsement.ToString());
+            EndorseButton.Label.SetText(TotalEndorsement.ToString());
             DoomScroll._log.LogInfo("Endorsed: " + TotalEndorsement);
             RpcShareEndorsement(true, localPlayerEndorsed);
         }
@@ -81,7 +67,7 @@ namespace Doom_Scroll.UI
             }
             TotalDenouncement = localPlayerDenounced ? TotalDenouncement - 1 : TotalDenouncement + 1;
             localPlayerDenounced = !localPlayerDenounced;
-            DenounceLable.SetText(TotalDenouncement.ToString());
+            DenounceButton.Label.SetText(TotalDenouncement.ToString());
             DoomScroll._log.LogInfo("Denounced: " + TotalDenouncement);
             RpcShareEndorsement(false, localPlayerDenounced);
         }
@@ -99,7 +85,7 @@ namespace Doom_Scroll.UI
         public void CheckForEndorseClicks()
         {
             // If chat and folder overlay are open invoke events on button clicks
-            if (HudManager.Instance.Chat.State == ChatControllerState.Open && FolderManager.Instance.IsFolderOpen())
+            if (HudManager.Instance.Chat.State == ChatControllerState.Open && !FolderManager.Instance.IsFolderOpen())
             {
                 try
                 {
@@ -120,6 +106,19 @@ namespace Doom_Scroll.UI
                 }
             }
 
+        }
+
+        private CustomButton CreateEndorsementButton(Sprite[] icons, float size, Color color)
+        {
+            CustomButton btn = new CustomButton(chatBubble, "Emdorse News", icons);
+            btn.SetVisibleInsideMask();
+            btn.SetSize(size);
+            btn.Label.SetText(TotalEndorsement.ToString());
+            btn.Label.SetLocalPosition(new Vector3(0, -size / 2 - 0.05f, 0));
+            btn.Label.SetSize(1.2f);
+            btn.Label.SetColor(color);
+
+            return btn;
         }
     }
 }

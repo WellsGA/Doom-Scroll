@@ -37,5 +37,10 @@ namespace Doom_Scroll.UI
         {
             TextMP.alignment = alignType;
         }
+
+        public void SetOverflowMask()
+        {
+            TextMP.m_StencilValue = 3;
+        }
     }
 }

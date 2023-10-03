@@ -27,7 +27,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixBegin()
         {
             GameLogger.InitFileWriter("GameTracking");
-            GameLogger.Write("========================================= \n" + GameLogger.GetTime() + " - Game Started\n Number of players: " + GameData.Instance.AllPlayers.Count +
+            GameLogger.Write("========================================= \n" + GameLogger.GetTime() + " - New Game Started\n Number of players: " + GameData.Instance.AllPlayers.Count +
                              "\n  PLayer names and roles:\n");
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers) 
             {

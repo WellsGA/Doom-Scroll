@@ -1,9 +1,13 @@
 ﻿using Doom_Scroll.Common;
 using Doom_Scroll.UI;
 using HarmonyLib;
-using Il2CppSystem.Collections.Generic;
+using System.Collections.Generic;
+using System.Globalization;
+using System;
 using TMPro;
 using UnityEngine;
+using Steamworks;
+using UnityEngine.UI;
 
 namespace Doom_Scroll.Patches
 {
@@ -23,50 +27,72 @@ namespace Doom_Scroll.Patches
         public static ChatContent content = ChatContent.TEXT;
         public static List<PostEndorsement> endorsemntList = new List<PostEndorsement>();
 
+        [HarmonyPrefix]
+        [HarmonyPatch("AddChat")]
+        public static void PrefixAddChat(out string __state, ref string chatText)
+        {
+            // replace chat text with a timestamp (that serves as an id)
+            __state = chatText;
+            chatText = DateTime.Now.ToString("T", CultureInfo.CreateSpecificCulture("en-GB"));
+        }
+
+            
         [HarmonyPostfix]
         [HarmonyPatch("AddChat")]
-        public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText)
+        public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText, string __state)
         {
+
             if (AmongUsClient.Instance.AmHost)
             {
-                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + chatText);
+                GameLogger.Write(chatText + " - " + sourcePlayer.name + " texted: " + __state);
             }
 
             bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
             GameObject scroller = __instance.GetComponentInChildren<Scroller>().gameObject;
             TextMeshPro[] texts = scroller.gameObject.GetComponentsInChildren<TextMeshPro>();
-
-            switch (content)
+            if (texts != null)
             {
-                case ChatContent.TEXT:
-                    return;
-                case ChatContent.HEADLINE:
-                    if (texts != null)
+                foreach (TextMeshPro text in texts)
+                {
+                    
+                   
+                    if (text.text == chatText)
                     {
-                        foreach (TextMeshPro text in texts)
+                        string ID = text.text;
+
+                        DoomScroll._log.LogInfo("ChatBubble was found, id: + " + ID + ", text: " + chatText);
+                        text.text = __state;
+                        Transform chatbubble = text.transform.parent;
+                        // child elements of ChatBubble needed to set the content correctly
+                        SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
+                        TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
+                        SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
+                        
+                        RectMask2D mask2D = text.transform.parent.GetComponentInChildren<RectMask2D>();
+                        if (mask2D != null) DoomScroll._log.LogInfo("2d mask: " + mask2D.gameObject.name);
+                        
+                        switch (content)
                         {
-                            if(text.text == chatText)
-                            {
-                                GameObject chatbubble = text.transform.parent.gameObject;
-                                SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
-                                if (chatbubble != null && background != null)
+                            case ChatContent.TEXT:
+                                return;
+                            case ChatContent.HEADLINE:
+                                if (chatbubble != null)
                                 {
-                                    PostEndorsement endorsement = new PostEndorsement(chatbubble, background, sourcePlayer.PlayerId);
-                                    endorsemntList.Add(endorsement);
+                                    if(nameText != null && background != null && maskArea != null)
+                                    {
+                                        background.color = Color.yellow;
+                                        background.size = new Vector2(5.52f, 0.5f + nameText.GetRenderedHeight() + text.GetRenderedHeight() + 0.3f);
+                                        maskArea.size = background.size - new Vector2(0f, 0.03f);
+                                        background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
+                                        PostEndorsement endorsement = new PostEndorsement(chatbubble.gameObject, ID);
+                                        endorsement.EndorseButton.SetLocalPosition( new Vector3(background.size.x - 0.6f, -background.size.y/2 , 0));
+                                        endorsement.DenounceButton.SetLocalPosition( new Vector3(background.size.x - 1f, -background.size.y/2, 0));
+                                        endorsemntList.Add(endorsement);
+                                    }
                                 }
-                            }
-                        }
-                    }
-                    break;
-                case ChatContent.SCREENSHOT:
-                    if (screenshot == null) return;
-                    if (texts != null)
-                    {
-                        foreach (TextMeshPro text in texts)
-                        {
-                            if (text.text == chatText)
-                            {
-                                Transform chatbubble = text.transform.parent;
+                                break;
+                            case ChatContent.SCREENSHOT:
+                                if (screenshot == null) return;
                                 if (chatbubble != null && screenshot != null)
                                 {
                                     Sprite imgSprite = ImageLoader.ReadImageFromByteArray(screenshot);
@@ -82,11 +108,6 @@ namespace Doom_Scroll.Patches
                                     DoomScroll._log.LogInfo("Image size: " + sr.size);
                                     DoomScroll._log.LogInfo("chatbubble name: " + chatbubble.name);
 
-                                    // child elements of ChatBubble needed to set the image correctly
-                                    TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
-                                    SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
-                                    SpriteRenderer background = chatbubble.Find("Background").gameObject.GetComponent<SpriteRenderer>();
-
                                     text.text = "";
                                     text.ForceMeshUpdate(true, true);
                                     Vector3 chatpos = text.transform.localPosition;
@@ -101,11 +122,11 @@ namespace Doom_Scroll.Patches
                                     screenshot = null;
                                 }
                                 break;
-                            }
                         }
                     }
-                    return;
+                }
             }
+            content = ChatContent.TEXT;  // set back to default
         }
     }
 }

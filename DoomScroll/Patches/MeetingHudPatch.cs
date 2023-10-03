@@ -18,8 +18,12 @@ namespace Doom_Scroll.Patches
         public static void PostfixUpdate()
         {
             FolderManager.Instance.CheckForButtonClicks();
-            NewsFeedManager.Instance.CheckForShareAndEndorseClicks();
+            NewsFeedManager.Instance.CheckForShareClicks();
             TaskAssigner.Instance.CheckForShareTaskClicks();
+            foreach(PostEndorsement end in ChatControllerPatch.endorsemntList)
+            {
+                end.CheckForEndorseClicks();
+            }
             if (currentToolTipText.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
             {
                 currentToolTipText.TextMP.text = "";
