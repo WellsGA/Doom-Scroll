@@ -74,6 +74,12 @@ namespace Doom_Scroll.Patches
                         switch (content)
                         {
                             case ChatContent.TEXT:
+                                if(chatbubble != null && background != null && maskArea != null)
+                                {
+                                    background.size = new Vector2(background.size.x, background.size.y+0.5f);
+                                    background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
+                                    AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
+                                }
                                 return;
                             case ChatContent.HEADLINE:
                                 if (chatbubble != null)
@@ -84,10 +90,7 @@ namespace Doom_Scroll.Patches
                                         background.size = new Vector2(5.52f, 0.5f + nameText.GetRenderedHeight() + text.GetRenderedHeight() + 0.3f);
                                         maskArea.size = background.size - new Vector2(0f, 0.03f);
                                         background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
-                                        PostEndorsement endorsement = new PostEndorsement(chatbubble.gameObject, ID);
-                                        endorsement.EndorseButton.SetLocalPosition( new Vector3(background.size.x - 0.6f, -background.size.y/2 , 0));
-                                        endorsement.DenounceButton.SetLocalPosition( new Vector3(background.size.x - 1f, -background.size.y/2, 0));
-                                        endorsemntList.Add(endorsement);
+                                        AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
                                     }
                                 }
                                 break;
@@ -115,9 +118,10 @@ namespace Doom_Scroll.Patches
                                     image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
                                     if (nameText != null && background != null && maskArea != null)
                                     {
-                                        background.size = new Vector2(5.52f, 0.5f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight() + sr.size.y);
+                                        background.size = new Vector2(5.52f, 0.2f + nameText.GetNotDumbRenderedHeight() + sr.size.y);
                                         maskArea.size = background.size - new Vector2(0f, 0.08f);
                                         background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 3, background.transform.localPosition.z);
+                                        AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
                                     }
                                     screenshot = null;
                                 }
@@ -127,6 +131,16 @@ namespace Doom_Scroll.Patches
                 }
             }
             content = ChatContent.TEXT;  // set back to default
+        }
+
+        private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)
+        {
+            PostEndorsement endorsement = new PostEndorsement(chatbubble, ID);
+            float xPosEndorse = isLocalPlayer ? size.x - 0.9f : -size.x + 0.9f;
+            float xPosDenounce = isLocalPlayer ? xPosEndorse + 0.3f : xPosEndorse - 0.3f;
+            endorsement.EndorseButton.SetLocalPosition(new Vector3(xPosEndorse, -size.y / 2 + 0.06f, 0));
+            endorsement.DenounceButton.SetLocalPosition(new Vector3(xPosDenounce, -size.y / 2 + 0.06f, 0));
+            endorsemntList.Add(endorsement);
         }
     }
 }
