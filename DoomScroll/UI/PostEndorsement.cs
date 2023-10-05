@@ -91,11 +91,11 @@ namespace Doom_Scroll.UI
                 {
                     EndorseButton.ReplaceImgageOnHover();
                     DenounceButton.ReplaceImgageOnHover();
-                    if (EndorseButton.IsEnabled && EndorseButton.IsActive && EndorseButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (EndorseButton.IsEnabled && EndorseButton.IsActive && EndorseButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         EndorseButton.ButtonEvent.InvokeAction();
                     }
-                    if (DenounceButton.IsEnabled && DenounceButton.IsActive &&  DenounceButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (DenounceButton.IsEnabled && DenounceButton.IsActive &&  DenounceButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         DenounceButton.ButtonEvent.InvokeAction();
                     }

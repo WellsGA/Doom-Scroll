@@ -128,13 +128,12 @@ namespace Doom_Scroll.Common
             descriptionText.ActivateCustomUI(false);
             DoomScroll._log.LogInfo("Closing page");
         }
-        public static CustomButton AddLeftButton(GameObject parent, bool inFolderSystem)
+       /* public static CustomButton AddLeftButton(GameObject parent, bool inFolderSystem)
         {
             float yPos = inFolderSystem ? -0.3f : 4.5f;
             Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize;
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
+            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 backPosition = new Vector3(-sr.size.x*0.41f, yPos, -5f);
             return new CustomButton(parent, "Flip to prior page", backBtnImg, backPosition, customButtonSize.x);
 
@@ -144,11 +143,10 @@ namespace Doom_Scroll.Common
             float yPos = inFolderSystem ? -0.3f : 4.5f;
             Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize;
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
+            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 forwardPosition = new Vector3(sr.size.x*0.41f, yPos, -5f);
             return new CustomButton(parent, "Flip to next page", backBtnImg, forwardPosition, -customButtonSize.x);
 
-        }
+        }*/
     }
 }

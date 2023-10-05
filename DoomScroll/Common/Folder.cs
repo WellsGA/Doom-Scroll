@@ -12,20 +12,19 @@ namespace Doom_Scroll.Common
         public GameObject Dir { get; private set; }
         public CustomButton Btn { get; private set; }
         private Vector2 parentSize;
-        public Folder(string parentPath, string name, GameObject parentPanel)
+        public Folder(string parentPath, string name, CustomModal parentPanel)
         {
-            Sprite folderEmpty = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png");
+            Sprite[] folderEmpty = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png") };
 
             Dir = new GameObject(name);
             Dir.layer = LayerMask.NameToLayer("UI");
-            Dir.transform.SetParent(parentPanel.transform);
+            Dir.transform.SetParent(parentPanel.UIGameObject.transform);
            
             Path = parentPath + "/" + name;
-            parentSize = parentPanel.GetComponent<SpriteRenderer>().size;
+            parentSize = parentPanel.GetSize();
             Content = new List<IDirectory>();
             
-            Sprite[] images = { folderEmpty };
-            Btn = new CustomButton(Dir, name, images);
+            Btn = new CustomButton(Dir, name, folderEmpty);
             Btn.Label.SetText(name);
             Btn.Label.SetLocalPosition(new Vector3(0, 0, 0));
             Btn.Label.SetSize(3f);

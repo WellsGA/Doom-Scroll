@@ -8,6 +8,10 @@ namespace Doom_Scroll.Common
 {
     internal class ImageLoader
     {
+        public static readonly Vector4[] slices2 = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+        public static readonly Vector4[] slices3 = { new Vector4(0, 0.66f, 1, 1), new Vector4(0, 0.33f, 1, 0.66f), new Vector4(0, 0, 1, 0.33f) };
+        public static readonly Vector4[] slices4 = { new Vector4(0, 0.75f, 1, 1), new Vector4(0, 0.5f, 1f, 0.75f), new Vector4(0, 0.25f, 1, 0.5f), new Vector4(0, 0, 1, 0.25f) };
+
         // makes TMP_Sprite from a byte array
         public static TMP_Sprite ReadTMPSpriteFromByteArray(byte[] imageByte) 
         {
@@ -62,9 +66,7 @@ namespace Doom_Scroll.Common
         public static Sprite[] ReadImageSlicesFromAssembly(Assembly assembly, string resource, Vector4[] slices)
         {
             Texture2D tex = ReadTextureFromAssembly(assembly, resource);
-
             Sprite[] spriteArray = new Sprite[slices.Length];
-
             for (int i = 0; i < slices.Length; i++)
             {
                 spriteArray[i] = Sprite.Create(

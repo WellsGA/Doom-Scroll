@@ -53,12 +53,12 @@ namespace Doom_Scroll.Patches
             creditsOverlay.ActivateCustomUI(false);
             return creditsOverlay;
         }
-        public static CustomButton AddCloseButton(GameObject parent)
+        public static CustomButton AddCloseButton(CustomModal parent)
         {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(-sr.size.x / 2 - buttonSize.x / 2, sr.size.y / 2 - buttonSize.y / 2, -5f);
+            Vector2 size = parent.GetSize();
+            Vector3 position = new Vector3(-size.x / 2 - buttonSize.x / 2, size.y / 2 - buttonSize.y / 2, -5f);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            return new CustomButton(parent, "Close OurCredits", closeBtnImg, position, buttonSize.x);
+            return new CustomButton(parent.UIGameObject, "Close OurCredits", closeBtnImg, position, buttonSize.x);
         }
 
         public static void ToggleOurCredits()
@@ -136,7 +136,7 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo("About to create credits overlay...");
                 credits_overlay = CreateCreditsOverlay(GameObject.Find("NormalMenu").gameObject);
                 DoomScroll._log.LogInfo("Credits overlay created");
-                close_button = AddCloseButton(credits_overlay.UIGameObject);
+                close_button = AddCloseButton(credits_overlay);
                 DoomScroll._log.LogInfo("Added close button");
                 close_button.ButtonEvent.MyAction += ToggleOurCredits;
 
@@ -192,7 +192,7 @@ namespace Doom_Scroll.Patches
             try
             {
                 // Invoke methods on mouse click - open DoomScroll info popup
-                if (test_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (test_button.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     test_button.ButtonEvent.InvokeAction();
                 }
@@ -204,7 +204,7 @@ namespace Doom_Scroll.Patches
 
             try
             {
-                if (close_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (close_button.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     close_button.ButtonEvent.InvokeAction();
                 }
@@ -216,7 +216,7 @@ namespace Doom_Scroll.Patches
 
             try
             {
-                if (link_button_pre.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (link_button_pre.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     link_button_pre.ButtonEvent.InvokeAction();
                 }
@@ -228,7 +228,7 @@ namespace Doom_Scroll.Patches
 
             try
             {
-                if (link_button_post.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (link_button_post.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     link_button_post.ButtonEvent.InvokeAction();
                 }

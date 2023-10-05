@@ -6,7 +6,6 @@ using System.Globalization;
 using System;
 using TMPro;
 using UnityEngine;
-using Steamworks;
 using UnityEngine.UI;
 
 namespace Doom_Scroll.Patches
@@ -54,8 +53,6 @@ namespace Doom_Scroll.Patches
             {
                 foreach (TextMeshPro text in texts)
                 {
-                    
-                   
                     if (text.text == chatText)
                     {
                         string ID = text.text;

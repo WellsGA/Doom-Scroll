@@ -9,7 +9,6 @@ namespace Doom_Scroll.UI
     internal class CustomInputField : CustomUI
     {
         // inherits UIGameObject from base 
-       
         public TMP_InputField TextInputField { get; }
         public RectTransform InputRectTransform { get; }
         public GameObject TextArea { get; }

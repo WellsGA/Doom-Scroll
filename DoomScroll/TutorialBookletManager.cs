@@ -86,7 +86,7 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    if (m_tutorialBookletToggleBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_tutorialBookletToggleBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_tutorialBookletToggleBtn.ButtonEvent.InvokeAction();
                     }
@@ -112,7 +112,7 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    if (m_closeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_closeBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_closeBtn.ButtonEvent.InvokeAction();
                     }
@@ -141,10 +141,10 @@ namespace Doom_Scroll
             m_isTutorialBookletOverlayOpen = false;
             m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
             m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
-            m_closeBtn = TutorialBookletOverlay.AddCloseButton(m_tutorialBookletArea.UIGameObject);
+            m_closeBtn = TutorialBookletOverlay.AddCloseButton(m_tutorialBookletArea);
 
             m_tutorialBookletArea.ActivateCustomUI(true);
-            tutorialBookletPager = new Pageable(m_tutorialBookletArea.UIGameObject, new List<CustomUI>(), 1, false);
+            tutorialBookletPager = new Pageable(m_tutorialBookletArea, new List<CustomUI>(), 1, false);
             m_tutorialBookletArea.ActivateCustomUI(false);
         }
         private void InitTutorialBookletStructure()

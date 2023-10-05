@@ -47,7 +47,7 @@ namespace Doom_Scroll
         {
             m_cameraButton = ScreenshotOverlay.CreateCameraButton(hudManagerInstance);
             UIOverlay = ScreenshotOverlay.InitCameraOverlay(hudManagerInstance);
-            m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay.UIGameObject);
+            m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay);
 
             m_cameraButton.ButtonEvent.MyAction += OnClickCamera;
             //m_cameraButton.gameObject.AddComponent<AspectPosition>();
@@ -172,12 +172,12 @@ namespace Doom_Scroll
             try
             {
                 // Invoke methods on mouse click - open camera overlay
-                if (m_cameraButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (m_cameraButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     m_cameraButton.ButtonEvent.InvokeAction();
                 }
                 // Invoke methods on mouse click - capture screen
-                if (m_captureScreenButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (m_captureScreenButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     m_captureScreenButton.ButtonEvent.InvokeAction();
                 }

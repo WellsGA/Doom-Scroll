@@ -34,7 +34,7 @@ namespace Doom_Scroll
         // UI elements
         public CustomModal PlayerButtonHolder { get; private set; }
         private Sprite panelSprite;
-        private Sprite[] butttonSprite;
+        private Sprite[] playerButttonSprite;
         private Sprite playerSprite;
         public bool isAssignerPanelActive;
 
@@ -59,7 +59,7 @@ namespace Doom_Scroll
 
             // set up stuff for folder display, paging through. Set it false for now because not necessary yet.
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            taskPageHolder = new Pageable(parent.UIGameObject, new List<CustomUI>(), maxTaskItemsPerPage); // sets up an empty pageable 
+            taskPageHolder = new Pageable(parent, new List<CustomUI>(), maxTaskItemsPerPage); // sets up an empty pageable 
         }
 
         public void ActivatePanel(bool flag) 
@@ -113,7 +113,7 @@ namespace Doom_Scroll
             foreach( KeyValuePair<byte, CustomButton> item in PlayerButtons)
             {
                 item.Value.ReplaceImgageOnHover();
-                if (item.Value.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (item.Value.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     RPCAddToAssignedTasks(item.Key, CurrentMinigameTask);
                     ActivatePanel(false);
@@ -132,7 +132,7 @@ namespace Doom_Scroll
                     foreach (AssignedTask task in AssignedTasks)
                     {
                         task.PostButton.ReplaceImgageOnHover();
-                        if (task.PostButton.IsEnabled && task.PostButton.IsActive && task.PostButton.isHovered() && Input.GetKey(KeyCode.Mouse0))
+                        if (task.PostButton.IsEnabled && task.PostButton.IsActive && task.PostButton.IsHovered() && Input.GetKey(KeyCode.Mouse0))
                         {
                             task.PostButton.ButtonEvent.InvokeAction();
                         }
@@ -143,7 +143,6 @@ namespace Doom_Scroll
                     DoomScroll._log.LogError("Error invoking share task button method: " + e);
                 }
             }
-
         }
 
         public void Reset()
@@ -155,7 +154,6 @@ namespace Doom_Scroll
         public void DisplayAssignedTasks()
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-
             numPages = (int)Math.Ceiling((float)(AssignedTasks.Count) / FileText.maxNumTextItems);
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
 
@@ -179,12 +177,11 @@ namespace Doom_Scroll
                 }
             }
 
-            // to do: list it on a UI modal
             // always show page 1 first
             if (taskPageHolder == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                taskPageHolder = new Pageable(parent.UIGameObject, taskCards, maxTaskItemsPerPage); // sets up an empty pageable 
+                taskPageHolder = new Pageable(parent, taskCards, maxTaskItemsPerPage); // sets up an empty pageable 
             }
             else
             {
@@ -227,10 +224,8 @@ namespace Doom_Scroll
             if (!HudManager.Instance) return;
             PlayerButtons = new Dictionary<byte, CustomButton>();
             // Sprites: panel, button background, button icon
-            panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            butttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png", slices);
-            playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
+            panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");            
+            playerButttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
 
             // create the panel
             DoomScroll._log.LogInfo("player count: " + GameData.Instance.AllPlayers.Count);
@@ -251,12 +246,11 @@ namespace Doom_Scroll
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
-                    CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, butttonSprite, topLeftPos, 0.45f);
+                    CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, playerButttonSprite, topLeftPos, 0.45f);
                     CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
-                    label.SetLocalPosition(new Vector3(0, -btn.GetSize().x/2 - 0.05f, -10));
+                    label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().x/2 - 0.05f, -10));
                     label.SetSize(1.2f);
-                    SpriteRenderer sr = btn.AddButtonIcon(playerSprite, 0.7f);
-                    sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
+                    btn.SetDefaultBtnColor(Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     PlayerButtons.Add(playerInfo.PlayerId, btn);
                     DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName);
                     topLeftPos.x += 0.6f;
@@ -265,6 +259,5 @@ namespace Doom_Scroll
             // inactive at first, gets activated on task completition
             ActivatePanel(false);
         }
-
     }
 }

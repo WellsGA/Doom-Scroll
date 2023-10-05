@@ -79,7 +79,7 @@
     <EmbeddedResource Include="Assets\notificationModal.png" />
     <EmbeddedResource Include="Assets\card.png" />
     <EmbeddedResource Include="Assets\input.png" />
-    <EmbeddedResource Include="Assets\emptyBtn.png" />
+    <EmbeddedResource Include="Assets\playerBtn.png" />
 	  <EmbeddedResource Include="Assets\MainMenu_Button_Basic.png" />
 	  <EmbeddedResource Include="Assets\MainMenu_Button_Green.png" />
     <EmbeddedResource Include="Assets\playerIcon.png" />

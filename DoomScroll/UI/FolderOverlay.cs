@@ -23,8 +23,7 @@ namespace Doom_Scroll.UI
             SpriteRenderer sr = banButton.GetComponent<SpriteRenderer>();
             Vector2 size = sr ? sr.size * 2 : new Vector2(.85f, .85f);
             Vector3 position = new(pos.x, pos.y + size.y / 2 + 0.05f, pos.z);
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", slices);
+            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", ImageLoader.slices2);
             CustomButton folderBtn = new CustomButton(chatScreen, "FolderToggleButton", btnSprites, position, size.x);
             folderBtn.ActivateCustomUI(false);
             return folderBtn;
@@ -51,29 +50,27 @@ namespace Doom_Scroll.UI
             return folderOverlay;
         }
 
-        public static CustomButton AddCloseButton(GameObject parent)
+        public static CustomButton AddCloseButton(CustomModal parent)
         {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(-sr.size.x / 2 - buttonSize.x / 2, sr.size.y / 2 - buttonSize.y / 2, -5f);
+            Vector2 size = parent.GetSize();
+            Vector3 position = new Vector3(-size.x / 2 - buttonSize.x / 2, size.y / 2 - buttonSize.y / 2, -5f);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            return new CustomButton(parent, "Close Overlay", closeBtnImg, position, buttonSize.x);
+            return new CustomButton(parent.UIGameObject, "Close Overlay", closeBtnImg, position, buttonSize.x);
         }
-        public static CustomButton AddHomeButton(GameObject parent)
+        public static CustomButton AddHomeButton(CustomModal parent)
         {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] homeBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.homeButton.png", slices);
-            Vector3 homePosition = new Vector3(-sr.size.x / 2 + buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y, -5f);
-            return new CustomButton(parent, "Back to Home", homeBtnImg, homePosition, buttonSize.x);
+            Vector2 size = parent.GetSize();
+            Sprite[] homeBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.homeButton.png", ImageLoader.slices2);
+            Vector3 homePosition = new Vector3(-size.x / 2 + buttonSize.x + 0.2f, size.y / 2 - buttonSize.y, -5f);
+            return new CustomButton(parent.UIGameObject, "Back to Home", homeBtnImg, homePosition, buttonSize.x);
 
         }
-        public static CustomButton AddBackButton(GameObject parent)
+        public static CustomButton AddBackButton(CustomModal parent)
         {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", slices);
-            Vector3 backPosition = new Vector3(-sr.size.x / 2 + 2 * buttonSize.x + 0.2f, sr.size.y / 2 - buttonSize.y, -5f);
-            return new CustomButton(parent, "Back to Previous", backBtnImg, backPosition, buttonSize.x);
+            Vector2 size = parent.GetSize();
+            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
+            Vector3 backPosition = new Vector3(-size.x / 2 + 2 * buttonSize.x + 0.2f, size.y / 2 - buttonSize.y, -5f);
+            return new CustomButton(parent.UIGameObject, "Back to Previous", backBtnImg, backPosition, buttonSize.x);
 
         }
         public static CustomText AddPath(GameObject parent)

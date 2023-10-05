@@ -14,17 +14,16 @@ namespace Doom_Scroll.Common
         public string Path { get; private set; }
         public CustomButton Btn { get; set; }
 
-        public File(string parentPath, string name, GameObject parentPanel)
+        public File(string parentPath, string name, CustomModal parentPanel)
         {
             // default file icon
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] file = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.file.png", slices);
+            Sprite[] file = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.file.png", ImageLoader.slices2);
 
             Path = parentPath + "/" + name;
 
             Dir = new GameObject(name);
             Dir.layer = LayerMask.NameToLayer("UI");
-            Dir.transform.SetParent(parentPanel.transform);
+            Dir.transform.SetParent(parentPanel.UIGameObject.transform);
             Dir.transform.localScale = Vector3.one;
 
             Btn = new CustomButton(Dir, name, file);

@@ -27,12 +27,12 @@ namespace Doom_Scroll
         private HudManager hudManagerInstance;
         private CustomModal newsModal;
         private CustomButton toggleModalBtn;
+
+
         private Dictionary<byte, CustomButton> playerButtons;
+        private Sprite[] playerButtonSprites;
         private CustomButton protectButton;
         private CustomButton frameButton;
-        private Sprite[] radioBtnSprites;
-        private Sprite[] emptyButtonSprites;
-        private Sprite playerSprite;
         private GameObject playerButtonParent;
 
         private bool isprotectSelected;
@@ -60,11 +60,8 @@ namespace Doom_Scroll
         private void InitializeInputPanel()
         {  
             // button sprites
-            Vector4[] slices = { new Vector4(0, 0.66f, 1, 1), new Vector4(0, 0.33f, 1, 0.66f), new Vector4(0, 0, 1, 0.33f) };
-            radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", slices);
-            Vector4[] slices2 = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            emptyButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.emptyBtn.png", slices2);
-            playerSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerIcon.png");
+            Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);
+            playerButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
             playerButtons = new Dictionary<byte, CustomButton>();
             AllNewsList = new List<NewsItem>();
 
@@ -90,7 +87,7 @@ namespace Doom_Scroll
 
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            newsPageHolder = new Pageable(parent.UIGameObject, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable 
+            newsPageHolder = new Pageable(parent, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable 
         }
 
         public void OnClickNews()
@@ -128,32 +125,34 @@ namespace Doom_Scroll
             isTargetelected = false;
             isprotectSelected = false;
             isFrameSelected = false;
-            protectButton.RemoveButtonIcon();
-            frameButton.RemoveButtonIcon();
+            protectButton.SetButtonSelect(false);
+            frameButton.SetButtonSelect(false);
         }
 
         private void CreatePlayerButtons()
         {
-            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, -0.5f, -10);
+            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, -0.7f, -10);
 
             playerButtons.Clear();
             while (playerButtonParent.transform.childCount > 0)
             {
                 UnityEngine.Object.DestroyImmediate(playerButtonParent.transform.GetChild(0).gameObject);
             }
+            int counter = 0;
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
                     DoomScroll._log.LogInfo("Player name: " + playerInfo.PlayerName);
-                    CustomButton btn = new CustomButton(playerButtonParent, playerInfo.PlayerName, emptyButtonSprites, nextPos, 0.45f);
+                    CustomButton btn = new CustomButton(playerButtonParent, playerInfo.PlayerName, playerButtonSprites, nextPos, 0.7f);
                     CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
-                    label.SetLocalPosition(new Vector3(0, -btn.GetSize().x / 2 - 0.05f, -10));
+                    label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().x / 2 - 0.05f, -10));
                     label.SetSize(1.2f);
-                    SpriteRenderer sr = btn.AddButtonIcon(playerSprite, 0.7f);
-                    sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
+                    btn.SetDefaultBtnColor(Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     playerButtons.Add(playerInfo.PlayerId, btn);
-                    nextPos.x += 0.7f;
+                    nextPos.x = counter % 7 == 0 ? -newsModal.GetSize().x / 2 + 0.5f : nextPos.x + 0.7f;
+                    nextPos.y = (float) Math.Ceiling((decimal)counter / 7) * nextPos.y; 
+                    counter++;
                 }
             }
         }
@@ -162,12 +161,12 @@ namespace Doom_Scroll
         {
             if(isprotectSelected)
             {
-                protectButton.RemoveButtonIcon();
+                protectButton.SetButtonSelect(false);
             }
             else
             {
                 if(isFrameSelected) OnclickFrame();
-                protectButton.AddButtonIcon(radioBtnSprites[2], 0.6f);
+                protectButton.SetButtonSelect(true);
             }
             isprotectSelected = !isprotectSelected;
             DoomScroll._log.LogInfo("protect: " + isprotectSelected + ", frame: " + isFrameSelected);
@@ -177,12 +176,12 @@ namespace Doom_Scroll
         {
             if (isFrameSelected)
             {
-                frameButton.RemoveButtonIcon();
+                frameButton.SetButtonSelect(false);
             }
             else
             {
                 if (isprotectSelected) OnclickProtect();
-                frameButton.AddButtonIcon(radioBtnSprites[2], 0.6f);
+                frameButton.SetButtonSelect(true);
             }
             isFrameSelected = !isFrameSelected;
             DoomScroll._log.LogInfo("protect: " + isprotectSelected + ", frame: " + isFrameSelected);
@@ -192,7 +191,7 @@ namespace Doom_Scroll
         {
             if (isTargetelected)
             {
-                playerButtons[targetPlayer].SetColor(Color.white);
+                playerButtons[targetPlayer].SetDefaultBtnColor(Color.white);
                 if (targetPlayer == id)
                 {
                     isTargetelected = false; // deselect player
@@ -200,7 +199,7 @@ namespace Doom_Scroll
                     return;
                 }
             }
-            playerButtons[id].SetColor(Color.green);
+            playerButtons[id].SetDefaultBtnColor(Color.green);
             targetPlayer = id;
             isTargetelected = true;
             DoomScroll._log.LogInfo("target id: " + targetPlayer);
@@ -235,7 +234,7 @@ namespace Doom_Scroll
             try
             {
                 // Invoke methods on mouse click - open news form overlay
-                if (toggleModalBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (toggleModalBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     toggleModalBtn.ButtonEvent.InvokeAction();
                 }
@@ -245,11 +244,11 @@ namespace Doom_Scroll
                     protectButton.ReplaceImgageOnHover();
                     frameButton.ReplaceImgageOnHover();
 
-                    if (protectButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (protectButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         protectButton.ButtonEvent.InvokeAction();
                     }
-                    if (frameButton.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (frameButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         frameButton.ButtonEvent.InvokeAction();
                     }
@@ -257,7 +256,7 @@ namespace Doom_Scroll
                     foreach (KeyValuePair<byte, CustomButton> item in playerButtons)
                     {
                         item.Value.ReplaceImgageOnHover();
-                        if (item.Value.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        if (item.Value.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             OnSelectTargetPlayer(item.Key);
                         }
@@ -286,7 +285,7 @@ namespace Doom_Scroll
                     foreach (NewsItem news in AllNewsList)
                     {
                         news.PostButton.ReplaceImgageOnHover();
-                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.isHovered() && Input.GetKey(KeyCode.Mouse0))
+                        if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.IsHovered() && Input.GetKey(KeyCode.Mouse0))
                         {
                             news.PostButton.ButtonEvent.InvokeAction(); 
                         }
@@ -414,7 +413,7 @@ namespace Doom_Scroll
             if (newsPageHolder == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                newsPageHolder = new Pageable(parent.UIGameObject, newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
+                newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
             }
             else
             {

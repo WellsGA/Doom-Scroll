@@ -1,31 +1,33 @@
 ﻿using UnityEngine;
 using Doom_Scroll.Common;
-using Rewired.Utils;
 
 namespace Doom_Scroll.UI
 {
     public class CustomButton : CustomUI
     {
-        public enum ImageType
+        public enum ButtonState
         {
             DEFAULT,
-            HOVER
+            HOVERED,
+            SELECTED
         }
 
         // Creates and manages custom buttnos
         public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
         // inherits UIGameObject from base
-        
-        private SpriteRenderer m_spriteRenderer;
-        private Sprite[] m_buttonImage;
-       
-        private bool isDefaultImg;
+               
+        private bool isSelected;
+        private bool hasBackgroundIcon;
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
         public CustomText Label { get; private set; }
 
-        private GameObject btnIcon;
-        private SpriteRenderer iconSpriterenderer;
+        private CustomImage defaultIcon;
+        private CustomImage bgIcon;
+        private CustomImage selectIcon;
+        private Sprite defaultSprite;
+        private Sprite hoverSprite;
+
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
@@ -41,58 +43,63 @@ namespace Doom_Scroll.UI
         }
         private void BasicButton(Sprite[] images)
         {
-            m_buttonImage = images;
-            m_spriteRenderer = UIGameObject.AddComponent<SpriteRenderer>();
-            m_spriteRenderer.drawMode = SpriteDrawMode.Sliced;
-            SetButtonImg(ImageType.DEFAULT);
-            SetScale(Vector3.one);
+            CreateBasicButton(images);
             Label = new CustomText(UIGameObject, "label", ""); //empty button label
             Label.SetScale(Vector3.one);
             Label.SetSize(1f);
-            btnIcon = new GameObject("Icon");
-            btnIcon.layer = LayerMask.NameToLayer("UI");
-            btnIcon.transform.SetParent(UIGameObject.transform.parent.transform);
-            iconSpriterenderer = btnIcon.AddComponent<SpriteRenderer>();
-            iconSpriterenderer.drawMode = SpriteDrawMode.Sliced;
             ActivateCustomUI(true);
             EnableButton(true);
         }
 
-        public Vector2 GetSize()
+        private void CreateBasicButton(Sprite[] images)
         {
-            return m_spriteRenderer.size;
+            if (images.Length > 3)
+            {
+                hasBackgroundIcon = true;
+                bgIcon = new CustomImage(UIGameObject, "Bg icon", images[3]);
+            }
+            else
+            {
+                hasBackgroundIcon = false;
+            }
+            if (images.Length > 1) { hoverSprite = images[1]; }
+            if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
+
+            defaultSprite = images[0];
+            defaultIcon = new CustomImage(UIGameObject, "default btn icon", defaultSprite);
+            SetButtonState(ButtonState.DEFAULT);
+            SetScale(Vector3.one);
+        }
+
+        public Vector2 GetBtnSize()
+        {
+            return defaultIcon.GetSize();
         }
         public override void SetSize(float scaledWidth)
         {
-            m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
+            defaultIcon.SetSize(scaledWidth);
+            if(selectIcon != null) { selectIcon.SetSize(scaledWidth); }
+            if(bgIcon != null) { bgIcon.SetSize(scaledWidth); }
         }
-        public void SetColor(Color color)
+        public void SetDefaultBtnColor(Color color)
         {
-            m_spriteRenderer.color = color;
+            defaultIcon.SetColor(color);
         }
 
-        public SpriteRenderer AddButtonIcon(Sprite icon, float rim)
+        public void RemoveButtonIcon(CustomImage image)
         {
-            iconSpriterenderer.sprite = icon;
-            iconSpriterenderer.size = m_spriteRenderer.size * rim;
-            btnIcon.transform.position = UIGameObject.transform.position;
-            btnIcon.transform.localPosition = UIGameObject.transform.localPosition + new Vector3(0, 0, -10);
-            return iconSpriterenderer;
-        }
-        public void RemoveButtonIcon()
-        {
-            iconSpriterenderer.sprite = null;
+            image.SetSprite(null);
         }
         public override void ActivateCustomUI(bool value)
         {
             base.ActivateCustomUI(value);
             IsActive = value;
         }
-        public bool isHovered()
+        public bool IsHovered()
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 btnPos = m_spriteRenderer.transform.position;
-            Vector3 btnScale = m_spriteRenderer.bounds.extents;
+            Vector3 btnPos = defaultIcon.UIGameObject.transform.position;
+            Vector3 btnScale = defaultIcon.GetSpriteRenderer().bounds.extents;
 
             bool isInBoundsX = btnPos.x - btnScale.x < mousePos.x && btnPos.x + btnScale.x > mousePos.x;
             bool isInBoundsY = btnPos.y - btnScale.y < mousePos.y && btnPos.y + btnScale.y > mousePos.y;
@@ -100,59 +107,77 @@ namespace Doom_Scroll.UI
             return isInBoundsX && isInBoundsY && IsEnabled && IsActive;
         }
 
-        private void SetButtonImg(ImageType type)
+        private void SetButtonState(ButtonState type)
         {
             switch (type)
             {
-                case ImageType.DEFAULT:
-                    m_spriteRenderer.sprite = m_buttonImage[0];
-                    isDefaultImg = true;
-                    break;
-                case ImageType.HOVER:
-                    m_spriteRenderer.sprite = m_buttonImage.Length > 1 ? m_buttonImage[1] : m_buttonImage[0];
-                    isDefaultImg = false;
-                    break;
                 default:
-                    m_spriteRenderer.sprite = m_buttonImage[0];
-                    isDefaultImg = true;
+                case ButtonState.DEFAULT:
+                    // not selected and not hovered
+                    defaultIcon.SetSprite(defaultSprite);
+                    if(selectIcon != null)
+                    {
+                        isSelected = false;
+                        selectIcon.ActivateCustomUI(false);
+                    }     
+                    break;
+                case ButtonState.HOVERED:
+                    // selected or not and hovered
+                    defaultIcon.SetSprite(hoverSprite ?? defaultSprite);
+                    break;
+                case ButtonState.SELECTED:
+                    // selected and not hovered
+                    if( selectIcon !=  null)
+                    {
+                        isSelected = true;
+                        selectIcon.ActivateCustomUI(true);
+                    }
                     break;
             }
         }
 
         public void ReplaceImgageOnHover()
         {
-            if (isDefaultImg && isHovered())
+            if (IsHovered())
             {
-                SetButtonImg(ImageType.HOVER);
+                SetButtonState(ButtonState.HOVERED);
             }
-            else if (!isDefaultImg && !isHovered())
+            else if (!IsHovered())
             {
-                SetButtonImg(ImageType.DEFAULT);
+                SetButtonState(isSelected ? ButtonState.SELECTED : ButtonState.DEFAULT);
             }
         }
 
-        public void ResetButtonImage(Sprite[] newImage)
+        public void SetButtonSelect(bool value)
         {
-            m_buttonImage = newImage;
-            SetButtonImg(ImageType.DEFAULT);
-            SetScale(Vector3.one);
+            SetButtonState(value ? ButtonState.SELECTED : ButtonState.DEFAULT);
+        }
+        public void ResetButtonImages(Sprite[] newImages)
+        {
+            CreateBasicButton(newImages);
         }
 
         public void SetVisibleInsideMask()
         {
-            m_spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            SpriteRenderer[] SRs = UIGameObject.GetComponentsInChildren<SpriteRenderer>();
+            foreach (SpriteRenderer sr in SRs)
+            {
+                sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            }
         }
-
         public void EnableButton(bool value)
         {
             IsEnabled = value;
             if (value)
             {
-                m_spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+                defaultIcon.SetColor(new Color(1f, 1f, 1f, 1f));
+                if(hasBackgroundIcon) bgIcon.SetColor(new Color(1f, 1f, 1f, 1f));
             }
             else
             {
-                m_spriteRenderer.color = new Color(1f, 1f, 1f, 0.4f);
+                if(isSelected) { SetButtonState(ButtonState.DEFAULT); }
+                defaultIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
+                if (hasBackgroundIcon) bgIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
             }
         }
 

@@ -2,7 +2,6 @@
 using Doom_Scroll.Patches;
 using Hazel;
 using System.Collections.Generic;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Doom_Scroll
 {
@@ -24,7 +23,6 @@ namespace Doom_Scroll
 
                 // game log
                 GameLogger.Write("\t" + player.PlayerName + ": " + playerGoal + " " + swc.GetTargetName());
-
             }
         }
 

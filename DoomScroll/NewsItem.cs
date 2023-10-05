@@ -57,8 +57,7 @@ namespace Doom_Scroll
             // share btn
             float btnSize = Card.GetSize().y - 0.02f;
             Vector3 sharBtnPos = new Vector3(Card.GetSize().x / 2 - btnSize/2 - 0.02f, 0, -20);
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", slices);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", ImageLoader.slices2);
             PostButton = new CustomButton(Card.UIGameObject, "Post News", BtnSprites, sharBtnPos, btnSize);
             PostButton.ButtonEvent.MyAction += OnClickShare;
 
@@ -70,12 +69,6 @@ namespace Doom_Scroll
         public void DisplayNewsCard()
         {
             Card.ActivateCustomUI(true);
-        }
-
-        public void SetAuthor(byte id) // set player name and icon if not an automated post
-        {
-            AuthorID = id;
-            CreateAuthorIcon();
         }
 
         public void CreateAuthorIcon() 

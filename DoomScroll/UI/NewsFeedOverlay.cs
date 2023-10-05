@@ -14,8 +14,7 @@ namespace Doom_Scroll.UI
             Vector2 scaledSize = mapButtonSr.size;
             float yDist = (3 * mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y);
             Vector3 position = new Vector3(0, 0 - yDist, 0);
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", slices);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", ImageLoader.slices2);
 
             return new CustomButton(UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
         }
@@ -49,18 +48,9 @@ namespace Doom_Scroll.UI
             protectButton.SetLocalPosition(pos);
             CustomText protectLable = new CustomText(protectButton.UIGameObject, label + " Lable", label);
             protectLable.SetSize(1.5f);
-            protectLable.SetLocalPosition(new Vector3(protectButton.GetSize().x + 0.2f, 0, -10));
+            protectLable.SetLocalPosition(new Vector3(protectButton.GetBtnSize().x + 0.2f, 0, -10));
 
             return protectButton;
-        }
-
-        public static CustomButton CreateNewsItemButton(CustomModal parent)
-        {
-            Vector2 parentSize = parent.GetSize();
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png", slices);
-            Vector3 pos = new Vector3(0, 0, -10);
-            return new CustomButton(parent.UIGameObject, "newsItem", spr, pos, parentSize.x - 0.05f);
         }
 
     }

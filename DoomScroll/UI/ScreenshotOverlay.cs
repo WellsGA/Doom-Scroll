@@ -17,21 +17,18 @@ namespace Doom_Scroll.UI
             Vector3 position = new Vector3(0, 0 - mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y * 1.5f, 0);
             //Vector2 scaledSize = mapButtonSr.size * hud.MapButton.gameObject.transform.localScale;
             Vector2 scaledSize = mapButtonSr.size;
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash.png", slices);
+            Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash.png", ImageLoader.slices2);
 
             return new CustomButton(m_UIParent, "Camera Toggle Button", cameraBtnSprites, position, scaledSize.x);
-
         }
 
-        public static CustomButton CreateCaptureButton(GameObject parent)
+        public static CustomButton CreateCaptureButton(CustomModal parent)
         {
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] captureSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.captureScreenNew.png", slices);
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 pos = new Vector3(sr.size.x / 2 - 0.7f, 0, -10);
+            Sprite[] captureSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.captureScreenNew.png", ImageLoader.slices2);
+            Vector2 size = parent.GetSize();
+            Vector3 pos = new Vector3(size.x / 2 - 0.7f, 0, -10);
 
-            return new CustomButton(parent, "Screenshot Button", captureSprite, pos, 0.6f);
+            return new CustomButton(parent.UIGameObject, "Screenshot Button", captureSprite, pos, 0.6f);
         }
 
         public static CustomModal InitCameraOverlay(HudManager hud)

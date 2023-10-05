@@ -82,7 +82,7 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    if (m_folderToggleBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_folderToggleBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_folderToggleBtn.ButtonEvent.InvokeAction();
                     }
@@ -97,15 +97,15 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    if (m_closeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_closeBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_folderToggleBtn.ButtonEvent.InvokeAction();
                     }
-                    if (m_homeBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_homeBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_homeBtn.ButtonEvent.InvokeAction();
                     }
-                    if (m_backBtn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_backBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         m_backBtn.ButtonEvent.InvokeAction();
                     }
@@ -115,7 +115,7 @@ namespace Doom_Scroll
                         foreach (IDirectory dir in currFolder.Content)
                         {
                             dir.Btn.ReplaceImgageOnHover();
-                            if (dir.Btn.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                            if (dir.Btn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                             {
                                 ChangeDirectory(dir);
                             }
@@ -155,17 +155,17 @@ namespace Doom_Scroll
             m_isFolderOverlayOpen = false;
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);
-            m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea.UIGameObject);
-            m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea.UIGameObject);
-            m_backBtn = FolderOverlay.AddBackButton(m_folderArea.UIGameObject);
+            m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea);
+            m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
+            m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
             m_pathText = FolderOverlay.AddPath(m_folderArea.UIGameObject);
         }
         private void InitFolderStructure()
         {
-            m_root = new Folder("", "Home", m_folderArea.UIGameObject);
-            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea.UIGameObject);
-            m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea.UIGameObject, FileTextType.TASKS);
-            m_posts = new FileText(m_root.Path, "Posts", m_folderArea.UIGameObject, FileTextType.NEWS);
+            m_root = new Folder("", "Home", m_folderArea);
+            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea);
+            m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea, FileTextType.TASKS);
+            m_posts = new FileText(m_root.Path, "Posts", m_folderArea, FileTextType.NEWS);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(m_posts);
@@ -252,7 +252,7 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(string name, byte[] img)
         {
-            FileScreenshot file = new FileScreenshot(m_screenshots.Path, name, m_folderArea.UIGameObject, img);
+            FileScreenshot file = new FileScreenshot(m_screenshots.Path, name, m_folderArea, img);
             m_screenshots.AddItem(file);
             if (m_imageSender != null)
             {

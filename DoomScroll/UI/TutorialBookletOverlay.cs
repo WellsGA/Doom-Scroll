@@ -14,8 +14,7 @@ namespace Doom_Scroll.UI
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             Vector2 size = sr ? sr.size : new Vector2(1f, 1f);
             Vector3 position = new(pos.x+size.x*3.7f, pos.y + size.y * 5f, pos.z);
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialBookletToggle.png", slices);
+            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialBookletToggle.png", ImageLoader.slices2);
             CustomButton tutorialBookletBtn = new CustomButton(parent, "TutorialBookletToggleButton", btnSprites, position, size.x);
             tutorialBookletBtn.ActivateCustomUI(false);
             return tutorialBookletBtn;
@@ -42,17 +41,15 @@ namespace Doom_Scroll.UI
             {
                 tutorialBookletOverlay.SetScale(parent.transform.localScale * 0.3f);
             }
-
-
             return tutorialBookletOverlay;
         }
 
-        public static CustomButton AddCloseButton(GameObject parent)
+        public static CustomButton AddCloseButton(CustomModal parent)
         {
-            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(-sr.size.x / 2 - buttonSize.x / 2, sr.size.y / 2 - buttonSize.y / 2, -5f);
+            Vector2 size = parent.GetSize();
+            Vector3 position = new Vector3(-size.x / 2 - buttonSize.x / 2, size.y / 2 - buttonSize.y / 2, -5f);
             Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            return new CustomButton(parent, "Close Overlay", closeBtnImg, position, buttonSize.x);
+            return new CustomButton(parent.UIGameObject, "Close Overlay", closeBtnImg, position, buttonSize.x);
         }
 
     }

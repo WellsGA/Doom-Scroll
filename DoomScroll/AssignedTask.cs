@@ -57,8 +57,7 @@ namespace Doom_Scroll
         {
             float shareBtnSize = Card.GetSize().y - 0.02f;
             Vector3 position = new Vector3(Card.GetSize().x / 2 - 0.05f, 0, -20);
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", slices);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", ImageLoader.slices2);
             PostButton = new CustomButton(Card.UIGameObject, "Post News", BtnSprites, position, shareBtnSize);
             PostButton.ButtonEvent.MyAction += OnClickShare;
         }

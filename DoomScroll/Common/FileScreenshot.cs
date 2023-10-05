@@ -2,8 +2,8 @@
 using UnityEngine;
 using System.Reflection;
 using Hazel;
-using TMPro;
 using Doom_Scroll.Patches;
+using Doom_Scroll.UI;
 
 namespace Doom_Scroll.Common
 {
@@ -13,24 +13,23 @@ namespace Doom_Scroll.Common
         public static int ImageSectionLength = 1000;
 
         private byte[] m_content;
-        public Sprite Picture { get; private set; }
+        private CustomImage screenshot;
         private int m_id;
         public int Id { get; }
         private static int m_idCounter = 0;
         private bool m_shareable = false;
         public bool Shareable { get; }
 
-        public FileScreenshot(string parentPath, string name, GameObject parentPanel, byte[] image) : base(parentPath, name, parentPanel)
+        public FileScreenshot(string parentPath, string name, CustomModal parentPanel, byte[] image) : base(parentPath, name, parentPanel)
         {
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] file = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", slices);
+            Sprite[] shareBtn = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", ImageLoader.slices2);
             m_id = m_idCounter++;
             m_content = image;
-            Picture = ImageLoader.ReadImageFromByteArray(image);
+            Sprite picture = ImageLoader.ReadImageFromByteArray(image);
 
             Btn.Label.SetLocalPosition(new Vector3(0, -0.5f, 0));
-            Btn.ResetButtonImage(file);
-            Btn.AddButtonIcon(Picture, 0.2f);
+            Btn.ResetButtonImages(shareBtn);
+            DisplayImageOnButton(picture, 0.9f);  /// set screenshot as a background image
             Btn.EnableButton(false); // now sets false initially; sets true once fully shared
 
         }
@@ -39,7 +38,7 @@ namespace Doom_Scroll.Common
             //preparing arguments for RPCs
             // int numMessages = (int)Math.Ceiling(m_content.Length / ImageSectionLength * 1f);
             // byte pID = PlayerControl.LocalPlayer.PlayerId;
-            byte[] image = Picture.texture.EncodeToJPG(ImageSize);
+            byte[] image = screenshot.GetSprite().texture.EncodeToJPG(ImageSize);
             DoomScroll._log.LogInfo("file size: " + image.Length);
 
             // set locally
@@ -67,6 +66,13 @@ namespace Doom_Scroll.Common
             messageWriter.Write(playerID);
             messageWriter.Write(imageID);
             messageWriter.EndMessage();
+        }
+
+        private void DisplayImageOnButton(Sprite image, float offset)
+        {
+            screenshot = new CustomImage(Btn.UIGameObject, "screenshot" + "#" + ScreenshotManager.Instance.Screenshots.ToString(), image);
+            screenshot.SetSize(Btn.GetBtnSize().x * offset);
+            screenshot.SetScale(Vector3.one);
         }
     }
 }

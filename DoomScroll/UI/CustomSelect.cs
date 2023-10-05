@@ -8,14 +8,15 @@ namespace Doom_Scroll.UI
     {
         public Dictionary<byte, CustomButton> ButtonList { get; private set; }
         public byte Selected { get; private set; }
-        private Sprite[] buttonIcons;
+        public bool HasSelecrted { get; private set; }
+        private Sprite[] buttonIcons;        
 
-        public CustomSelect(byte[] values, GameObject parent, string name, Sprite[] images)
+        public CustomSelect(byte[] values, GameObject parent, string name, Sprite[] icons)
         {
-            buttonIcons = images;
+            buttonIcons = icons;
             foreach(byte value in values)
             {
-                CustomButton button = new CustomButton(parent, name, images);
+                CustomButton button = new CustomButton(parent, name, icons);
                 ButtonList.Add(value, button);
             }
         }
