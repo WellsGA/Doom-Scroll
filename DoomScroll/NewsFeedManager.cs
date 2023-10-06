@@ -102,9 +102,6 @@ namespace Doom_Scroll
             {
                 ClearInputSelection();
                 newsModal.ActivateCustomUI(false);
-                protectButton.EnableButton(false);
-                frameButton.EnableButton(false);
-                foreach (KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(false); }
                 IsInputpanelOpen = false;
             }
             else
@@ -112,9 +109,6 @@ namespace Doom_Scroll
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
                 CreatePlayerButtons();
                 newsModal.ActivateCustomUI(true);
-                protectButton.EnableButton(true);
-                frameButton.EnableButton(true);
-                foreach (KeyValuePair<byte, CustomButton> item in playerButtons) { item.Value.EnableButton(true); }
                 IsInputpanelOpen = true;
             }
         }
@@ -127,17 +121,17 @@ namespace Doom_Scroll
             isFrameSelected = false;
             protectButton.SetButtonSelect(false);
             frameButton.SetButtonSelect(false);
-        }
-
-        private void CreatePlayerButtons()
-        {
-            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, -0.7f, -10);
-
             playerButtons.Clear();
             while (playerButtonParent.transform.childCount > 0)
             {
                 UnityEngine.Object.DestroyImmediate(playerButtonParent.transform.GetChild(0).gameObject);
             }
+        }
+
+        private void CreatePlayerButtons()
+        {
+            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, -0.7f, -10);
+            int itemsInOneRow = 8;
             int counter = 0;
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
@@ -145,13 +139,13 @@ namespace Doom_Scroll
                 {
                     DoomScroll._log.LogInfo("Player name: " + playerInfo.PlayerName);
                     CustomButton btn = new CustomButton(playerButtonParent, playerInfo.PlayerName, playerButtonSprites, nextPos, 0.7f);
-                    CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
-                    label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().x / 2 - 0.05f, -10));
-                    label.SetSize(1.2f);
                     btn.SetDefaultBtnColor(Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
+                    btn.Label.SetText(playerInfo.PlayerName);
+                    btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().x / 2 - 0.05f, -10));
+                    btn.Label.SetSize(1.2f);
                     playerButtons.Add(playerInfo.PlayerId, btn);
-                    nextPos.x = counter % 7 == 0 ? -newsModal.GetSize().x / 2 + 0.5f : nextPos.x + 0.7f;
-                    nextPos.y = (float) Math.Ceiling((decimal)counter / 7) * nextPos.y; 
+                    nextPos.x = counter % itemsInOneRow == 0 ? -newsModal.GetSize().x / 2 + 0.5f : nextPos.x + 0.7f;
+                    nextPos.y = (float) Math.Ceiling((decimal)counter / itemsInOneRow) * nextPos.y; 
                     counter++;
                 }
             }
@@ -191,7 +185,7 @@ namespace Doom_Scroll
         {
             if (isTargetelected)
             {
-                playerButtons[targetPlayer].SetDefaultBtnColor(Color.white);
+                playerButtons[targetPlayer].SetButtonSelect(false);
                 if (targetPlayer == id)
                 {
                     isTargetelected = false; // deselect player
@@ -199,7 +193,7 @@ namespace Doom_Scroll
                     return;
                 }
             }
-            playerButtons[id].SetDefaultBtnColor(Color.green);
+            playerButtons[id].SetButtonSelect(true);
             targetPlayer = id;
             isTargetelected = true;
             DoomScroll._log.LogInfo("target id: " + targetPlayer);

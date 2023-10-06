@@ -25,9 +25,8 @@ namespace Doom_Scroll.UI
         private CustomImage defaultIcon;
         private CustomImage bgIcon;
         private CustomImage selectIcon;
+        private CustomImage hoverIcon;
         private Sprite defaultSprite;
-        private Sprite hoverSprite;
-
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
@@ -62,11 +61,12 @@ namespace Doom_Scroll.UI
             {
                 hasBackgroundIcon = false;
             }
-            if (images.Length > 1) { hoverSprite = images[1]; }
             if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
+            if (images.Length > 1) hoverIcon = new CustomImage(UIGameObject, "Hover icon", images[1]);
 
             defaultSprite = images[0];
             defaultIcon = new CustomImage(UIGameObject, "default btn icon", defaultSprite);
+            defaultIcon.SetLocalPosition(new Vector3(0, 0, -20));
             SetButtonState(ButtonState.DEFAULT);
             SetScale(Vector3.one);
         }
@@ -78,7 +78,8 @@ namespace Doom_Scroll.UI
         public override void SetSize(float scaledWidth)
         {
             defaultIcon.SetSize(scaledWidth);
-            if(selectIcon != null) { selectIcon.SetSize(scaledWidth); }
+            if (hoverIcon != null) { hoverIcon.SetSize(scaledWidth); }
+            if (selectIcon != null) { selectIcon.SetSize(scaledWidth); }
             if(bgIcon != null) { bgIcon.SetSize(scaledWidth); }
         }
         public void SetDefaultBtnColor(Color color)
@@ -114,7 +115,7 @@ namespace Doom_Scroll.UI
                 default:
                 case ButtonState.DEFAULT:
                     // not selected and not hovered
-                    defaultIcon.SetSprite(defaultSprite);
+                    if(hoverIcon != null ) hoverIcon.ActivateCustomUI(false);
                     if(selectIcon != null)
                     {
                         isSelected = false;
@@ -123,7 +124,7 @@ namespace Doom_Scroll.UI
                     break;
                 case ButtonState.HOVERED:
                     // selected or not and hovered
-                    defaultIcon.SetSprite(hoverSprite ?? defaultSprite);
+                    if (hoverIcon != null) hoverIcon.ActivateCustomUI(true);
                     break;
                 case ButtonState.SELECTED:
                     // selected and not hovered

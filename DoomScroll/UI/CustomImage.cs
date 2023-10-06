@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Doom_Scroll.UI
 {
@@ -30,6 +25,7 @@ namespace Doom_Scroll.UI
         public void SetColor(Color color)
         {
             m_spriteRenderer.color = color;
+            DoomScroll._log.LogMessage("COLOR SET: " + color.ToString());
         }
 
         public void SetSprite(Sprite sprite)
