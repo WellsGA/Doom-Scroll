@@ -121,32 +121,40 @@ namespace Doom_Scroll
             isFrameSelected = false;
             protectButton.SetButtonSelect(false);
             frameButton.SetButtonSelect(false);
+            
+        }
+
+        private void CreatePlayerButtons()
+        {
             playerButtons.Clear();
             while (playerButtonParent.transform.childCount > 0)
             {
                 UnityEngine.Object.DestroyImmediate(playerButtonParent.transform.GetChild(0).gameObject);
             }
-        }
 
-        private void CreatePlayerButtons()
-        {
-            Vector3 nextPos = new Vector3(-newsModal.GetSize().x / 2 + 0.5f, -0.7f, -10);
-            int itemsInOneRow = 8;
+            
+            float yoffset = -0.55f;
+            int itemsInOneRow = 7;
             int counter = 0;
+            Vector3 nextPos = new Vector3(0, 0, -10);
+            playerButtonParent.transform.localPosition = new Vector3(0, 0.3f, 0);
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
                     DoomScroll._log.LogInfo("Player name: " + playerInfo.PlayerName);
+                    nextPos.x = counter % itemsInOneRow == 0 ? -newsModal.GetSize().x / 2 + 0.5f : nextPos.x + 0.7f;
+                    counter++;
+                    nextPos.y = (float)Math.Ceiling((decimal)counter / itemsInOneRow) * yoffset;
+
+                    DoomScroll._log.LogInfo( ", X pos" + nextPos.x + "Y pos" + nextPos.y);
                     CustomButton btn = new CustomButton(playerButtonParent, playerInfo.PlayerName, playerButtonSprites, nextPos, 0.7f);
-                    btn.SetDefaultBtnColor(Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
+                    btn.SetDefaultBtnColor(btn.TopIcon, Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     btn.Label.SetText(playerInfo.PlayerName);
-                    btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().x / 2 - 0.05f, -10));
+                    btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().y / 2 - 0.02f, -10));
                     btn.Label.SetSize(1.2f);
                     playerButtons.Add(playerInfo.PlayerId, btn);
-                    nextPos.x = counter % itemsInOneRow == 0 ? -newsModal.GetSize().x / 2 + 0.5f : nextPos.x + 0.7f;
-                    nextPos.y = (float) Math.Ceiling((decimal)counter / itemsInOneRow) * nextPos.y; 
-                    counter++;
+                    
                 }
             }
         }

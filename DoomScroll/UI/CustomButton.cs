@@ -22,11 +22,10 @@ namespace Doom_Scroll.UI
         public bool IsActive { get; private set; }
         public CustomText Label { get; private set; }
 
-        private CustomImage defaultIcon;
-        private CustomImage bgIcon;
+        public CustomImage DefaultIcon { get; private set; }
+        public CustomImage TopIcon { get; private set; }
         private CustomImage selectIcon;
         private CustomImage hoverIcon;
-        private Sprite defaultSprite;
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
@@ -52,39 +51,39 @@ namespace Doom_Scroll.UI
 
         private void CreateBasicButton(Sprite[] images)
         {
+            
+            if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
+            if (images.Length > 1) hoverIcon = new CustomImage(UIGameObject, "Hover icon", images[1]);
+
+            DefaultIcon = new CustomImage(UIGameObject, "default btn icon", images[0]);
             if (images.Length > 3)
             {
                 hasBackgroundIcon = true;
-                bgIcon = new CustomImage(UIGameObject, "Bg icon", images[3]);
+                TopIcon = new CustomImage(UIGameObject, "Bg icon", images[3]);
+                TopIcon.SetLocalPosition(new Vector3(0, 0, -20));
             }
             else
             {
                 hasBackgroundIcon = false;
             }
-            if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
-            if (images.Length > 1) hoverIcon = new CustomImage(UIGameObject, "Hover icon", images[1]);
-
-            defaultSprite = images[0];
-            defaultIcon = new CustomImage(UIGameObject, "default btn icon", defaultSprite);
-            defaultIcon.SetLocalPosition(new Vector3(0, 0, -20));
             SetButtonState(ButtonState.DEFAULT);
             SetScale(Vector3.one);
         }
 
         public Vector2 GetBtnSize()
         {
-            return defaultIcon.GetSize();
+            return DefaultIcon.GetSize();
         }
         public override void SetSize(float scaledWidth)
         {
-            defaultIcon.SetSize(scaledWidth);
+            DefaultIcon.SetSize(scaledWidth);
             if (hoverIcon != null) { hoverIcon.SetSize(scaledWidth); }
             if (selectIcon != null) { selectIcon.SetSize(scaledWidth); }
-            if(bgIcon != null) { bgIcon.SetSize(scaledWidth); }
+            if(TopIcon != null) { TopIcon.SetSize(scaledWidth); }
         }
-        public void SetDefaultBtnColor(Color color)
+        public void SetDefaultBtnColor(CustomImage image, Color color)
         {
-            defaultIcon.SetColor(color);
+            image.SetColor(color);
         }
 
         public void RemoveButtonIcon(CustomImage image)
@@ -99,8 +98,8 @@ namespace Doom_Scroll.UI
         public bool IsHovered()
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 btnPos = defaultIcon.UIGameObject.transform.position;
-            Vector3 btnScale = defaultIcon.GetSpriteRenderer().bounds.extents;
+            Vector3 btnPos = DefaultIcon.UIGameObject.transform.position;
+            Vector3 btnScale = DefaultIcon.GetSpriteRenderer().bounds.extents;
 
             bool isInBoundsX = btnPos.x - btnScale.x < mousePos.x && btnPos.x + btnScale.x > mousePos.x;
             bool isInBoundsY = btnPos.y - btnScale.y < mousePos.y && btnPos.y + btnScale.y > mousePos.y;
@@ -171,14 +170,14 @@ namespace Doom_Scroll.UI
             IsEnabled = value;
             if (value)
             {
-                defaultIcon.SetColor(new Color(1f, 1f, 1f, 1f));
-                if(hasBackgroundIcon) bgIcon.SetColor(new Color(1f, 1f, 1f, 1f));
+                DefaultIcon.SetColor(new Color(1f, 1f, 1f, 1f));
+                if(hasBackgroundIcon) TopIcon.SetColor(new Color(1f, 1f, 1f, 1f));
             }
             else
             {
                 if(isSelected) { SetButtonState(ButtonState.DEFAULT); }
-                defaultIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
-                if (hasBackgroundIcon) bgIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
+                DefaultIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
+                if (hasBackgroundIcon) TopIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
             }
         }
 

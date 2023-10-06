@@ -12,8 +12,9 @@ namespace Doom_Scroll.Common
         public static int ImageSize = 15;
         public static int ImageSectionLength = 1000;
 
+ 
+        public CustomImage Screenshot { get; private set; }
         private byte[] m_content;
-        private CustomImage screenshot;
         private int m_id;
         public int Id { get; }
         private static int m_idCounter = 0;
@@ -26,10 +27,9 @@ namespace Doom_Scroll.Common
             m_id = m_idCounter++;
             m_content = image;
             Sprite picture = ImageLoader.ReadImageFromByteArray(image);
-
-            Btn.Label.SetLocalPosition(new Vector3(0, -0.5f, 0));
             Btn.ResetButtonImages(shareBtn);
             DisplayImageOnButton(picture, 0.9f);  /// set screenshot as a background image
+            Btn.Label.SetLocalPosition(new Vector3(0, -0.5f, 0));
             Btn.EnableButton(false); // now sets false initially; sets true once fully shared
 
         }
@@ -38,7 +38,7 @@ namespace Doom_Scroll.Common
             //preparing arguments for RPCs
             // int numMessages = (int)Math.Ceiling(m_content.Length / ImageSectionLength * 1f);
             // byte pID = PlayerControl.LocalPlayer.PlayerId;
-            byte[] image = screenshot.GetSprite().texture.EncodeToJPG(ImageSize);
+            byte[] image = Screenshot.GetSprite().texture.EncodeToJPG(ImageSize);
             DoomScroll._log.LogInfo("file size: " + image.Length);
 
             // set locally
@@ -70,9 +70,9 @@ namespace Doom_Scroll.Common
 
         private void DisplayImageOnButton(Sprite image, float offset)
         {
-            screenshot = new CustomImage(Btn.UIGameObject, "screenshot" + "#" + ScreenshotManager.Instance.Screenshots.ToString(), image);
-            screenshot.SetSize(Btn.GetBtnSize().x * offset);
-            screenshot.SetScale(Vector3.one);
+            Screenshot = new CustomImage(Btn.UIGameObject, "screenshot" + "#" + ScreenshotManager.Instance.Screenshots.ToString(), image);
+            Screenshot.SetSize(Btn.GetBtnSize().x * offset);
+            Screenshot.SetScale(Vector3.one);
         }
     }
 }
