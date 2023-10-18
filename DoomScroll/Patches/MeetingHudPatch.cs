@@ -9,7 +9,7 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(MeetingHud))]
     static class MeetingHudPatch
     {
-        public static CustomText currentToolTipText;
+        public static Tooltip meetingBeginningToolTip;
         public static MeetingHud meetingHudInstance;
         public static GameObject playerIcon;
 
@@ -24,10 +24,10 @@ namespace Doom_Scroll.Patches
             {
                 end.CheckForEndorseClicks();
             }
-            if (currentToolTipText.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
+            if (meetingBeginningToolTip.TextObject.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
             {
-                currentToolTipText.TextMP.text = "";
-                currentToolTipText.ActivateCustomUI(false);
+                meetingBeginningToolTip.TextObject.TextMP.text = "";
+                meetingBeginningToolTip.TextObject.ActivateCustomUI(false);
                 DoomScroll._log.LogInfo($"MeetingHud state is {meetingHudInstance.CurrentState}. Text should be deactivated!");
             }
         }
@@ -52,13 +52,9 @@ namespace Doom_Scroll.Patches
             meetingHudInstance = __instance;
             DoomScroll._log.LogInfo("Meeting Hud starting! Trying to add tooltip.");
             GameObject uiParent = __instance.TitleText.gameObject;
-            currentToolTipText = new CustomText(uiParent, "DiscussionTimeTooltip", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>");
-            currentToolTipText.SetColor(Color.yellow);
-            currentToolTipText.SetSize(3f);
             Vector3 textPos = new Vector3(0, -3.5f, -10);
-            currentToolTipText.SetLocalPosition(textPos);
-            currentToolTipText.ActivateCustomUI(true);
-            DoomScroll._log.LogInfo("Text should be activated!");
+            meetingBeginningToolTip = new Tooltip(uiParent, "DiscussionTime", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>", 5.5f, textPos, 3f);
+            DoomScroll._log.LogInfo("ToolTip should be activated if Tutorial Mode is On!");
 
             playerIcon = __instance.PlayerVotePrefab.gameObject;
             DoomScroll._log.LogInfo("PLAYER PREFAB ICON: " + playerIcon.name);

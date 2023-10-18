@@ -27,6 +27,7 @@ namespace Doom_Scroll
         private HudManager hudManagerInstance;
         private CustomModal newsModal;
         private CustomButton toggleModalBtn;
+        private Tooltip headlineBtnTooltip;
 
 
         private Dictionary<byte, CustomButton> playerButtons;
@@ -68,6 +69,7 @@ namespace Doom_Scroll
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += OnClickNews;
+            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will see\nit in the headlines folder\nduring meetings", 3.0f, new Vector3(toggleModalBtn.UIGameObject.transform.localPosition.x+4, toggleModalBtn.UIGameObject.transform.localPosition.y+1.8f, 0), 1f);
             ActivateNewsButton(false);
 
             // news modal
@@ -218,6 +220,7 @@ namespace Doom_Scroll
         public void ActivateNewsButton(bool value)
         {
             toggleModalBtn.ActivateCustomUI(value); ;
+            headlineBtnTooltip.ActivateToolTip(value);
         }
 
         public void CanPostNews(bool value)

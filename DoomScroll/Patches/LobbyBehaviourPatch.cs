@@ -16,6 +16,7 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(LobbyBehaviour))]
     class LobbyBehaviourPatch
     {
+        private static CustomButton m_tutorialModeToggleBtn;
         public static GameObject playerCountText;
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
@@ -45,6 +46,15 @@ namespace Doom_Scroll.Patches
             lobbyToolTipText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Text should be activated!");
 
+            Tooltip.ResetCurrentTooltips();
+
+            //lobby tutorial mode button
+            m_tutorialModeToggleBtn = CreateTutorialModeToggleBtn(playerCountText);
+            m_tutorialModeToggleBtn.ButtonEvent.MyAction += Tooltip.ToggleTutorialMode;
+            DoomScroll._log.LogInfo("Button event added to button.");
+            m_tutorialModeToggleBtn.EnableButton(true);
+            m_tutorialModeToggleBtn.ActivateCustomUI(true);
+
             if (tutorialBookletManagerInstance != null)
             {
                 tutorialBookletManagerInstance.Reset();
@@ -71,6 +81,45 @@ namespace Doom_Scroll.Patches
             if (!gameBegun && playerCountText != null && playerCountText.activeSelf)
             {
                 tutorialBookletManagerInstance.CheckForButtonClicks();
+                LobbyCheckForButtonClicks();
+            }
+        }
+
+        public static CustomButton CreateTutorialModeToggleBtn(GameObject parent)
+        {
+            Vector3 pos = parent.transform.localPosition;
+            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
+            Vector2 size = sr ? sr.size : new Vector2(1f, 1f);
+            Vector3 position = new(pos.x + size.x * 3.0f, pos.y + size.y * 5f+1f, pos.z);
+            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
+            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialModeToggle.png", slices);
+            Sprite[] threeBtnSprites = new Sprite[] { btnSprites[0], btnSprites[1], btnSprites[1] };
+            CustomButton tutorialModeBtn = new CustomButton(parent, "TutorialBookletToggleButton", btnSprites, position, size.x);
+            tutorialModeBtn.ActivateCustomUI(false);
+            return tutorialModeBtn;
+        }
+
+        public static void LobbyCheckForButtonClicks()
+        {
+
+            // If the Tutorial Mode toggle button is active invoke toggle on mouse click 
+            if (m_tutorialModeToggleBtn != null)
+            {
+                try
+                {
+                    m_tutorialModeToggleBtn.ReplaceImgageOnHover();
+                    if (m_tutorialModeToggleBtn.IsHovered())
+                    {
+                    }
+                    if (m_tutorialModeToggleBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        m_tutorialModeToggleBtn.ButtonEvent.InvokeAction();
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking tutorialBookletToggle: " + e);
+                }
             }
         }
     }
