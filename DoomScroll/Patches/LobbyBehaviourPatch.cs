@@ -51,6 +51,8 @@ namespace Doom_Scroll.Patches
             //lobby tutorial mode button
             m_tutorialModeToggleBtn = CreateTutorialModeToggleBtn(playerCountText);
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += Tooltip.ToggleTutorialMode;
+            m_tutorialModeToggleBtn.ButtonEvent.MyAction += ToggleTutorialButtonSelected;
+            m_tutorialModeToggleBtn.SetButtonSelect(Tooltip.TutorialModeOn);
             DoomScroll._log.LogInfo("Button event added to button.");
             m_tutorialModeToggleBtn.EnableButton(true);
             m_tutorialModeToggleBtn.ActivateCustomUI(true);
@@ -97,6 +99,12 @@ namespace Doom_Scroll.Patches
             CustomButton tutorialModeBtn = new CustomButton(parent, "TutorialBookletToggleButton", btnSprites, position, size.x);
             tutorialModeBtn.ActivateCustomUI(false);
             return tutorialModeBtn;
+        }
+
+        public static void ToggleTutorialButtonSelected()
+        {
+            m_tutorialModeToggleBtn.SetButtonSelect(Tooltip.TutorialModeOn);
+            DoomScroll._log.LogInfo("Changed SelectMode of toggle tutorial button!");
         }
 
         public static void LobbyCheckForButtonClicks()

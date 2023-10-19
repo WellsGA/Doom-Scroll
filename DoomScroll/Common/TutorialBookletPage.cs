@@ -60,7 +60,7 @@ namespace Doom_Scroll.Common
                 }
                 else
                 {
-                    descriptionText.SetLocalPosition(new Vector3(0, parentOverlay.GetSize().y - 4f, -10));
+                    descriptionText.SetLocalPosition(new Vector3(0, parentOverlay.GetSize().y - 14f, -10));
                 }
             }
             else

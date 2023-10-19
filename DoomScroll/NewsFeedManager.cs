@@ -28,6 +28,7 @@ namespace Doom_Scroll
         private CustomModal newsModal;
         private CustomButton toggleModalBtn;
         private Tooltip headlineBtnTooltip;
+        private Tooltip headlinePopupModalTooltip;
 
 
         private Dictionary<byte, CustomButton> playerButtons;
@@ -69,11 +70,14 @@ namespace Doom_Scroll
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += OnClickNews;
-            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will see\nit in the headlines folder\nduring meetings", 3.0f, new Vector3(toggleModalBtn.UIGameObject.transform.localPosition.x+4, toggleModalBtn.UIGameObject.transform.localPosition.y+1.8f, 0), 1f);
+            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the photo folder\nduring meetings", 0.5f, new Vector3(toggleModalBtn.UIGameObject.transform.localPosition.x + 3.7f, toggleModalBtn.UIGameObject.transform.localPosition.y + 1.9f, 0), 1f);
             ActivateNewsButton(false);
 
             // news modal
             newsModal = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
+            headlinePopupModalTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.75f, new Vector3(newsModal.UIGameObject.transform.localPosition.x, newsModal.UIGameObject.transform.localPosition.y - 2f, 0), 2f);
+            headlinePopupModalTooltip.ActivateToolTip(false);
+
 
             // frame and protect buttons
             protectButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(-1.2f, 0.3f, -10), true);
@@ -104,6 +108,7 @@ namespace Doom_Scroll
             {
                 ClearInputSelection();
                 newsModal.ActivateCustomUI(false);
+                headlinePopupModalTooltip.ActivateToolTip(false);
                 IsInputpanelOpen = false;
             }
             else
@@ -111,6 +116,7 @@ namespace Doom_Scroll
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
                 CreatePlayerButtons();
                 newsModal.ActivateCustomUI(true);
+                headlinePopupModalTooltip.ActivateToolTip(true);
                 IsInputpanelOpen = true;
             }
         }

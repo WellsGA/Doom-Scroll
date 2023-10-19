@@ -101,5 +101,6 @@
     <EmbeddedResource Include="Assets\unEndorse.png" />
     <EmbeddedResource Include="Assets\radioButton.png" />
 	<EmbeddedResource Include="Assets\tutorialModeToggle.png" />
+	  <EmbeddedResource Include="Assets\tooltipBackground.png" />
   </ItemGroup>
 </Project>

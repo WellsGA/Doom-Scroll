@@ -15,6 +15,10 @@ namespace Doom_Scroll
         private CustomButton m_homeBtn;
         private CustomButton m_backBtn;
 
+        //tooltips
+        private Tooltip m_folderToggleTooltip;
+        private Tooltip m_chatWindowTooltip;
+
         //modal
         private bool m_isFolderOverlayOpen;
         private CustomModal m_folderArea;
@@ -66,10 +70,14 @@ namespace Doom_Scroll
             if (hudManagerInstance.Chat.IsOpenOrOpening && !m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateCustomUI(true);
+                m_folderToggleTooltip.ActivateToolTip(true);
+                m_chatWindowTooltip.ActivateToolTip(true);
             }
             else if (hudManagerInstance.Chat.IsClosedOrClosing && m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateCustomUI(false);
+                m_folderToggleTooltip.ActivateToolTip(false);
+                m_chatWindowTooltip.ActivateToolTip(false);
                 // hide overlay and current folders too if it was still open
                 if (m_isFolderOverlayOpen)
                 {
@@ -154,6 +162,11 @@ namespace Doom_Scroll
             if(chatScreen != null) { DoomScroll._log.LogInfo("Scroller ???? " + chatScreen.name); }
             m_isFolderOverlayOpen = false;
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
+            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Click here to\ninvestigate the evidence", 0.5f, new Vector3(m_folderToggleBtn.UIGameObject.transform.localPosition.x+0.2f, m_folderToggleBtn.UIGameObject.transform.localPosition.y - 0.1f, 0), 1f);
+            m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.5f, new Vector3(m_folderToggleBtn.UIGameObject.transform.localPosition.x-4f, m_folderToggleBtn.UIGameObject.transform.localPosition.y - 1f, 0), 1f);
+            m_folderToggleTooltip.ActivateToolTip(false);
+            m_chatWindowTooltip.ActivateToolTip(false);
+
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);
             m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea);
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
