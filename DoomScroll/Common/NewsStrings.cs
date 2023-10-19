@@ -117,7 +117,7 @@ namespace Doom_Scroll.Common
             "BREAKING: {X} has only signed in to {#} tasks all game",
             "{X} Seen Loitering Near Vents.",
             "{X} Frustrated, Blames {Y} for Slow Task Completion",
-            "TENSION ON THE SHIP! {X} seen arguing with Y."
+            "TENSION ON THE SHIP! {X} seen arguing with {Y}."
         };
 
         // SOURCES
