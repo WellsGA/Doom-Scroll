@@ -40,16 +40,10 @@ namespace Doom_Scroll.UI
             return newsModal;
         }
 
-        public static CustomButton CreateRadioButtons(CustomModal parent, Sprite[] radioSprites, Vector3 pos, bool protect)
+        public static CustomButton CreateRadioButtons(CustomModal parent, Sprite[] radioSprites, string label)
         {
-            string label = protect ? "Protect" : "Frame";
             CustomButton protectButton = new CustomButton(parent.UIGameObject, label + " Radio", radioSprites);
-            protectButton.SetSize(0.25f);
-            protectButton.SetLocalPosition(pos);
-            CustomText protectLable = new CustomText(protectButton.UIGameObject, label + " Lable", label);
-            protectLable.SetSize(1.5f);
-            protectLable.SetLocalPosition(new Vector3(protectButton.GetBtnSize().x + 0.2f, 0, -10));
-
+            protectButton.Label.SetText(label);
             return protectButton;
         }
 

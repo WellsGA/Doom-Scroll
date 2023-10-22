@@ -28,15 +28,12 @@ namespace Doom_Scroll
         // list ofassignable tasks
         public List<uint> AssignableTasks { get; private set; }
         public int MaxAssignableTasks { get; private set; }
-        public Dictionary<byte, CustomButton> PlayerButtons { get; private set; }
+        public CustomSelect<byte> PlayerButtons { get; private set; }
         public uint CurrentMinigameTask { get; private set; }
         
         // UI elements
         public CustomModal PlayerButtonHolder { get; private set; }
         private Tooltip playerButtonHolderTooltip;
-        private Sprite panelSprite;
-        private Sprite[] playerButttonSprite;
-        private Sprite playerSprite;
         public bool isAssignerPanelActive;
 
         // elements added by Alaina for flipping between pages of tasks
@@ -55,7 +52,6 @@ namespace Doom_Scroll
             MaxAssignableTasks = 2;
             AssignableTasks = new List<uint>();
             AssignedTasks = new List<AssignedTask>();
-            PlayerButtons = new Dictionary<byte, CustomButton>();
             isAssignerPanelActive = false;
 
             // set up stuff for folder display, paging through. Set it false for now because not necessary yet.
@@ -111,15 +107,12 @@ namespace Doom_Scroll
         
         public void CheckForPlayerButtonClick()
         {
-            if (PlayerButtons == null || PlayerButtons.Count == 0) return;
-            foreach( KeyValuePair<byte, CustomButton> item in PlayerButtons)
+            if (PlayerButtons == null || PlayerButtons.ButtonList.Count == 0) return;
+            PlayerButtons.ListenForSelection();
+            if (PlayerButtons.HasSelected)
             {
-                item.Value.ReplaceImgageOnHover();
-                if (item.Value.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                {
-                    RPCAddToAssignedTasks(item.Key, CurrentMinigameTask);
-                    ActivatePanel(false);
-                }
+                RPCAddToAssignedTasks(PlayerButtons.Selected.Key, CurrentMinigameTask);
+                ActivatePanel(false);
             }
         }
 
@@ -224,10 +217,9 @@ namespace Doom_Scroll
         public void CreateTaskAssignerPanel()
         {
             if (!HudManager.Instance) return;
-            PlayerButtons = new Dictionary<byte, CustomButton>();
             // Sprites: panel, button background, button icon
-            panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");            
-            playerButttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
+            Sprite panelSprite = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");            
+            Sprite[] playerButttonSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
 
             // create the panel
             DoomScroll._log.LogInfo("player count: " + GameData.Instance.AllPlayers.Count);
@@ -241,23 +233,21 @@ namespace Doom_Scroll
             CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "Who is completing this task?");
             title.SetLocalPosition(new Vector3(0, 0.3f, -10));
             title.SetSize(1.6f);
-            Vector3 topLeftPos = new Vector3(pos.x - size.x/2 + 0.5f, -0.1f, pos.z - 10);
             playerButtonHolderTooltip = new Tooltip(PlayerButtonHolder.UIGameObject, "HeadlinePopup", "Choose whether to protect\n or frame, then choose a\ntarget.This will generate a\nheadline about your target.", 0.75f, new Vector3(2.5f, -2.4f, 0), 1f);
 
             // add the players as buttons
+            PlayerButtons = new CustomSelect<byte>(size);
+
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
-                    CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, playerButttonSprite, topLeftPos, 0.45f);
-                    CustomText label = new CustomText(btn.UIGameObject, playerInfo.PlayerName + "- label", playerInfo.PlayerName);
-                    label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().x/2 - 0.05f, -10));
-                    label.SetSize(1.2f);
+                    CustomButton btn = new CustomButton(PlayerButtonHolder.UIGameObject, playerInfo.PlayerName, playerButttonSprite);
+                    btn.Label.SetText(playerInfo.PlayerName);                 
                     btn.SetDefaultBtnColor(btn.TopIcon, Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
-                    PlayerButtons.Add(playerInfo.PlayerId, btn);
-                    DoomScroll._log.LogInfo("Playercolor: " + playerInfo.ColorName);
-                    topLeftPos.x += 0.6f;
+                    PlayerButtons.AddSelectOption(playerInfo.PlayerId, btn);      
                 }
+                PlayerButtons.ArrangeButtons(0.48f, PlayerButtons.ButtonList.Count, 0.48f, 0.7f);
             }
             // inactive at first, gets activated on task completition
             ActivatePanel(false);

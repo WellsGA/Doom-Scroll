@@ -30,17 +30,9 @@ namespace Doom_Scroll
         private Tooltip headlineBtnTooltip;
         private Tooltip headlinePopupModalTooltip;
 
-
-        private Dictionary<byte, CustomButton> playerButtons;
         private Sprite[] playerButtonSprites;
-        private CustomButton protectButton;
-        private CustomButton frameButton;
-        private GameObject playerButtonParent;
-
-        private bool isprotectSelected;
-        private bool isFrameSelected;
-        private bool isTargetelected;
-        private byte targetPlayer;
+        private CustomSelect<byte> playerButtons;
+        private CustomSelect<bool> frameOrProtect;
 
         public bool IsInputpanelOpen { get; private set; }
         private bool canPostNews;
@@ -52,7 +44,6 @@ namespace Doom_Scroll
         private NewsFeedManager()
         {
             // init
-            playerButtons = new Dictionary<byte, CustomButton>();
             AllNewsList = new List<NewsItem>();
             PlayerScores = new Dictionary<byte, string>();
             Reset();
@@ -60,13 +51,11 @@ namespace Doom_Scroll
         }
 
         private void InitializeInputPanel()
-        {  
+        {
             // button sprites
             Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);
             playerButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
-            playerButtons = new Dictionary<byte, CustomButton>();
-            AllNewsList = new List<NewsItem>();
-
+            
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += OnClickNews;
@@ -80,16 +69,13 @@ namespace Doom_Scroll
 
 
             // frame and protect buttons
-            protectButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(-1.2f, 0.3f, -10), true);
-            protectButton.ButtonEvent.MyAction += OnclickProtect;
-            frameButton = NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, new Vector3(0.5f, 0.3f, -10), false);
-            frameButton.ButtonEvent.MyAction += OnclickFrame;
+            frameOrProtect = new CustomSelect<bool>(newsModal.GetSize());
+            frameOrProtect.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, "Protect"));
+            frameOrProtect.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, "Frame"));
+            frameOrProtect.ArrangeButtons(0.25f, 2, newsModal.GetSize().x / 2 -0.25f, 0.9f);
 
             // player buttons
-            playerButtonParent = new GameObject("Player buttons");
-            playerButtonParent.layer = LayerMask.NameToLayer("UI");
-            playerButtonParent.transform.SetParent(newsModal.UIGameObject.transform);
-            playerButtonParent.transform.localPosition = new Vector3(0, 0, -10);
+            playerButtons = new CustomSelect<byte>(newsModal.GetSize());
 
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
@@ -106,7 +92,8 @@ namespace Doom_Scroll
             if (!newsModal.UIGameObject) { return; }
             if (IsInputpanelOpen)
             {
-                ClearInputSelection();
+                frameOrProtect.ClearSelection();
+                playerButtons.ClearSelection();
                 newsModal.ActivateCustomUI(false);
                 headlinePopupModalTooltip.ActivateToolTip(false);
                 IsInputpanelOpen = false;
@@ -121,103 +108,28 @@ namespace Doom_Scroll
             }
         }
 
-        private void ClearInputSelection()
-        {
-            targetPlayer = 255;
-            isTargetelected = false;
-            isprotectSelected = false;
-            isFrameSelected = false;
-            protectButton.SetButtonSelect(false);
-            frameButton.SetButtonSelect(false);
-            
-        }
-
         private void CreatePlayerButtons()
         {
-            playerButtons.Clear();
-            while (playerButtonParent.transform.childCount > 0)
-            {
-                UnityEngine.Object.DestroyImmediate(playerButtonParent.transform.GetChild(0).gameObject);
-            }
-
-            
-            float yoffset = -0.55f;
-            int itemsInOneRow = 7;
-            int counter = 0;
-            Vector3 nextPos = new Vector3(0, 0, -10);
-            playerButtonParent.transform.localPosition = new Vector3(0, 0.3f, 0);
+            playerButtons.RemoveButtons();
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
-                    DoomScroll._log.LogInfo("Player name: " + playerInfo.PlayerName);
-                    nextPos.x = counter % itemsInOneRow == 0 ? -newsModal.GetSize().x / 2 + 0.5f : nextPos.x + 0.7f;
-                    counter++;
-                    nextPos.y = (float)Math.Ceiling((decimal)counter / itemsInOneRow) * yoffset;
-
-                    DoomScroll._log.LogInfo( ", X pos" + nextPos.x + "Y pos" + nextPos.y);
-                    CustomButton btn = new CustomButton(playerButtonParent, playerInfo.PlayerName, playerButtonSprites, nextPos, 0.7f);
+                    CustomButton btn = new CustomButton(newsModal.UIGameObject, playerInfo.PlayerName, playerButtonSprites);
                     btn.SetDefaultBtnColor(btn.TopIcon, Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     btn.Label.SetText(playerInfo.PlayerName);
-                    btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().y / 2 - 0.02f, -10));
-                    btn.Label.SetSize(1.2f);
-                    playerButtons.Add(playerInfo.PlayerId, btn);
-                    
+                    playerButtons.AddSelectOption(playerInfo.PlayerId, btn);                    
                 }
             }
+            int itemsInARow = playerButtons.ButtonList.Count < 5 ? playerButtons.ButtonList.Count : 5;
+            float xOffset = 0.7f;
+            float btnsSize = 0.6f;
+            newsModal.SetSize((2 * xOffset) + (itemsInARow * (btnsSize + 0.02f)));
+            playerButtons.ArrangeButtons(btnsSize, itemsInARow, 0.7f , 0.7f);
         }
 
-        private void OnclickProtect()
+        public void OnSelectNewsItem(bool protect, byte targetPlayer)
         {
-            if(isprotectSelected)
-            {
-                protectButton.SetButtonSelect(false);
-            }
-            else
-            {
-                if(isFrameSelected) OnclickFrame();
-                protectButton.SetButtonSelect(true);
-            }
-            isprotectSelected = !isprotectSelected;
-            DoomScroll._log.LogInfo("protect: " + isprotectSelected + ", frame: " + isFrameSelected);
-        }
-
-        private void OnclickFrame()
-        {
-            if (isFrameSelected)
-            {
-                frameButton.SetButtonSelect(false);
-            }
-            else
-            {
-                if (isprotectSelected) OnclickProtect();
-                frameButton.SetButtonSelect(true);
-            }
-            isFrameSelected = !isFrameSelected;
-            DoomScroll._log.LogInfo("protect: " + isprotectSelected + ", frame: " + isFrameSelected);
-        }
-        
-        private void OnSelectTargetPlayer(byte id)
-        {
-            if (isTargetelected)
-            {
-                playerButtons[targetPlayer].SetButtonSelect(false);
-                if (targetPlayer == id)
-                {
-                    isTargetelected = false; // deselect player
-                    targetPlayer = 255;
-                    return;
-                }
-            }
-            playerButtons[id].SetButtonSelect(true);
-            targetPlayer = id;
-            isTargetelected = true;
-            DoomScroll._log.LogInfo("target id: " + targetPlayer);
-        }
-
-        public void OnSelectNewsItem()
-        {
-            bool protect = isprotectSelected ? true : false;
             NewsItem news = NewsCreator.CreateRandomNews(protect, PlayerControl.AllPlayerControls[targetPlayer]);
             RPCSandNews(news);
             CanPostNews(false);
@@ -252,30 +164,12 @@ namespace Doom_Scroll
                 // Invoke methods on mouse click - submit news
                 if(toggleModalBtn.IsEnabled && IsInputpanelOpen)
                 {
-                    protectButton.ReplaceImgageOnHover();
-                    frameButton.ReplaceImgageOnHover();
+                    frameOrProtect.ListenForSelection();
+                    playerButtons.ListenForSelection();
 
-                    if (protectButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if(playerButtons.HasSelected && frameOrProtect.HasSelected)
                     {
-                        protectButton.ButtonEvent.InvokeAction();
-                    }
-                    if (frameButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        frameButton.ButtonEvent.InvokeAction();
-                    }
-                   
-                    foreach (KeyValuePair<byte, CustomButton> item in playerButtons)
-                    {
-                        item.Value.ReplaceImgageOnHover();
-                        if (item.Value.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                        {
-                            OnSelectTargetPlayer(item.Key);
-                        }
-                    }
-
-                    if( isTargetelected && (isFrameSelected || isprotectSelected))
-                    {
-                        OnSelectNewsItem();
+                        OnSelectNewsItem(frameOrProtect.Selected.Key, playerButtons.Selected.Key);
                     }
                 }
             }
@@ -494,11 +388,6 @@ namespace Doom_Scroll
             IsInputpanelOpen = false;
             canPostNews = false;
             NewsPostedByLocalPLayer = 0;
-            targetPlayer = 255;
-            isTargetelected = false;
-            isprotectSelected = false;
-            isFrameSelected = false;
-            playerButtons.Clear();
             AllNewsList.Clear();
             PlayerScores.Clear();
             InitializeInputPanel();
