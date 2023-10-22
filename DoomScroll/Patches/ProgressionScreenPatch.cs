@@ -46,7 +46,7 @@ namespace Doom_Scroll.Patches
             Vector3 textPos = new Vector3(overallResult.UIGameObject.transform.localPosition.x, overallResult.UIGameObject.transform.localPosition.y - 0.9f, overallResult.UIGameObject.transform.localPosition.z);
             overallResult.SetLocalPosition(textPos);
 
-            Tooltip wintextTooltip = new Tooltip(__instance.XpBar.gameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.75f, new Vector3(__instance.XpBar.gameObject.transform.localPosition.x, __instance.XpBar.gameObject.transform.localPosition.y - 2f, 0), 2f);
+            Tooltip wintextTooltip = new Tooltip(__instance.XpBar.gameObject, "HeadlinePopup", "Accuracy scores\nfor voting\nwhether posts\nwere trustworthy.\nHow did you\ndo?", 1.25f, 0.75f, new Vector3(3f, -2f, 0), 1f);
 
 
             SecondaryWinConditionManager.Reset();

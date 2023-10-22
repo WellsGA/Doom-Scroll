@@ -48,10 +48,10 @@ namespace Doom_Scroll
         private void InitializeManager()
         {
             m_cameraButton = ScreenshotOverlay.CreateCameraButton(hudManagerInstance);
-            m_cameraButtonTooltip = new Tooltip(m_cameraButton.UIGameObject, "CameraToggleButton", "Take a photo! Others will\nsee it in the photo folder\nduring meetings", 0.5f, new Vector3(m_cameraButton.UIGameObject.transform.localPosition.x + 3.7f, m_cameraButton.UIGameObject.transform.localPosition.y + 1.8f, 0), 1f);
+            m_cameraButtonTooltip = new Tooltip(m_cameraButton.UIGameObject, "CameraToggleButton", "Take a photo! Others will\nsee it in the photo folder\nduring meetings", 0.5f, 2.4f, new Vector3(-0.8f, -0.4f, 0), 1f);
             UIOverlay = ScreenshotOverlay.InitCameraOverlay(hudManagerInstance);
             m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay);
-            //m_captureScreenTooltip = new Tooltip(m_captureScreenButton.UIGameObject, "", "", 0.75f, new Vector3(m_captureScreenButton.UIGameObject.transform.localPosition.x, m_captureScreenButton.UIGameObject.transform.localPosition.y - 2f, 0), 2f);
+            //m_captureScreenTooltip = new Tooltip(m_captureScreenButton.UIGameObject, "", "", 0.75f, 2f, new Vector3(m_captureScreenButton.UIGameObject.transform.localPosition.x, m_captureScreenButton.UIGameObject.transform.localPosition.y - 2f, 0), 2f);
 
             m_cameraButton.ButtonEvent.MyAction += OnClickCamera;
             //m_cameraButton.gameObject.AddComponent<AspectPosition>();
@@ -139,7 +139,6 @@ namespace Doom_Scroll
         public void ActivateCameraButton(bool value)
         {
             m_cameraButton.ActivateCustomUI(value);
-            m_cameraButtonTooltip.ActivateToolTip(value);
             /*if (value)
             {
                 AdjustPositionDoomScroll += AdjustPositionCameraButton;

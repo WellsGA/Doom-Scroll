@@ -9,6 +9,8 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(HudManager))]
     public static class HudManagerPatch
     {
+        private static Tooltip taskPanelSWCTooltip;
+
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
         public static void PostfixStart(HudManager __instance)
@@ -18,6 +20,8 @@ namespace Doom_Scroll.Patches
             TaskAssigner.Instance.Reset();
             NewsFeedManager.Instance.Reset();
             SecondaryWinConditionManager.Reset();
+
+            taskPanelSWCTooltip = new Tooltip(__instance.TaskPanel.gameObject, "TaskPanelSWC", "This is your secondary objective. You must succeed as\ncrew/imposter AND complete this objective to win.\nProtect = Keep target player alive.\nFrame = Make sure target player is eliminated.", 0.65f, 4f, new Vector3(2f, -1.6f, 0), 1f);
         }
 
         [HarmonyPostfix]

@@ -32,6 +32,15 @@ namespace Doom_Scroll
         private FileText m_posts;
         private Folder m_screenshots;
 
+        // tooltips
+        private Tooltip m_tasksTooltip;
+        private Tooltip m_postsTooltip;
+        private Tooltip m_screenshotsTooltip;
+        private Tooltip m_taskFolderTooltip;
+        private Tooltip m_postFolderTooltip;
+        private Tooltip m_postFolderVotingTooltip;
+        private Tooltip m_screenshotFolderTooltip;
+
         // image sending
         private ImageSender m_imageSender;
 
@@ -70,14 +79,10 @@ namespace Doom_Scroll
             if (hudManagerInstance.Chat.IsOpenOrOpening && !m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateCustomUI(true);
-                m_folderToggleTooltip.ActivateToolTip(true);
-                m_chatWindowTooltip.ActivateToolTip(true);
             }
             else if (hudManagerInstance.Chat.IsClosedOrClosing && m_folderToggleBtn.IsActive)
             {
                 m_folderToggleBtn.ActivateCustomUI(false);
-                m_folderToggleTooltip.ActivateToolTip(false);
-                m_chatWindowTooltip.ActivateToolTip(false);
                 // hide overlay and current folders too if it was still open
                 if (m_isFolderOverlayOpen)
                 {
@@ -162,23 +167,36 @@ namespace Doom_Scroll
             if(chatScreen != null) { DoomScroll._log.LogInfo("Scroller ???? " + chatScreen.name); }
             m_isFolderOverlayOpen = false;
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
-            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Click here to\ninvestigate the evidence", 0.5f, new Vector3(m_folderToggleBtn.UIGameObject.transform.localPosition.x+0.2f, m_folderToggleBtn.UIGameObject.transform.localPosition.y - 0.1f, 0), 1f);
-            m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.5f, new Vector3(m_folderToggleBtn.UIGameObject.transform.localPosition.x-4f, m_folderToggleBtn.UIGameObject.transform.localPosition.y - 1f, 0), 1f);
-            m_folderToggleTooltip.ActivateToolTip(false);
-            m_chatWindowTooltip.ActivateToolTip(false);
+            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Click here to\ninvestigate the\nevidence.", 0.5f, 1.6f, new Vector3(0, -0.5f, 0), 1f);
+            m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
 
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);
             m_closeBtn = FolderOverlay.AddCloseButton(m_folderArea);
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
             m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
             m_pathText = FolderOverlay.AddPath(m_folderArea.UIGameObject);
+
+            // Tooltip in-folder setup
+            m_screenshotFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideScreenshotsFolder", "Notice any clues? How can you use these\nphotos in your arguments?", 0.4f, 7.5f, new Vector3(0, -0.3f, 0), 1.5f);
+            m_taskFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideTasksFolder", "Who is doing their tasks? Who isn't?", 0.3f, 11.7f, new Vector3(0, -0.25f, 0), 2f);
+            m_postFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "True posts can give vital clues about other players,\nbut some posts might be misleading!", 0.4f, 8.75f, new Vector3(0, -0.3f, 0), 1.5f);
+            m_postFolderVotingTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsVoting", "Vote whether you think a post is trustworthy or not.\nFinal accuracy scores will be revealed after the match.", 0.4f, 9.25f, new Vector3(0, -4.0f, 0), 1.5f);
+            m_screenshotFolderTooltip.ActivateToolTip(false);
+            m_taskFolderTooltip.ActivateToolTip(false);
+            m_postFolderTooltip.ActivateToolTip(false);
+            m_postFolderVotingTooltip.ActivateToolTip(false);
+
+
         }
         private void InitFolderStructure()
         {
             m_root = new Folder("", "Home", m_folderArea);
             m_screenshots = new Folder(m_root.Path, "Images", m_folderArea);
+            m_screenshotsTooltip = new Tooltip(m_screenshots.Dir, "ScreenshotsFolderBtn", "Your photos will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
             m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea, FileTextType.TASKS);
+            m_screenshotsTooltip = new Tooltip(m_tasks.Dir, "TasksFolderBtn", "Your task sign-ins will\nshow up here.", 0.5f, 4f, new Vector3(0, -1f, 0), 2f);
             m_posts = new FileText(m_root.Path, "Posts", m_folderArea, FileTextType.NEWS);
+            m_screenshotsTooltip = new Tooltip(m_posts.Dir, "PostsFolderBtn", "Your posts will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(m_posts);
@@ -232,6 +250,36 @@ namespace Doom_Scroll
                     m_pathText.SetText(folder.Path);
                     m_previous.HideContent();
                     m_current.Btn.ButtonEvent.InvokeAction();
+
+                    // Tooltip in-folder toggling
+                    if (m_current == m_screenshots)
+                    {
+                        m_screenshotFolderTooltip.ActivateToolTip(true);
+                        m_taskFolderTooltip.ActivateToolTip(false);
+                        m_postFolderTooltip.ActivateToolTip(false);
+                        m_postFolderVotingTooltip.ActivateToolTip(false);
+                    }
+                    else if (m_current == m_tasks)
+                    {
+                        m_screenshotFolderTooltip.ActivateToolTip(false);
+                        m_taskFolderTooltip.ActivateToolTip(true);
+                        m_postFolderTooltip.ActivateToolTip(false);
+                        m_postFolderVotingTooltip.ActivateToolTip(false);
+                    }
+                    else if (m_current == m_posts)
+                    {
+                        m_screenshotFolderTooltip.ActivateToolTip(false);
+                        m_taskFolderTooltip.ActivateToolTip(false);
+                        m_postFolderTooltip.ActivateToolTip(true);
+                        m_postFolderVotingTooltip.ActivateToolTip(true);
+                    }
+                    else
+                    {
+                        m_screenshotFolderTooltip.ActivateToolTip(false);
+                        m_taskFolderTooltip.ActivateToolTip(false);
+                        m_postFolderTooltip.ActivateToolTip(false);
+                        m_postFolderVotingTooltip.ActivateToolTip(false);
+                    }
                 }
             }
         }

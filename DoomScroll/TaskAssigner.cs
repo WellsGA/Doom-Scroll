@@ -62,7 +62,6 @@ namespace Doom_Scroll
         public void ActivatePanel(bool flag) 
         {
             PlayerButtonHolder.UIGameObject.SetActive(flag);
-            playerButtonHolderTooltip.ActivateToolTip(flag);
             isAssignerPanelActive = flag;
         }
 
@@ -233,7 +232,7 @@ namespace Doom_Scroll
             CustomText title = new CustomText(PlayerButtonHolder.UIGameObject,"Panel Title", "Who is completing this task?");
             title.SetLocalPosition(new Vector3(0, 0.3f, -10));
             title.SetSize(1.6f);
-            playerButtonHolderTooltip = new Tooltip(PlayerButtonHolder.UIGameObject, "HeadlinePopup", "Choose whether to protect\n or frame, then choose a\ntarget.This will generate a\nheadline about your target.", 0.75f, new Vector3(2.5f, -2.4f, 0), 1f);
+            playerButtonHolderTooltip = new Tooltip(PlayerButtonHolder.UIGameObject, "HeadlinePopup", "Choose whether to protect\n or frame, then choose a\ntarget.This will generate a\nheadline about your target.", 0.75f, 2f, new Vector3(-3f, 0, 0), 1f);
 
             // add the players as buttons
             PlayerButtons = new CustomSelect<byte>(size);

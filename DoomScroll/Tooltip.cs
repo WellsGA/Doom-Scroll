@@ -23,10 +23,10 @@ namespace Doom_Scroll
         public static List<Tooltip> currentTooltips;
         public CustomText TextObject { get; private set; }
         public CustomImage ImageObject { get; private set; }
-        public Tooltip(GameObject parent, string toolTipKeyword, string toolTipText, float backgroundSize, Vector3 toolTipLocation, float toolTipFontSize, int waitMilliseconds = 0)
+        public Tooltip(GameObject parent, string toolTipKeyword, string toolTipText, float backgroundSize, float backgroundXMultiplier, Vector3 toolTipLocation, float toolTipFontSize, int waitMilliseconds = 0)
         {
             displayTime = waitMilliseconds;
-            CreateToolTipUI(parent, toolTipKeyword, toolTipText, backgroundSize, toolTipLocation, toolTipFontSize);
+            CreateToolTipUI(parent, toolTipKeyword, toolTipText, backgroundSize, backgroundXMultiplier, toolTipLocation, toolTipFontSize);
             ActivateToolTip(Tooltip.TutorialModeOn);
         }
         public static void addToCurrentTooltips(Tooltip newTooltip)
@@ -38,11 +38,12 @@ namespace Doom_Scroll
             currentTooltips.Add(newTooltip);
         }
 
-        private void CreateToolTipUI(GameObject parent, string toolTipKeyword, string toolTipText, float backgroundSize, Vector3 toolTipLocation, float toolTipFontSize)
+        private void CreateToolTipUI(GameObject parent, string toolTipKeyword, string toolTipText, float backgroundSize, float backgroundXMultiplier, Vector3 toolTipLocation, float toolTipFontSize)
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tooltipBackground.png");
-            ImageObject = new CustomImage(HudManager.Instance.gameObject, $"{toolTipKeyword}ToolTipModal", spr);
+            ImageObject = new CustomImage(parent, $"{toolTipKeyword}ToolTipModal", spr);
             ImageObject.SetSize(backgroundSize);
+            ImageObject.SetSize(new Vector3(ImageObject.GetSize().x*backgroundXMultiplier, ImageObject.GetSize().y));
             ImageObject.SetLocalPosition(toolTipLocation);
             ImageObject.UIGameObject.layer = LayerMask.NameToLayer("UI");
 
@@ -68,6 +69,11 @@ namespace Doom_Scroll
                     ImageObject.ActivateCustomUI(!on);
                     DoomScroll._log.LogInfo("Tooltip deactivated after set time!");
                 }
+            }
+            else
+            {
+                ImageObject.ActivateCustomUI(false);
+                DoomScroll._log.LogInfo("Tutorial mode off. Tooltip should be deactivated!");
             }
         }
         public static void ToggleTutorialMode()
