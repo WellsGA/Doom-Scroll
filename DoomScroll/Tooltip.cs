@@ -34,6 +34,7 @@ namespace Doom_Scroll
         {
             if (currentTooltips == null)
             {
+                DoomScroll._log.LogInfo("Current tooltip for FIRST ENTRY POINT: " + (string)newTooltip.TextObject.TextMP.text);
                 ResetCurrentTooltips();
             }
             currentTooltips.Add(newTooltip);
@@ -145,14 +146,15 @@ namespace Doom_Scroll
             tutorialModeBtn.ButtonEvent.MyAction += Tooltip.ToggleTutorialMode;
 
             // Add tooltip as well
-            new Tooltip(tutorialModeBtn.UIGameObject, "TutorialModeToggleBtn", "Click this button to activate or\ndeactivate Tooltips such as this one", 0.5f, 3.3f, new Vector3(0, -0.5f, 0), 1f);
+            Tooltip toggleBtnTooltip = new Tooltip(tutorialModeBtn.UIGameObject, "TutorialModeToggleBtn", "Click this button to activate or\ndeactivate Tooltips such as this one", 0.5f, 3.3f, new Vector3(0, -0.5f, 0), 1f);
+            toggleBtnTooltip.ActivateToolTip(TutorialModeOn);
 
             return tutorialModeBtn;
         }
 
         public override string ToString()
         {
-            return TextObject.TextMP.text;
+            return (string)TextObject.TextMP.text;
         }
 
 

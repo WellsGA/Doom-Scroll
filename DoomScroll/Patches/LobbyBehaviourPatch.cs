@@ -46,10 +46,6 @@ namespace Doom_Scroll.Patches
             lobbyToolTipText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Text should be activated!");
 
-            //tooltip stuff
-            Tooltip.ResetCurrentTooltips();
-            HudManagerPatch.m_tutorialModeToggleBtn.ButtonEvent.MyAction -= FolderManager.RectifyFolderTooltips;
-
             if (tutorialBookletManagerInstance != null)
             {
                 tutorialBookletManagerInstance.Reset();

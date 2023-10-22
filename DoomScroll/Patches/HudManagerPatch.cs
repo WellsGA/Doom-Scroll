@@ -17,6 +17,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixStart(HudManager __instance)
         {
             // Reset Tooltip List
+            DoomScroll._log.LogInfo("HUDMANAGER RESETS HEREEEEE.");
             Tooltip.ResetCurrentTooltips();
             ScreenshotManager.Instance.Reset();
             FolderManager.Instance.Reset();

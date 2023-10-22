@@ -46,7 +46,6 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo(results); // debug
 
             //tooltip stuff
-            HudManagerPatch.m_tutorialModeToggleBtn.ButtonEvent.MyAction -= FolderManager.RectifyFolderTooltips;
 
         }
         [HarmonyPostfix]
@@ -64,7 +63,6 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo("PLAYER PREFAB ICON: " + playerIcon.name);
 
             //tooltip stuff
-            HudManagerPatch.m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
         }
 
         [HarmonyPostfix]
