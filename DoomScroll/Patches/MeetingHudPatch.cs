@@ -53,7 +53,7 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo("Meeting Hud starting! Trying to add tooltip.");
             GameObject uiParent = __instance.TitleText.gameObject;
             Vector3 textPos = new Vector3(0, -3f, -10);
-            meetingBeginningToolTip = new Tooltip(uiParent, "DiscussionTime", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>", 0.75f, textPos, 3f);
+            meetingBeginningToolTip = new Tooltip(uiParent, "DiscussionTime", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>", 0.75f, 9.5f, textPos, 3f);
             DoomScroll._log.LogInfo("ToolTip should be activated if Tutorial Mode is On!");
 
             playerIcon = __instance.PlayerVotePrefab.gameObject;

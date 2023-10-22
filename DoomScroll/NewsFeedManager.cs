@@ -70,12 +70,12 @@ namespace Doom_Scroll
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += OnClickNews;
-            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.5f, new Vector3(-0.8f, -0.4f, 0), 1f);
+            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.5f, 2.7f, new Vector3(-0.8f, -0.4f, 0), 1f);
             ActivateNewsButton(false);
 
             // news modal
             newsModal = NewsFeedOverlay.InitInputOverlay(hudManagerInstance);
-            headlinePopupModalTooltip = new Tooltip(newsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.75f, new Vector3(0, -1.8f, 0), 2f);
+            headlinePopupModalTooltip = new Tooltip(newsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.5f, 9.5f, new Vector3(0, -1.8f, 0), 1.75f);
 
 
             // frame and protect buttons

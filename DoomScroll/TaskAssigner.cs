@@ -241,7 +241,7 @@ namespace Doom_Scroll
             title.SetLocalPosition(new Vector3(0, 0.3f, -10));
             title.SetSize(1.6f);
             Vector3 topLeftPos = new Vector3(pos.x - size.x/2 + 0.5f, -0.1f, pos.z - 10);
-            playerButtonHolderTooltip = new Tooltip(PlayerButtonHolder.UIGameObject, "HeadlinePopup", "Choose whether to protect\n or frame, then choose a\ntarget.This will generate a\nheadline about your target.", 0.75f, new Vector3(2.5f, 0, 0), 1f);
+            playerButtonHolderTooltip = new Tooltip(PlayerButtonHolder.UIGameObject, "HeadlinePopup", "Choose whether to protect\n or frame, then choose a\ntarget.This will generate a\nheadline about your target.", 0.75f, 2f, new Vector3(-3f, 0, 0), 1f);
 
             // add the players as buttons
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
