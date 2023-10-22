@@ -106,7 +106,7 @@ namespace Doom_Scroll
         
         public void CheckForPlayerButtonClick()
         {
-            if (PlayerButtons == null || PlayerButtons.ButtonList.Count == 0) return;
+            if (PlayerButtons == null || PlayerButtons.GetSelecCount() == 0) return;
             PlayerButtons.ListenForSelection();
             if (PlayerButtons.HasSelected)
             {
@@ -246,7 +246,7 @@ namespace Doom_Scroll
                     btn.SetDefaultBtnColor(btn.TopIcon, Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     PlayerButtons.AddSelectOption(playerInfo.PlayerId, btn);      
                 }
-                PlayerButtons.ArrangeButtons(0.48f, PlayerButtons.ButtonList.Count, 0.48f, 0.7f);
+                PlayerButtons.ArrangeButtons(0.48f, PlayerButtons.GetSelecCount(), 0.48f, 0.7f);
             }
             // inactive at first, gets activated on task completition
             ActivatePanel(false);

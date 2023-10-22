@@ -3,15 +3,14 @@ using Doom_Scroll.Common;
 
 namespace Doom_Scroll.UI
 {
+    public enum ButtonState
+    {
+        DEFAULT,
+        HOVERED,
+        SELECTED
+    }
     public class CustomButton : CustomUI
     {
-        public enum ButtonState
-        {
-            DEFAULT,
-            HOVERED,
-            SELECTED
-        }
-
         // Creates and manages custom buttnos
         public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
         // inherits UIGameObject from base
@@ -26,6 +25,7 @@ namespace Doom_Scroll.UI
         public CustomImage TopIcon { get; private set; }
         private CustomImage selectIcon;
         private CustomImage hoverIcon;
+        private ButtonState state;
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
@@ -109,7 +109,8 @@ namespace Doom_Scroll.UI
 
         private void SetButtonState(ButtonState type)
         {
-            switch (type)
+            state = type;
+            switch (state)
             {
                 default:
                 case ButtonState.DEFAULT:

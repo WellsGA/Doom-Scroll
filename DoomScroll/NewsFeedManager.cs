@@ -118,7 +118,7 @@ namespace Doom_Scroll
                     playerButtons.AddSelectOption(playerInfo.PlayerId, btn);                    
                 }
             }
-            int itemsInARow = playerButtons.ButtonList.Count < 5 ? playerButtons.ButtonList.Count : 5;
+            int itemsInARow = playerButtons.GetSelecCount() < 5 ? playerButtons.GetSelecCount() : 5;
             float xOffset = 0.7f;
             float btnsSize = 0.6f;
             newsModal.SetSize((2 * xOffset) + (itemsInARow * (btnsSize + 0.02f)));
@@ -162,7 +162,6 @@ namespace Doom_Scroll
                 {
                     frameOrProtect.ListenForSelection();
                     playerButtons.ListenForSelection();
-
                     if(playerButtons.HasSelected && frameOrProtect.HasSelected)
                     {
                         OnSelectNewsItem(frameOrProtect.Selected.Key, playerButtons.Selected.Key);
@@ -185,6 +184,7 @@ namespace Doom_Scroll
                 {
                     foreach (NewsItem news in AllNewsList)
                     {
+                        news.CheckForTrustSelect();
                         news.PostButton.ReplaceImgageOnHover();
                         if (news.PostButton.IsEnabled && news.PostButton.IsActive && news.PostButton.IsHovered() && Input.GetKey(KeyCode.Mouse0))
                         {

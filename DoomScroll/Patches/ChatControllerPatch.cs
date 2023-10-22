@@ -73,6 +73,7 @@ namespace Doom_Scroll.Patches
                             case ChatContent.TEXT:
                                 if(chatbubble != null && background != null && maskArea != null)
                                 {
+                                    background.color = new Color(0.94f, 0.93f, 0.99f, 1);
                                     background.size = new Vector2(background.size.x, background.size.y+0.5f);
                                     background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
                                     AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
@@ -83,8 +84,8 @@ namespace Doom_Scroll.Patches
                                 {
                                     if(nameText != null && background != null && maskArea != null)
                                     {
-                                        background.color = Color.yellow;
-                                        background.size = new Vector2(5.52f, 0.5f + nameText.GetRenderedHeight() + text.GetRenderedHeight() + 0.3f);
+                                        background.color = new Color(0.97f,0.96f,0.90f, 1);
+                                        background.size = new Vector2(5.52f, 0.5f + nameText.GetRenderedHeight() + text.GetRenderedHeight() + 0.5f);
                                         maskArea.size = background.size - new Vector2(0f, 0.03f);
                                         background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
                                         AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
@@ -133,7 +134,7 @@ namespace Doom_Scroll.Patches
         private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)
         {
             PostEndorsement endorsement = new PostEndorsement(chatbubble, ID);
-            float xPosEndorse = isLocalPlayer ? size.x - 0.9f : -size.x + 0.9f;
+            float xPosEndorse = isLocalPlayer ? size.x /2 - 0.9f : size.x / 2 + 0.9f;
             float xPosDenounce = isLocalPlayer ? xPosEndorse + 0.3f : xPosEndorse - 0.3f;
             endorsement.EndorseButton.SetLocalPosition(new Vector3(xPosEndorse, -size.y / 2 + 0.06f, 0));
             endorsement.DenounceButton.SetLocalPosition(new Vector3(xPosDenounce, -size.y / 2 + 0.06f, 0));

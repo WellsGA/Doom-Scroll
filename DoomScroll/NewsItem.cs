@@ -17,10 +17,9 @@ namespace Doom_Scroll
         public bool IsTrue { get; private set; }
         public string Source { get; private set; }
         public CustomModal Card { get; private set; }
+  
         public CustomButton PostButton { get; private set; }
-        public CustomButton TrustButton { get; private set; }
-        public CustomButton NotTrustButton { get; private set; }
-
+        private CustomSelect<bool> trustButtons;
         private CustomText titleUI;
         private CustomText sourceUI;
  
@@ -45,25 +44,30 @@ namespace Doom_Scroll
             sourceUI = new CustomText(Card.UIGameObject, "Source", Source);
             titleUI.SetSize(1.2f);
             sourceUI.SetSize(0.9f);
-            titleUI.SetLocalPosition(new Vector3(0, 0.05f, -10));
-            sourceUI.SetLocalPosition(new Vector3(0, -0.05f, -10));
             sourceUI.SetColor(Color.gray);
+            titleUI.TextMP.m_width = Card.GetSize().x - 1f;
+            sourceUI.TextMP.m_width = Card.GetSize().x - 1f;
+            titleUI.SetLocalPosition(new Vector3(-0.2f, 0.05f, -10));
+            sourceUI.SetLocalPosition(new Vector3(-0.2f, -0.07f, -10));
             // sourceUI.SetTextAlignment(TMPro.TextAlignmentOptions.BaselineRight);
             AddButtons();
             Card.ActivateCustomUI(false);
         }
         private void AddButtons()
         {
+            // trust & not trust
+            Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);
+            trustButtons = new CustomSelect<bool>(new Vector2(0.4f, 1f));
+            trustButtons.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(Card, radioBtnSprites, "Trusted"));
+            trustButtons.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(Card, radioBtnSprites, "Fake"));
+            trustButtons.ArrangeButtons(0.22f, 2, Card.GetSize().x / 2 - 0.44f, 0.45f);
+            
             // share btn
-            float btnSize = Card.GetSize().y - 0.02f;
-            Vector3 sharBtnPos = new Vector3(Card.GetSize().x / 2 - btnSize/2 - 0.02f, 0, -20);
+            float btnSize = 0.4f;
+            Vector3 sharBtnPos = new Vector3(Card.GetSize().x / 2 + btnSize /2, 0, -20);
             Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postButton.png", ImageLoader.slices2);
             PostButton = new CustomButton(Card.UIGameObject, "Post News", BtnSprites, sharBtnPos, btnSize);
             PostButton.ButtonEvent.MyAction += OnClickShare;
-
-            // trust & not trust
-            Vector3 trustBtnPos = new Vector3(sharBtnPos.x - btnSize / 2 - 0.02f, 0, -20);
-
         }
 
         public void DisplayNewsCard()
@@ -87,7 +91,7 @@ namespace Doom_Scroll
                 sr.sprite = playerSprite;
                 sr.size = new Vector2(Card.GetSize().y, sr.sprite.rect.height * Card.GetSize().y / sr.sprite.rect.width);
                 sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
-                AuthorIcon.transform.localPosition = new Vector3(-Card.GetSize().x / 2 + sr.size.x, 0.08f, -10);
+                AuthorIcon.transform.localPosition = new Vector3(-Card.GetSize().x / 2 - sr.size.x/1.8f, 0.08f, -10);
                 AuthorIcon.transform.localScale = Vector3.one;
                 CustomText label = new CustomText(AuthorIcon, playerInfo.PlayerName + "- icon label", playerInfo.PlayerName);
                 label.SetLocalPosition(new Vector3(0, -sr.size.y / 2 - 0.05f, -10));
@@ -132,6 +136,11 @@ namespace Doom_Scroll
             {
                 return AuthorName + ": " + Title + " [" + Source + "].";
             }           
+        }
+
+        public void CheckForTrustSelect()
+        {
+            trustButtons.ListenForSelection();
         }
 
     }
