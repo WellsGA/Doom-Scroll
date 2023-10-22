@@ -9,18 +9,31 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(HudManager))]
     public static class HudManagerPatch
     {
+        public static CustomButton m_tutorialModeToggleBtn;
         private static Tooltip taskPanelSWCTooltip;
 
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
         public static void PostfixStart(HudManager __instance)
         {
+            // Reset Tooltip List
+            Tooltip.ResetCurrentTooltips();
             ScreenshotManager.Instance.Reset();
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
             NewsFeedManager.Instance.Reset();
             SecondaryWinConditionManager.Reset();
 
+            // Tutorial Mode toggle button
+            m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-3f, 0, 0));
+            m_tutorialModeToggleBtn.ButtonEvent.MyAction += ToggleTutorialButtonSelected;
+            m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
+            m_tutorialModeToggleBtn.SetButtonSelect(Tooltip.TutorialModeOn);
+            DoomScroll._log.LogInfo("Button event added to button.");
+            m_tutorialModeToggleBtn.EnableButton(true);
+            m_tutorialModeToggleBtn.ActivateCustomUI(true);
+
+            // Tooltip
             taskPanelSWCTooltip = new Tooltip(__instance.TaskPanel.gameObject, "TaskPanelSWC", "This is your secondary objective. You must succeed as\ncrew/imposter AND complete this objective to win.\nProtect = Keep target player alive.\nFrame = Make sure target player is eliminated.", 0.65f, 4f, new Vector3(2f, -1.6f, 0), 1f);
         }
 
@@ -30,6 +43,7 @@ namespace Doom_Scroll.Patches
         {
             ScreenshotManager.Instance.CheckButtonClicks();
             NewsFeedManager.Instance.CheckButtonClicks();
+            HudManagerCheckForButtonClicks();
 
             if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
             {
@@ -118,6 +132,35 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo("Text should be activated!");
             }
             */
+        }
+
+        private static void ToggleTutorialButtonSelected()
+        {
+            m_tutorialModeToggleBtn.SetButtonSelect(Tooltip.TutorialModeOn);
+            DoomScroll._log.LogInfo("Changed SelectMode of toggle tutorial button to match TutorialModeOn!");
+        }
+        public static void HudManagerCheckForButtonClicks()
+        {
+
+            // If the Tutorial Mode toggle button is active invoke toggle on mouse click 
+            if (m_tutorialModeToggleBtn != null)
+            {
+                try
+                {
+                    m_tutorialModeToggleBtn.ReplaceImgageOnHover();
+                    if (m_tutorialModeToggleBtn.IsHovered())
+                    {
+                    }
+                    if (m_tutorialModeToggleBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    {
+                        m_tutorialModeToggleBtn.ButtonEvent.InvokeAction();
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking tutorialBookletToggle: " + e);
+                }
+            }
         }
 
     }

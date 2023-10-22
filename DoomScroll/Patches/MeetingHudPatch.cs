@@ -28,6 +28,7 @@ namespace Doom_Scroll.Patches
             {
                 meetingBeginningToolTip.TextObject.TextMP.text = "";
                 meetingBeginningToolTip.ActivateToolTip(false);
+                Tooltip.currentTooltips.Remove(meetingBeginningToolTip);
                 DoomScroll._log.LogInfo($"MeetingHud state is {meetingHudInstance.CurrentState}. Tooltip should be deactivated!");
             }
         }
@@ -44,6 +45,9 @@ namespace Doom_Scroll.Patches
             }
             DoomScroll._log.LogInfo(results); // debug
 
+            //tooltip stuff
+            HudManagerPatch.m_tutorialModeToggleBtn.ButtonEvent.MyAction -= FolderManager.RectifyFolderTooltips;
+
         }
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
@@ -58,6 +62,9 @@ namespace Doom_Scroll.Patches
 
             playerIcon = __instance.PlayerVotePrefab.gameObject;
             DoomScroll._log.LogInfo("PLAYER PREFAB ICON: " + playerIcon.name);
+
+            //tooltip stuff
+            HudManagerPatch.m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
         }
 
         [HarmonyPostfix]

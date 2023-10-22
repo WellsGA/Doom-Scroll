@@ -251,36 +251,48 @@ namespace Doom_Scroll
                     m_previous.HideContent();
                     m_current.Btn.ButtonEvent.InvokeAction();
 
+                    RectifyFolderTooltips();
+                }
+            }
+        }
+        public static void RectifyFolderTooltips()
+        {
+            if (FolderManager.Instance != null)
+            {
+                FolderManager __instance = FolderManager.Instance;
+                if (__instance.m_current != null && __instance.m_screenshotFolderTooltip != null && __instance.m_taskFolderTooltip != null && __instance.m_postFolderTooltip != null && __instance.m_postFolderVotingTooltip != null)
+                {   
                     // Tooltip in-folder toggling
-                    if (m_current == m_screenshots)
+                    if (__instance.m_current == __instance.m_screenshots)
                     {
-                        m_screenshotFolderTooltip.ActivateToolTip(true);
-                        m_taskFolderTooltip.ActivateToolTip(false);
-                        m_postFolderTooltip.ActivateToolTip(false);
-                        m_postFolderVotingTooltip.ActivateToolTip(false);
+                        __instance.m_screenshotFolderTooltip.ActivateToolTip(true);
+                        __instance.m_taskFolderTooltip.ActivateToolTip(false);
+                        __instance.m_postFolderTooltip.ActivateToolTip(false);
+                        __instance.m_postFolderVotingTooltip.ActivateToolTip(false);
                     }
-                    else if (m_current == m_tasks)
+                    else if (__instance.m_current == __instance.m_tasks)
                     {
-                        m_screenshotFolderTooltip.ActivateToolTip(false);
-                        m_taskFolderTooltip.ActivateToolTip(true);
-                        m_postFolderTooltip.ActivateToolTip(false);
-                        m_postFolderVotingTooltip.ActivateToolTip(false);
+                        __instance.m_screenshotFolderTooltip.ActivateToolTip(false);
+                        __instance.m_taskFolderTooltip.ActivateToolTip(true);
+                        __instance.m_postFolderTooltip.ActivateToolTip(false);
+                        __instance.m_postFolderVotingTooltip.ActivateToolTip(false);
                     }
-                    else if (m_current == m_posts)
+                    else if (__instance.m_current == __instance.m_posts)
                     {
-                        m_screenshotFolderTooltip.ActivateToolTip(false);
-                        m_taskFolderTooltip.ActivateToolTip(false);
-                        m_postFolderTooltip.ActivateToolTip(true);
-                        m_postFolderVotingTooltip.ActivateToolTip(true);
+                        __instance.m_screenshotFolderTooltip.ActivateToolTip(false);
+                        __instance.m_taskFolderTooltip.ActivateToolTip(false);
+                        __instance.m_postFolderTooltip.ActivateToolTip(true);
+                        __instance.m_postFolderVotingTooltip.ActivateToolTip(true);
                     }
                     else
                     {
-                        m_screenshotFolderTooltip.ActivateToolTip(false);
-                        m_taskFolderTooltip.ActivateToolTip(false);
-                        m_postFolderTooltip.ActivateToolTip(false);
-                        m_postFolderVotingTooltip.ActivateToolTip(false);
+                        __instance.m_screenshotFolderTooltip.ActivateToolTip(false);
+                        __instance.m_taskFolderTooltip.ActivateToolTip(false);
+                        __instance.m_postFolderTooltip.ActivateToolTip(false);
+                        __instance.m_postFolderVotingTooltip.ActivateToolTip(false);
                     }
                 }
+
             }
         }
         public void OnClickFolderBtn()

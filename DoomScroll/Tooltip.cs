@@ -28,12 +28,13 @@ namespace Doom_Scroll
             displayTime = waitMilliseconds;
             CreateToolTipUI(parent, toolTipKeyword, toolTipText, backgroundSize, backgroundXMultiplier, toolTipLocation, toolTipFontSize);
             ActivateToolTip(Tooltip.TutorialModeOn);
+            addToCurrentTooltips(this);
         }
-        public static void addToCurrentTooltips(Tooltip newTooltip)
+        private static void addToCurrentTooltips(Tooltip newTooltip)
         {
             if (currentTooltips == null)
             {
-                currentTooltips = new List<Tooltip>();
+                ResetCurrentTooltips();
             }
             currentTooltips.Add(newTooltip);
         }
@@ -73,7 +74,7 @@ namespace Doom_Scroll
             else
             {
                 ImageObject.ActivateCustomUI(false);
-                DoomScroll._log.LogInfo("Tutorial mode off. Tooltip should be deactivated!");
+                DoomScroll._log.LogInfo("Tooltip should be deactivated!");
             }
         }
         public static void ToggleTutorialMode()
@@ -87,9 +88,27 @@ namespace Doom_Scroll
         {
             foreach (Tooltip tt in currentTooltips)
             {
-                if (tt != null)
+                DoomScroll._log.LogInfo("Found a tooltip!");
+                if (tt.ImageObject.UIGameObject != null)
                 {
-                    tt.ActivateToolTip(TutorialModeOn);
+                    try
+                    {
+                        DoomScroll._log.LogInfo("Current tooltip to toggle:" + tt.ToString());
+                        tt.ActivateToolTip(TutorialModeOn);
+                    }
+                    catch (System.Exception e)
+                    {
+                        DoomScroll._log.LogError("Tooltip couldn't be toggled due to some error: " + e);
+                        GameObject.Destroy(tt.ImageObject.UIGameObject);
+                        currentTooltips.Remove(tt);
+                        DoomScroll._log.LogInfo("Error-causing Tooltip destroyed and removed!");
+                    }
+                }
+                else
+                {
+                    GameObject.Destroy(tt.ImageObject.UIGameObject);
+                    currentTooltips.Remove(tt);
+                    DoomScroll._log.LogInfo("Tooltip destroyed and removed!");
                 }
             }
         }
@@ -108,8 +127,33 @@ namespace Doom_Scroll
             }
             currentTooltips = new List<Tooltip>();
             DoomScroll._log.LogInfo("CurrentTooltips reset!");
+            DoomScroll._log.LogInfo("CurrentTooltips:" + currentTooltips.ToString());
         }
 
+
+        // Tutorial mode handling!
+
+
+        public static CustomButton CreateTutorialModeToggleBtn(GameObject parent, Vector3 position)
+        {
+            SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
+            Vector2 size = sr ? sr.size : new Vector2(1f, 1f);
+            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialModeToggle.png", ImageLoader.slices2);
+            Sprite[] threeBtnSprites = new Sprite[] { btnSprites[0], btnSprites[1], btnSprites[1] };
+            CustomButton tutorialModeBtn = new CustomButton(parent, "TutorialBookletToggleButton", threeBtnSprites, position, size.x);
+            tutorialModeBtn.ActivateCustomUI(false);
+            tutorialModeBtn.ButtonEvent.MyAction += Tooltip.ToggleTutorialMode;
+
+            // Add tooltip as well
+            new Tooltip(tutorialModeBtn.UIGameObject, "TutorialModeToggleBtn", "Click this button to activate or\ndeactivate Tooltips such as this one", 0.5f, 3.3f, new Vector3(0, -0.5f, 0), 1f);
+
+            return tutorialModeBtn;
+        }
+
+        public override string ToString()
+        {
+            return TextObject.TextMP.text;
+        }
 
 
     }
