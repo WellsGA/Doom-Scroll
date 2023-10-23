@@ -17,9 +17,7 @@ namespace Doom_Scroll.UI
         public int TotalDenouncement { get; set; }
         private bool localPlayerEndorsed;
         private bool localPlayerDenounced;
-
         private GameObject chatBubble;
-        private SpriteRenderer chatBubbleSR;
 
         public PostEndorsement(GameObject parent, string id)
         {

@@ -18,7 +18,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixUpdate()
         {
             FolderManager.Instance.CheckForButtonClicks();
-            NewsFeedManager.Instance.CheckForShareClicks();
+            NewsFeedManager.Instance.CheckForTrustAndShareClicks();
             TaskAssigner.Instance.CheckForShareTaskClicks();
             foreach(PostEndorsement end in ChatControllerPatch.endorsemntList)
             {
@@ -37,7 +37,6 @@ namespace Doom_Scroll.Patches
         public static void PostfixClose()
         {
             FolderManager.Instance.CloseFolderOverlay();
-            
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {

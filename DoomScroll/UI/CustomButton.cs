@@ -13,16 +13,16 @@ namespace Doom_Scroll.UI
     {
         // Creates and manages custom buttnos
         public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
-        // inherits UIGameObject from base
-               
+        // inherits UIGameObject from base         
         private bool isSelected;
+        private bool isHovered;
         private bool hasBackgroundIcon;
         public bool IsEnabled { get; private set; }
         public bool IsActive { get; private set; }
         public CustomText Label { get; private set; }
-
         public CustomImage DefaultIcon { get; private set; }
         public CustomImage TopIcon { get; private set; }
+        
         private CustomImage selectIcon;
         private CustomImage hoverIcon;
         private ButtonState state;
@@ -50,8 +50,7 @@ namespace Doom_Scroll.UI
         }
 
         private void CreateBasicButton(Sprite[] images)
-        {
-            
+        {   
             if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
             if (images.Length > 1) hoverIcon = new CustomImage(UIGameObject, "Hover icon", images[1]);
 
@@ -66,7 +65,7 @@ namespace Doom_Scroll.UI
             {
                 hasBackgroundIcon = false;
             }
-            SetButtonState(ButtonState.DEFAULT);
+            ChangeButtonState(ButtonState.DEFAULT);
             SetScale(Vector3.one);
         }
 
@@ -107,7 +106,7 @@ namespace Doom_Scroll.UI
             return isInBoundsX && isInBoundsY && IsEnabled && IsActive;
         }
 
-        private void SetButtonState(ButtonState type)
+        private void ChangeButtonState(ButtonState type)
         {
             state = type;
             switch (state)
@@ -128,7 +127,8 @@ namespace Doom_Scroll.UI
                     break;
                 case ButtonState.SELECTED:
                     // selected and not hovered
-                    if( selectIcon !=  null)
+                    if (hoverIcon != null) hoverIcon.ActivateCustomUI(false);
+                    if ( selectIcon !=  null)
                     {
                         isSelected = true;
                         selectIcon.ActivateCustomUI(true);
@@ -139,19 +139,21 @@ namespace Doom_Scroll.UI
 
         public void ReplaceImgageOnHover()
         {
-            if (IsHovered())
+            if (IsHovered() && !isHovered)
             {
-                SetButtonState(ButtonState.HOVERED);
+                isHovered = true;
+                ChangeButtonState(ButtonState.HOVERED);
             }
-            else if (!IsHovered())
+            else if (!IsHovered() && isHovered)
             {
-                SetButtonState(isSelected ? ButtonState.SELECTED : ButtonState.DEFAULT);
+                isHovered = false;
+                ChangeButtonState(isSelected ? ButtonState.SELECTED : ButtonState.DEFAULT);
             }
         }
 
-        public void SetButtonSelect(bool value)
+        public void SelectButton(bool value)
         {
-            SetButtonState(value ? ButtonState.SELECTED : ButtonState.DEFAULT);
+            ChangeButtonState(value ? ButtonState.SELECTED : ButtonState.DEFAULT);
         }
         public void ResetButtonImages(Sprite[] newImages)
         {
@@ -176,7 +178,7 @@ namespace Doom_Scroll.UI
             }
             else
             {
-                if(isSelected) { SetButtonState(ButtonState.DEFAULT); }
+                if(isSelected) { ChangeButtonState(ButtonState.DEFAULT); }
                 DefaultIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
                 if (hasBackgroundIcon) TopIcon.SetColor(new Color(1f, 1f, 1f, 0.4f));
             }

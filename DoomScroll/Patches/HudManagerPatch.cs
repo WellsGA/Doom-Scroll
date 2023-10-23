@@ -29,7 +29,7 @@ namespace Doom_Scroll.Patches
             m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-3f, 0, 0));
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += ToggleTutorialButtonSelected;
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
-            m_tutorialModeToggleBtn.SetButtonSelect(Tooltip.TutorialModeOn);
+            m_tutorialModeToggleBtn.SelectButton(Tooltip.TutorialModeOn);
             DoomScroll._log.LogInfo("Button event added to button.");
             m_tutorialModeToggleBtn.EnableButton(true);
             m_tutorialModeToggleBtn.ActivateCustomUI(true);
@@ -137,7 +137,7 @@ namespace Doom_Scroll.Patches
 
         private static void ToggleTutorialButtonSelected()
         {
-            m_tutorialModeToggleBtn.SetButtonSelect(Tooltip.TutorialModeOn);
+            m_tutorialModeToggleBtn.SelectButton(Tooltip.TutorialModeOn);
             DoomScroll._log.LogInfo("Changed SelectMode of toggle tutorial button to match TutorialModeOn!");
         }
         public static void HudManagerCheckForButtonClicks()

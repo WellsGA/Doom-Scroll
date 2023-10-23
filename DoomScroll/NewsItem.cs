@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Reflection;
 using Hazel;
 using Doom_Scroll.Patches;
+using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
@@ -17,8 +18,9 @@ namespace Doom_Scroll
         public bool IsTrue { get; private set; }
         public string Source { get; private set; }
         public CustomModal Card { get; private set; }
-  
         public CustomButton PostButton { get; private set; }
+        public Dictionary<byte, bool> PlayersTrustSelections { get; private set; }
+
         private CustomSelect<bool> trustButtons;
         private CustomText titleUI;
         private CustomText sourceUI;
@@ -31,6 +33,7 @@ namespace Doom_Scroll
             Title = headline;
             IsTrue = truth;
             Source = source;
+            PlayersTrustSelections = new Dictionary<byte, bool>();
             CreateNewsCard();
         }
        
@@ -72,6 +75,7 @@ namespace Doom_Scroll
 
         public void DisplayNewsCard()
         {
+            Card.SetScale(Vector3.one);
             Card.ActivateCustomUI(true);
         }
 
@@ -126,6 +130,31 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
+        public void CheckForTrustSelect()
+        {
+            trustButtons.ListenForSelection();
+            if (trustButtons.HasSelected)
+            {
+                // upsert local player's selection
+                UpdateTrustSelection(PlayerControl.LocalPlayer.PlayerId, trustButtons.Selected.Key);
+                // RPC to others
+                RpcTrustSelection(trustButtons.Selected.Key);
+            }
+        }
+
+        public void UpdateTrustSelection(byte playerId, bool isTrusted)
+        {
+            PlayersTrustSelections[playerId] = isTrusted;
+        }
+
+        private void RpcTrustSelection(bool isTrusted)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDTRUSTSELECTION, (SendOption)1);
+            messageWriter.Write(NewsID);                                // news id
+            messageWriter.Write(isTrusted);                             // trust or not
+            messageWriter.EndMessage();
+        }
+
         public override string ToString()
         {
             if (AuthorName == null)
@@ -135,12 +164,7 @@ namespace Doom_Scroll
             else
             {
                 return AuthorName + ": " + Title + " [" + Source + "].";
-            }           
-        }
-
-        public void CheckForTrustSelect()
-        {
-            trustButtons.ListenForSelection();
+            }
         }
 
     }

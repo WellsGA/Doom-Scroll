@@ -73,7 +73,7 @@ namespace Doom_Scroll.UI
         {
             if (HasSelected) 
             {
-                Selected.Value.SetButtonSelect(false);
+                Selected.Value.SelectButton(false);
                 if (Selected.Key.Equals(current.Key))
                 {
                     HasSelected = false;
@@ -82,10 +82,9 @@ namespace Doom_Scroll.UI
                 }
             }
             Selected = current;
-            Selected.Value.SetButtonSelect(true);
+            Selected.Value.SelectButton(true);
             HasSelected = true;
             DoomScroll._log.LogInfo("SELECTED: " + Selected.Key + ", " + Selected.Value.Label.TextMP.text);
-
         }
 
         public int GetSelecCount()

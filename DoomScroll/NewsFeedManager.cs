@@ -174,7 +174,7 @@ namespace Doom_Scroll
             }
         }
 
-        public void CheckForShareClicks()
+        public void CheckForTrustAndShareClicks()
         {
             if (hudManagerInstance == null) return;
             // If chat and folder overlay are open invoke events on button clicks
@@ -350,11 +350,11 @@ namespace Doom_Scroll
             int numIncorrect = 0;
             foreach (NewsItem newsPost in AllNewsList)
             {
-                /*if (newsPost.EndorsementList.ContainsKey(playerID))
+                if (newsPost.PlayersTrustSelections.ContainsKey(playerID))
                 {
-                    if (newsPost.EndorsementList[playerID] == true) numCorrect++;
+                    if (newsPost.PlayersTrustSelections[playerID] == newsPost.IsTrue) numCorrect++;
                     else numIncorrect++;
-                }*/
+                }
             }
             string score = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of" + AllNewsList.Count + "]\n";
             PlayerScores[playerID] = score;

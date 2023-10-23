@@ -8,6 +8,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        SENDTRUSTSELECTION = 243,
         SENDTASKTOCHAT = 244,
         SENDVOTE = 245,
         SENDIMAGETOCHAT = 246,
@@ -83,6 +84,13 @@ namespace Doom_Scroll.Patches
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDTRUSTSELECTION:
+                    NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
+                    if (news != null)
+                    {
+                        news.UpdateTrustSelection(__instance.PlayerId, reader.ReadBoolean());
+                    }
+                    break;
                 case (byte)CustomRPC.SENDTASKTOCHAT:
                     if (DestroyableSingleton<HudManager>.Instance)
                     {
@@ -156,11 +164,11 @@ namespace Doom_Scroll.Patches
                     {
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
-                            NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
-                            if (news != null)
+                            NewsItem headline = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
+                            if (headline != null)
                             {
                                 ChatControllerPatch.content = ChatContent.HEADLINE;
-                                string chatText = news.NewsToChatText();
+                                string chatText = headline.NewsToChatText();
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
                             }
                         }
