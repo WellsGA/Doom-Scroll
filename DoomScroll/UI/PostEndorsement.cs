@@ -87,8 +87,14 @@ namespace Doom_Scroll.UI
             {
                 try
                 {
-                    EndorseButton.ReplaceImgageOnHover();
-                    DenounceButton.ReplaceImgageOnHover();
+                    if (EndorseButton.UIGameObject != null && EndorseButton.IsEnabled && EndorseButton.IsActive)
+                    {
+                        EndorseButton.ReplaceImgageOnHover();
+                    }
+                    if (DenounceButton.UIGameObject != null && DenounceButton.IsEnabled && DenounceButton.IsActive)
+                    {
+                        DenounceButton.ReplaceImgageOnHover();
+                    }
                     if (EndorseButton.IsEnabled && EndorseButton.IsActive && EndorseButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                     {
                         EndorseButton.ButtonEvent.InvokeAction();
