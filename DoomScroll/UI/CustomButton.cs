@@ -55,9 +55,7 @@ namespace Doom_Scroll.UI
             DefaultIcon = new CustomImage(UIGameObject, "default btn icon", images[0]);
 
             if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
-            selectIcon.SetLocalPosition(new Vector3(0, 0, -10));
             if (images.Length > 1) hoverIcon = new CustomImage(UIGameObject, "Hover icon", images[1]);
-            hoverIcon.SetLocalPosition(new Vector3(0, 0, -10));
             if (images.Length > 3)
             {
                 hasBackgroundIcon = true;
