@@ -139,9 +139,9 @@ namespace Doom_Scroll
                     {
                         TaskAssigner.Instance.CheckForDisplayedTasksPageButtonClicks();
                     }
-                    if (m_current is FileText && NewsFeedManager.Instance != null) // Trying to see if currently displaying tasks??
+                    if (m_current is FileText && HeadlineManager.Instance != null) // Trying to see if currently displaying tasks??
                     {
-                        NewsFeedManager.Instance.CheckForDisplayedNewsPageButtonClicks();
+                        HeadlineDisplay.Instance.CheckForDisplayedNewsPageButtonClicks();
                     }
                 }
                 catch (Exception e)

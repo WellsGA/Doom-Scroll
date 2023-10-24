@@ -12,8 +12,8 @@ namespace Doom_Scroll.Patches
         public static void PostfixStart(ShipStatus __instance)
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
-            NewsFeedManager.Instance.ActivateNewsButton(true);
-            NewsFeedManager.Instance.CanPostNews(false); // by edfault player cannot create news
+            HeadlineManager.Instance.ActivateNewsButton(true);
+            HeadlineManager.Instance.CanPostNews(false); // by edfault player cannot create news
 
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA AND NEWS INIT");
 
@@ -35,7 +35,7 @@ namespace Doom_Scroll.Patches
             }
 
             SecondaryWinConditionManager.SetSecondaryWinConditions();
-            NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
+            HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
         }
 
         public static void PrintAllTasksToConsole(ShipStatus instance)

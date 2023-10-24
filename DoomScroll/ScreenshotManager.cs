@@ -128,7 +128,7 @@ namespace Doom_Scroll
             }
             else
             {
-                if (NewsFeedManager.Instance.IsInputpanelOpen) { NewsFeedManager.Instance.ToggleNewsForm(); } // close news form if oopen
+                if (HeadlineManager.Instance.IsInputpanelOpen) { HeadlineManager.Instance.ToggleNewsForm(); } // close news form if oopen
                 UIOverlay.ActivateCustomUI(true);
                 m_captureScreenButton.EnableButton(true);
                 IsCameraOpen = true;

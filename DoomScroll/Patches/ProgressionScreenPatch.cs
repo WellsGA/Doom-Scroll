@@ -23,9 +23,9 @@ namespace Doom_Scroll.Patches
             foreach (SecondaryWinCondition swc in SecondaryWinConditionManager.GetSWCList())
             {
                 results += swc.SendableResultsText();
-                if (NewsFeedManager.Instance.PlayerScores.ContainsKey(swc.GetPayerId()))
+                if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(swc.GetPayerId()))
                 {
-                    results += NewsFeedManager.Instance.PlayerScores[swc.GetPayerId()];
+                    results += HeadlineDisplay.Instance.PlayerScores[swc.GetPayerId()];
                 }
             }
             // results = SecondaryWinConditionManager.OverallSWCResultsText();

@@ -36,8 +36,8 @@ namespace Doom_Scroll.Common
                     }
                 case FileTextType.NEWS:
                     {
-                        NewsFeedManager.Instance.DisplayNews();
-                        m_content = NewsFeedManager.Instance.ToString();
+                        HeadlineDisplay.Instance.DisplayNews();
+                        m_content = HeadlineDisplay.Instance.ToString();
                         break;
                     }
             }
@@ -55,7 +55,7 @@ namespace Doom_Scroll.Common
                     }
                 case FileTextType.NEWS:
                     {
-                       NewsFeedManager.Instance.HideNews();
+                        HeadlineDisplay.Instance.HideNews();
                         //NewsFeedManager.Instance.HidePageButtons();
                         break;
                     }

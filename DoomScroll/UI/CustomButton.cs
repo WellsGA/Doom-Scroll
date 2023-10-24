@@ -156,6 +156,7 @@ namespace Doom_Scroll.UI
         {
             ChangeButtonState(value ? ButtonState.SELECTED : ButtonState.DEFAULT);
         }
+
         public void ResetButtonImages(Sprite[] newImages)
         {
             CreateBasicButton(newImages);

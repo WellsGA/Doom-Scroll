@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
-    public static class NewsCreator
+    public static class HeadlineCreator
     {
         // Create post by player
-        public static NewsItem CreateRandomNews(bool protect, PlayerControl player)
+        public static Headline CreateRandomNews(bool protect, PlayerControl player)
         {
             string headline;
             string source;
@@ -28,12 +28,12 @@ namespace Doom_Scroll
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(player.PlayerId);
             source = ReplaceSymbolsInSource(source, playerInfo.GetPlayerColorString(), player.name);
 
-            int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsFeedManager.Instance.NewsPostedByLocalPLayer;
-            return new NewsItem(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);
+            int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
+            return new Headline(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);
         }
 
         // Automatic News Creation - Only if player is host!
-        public static NewsItem CreateRandomFakeNews()
+        public static Headline CreateRandomFakeNews()
         {
             bool protect = UnityEngine.Random.value > 0.5f;
             string headline;
@@ -51,11 +51,11 @@ namespace Doom_Scroll
             }
             PlayerControl pl = GetRandomPlayer();
             headline = ReplaceSymbolsInHeadline(headline, pl.name, GetFinishedTaskCount(pl.PlayerId));
-            int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsFeedManager.Instance.NewsPostedByLocalPLayer;
-            return new NewsItem(id, 255, headline, false, source);
+            int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
+            return new Headline(id, 255, headline, false, source);
         }
 
-        public static NewsItem CreateRandomTrueNews()
+        public static Headline CreateRandomTrueNews()
         {
             bool protect = UnityEngine.Random.value > 0.5f;
             PlayerControl pl = GetRandomPlayer();
@@ -137,8 +137,8 @@ namespace Doom_Scroll
                         }
                 }
             }
-            int id = PlayerControl.LocalPlayer.PlayerId * 10 + NewsFeedManager.Instance.NewsPostedByLocalPLayer;
-            return new NewsItem(id, 255, headline, true, source);
+            int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
+            return new Headline(id, 255, headline, true, source);
         }
 
         private static string ReplaceSymbolsInHeadline(string raw, string name, int count)

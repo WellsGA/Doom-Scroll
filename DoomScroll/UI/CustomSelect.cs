@@ -44,9 +44,9 @@ namespace Doom_Scroll.UI
 
         public void ClearSelection()
         {
-            Selected = new KeyValuePair<T, CustomButton>();
             HasSelected = false;
-            
+            if (Selected.Value != null) Selected.Value.SelectButton(false);
+            Selected = new KeyValuePair<T, CustomButton>();
         }
         public void RemoveButtons()
         {
@@ -87,7 +87,7 @@ namespace Doom_Scroll.UI
             DoomScroll._log.LogInfo("SELECTED: " + Selected.Key + ", " + Selected.Value.Label.TextMP.text);
         }
 
-        public int GetSelecCount()
+        public int GetNumberOfOptions()
         {
             return buttonList.Count;
         }

@@ -22,7 +22,7 @@ namespace Doom_Scroll.Patches
             ScreenshotManager.Instance.Reset();
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
-            NewsFeedManager.Instance.Reset();
+            HeadlineManager.Instance.Reset();
             SecondaryWinConditionManager.Reset();
 
             // Tutorial Mode toggle button
@@ -43,7 +43,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixUpdate()
         {
             ScreenshotManager.Instance.CheckButtonClicks();
-            NewsFeedManager.Instance.CheckButtonClicks();
+            HeadlineManager.Instance.CheckButtonClicks();
             HudManagerCheckForButtonClicks();
 
             if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
@@ -67,7 +67,7 @@ namespace Doom_Scroll.Patches
                 ScreenshotManager.Instance.ActivateCameraButton(isActive);
                 DoomScroll._log.LogInfo("HudManager.SetHudActive ---- CAMERA ACTIVE: " + isActive);
             }
-            NewsFeedManager.Instance.ActivateNewsButton(isActive);
+            HeadlineManager.Instance.ActivateNewsButton(isActive);
             DoomScroll._log.LogInfo("HudManager.SetHudActive ---- NEWS BUTTON ACTIVE: " + isActive);
 
         }
@@ -82,31 +82,31 @@ namespace Doom_Scroll.Patches
                 ScreenshotManager.Instance.ToggleCamera();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED");
             }
-            if (NewsFeedManager.Instance.IsInputpanelOpen)
+            if (HeadlineManager.Instance.IsInputpanelOpen)
             {
-                NewsFeedManager.Instance.ToggleNewsForm();
+                HeadlineManager.Instance.ToggleNewsForm();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
 
-            NewsFeedManager.Instance.CanPostNews(false); // cannot create news
+            HeadlineManager.Instance.CanPostNews(false); // cannot create news
             if (PlayerControl.LocalPlayer.AmOwner)
             {
                 // create a random news
                 if (Random.Range(0, 2) == 0)
                 {
-                    NewsFeedManager.Instance.RPCSandNews(NewsCreator.CreateRandomTrueNews());
+                    HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomTrueNews());
                 }
                 else
                 {
-                    NewsFeedManager.Instance.RPCSandNews(NewsCreator.CreateRandomFakeNews());
+                    HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomFakeNews());
                 }
                 // selects new players to post news
-                NewsFeedManager.Instance.SelectPLayersWhoCanPostNews();
+                HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
 
                 // game log 
                 GameLogger.Write(GameLogger.GetTime() + " - " + ((reporter != null) ? reporter.ToString() + " called for a meeting." : " Meeting was called"));
             }
-            DoomScroll._log.LogInfo(NewsFeedManager.Instance.ToString()); // debug
+            DoomScroll._log.LogInfo(HeadlineManager.Instance.ToString()); // debug
 
         }
 

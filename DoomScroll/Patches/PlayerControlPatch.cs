@@ -85,7 +85,7 @@ namespace Doom_Scroll.Patches
             switch (callId)
             {
                 case (byte)CustomRPC.SENDTRUSTSELECTION:
-                    NewsItem news = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
+                    Headline news = HeadlineDisplay.Instance.GetNewsByID(reader.ReadInt32());
                     if (news != null)
                     {
                         news.UpdateTrustSelection(__instance.PlayerId, reader.ReadBoolean());
@@ -164,7 +164,7 @@ namespace Doom_Scroll.Patches
                     {
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
-                            NewsItem headline = NewsFeedManager.Instance.GetNewsByID(reader.ReadInt32());
+                            Headline headline = HeadlineDisplay.Instance.GetNewsByID(reader.ReadInt32());
                             if (headline != null)
                             {
                                 ChatControllerPatch.content = ChatContent.HEADLINE;
@@ -178,14 +178,14 @@ namespace Doom_Scroll.Patches
                     {
                         if (reader.ReadByte() == PlayerControl.LocalPlayer.PlayerId)
                         {
-                            NewsFeedManager.Instance.CanPostNews(true);
+                            HeadlineManager.Instance.CanPostNews(true);
                         }
                         DoomScroll._log.LogInfo("==== CAN POST: " + reader.ReadString());
                         return;
                     }
                 case (byte)CustomRPC.SENDNEWS:
                     {
-                        NewsFeedManager.Instance.AddNews(new NewsItem(reader.ReadInt32(), reader.ReadByte(), reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
+                        HeadlineDisplay.Instance.AddNews(new Headline(reader.ReadInt32(), reader.ReadByte(), reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
                         return;
                     }
                 case (byte)CustomRPC.DEATHNOTE:

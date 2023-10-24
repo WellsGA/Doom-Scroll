@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
-    public class NewsItem
+    public class Headline
     {
-        public int NewsID { get; private set; }
+        public int HeadlineID { get; private set; }
         public byte AuthorID { get; private set; }
         public GameObject AuthorIcon { get; private set; }
         public string AuthorName { get; private set; }
@@ -25,9 +25,9 @@ namespace Doom_Scroll
         private CustomText titleUI;
         private CustomText sourceUI;
  
-        public NewsItem(int id, byte player, string headline, bool truth, string source)
+        public Headline(int id, byte player, string headline, bool truth, string source)
         {
-            NewsID = id;
+            HeadlineID = id;
             AuthorID = player; // 255 for the automated news - no player
             AuthorName = "";
             Title = headline;
@@ -76,6 +76,10 @@ namespace Doom_Scroll
         public void DisplayNewsCard()
         {
             Card.SetScale(Vector3.one);
+            if (trustButtons.HasSelected)
+            {
+                trustButtons.Selected.Value.SelectButton(true);
+            }
             Card.ActivateCustomUI(true);
         }
 
@@ -126,7 +130,7 @@ namespace Doom_Scroll
         private void RpcPostNews()
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWSTOCHAT, (SendOption)1);
-            messageWriter.Write(NewsID);    // id
+            messageWriter.Write(HeadlineID);    // id
             messageWriter.EndMessage();
         }
 
@@ -150,7 +154,7 @@ namespace Doom_Scroll
         private void RpcTrustSelection(bool isTrusted)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDTRUSTSELECTION, (SendOption)1);
-            messageWriter.Write(NewsID);                                // news id
+            messageWriter.Write(HeadlineID);                                // news id
             messageWriter.Write(isTrusted);                             // trust or not
             messageWriter.EndMessage();
         }
