@@ -35,7 +35,7 @@ namespace Doom_Scroll.Patches
             chatText = DateTime.Now.ToString("T", CultureInfo.CreateSpecificCulture("en-GB"));
         }
 
-            
+
         [HarmonyPostfix]
         [HarmonyPatch("AddChat")]
         public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText, string __state)
@@ -133,11 +133,9 @@ namespace Doom_Scroll.Patches
 
         private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)
         {
-            PostEndorsement endorsement = new PostEndorsement(chatbubble, ID);
-            float xPosEndorse = isLocalPlayer ? size.x /2 - 0.9f : size.x / 2 + 0.9f;
-            float xPosDenounce = isLocalPlayer ? xPosEndorse + 0.3f : xPosEndorse - 0.3f;
-            endorsement.EndorseButton.SetLocalPosition(new Vector3(xPosEndorse, -size.y / 2 + 0.06f, 0));
-            endorsement.DenounceButton.SetLocalPosition(new Vector3(xPosDenounce, -size.y / 2 + 0.06f, 0));
+            PostEndorsement endorsement = new PostEndorsement(chatbubble, size, ID);
+            //float xPosEndorse = isLocalPlayer ? size.x /2 - 0.9f : size.x / 2 + 0.9f;
+            endorsement.LikeButtons.ArrangeButtons(0.25f, 2, size.x / 2, -size.y / 2);
             endorsemntList.Add(endorsement);
         }
     }

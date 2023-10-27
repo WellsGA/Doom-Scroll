@@ -4,71 +4,46 @@ using Hazel;
 using System;
 using System.Reflection;
 using UnityEngine;
+using static Il2CppSystem.Net.Http.Headers.Parser;
 
 namespace Doom_Scroll.UI
 {
+    public enum Vote
+    {
+        LIKE,
+        DISLIKE,
+        EMPTY
+    }
     public class PostEndorsement
     {
         // endorsement
         public string Id { get; private set; }
-        public CustomButton EndorseButton { get; private set; }
-        public CustomButton DenounceButton { get; private set; }
+        public CustomSelect<bool> LikeButtons { get; private set; }
         public int TotalEndorsement { get; set; }
         public int TotalDenouncement { get; set; }
-        private bool localPlayerEndorsed;
-        private bool localPlayerDenounced;
-        private GameObject chatBubble;
-
-        public PostEndorsement(GameObject parent, string id)
+        public CustomText LikeLabel { get; set; }
+        public CustomText DislikeLabel { get; set; }
+        private Vote vote;
+        public PostEndorsement(GameObject chatBubble, Vector2 size, string id)
         {
             Id = id;
-            chatBubble = parent;
             TotalEndorsement = 0;
             TotalDenouncement = 0;
-            localPlayerEndorsed = false;
-            localPlayerDenounced = false;
-            AddEndorseButtons();
+            vote = Vote.EMPTY;
+
+            Sprite[] endorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.endorse.png", ImageLoader.slices3);
+            Sprite[] unEndorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.unEndorse.png", ImageLoader.slices3);
+
+            LikeButtons = new CustomSelect<bool>(size);
+            CustomButton likeBtn = CreateEndorsementButton(chatBubble, endorseSprites, 0.25f, Color.green);
+            LikeLabel = likeBtn.Label;
+            CustomButton dislikeBtn = CreateEndorsementButton(chatBubble, unEndorseSprites, 0.25f, Color.red);
+            DislikeLabel = dislikeBtn.Label;
+            LikeButtons.AddSelectOption(true, likeBtn);
+            LikeButtons.AddSelectOption(false, dislikeBtn);
+           // LikeButtons.ButtonEvent.MyAction += 
         }
-
-        public void AddEndorseButtons()
-        {
-            float endorseBtnSize = 0.25f;
-            Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
-            Sprite[] endorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.endorse.png", slices);
-            Sprite[] unEndorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.unEndorse.png", slices);
-
-            EndorseButton = CreateEndorsementButton(endorseSprites, endorseBtnSize, Color.green);
-            EndorseButton.ButtonEvent.MyAction += OnClickEndorse;
-
-            DenounceButton = CreateEndorsementButton(unEndorseSprites, endorseBtnSize, Color.red);
-            DenounceButton.ButtonEvent.MyAction += OnClickUnEndorse;
-        }
-
-        private void OnClickEndorse()
-        {
-            if (localPlayerDenounced) // if already denounced, it has to change too
-            {
-                OnClickUnEndorse();
-            }
-            TotalEndorsement = localPlayerEndorsed ? TotalEndorsement - 1 : TotalEndorsement + 1;
-            localPlayerEndorsed = !localPlayerEndorsed;
-            EndorseButton.Label.SetText(TotalEndorsement.ToString());
-            DoomScroll._log.LogInfo("Endorsed: " + TotalEndorsement);
-            RpcShareEndorsement(true, localPlayerEndorsed);
-        }
-
-        private void OnClickUnEndorse()
-        {
-            if (localPlayerEndorsed) // if already endorsed, it has to change too
-            {
-                OnClickEndorse();
-            }
-            TotalDenouncement = localPlayerDenounced ? TotalDenouncement - 1 : TotalDenouncement + 1;
-            localPlayerDenounced = !localPlayerDenounced;
-            DenounceButton.Label.SetText(TotalDenouncement.ToString());
-            DoomScroll._log.LogInfo("Denounced: " + TotalDenouncement);
-            RpcShareEndorsement(false, localPlayerDenounced);
-        }
+   
 
         private void RpcShareEndorsement(bool up, bool add)
         {
@@ -87,32 +62,77 @@ namespace Doom_Scroll.UI
             {
                 try
                 {
-                    if (EndorseButton.UIGameObject != null && EndorseButton.IsEnabled && EndorseButton.IsActive)
+                    LikeButtons.ListenForSelection();
+                    if (LikeButtons.HasSelected)
                     {
-                        EndorseButton.ReplaceImgageOnHover();
-                    }
-                    if (DenounceButton.UIGameObject != null && DenounceButton.IsEnabled && DenounceButton.IsActive)
-                    {
-                        DenounceButton.ReplaceImgageOnHover();
-                    }
-                    if (EndorseButton.IsEnabled && EndorseButton.IsActive && EndorseButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        EndorseButton.ButtonEvent.InvokeAction();
-                    }
-                    if (DenounceButton.IsEnabled && DenounceButton.IsActive &&  DenounceButton.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        DenounceButton.ButtonEvent.InvokeAction();
+                        SetEndorsementState(LikeButtons.Selected.Key);
                     }
                 }
                 catch (Exception e)
                 {
-                    DoomScroll._log.LogError("Error invoking overlay button method: " + e);
+                    DoomScroll._log.LogError("Error invoking like or dislike button method: " + e);
                 }
             }
 
         }
 
-        private CustomButton CreateEndorsementButton(Sprite[] icons, float size, Color color)
+        private void SetEndorsementState(bool like) 
+        { 
+            switch (vote)
+            {
+                case Vote.EMPTY:
+                    if (like)
+                    {
+                        TotalEndorsement++;
+                        vote = Vote.LIKE;
+                        RpcShareEndorsement(true, true);
+                    }
+                    else
+                    {
+                        TotalDenouncement++;
+                        vote = Vote.DISLIKE;
+                        RpcShareEndorsement(false, true);
+                    }
+                    break;
+                case Vote.LIKE:
+                    if (like) // deselecting like
+                    {
+                        TotalEndorsement--;
+                        vote = Vote.EMPTY;
+                        RpcShareEndorsement(true, false);
+                    }
+                    else
+                    {
+                        TotalEndorsement--;
+                        TotalDenouncement++;
+                        vote = Vote.DISLIKE;
+                        RpcShareEndorsement(true, false);
+                        RpcShareEndorsement(false, true);
+                    }
+                    break;
+                case Vote.DISLIKE :
+                    if (like)
+                    {
+                        TotalEndorsement++;
+                        TotalDenouncement--;
+                        vote = Vote.LIKE;
+                        RpcShareEndorsement(true, true);
+                        RpcShareEndorsement(false, false);
+                    }
+                    else
+                    {
+                        TotalDenouncement--;
+                        vote = Vote.EMPTY;
+                        RpcShareEndorsement(false, false);
+                    }
+                    break;
+            }
+            LikeLabel.SetText(TotalEndorsement.ToString());
+            DislikeLabel.SetText(TotalDenouncement.ToString());
+        }
+
+
+        private CustomButton CreateEndorsementButton(GameObject chatBubble, Sprite[] icons, float size, Color color)
         {
             CustomButton btn = new CustomButton(chatBubble, "Emdorse News", icons);
             btn.SetVisibleInsideMask();

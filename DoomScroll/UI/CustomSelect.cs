@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Doom_Scroll.Common;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ namespace Doom_Scroll.UI
         public bool HasSelected { get; private set; }
         private Vector3 parentSize;
         private Dictionary<T, CustomButton> buttonList;
+
+        public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
+
 
         public CustomSelect(Vector3 size)
         {
@@ -65,6 +69,7 @@ namespace Doom_Scroll.UI
                 if (select.Value.IsEnabled && select.Value.IsActive && select.Value.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     Select(select);
+                    ButtonEvent?.InvokeAction();
                 }
             }
         }

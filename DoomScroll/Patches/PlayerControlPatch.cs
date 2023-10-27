@@ -88,7 +88,14 @@ namespace Doom_Scroll.Patches
                     Headline news = HeadlineDisplay.Instance.GetNewsByID(reader.ReadInt32());
                     if (news != null)
                     {
-                        news.UpdateTrustSelection(__instance.PlayerId, reader.ReadBoolean());
+                        if (reader.ReadBoolean())
+                        {
+                            news.PlayersTrustSelections[__instance.PlayerId] = reader.ReadBoolean();
+                        }
+                        else
+                        {
+                            news.PlayersTrustSelections.Remove(__instance.PlayerId);
+                        }
                     }
                     break;
                 case (byte)CustomRPC.SENDTASKTOCHAT:
@@ -144,12 +151,12 @@ namespace Doom_Scroll.Patches
                                 if (reader.ReadBoolean()) // endorse
                                 {
                                     post.TotalEndorsement = reader.ReadBoolean() ? post.TotalEndorsement + 1 : post.TotalEndorsement - 1;
-                                    post.EndorseButton.Label.SetText(post.TotalEndorsement.ToString());
+                                    post.LikeLabel.SetText(post.TotalEndorsement.ToString());
                                 }
                                 else  // denounce
                                 {
                                     post.TotalDenouncement = reader.ReadBoolean() ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
-                                    post.DenounceButton.Label.SetText(post.TotalDenouncement.ToString());
+                                    post.DislikeLabel.SetText(post.TotalDenouncement.ToString());
                                 }
                             }
                             else

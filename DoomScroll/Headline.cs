@@ -64,7 +64,8 @@ namespace Doom_Scroll
             trustButtons.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(Card, radioBtnSprites, "Trusted"));
             trustButtons.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(Card, radioBtnSprites, "Fake"));
             trustButtons.ArrangeButtons(0.22f, 2, Card.GetSize().x / 2 - 0.44f, 0.45f);
-            
+            trustButtons.ButtonEvent.MyAction += UpdateTrustSelection;
+
             // share btn
             float btnSize = 0.4f;
             Vector3 sharBtnPos = new Vector3(Card.GetSize().x / 2 + btnSize /2, 0, -20);
@@ -137,24 +138,29 @@ namespace Doom_Scroll
         public void CheckForTrustSelect()
         {
             trustButtons.ListenForSelection();
+        }
+
+        public void UpdateTrustSelection()
+        {
+            byte playerId = PlayerControl.LocalPlayer.PlayerId;
             if (trustButtons.HasSelected)
             {
-                // upsert local player's selection
-                UpdateTrustSelection(PlayerControl.LocalPlayer.PlayerId, trustButtons.Selected.Key);
-                // RPC to others
-                RpcTrustSelection(trustButtons.Selected.Key);
+                PlayersTrustSelections[playerId] = trustButtons.Selected.Key;
+                RpcTrustSelection(true, trustButtons.Selected.Key);
             }
+            else if(!trustButtons.HasSelected && trustButtons.Selected.Value != null) // deselected values
+            {
+                PlayersTrustSelections.Remove(playerId);
+                RpcTrustSelection(false, trustButtons.Selected.Key);
+            }
+            
         }
 
-        public void UpdateTrustSelection(byte playerId, bool isTrusted)
-        {
-            PlayersTrustSelections[playerId] = isTrusted;
-        }
-
-        private void RpcTrustSelection(bool isTrusted)
+        private void RpcTrustSelection(bool select, bool isTrusted)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDTRUSTSELECTION, (SendOption)1);
-            messageWriter.Write(HeadlineID);                                // news id
+            messageWriter.Write(HeadlineID);                            // news id
+            messageWriter.Write(select);                                // select or unselect
             messageWriter.Write(isTrusted);                             // trust or not
             messageWriter.EndMessage();
         }
