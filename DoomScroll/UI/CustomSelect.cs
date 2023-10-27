@@ -82,14 +82,12 @@ namespace Doom_Scroll.UI
                 if (Selected.Key.Equals(current.Key))
                 {
                     HasSelected = false;
-                    DoomScroll._log.LogInfo("DE-SELECTED: " + Selected.Key + ", " + Selected.Value.Label.TextMP.text);
                     return;
                 }
             }
             Selected = current;
             Selected.Value.SelectButton(true);
             HasSelected = true;
-            DoomScroll._log.LogInfo("SELECTED: " + Selected.Key + ", " + Selected.Value.Label.TextMP.text);
         }
 
         public int GetNumberOfOptions()

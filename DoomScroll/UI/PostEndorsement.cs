@@ -35,13 +35,13 @@ namespace Doom_Scroll.UI
             Sprite[] unEndorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.unEndorse.png", ImageLoader.slices3);
 
             LikeButtons = new CustomSelect<bool>(size);
-            CustomButton likeBtn = CreateEndorsementButton(chatBubble, endorseSprites, 0.25f, Color.green);
+            CustomButton likeBtn = CreateEndorsementButton(chatBubble, endorseSprites, 0.3f, Color.green);
             LikeLabel = likeBtn.Label;
-            CustomButton dislikeBtn = CreateEndorsementButton(chatBubble, unEndorseSprites, 0.25f, Color.red);
+            CustomButton dislikeBtn = CreateEndorsementButton(chatBubble, unEndorseSprites, 0.3f, Color.red);
             DislikeLabel = dislikeBtn.Label;
             LikeButtons.AddSelectOption(true, likeBtn);
             LikeButtons.AddSelectOption(false, dislikeBtn);
-           // LikeButtons.ButtonEvent.MyAction += 
+            LikeButtons.ButtonEvent.MyAction += OnEndorseClick;
         }
    
 
@@ -63,17 +63,21 @@ namespace Doom_Scroll.UI
                 try
                 {
                     LikeButtons.ListenForSelection();
-                    if (LikeButtons.HasSelected)
-                    {
-                        SetEndorsementState(LikeButtons.Selected.Key);
-                    }
                 }
                 catch (Exception e)
                 {
                     DoomScroll._log.LogError("Error invoking like or dislike button method: " + e);
                 }
             }
+        }
 
+        public void OnEndorseClick()
+        {
+            if (LikeButtons.Selected.Value != null)
+            {
+                SetEndorsementState(LikeButtons.Selected.Key);
+                DoomScroll._log.LogInfo("CLICKED: " + LikeButtons.Selected.Key + ", " + LikeButtons.Selected.Value.Label.TextMP.text);
+            }
         }
 
         private void SetEndorsementState(bool like) 
@@ -137,11 +141,11 @@ namespace Doom_Scroll.UI
             CustomButton btn = new CustomButton(chatBubble, "Emdorse News", icons);
             btn.SetVisibleInsideMask();
             btn.SetSize(size);
+            btn.SetLocalPosition(new Vector3(0,0,-10));
             btn.Label.SetText(TotalEndorsement.ToString());
-            btn.Label.SetLocalPosition(new Vector3(0, -size / 2 - 0.05f, 0));
-            btn.Label.SetSize(1.2f);
+            btn.Label.SetLocalPosition(new Vector3(0, -size / 2 - 0.07f, 0));
+            btn.Label.SetSize(1.3f);
             btn.Label.SetColor(color);
-
             return btn;
         }
     }

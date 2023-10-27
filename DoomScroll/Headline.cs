@@ -153,7 +153,6 @@ namespace Doom_Scroll
                 PlayersTrustSelections.Remove(playerId);
                 RpcTrustSelection(false, trustButtons.Selected.Key);
             }
-            
         }
 
         private void RpcTrustSelection(bool select, bool isTrusted)
