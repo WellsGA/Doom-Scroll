@@ -60,7 +60,6 @@ namespace Doom_Scroll.UI
             TextInputField.textComponent = Text;
             TextInputField.textComponent.m_enableWordWrapping = true;
             TextInputField.textComponent.m_overflowMode = TextOverflowModes.ScrollRect;
-
         }
 
         public void SetColor(Color col)
@@ -82,6 +81,5 @@ namespace Doom_Scroll.UI
         {
             InputRectTransform.sizeDelta = InputRectTransform.sizeDelta + new Vector2(0, height); 
         }
-
     }
 }

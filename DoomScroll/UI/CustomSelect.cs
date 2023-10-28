@@ -66,7 +66,7 @@ namespace Doom_Scroll.UI
             foreach (KeyValuePair<T, CustomButton> select in buttonList)
             {
                 select.Value.ReplaceImgageOnHover();
-                if (select.Value.IsEnabled && select.Value.IsActive && select.Value.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (select.Value.IsEnabled && select.Value.IsActive && select.Value.IsHovered() && Input.GetKey(KeyCode.Mouse0))
                 {
                     Select(select);
                     ButtonEvent?.InvokeAction();

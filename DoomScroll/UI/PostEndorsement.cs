@@ -141,7 +141,7 @@ namespace Doom_Scroll.UI
             CustomButton btn = new CustomButton(chatBubble, "Emdorse News", icons);
             btn.SetVisibleInsideMask();
             btn.SetSize(size);
-            btn.SetLocalPosition(new Vector3(0,0,-10));
+            // btn.SetLocalPosition(new Vector3(0,0,-10));
             btn.Label.SetText(TotalEndorsement.ToString());
             btn.Label.SetLocalPosition(new Vector3(0, -size / 2 - 0.07f, 0));
             btn.Label.SetSize(1.3f);

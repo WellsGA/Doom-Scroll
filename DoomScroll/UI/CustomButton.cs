@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using Doom_Scroll.Common;
+﻿using Doom_Scroll.Common;
+using Il2CppSystem.Runtime.Remoting.Messaging;
+using UnityEngine;
 
 namespace Doom_Scroll.UI
 {
@@ -26,6 +27,7 @@ namespace Doom_Scroll.UI
         private CustomImage selectIcon;
         private CustomImage hoverIcon;
         private ButtonState state;
+        private BoxCollider2D collider;
 
         public CustomButton(GameObject parent, string name, Sprite[] images, Vector3 position, float scaledX) : base(parent, name)
         {
@@ -50,8 +52,8 @@ namespace Doom_Scroll.UI
         }
 
         private void CreateBasicButton(Sprite[] images)
-        {   
-
+        {
+           
             DefaultIcon = new CustomImage(UIGameObject, "default btn icon", images[0]);
 
             if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
@@ -60,7 +62,7 @@ namespace Doom_Scroll.UI
             {
                 hasBackgroundIcon = true;
                 TopIcon = new CustomImage(UIGameObject, "Bg icon", images[3]);
-                TopIcon.SetLocalPosition(new Vector3(0, 0, -20));
+                TopIcon.SetLocalPosition(new Vector3(0, 0, -10));
             }
             else
             {
@@ -68,6 +70,9 @@ namespace Doom_Scroll.UI
             }
             ChangeButtonState(ButtonState.DEFAULT);
             SetScale(Vector3.one);
+            collider = DefaultIcon.UIGameObject.AddComponent<BoxCollider2D>();
+            DoomScroll._log.LogInfo("BUTTON SIZE AND COLLIDER SIZE: " + DefaultIcon.GetSize() + ", " + collider.size);
+
         }
 
         public Vector2 GetBtnSize()
@@ -80,6 +85,7 @@ namespace Doom_Scroll.UI
             if (hoverIcon != null) { hoverIcon.SetSize(scaledWidth); }
             if (selectIcon != null) { selectIcon.SetSize(scaledWidth); }
             if(TopIcon != null) { TopIcon.SetSize(scaledWidth); }
+            collider.size = DefaultIcon.GetSize();
         }
         public void SetDefaultBtnColor(CustomImage image, Color color)
         {
@@ -98,13 +104,19 @@ namespace Doom_Scroll.UI
         public bool IsHovered()
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 btnPos = DefaultIcon.UIGameObject.transform.position;
+            
+            /*Vector3 btnPos = DefaultIcon.UIGameObject.transform.position;
             Vector3 btnScale = DefaultIcon.GetSpriteRenderer().bounds.extents;
 
             bool isInBoundsX = btnPos.x - btnScale.x < mousePos.x && btnPos.x + btnScale.x > mousePos.x;
             bool isInBoundsY = btnPos.y - btnScale.y < mousePos.y && btnPos.y + btnScale.y > mousePos.y;
+            return isInBoundsX && isInBoundsY && IsEnabled && IsActive;*/
 
-            return isInBoundsX && isInBoundsY && IsEnabled && IsActive;
+            int layerObject = 1 << LayerMask.NameToLayer("UI");
+            //  layerObject = ~layerObject;
+            Vector2 ray = new Vector2(mousePos.x, mousePos.y);
+            RaycastHit2D hit = Physics2D.Raycast(ray, Vector2.zero, layerObject);
+            return collider == hit.collider ? true : false;
         }
 
         private void ChangeButtonState(ButtonState type)
@@ -164,11 +176,13 @@ namespace Doom_Scroll.UI
 
         public void SetVisibleInsideMask()
         {
-            SpriteRenderer[] SRs = UIGameObject.GetComponentsInChildren<SpriteRenderer>();
+            SpriteRenderer[] SRs = UIGameObject.GetComponentsInChildren<SpriteRenderer>(true);
+            //MeshRenderer[] MRs = UIGameObject.GetComponentsInChildren<MeshRenderer>();
             foreach (SpriteRenderer sr in SRs)
             {
                 sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             }
+            
         }
         public void EnableButton(bool value)
         {
