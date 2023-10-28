@@ -47,8 +47,8 @@ namespace Doom_Scroll.Patches
             }
 
             bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
-            GameObject scroller = __instance.GetComponentInChildren<Scroller>().gameObject;
-            TextMeshPro[] texts = scroller.gameObject.GetComponentsInChildren<TextMeshPro>();
+            GameObject scroller = __instance.GetComponentInChildren<Scroller>(true).gameObject;
+            TextMeshPro[] texts = scroller.gameObject.GetComponentsInChildren<TextMeshPro>(true);
             if (texts != null)
             {
                 foreach (TextMeshPro text in texts)
@@ -65,8 +65,8 @@ namespace Doom_Scroll.Patches
                         TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
                         SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
                         
-                        RectMask2D mask2D = text.transform.parent.GetComponentInChildren<RectMask2D>();
-                        if (mask2D != null) DoomScroll._log.LogInfo("2d mask: " + mask2D.gameObject.name);
+                        /*RectMask2D mask2D = text.transform.parent.GetComponentInChildren<RectMask2D>();
+                        if (mask2D != null) DoomScroll._log.LogInfo("2d mask: " + mask2D.gameObject.name);*/
                         
                         switch (content)
                         {
