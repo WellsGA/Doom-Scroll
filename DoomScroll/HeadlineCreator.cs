@@ -66,7 +66,8 @@ namespace Doom_Scroll
 
             source = SelectSource(NewsStrings.unTrustSource);
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(player.PlayerId);
-            source = ReplaceSymbolsInSource(source, playerInfo.GetPlayerColorString(), player.name);
+            string randomPlayer = GetRandomPlayer().name;
+            source = ReplaceSymbolsInSource(source, playerInfo.GetPlayerColorString(), randomPlayer);
 
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
             return new Headline(id, PlayerControl.LocalPlayer.PlayerId, headline, false, source);
@@ -198,7 +199,7 @@ namespace Doom_Scroll
         private static string ReplaceSymbolsInHeadline(string raw, string name, int count)
         {
             if (raw.Contains("{X}")) raw = raw.Replace("{X}", name);
-            if (raw.Contains("{Y}")) raw = raw.Replace("{Y}", GetRandomPlayerName());
+            if (raw.Contains("{Y}")) raw = raw.Replace("{Y}", GetRandomPlayer().name);
             if (raw.Contains("{#}")) raw = raw.Replace("{#}", count.ToString());
             return raw;
         }
@@ -221,12 +222,6 @@ namespace Doom_Scroll
         {
             int item = UnityEngine.Random.Range(0, sources.Length);
             return sources[item];
-        }
-
-        private static string GetRandomPlayerName()
-        {
-            int rand = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count);
-            return PlayerControl.AllPlayerControls[rand].name;
         }
 
         private static PlayerControl GetRandomPlayer()
