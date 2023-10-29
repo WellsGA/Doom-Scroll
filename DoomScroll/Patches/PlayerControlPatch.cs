@@ -144,18 +144,22 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SENDENDORSEMENT:
                     {
-                        foreach(PostEndorsement post in ChatControllerPatch.endorsemntList)
+                        string postId = reader.ReadString();
+                        bool isEndorse = reader.ReadBoolean();
+                        bool isAddition = reader.ReadBoolean();
+
+                        foreach (PostEndorsement post in ChatControllerPatch.endorsemntList)
                         {
-                            if(post.Id == reader.ReadString())
+                            if(post.Id == postId)
                             {
-                                if (reader.ReadBoolean()) // endorse
+                                if (isEndorse) // endorse
                                 {
-                                    post.TotalEndorsement = reader.ReadBoolean() ? post.TotalEndorsement + 1 : post.TotalEndorsement - 1;
+                                    post.TotalEndorsement = isAddition ? post.TotalEndorsement + 1 : post.TotalEndorsement - 1;
                                     post.LikeLabel.SetText(post.TotalEndorsement.ToString());
                                 }
                                 else  // denounce
                                 {
-                                    post.TotalDenouncement = reader.ReadBoolean() ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
+                                    post.TotalDenouncement = isAddition ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
                                     post.DislikeLabel.SetText(post.TotalDenouncement.ToString());
                                 }
                             }
