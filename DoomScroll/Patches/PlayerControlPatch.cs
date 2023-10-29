@@ -177,12 +177,13 @@ namespace Doom_Scroll.Patches
                                     post.TotalDenouncement = isAddition ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
                                     post.DislikeLabel.SetText(post.TotalDenouncement.ToString());
                                 }
+                                DoomScroll._log.LogInfo("=========== Found news!!!! ==============");
+                                return;
                             }
                             else
                             {
                                 DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
                             }
-                            return;
                         }
                         break;
                     }

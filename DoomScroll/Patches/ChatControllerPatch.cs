@@ -134,8 +134,8 @@ namespace Doom_Scroll.Patches
         private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)
         {
             PostEndorsement endorsement = new PostEndorsement(chatbubble, size, ID);
-            //float xPosEndorse = isLocalPlayer ? size.x /2 - 0.9f : size.x / 2 + 0.9f;
-            endorsement.LikeButtons.ArrangeButtons(0.3f, 2, size.x / 2, -size.y / 2 + 0.9f);
+            float xPosEndorse = isLocalPlayer ? size.x * 1.32f : size.x / 2f;
+            endorsement.LikeButtons.ArrangeButtons(0.3f, 2, xPosEndorse, -size.y / 2 + 0.6f);
             endorsemntList.Add(endorsement);
         }
     }

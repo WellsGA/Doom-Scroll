@@ -35,7 +35,7 @@ namespace Doom_Scroll.UI
             Vector3 nextPos = new Vector3(0, 0, -10);
             foreach (CustomButton btn in buttonList.Values)
             {       
-                nextPos.x = counter % itemsInOneRow == 0 ? -parentSize.x / 2 + xPos : nextPos.x + 1.5f * btnSize;
+                nextPos.x = counter % itemsInOneRow == 0 ? -parentSize.x / 2 + xPos : nextPos.x + btnSize +0.1f;
                 counter++;
                 nextPos.y = yPos - ((float)Math.Ceiling((decimal)counter / itemsInOneRow) * (btnSize + 0.2f));
                 DoomScroll._log.LogInfo(", X pos" + nextPos.x + ", Y pos" + nextPos.y);

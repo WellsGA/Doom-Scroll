@@ -54,12 +54,12 @@ namespace Doom_Scroll
             // bool isTrustworthy = UnityEngine.Random.value > 0.5f;
             if (protect)
             {
-                int rand1 = UnityEngine.Random.Range(0, NewsStrings.unTrustProtect.Length);
+                int rand1 = Random.Range(0, NewsStrings.unTrustProtect.Length);
                 headline = NewsStrings.unTrustProtect[rand1];
             }
             else
             {
-                int rand2 = UnityEngine.Random.Range(0, NewsStrings.unTrustFrame.Length);
+                int rand2 = Random.Range(0, NewsStrings.unTrustFrame.Length);
                 headline = NewsStrings.unTrustFrame[rand2];
             }
             headline = ReplaceSymbolsInHeadline(headline, player.name, GetFinishedTaskCount(player.PlayerId));
@@ -76,18 +76,18 @@ namespace Doom_Scroll
         // Automatic News Creation - Only if player is host!
         public static Headline CreateRandomFakeNews()
         {
-            bool protect = UnityEngine.Random.value > 0.5f;
+            bool protect = Random.value > 0.5f;
             string headline;
-            int randSource = UnityEngine.Random.Range(0, NewsStrings.autoUnTrustSource.Length);
+            int randSource = Random.Range(0, NewsStrings.autoUnTrustSource.Length);
             string source = NewsStrings.autoUnTrustSource[randSource]; // no string replace
             if (protect)
             {
-                int rand = UnityEngine.Random.Range(0, NewsStrings.autoUnTrustProtect.Length);
+                int rand = Random.Range(0, NewsStrings.autoUnTrustProtect.Length);
                 headline = NewsStrings.autoUnTrustProtect[rand];
             }
             else
             {
-                int rand1 = UnityEngine.Random.Range(0, NewsStrings.autoUnTrustFrame.Length);
+                int rand1 = Random.Range(0, NewsStrings.autoUnTrustFrame.Length);
                 headline = NewsStrings.autoUnTrustFrame[rand1];
             }
             PlayerControl pl = GetRandomPlayer();
@@ -98,16 +98,16 @@ namespace Doom_Scroll
 
         public static Headline CreateRandomTrueNews()
         {
-            bool protect = UnityEngine.Random.value > 0.5f;
+            bool protect = Random.value > 0.5f;
             PlayerControl pl = GetRandomPlayer();
             string headline = "";
-            int randSource = UnityEngine.Random.Range(0, NewsStrings.autoTrustSource.Length);
+            int randSource = Random.Range(0, NewsStrings.autoTrustSource.Length);
             string source = NewsStrings.autoTrustSource[randSource]; // no string replace
             bool foundNews = false;
             List<string> types = new List<string> { "task", "sabotage", "sign-in", "role" };
             while (!foundNews)
             {
-                int rand = UnityEngine.Random.Range(0, types.Count);
+                int rand = Random.Range(0, types.Count);
                 string type = types[rand];
                 switch (type)
                 {
@@ -149,7 +149,7 @@ namespace Doom_Scroll
                             GameData.PlayerInfo inf = GameData.Instance.GetPlayerById(pl.PlayerId);
                             if ((inf.Role.Role != RoleTypes.Impostor && protect) || (inf.Role.Role == RoleTypes.Impostor && !protect))
                             {
-                                int news = UnityEngine.Random.Range(0, NewsStrings.autoTrustProtect[2].Length);
+                                int news = Random.Range(0, NewsStrings.autoTrustProtect[2].Length);
                                 headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[2]) : SelectHeadline(NewsStrings.autoTrustFrame[2]);
                                 if (headline.Contains("{X}")) headline = headline.Replace("{X}", pl.name);
                                 foundNews = true;
@@ -168,7 +168,7 @@ namespace Doom_Scroll
 
                             if ((hasHelpedFix > 0 && protect) || (hasSabotaged && !protect))
                             {
-                                int news = UnityEngine.Random.Range(0, NewsStrings.autoTrustProtect[3].Length);
+                                int news = Random.Range(0, NewsStrings.autoTrustProtect[3].Length);
                                 headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[3]) : SelectHeadline(NewsStrings.autoTrustFrame[3]);
                                 if (headline.Contains("{X}")) headline = headline.Replace("{X}", pl.name);
                                 if (headline.Contains("{#S}")) headline = headline.Replace("{#S}", hasHelpedFix.ToString());
@@ -214,19 +214,19 @@ namespace Doom_Scroll
 
         private static string SelectHeadline(string[] headlines)
         {
-            int news = UnityEngine.Random.Range(0, headlines.Length);
+            int news = Random.Range(0, headlines.Length);
             return headlines[news];
         }
 
         private static string SelectSource(string[] sources)
         {
-            int item = UnityEngine.Random.Range(0, sources.Length);
+            int item = Random.Range(0, sources.Length);
             return sources[item];
         }
 
         private static PlayerControl GetRandomPlayer()
         {
-            int rand = UnityEngine.Random.Range(0, PlayerControl.AllPlayerControls.Count);
+            int rand = Random.Range(0, PlayerControl.AllPlayerControls.Count);
             return PlayerControl.AllPlayerControls[rand];
         }
         private static int GetFinishedTaskCount(byte id)
