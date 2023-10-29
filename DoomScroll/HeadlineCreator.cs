@@ -1,11 +1,51 @@
 ﻿using AmongUs.GameOptions;
 using Doom_Scroll.Common;
+using Doom_Scroll.Patches;
+using Hazel;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Doom_Scroll
 {
     public static class HeadlineCreator
     {
+        private static Dictionary<byte, int> playerIDHasHelpedFixSabotage = new Dictionary<byte, int>();
+        private static Dictionary<byte, bool> playerIDHasStartedSabotage = new Dictionary<byte, bool>();
+        public static void AddToFixSabotage(byte id)
+        {
+            if (playerIDHasHelpedFixSabotage == null)
+            {
+                playerIDHasHelpedFixSabotage = new Dictionary<byte, int>();
+            }
+            if (playerIDHasHelpedFixSabotage.ContainsKey(id))
+            {
+                playerIDHasHelpedFixSabotage[id] += 1;
+            }
+            else
+            {
+                playerIDHasHelpedFixSabotage[id] = 1;
+            }
+        }
+        public static void AddToStartedSabotage(byte id)
+        {
+            if (playerIDHasStartedSabotage == null)
+            {
+                playerIDHasStartedSabotage = new Dictionary<byte, bool>();
+            }
+            playerIDHasStartedSabotage[id] = true;
+        }
+        public static void RpcSabotageContribution(bool helpedFix)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDSABOTAGECONTRIBUTION, (SendOption)1);
+            messageWriter.Write(helpedFix);    // true mean helped fix sabotage, false means caused sabotage
+            messageWriter.EndMessage();
+        }
+        public static void ResetSabotageTrackers()
+        {
+            playerIDHasHelpedFixSabotage = new Dictionary<byte, int>();
+            playerIDHasStartedSabotage = new Dictionary<byte, bool>();
+        }
+
         // Create post by player
         public static Headline CreateRandomNews(bool protect, PlayerControl player)
         {
@@ -122,9 +162,23 @@ namespace Doom_Scroll
                         }
                     case "sabotage":
                         {
-                            // TO DO
-                            types.Remove(type);
-                            if (types.Count == 0) goto default;
+                            bool hasSabotaged = GetHasStartedSabotage(pl.PlayerId);
+                            int hasHelpedFix = GetHasHelpedFixSabotage(pl.PlayerId);
+
+                            if ((hasHelpedFix > 0 && protect) || (hasSabotaged && !protect))
+                            {
+                                int news = UnityEngine.Random.Range(0, NewsStrings.autoTrustProtect[3].Length);
+                                headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[3]) : SelectHeadline(NewsStrings.autoTrustFrame[3]);
+                                if (headline.Contains("{X}")) headline = headline.Replace("{X}", pl.name);
+                                if (headline.Contains("{#S}")) headline = headline.Replace("{#S}", hasHelpedFix.ToString());
+                                foundNews = true;
+                            }
+                            else
+                            {
+                                // TO DO
+                                types.Remove(type);
+                                if (types.Count == 0) goto default;
+                            }
                             break;
                         }
                     default: // none of the headlines appeared correct ...
@@ -209,6 +263,32 @@ namespace Doom_Scroll
                 if (id == task.AssigneeId) type = task.Type;
             }
             return type;
+        }
+        private static int GetHasHelpedFixSabotage(byte id)
+        {
+            if (playerIDHasHelpedFixSabotage.ContainsKey(id))
+            {
+                return playerIDHasHelpedFixSabotage[id];
+            }
+            else
+            {
+                DoomScroll._log.LogInfo("Player ID for HasHelpedFixSabotage not in Dictionary?");
+                return 0;
+            }
+        }
+
+        private static bool GetHasStartedSabotage(byte id)
+        {
+            if (playerIDHasStartedSabotage.ContainsKey(id))
+            {
+
+                return playerIDHasStartedSabotage[id];
+            }
+            else
+            {
+                DoomScroll._log.LogInfo("Player ID for HasStartedSabotage not in Dictionary?");
+                return false;
+            }
         }
 
         private static string RemoveRandomLetter(string name)

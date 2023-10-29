@@ -8,6 +8,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        SENDSABOTAGECONTRIBUTION = 242,
         SENDTRUSTSELECTION = 243,
         SENDTASKTOCHAT = 244,
         SENDVOTE = 245,
@@ -84,6 +85,20 @@ namespace Doom_Scroll.Patches
         {
             switch (callId)
             {
+                case (byte)CustomRPC.SENDSABOTAGECONTRIBUTION:
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        bool helpedFix = reader.ReadBoolean();
+                        if (helpedFix)
+                        {
+                            HeadlineCreator.AddToFixSabotage(__instance.PlayerId);
+                        }
+                        else
+                        {
+                            HeadlineCreator.AddToStartedSabotage(__instance.PlayerId);
+                        }
+                    }
+                    return;
                 case (byte)CustomRPC.SENDTRUSTSELECTION:
                     Headline news = HeadlineDisplay.Instance.GetNewsByID(reader.ReadInt32());
                     if (news != null)
