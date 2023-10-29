@@ -104,14 +104,6 @@ namespace Doom_Scroll.UI
         public bool IsHovered()
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            
-            /*Vector3 btnPos = DefaultIcon.UIGameObject.transform.position;
-            Vector3 btnScale = DefaultIcon.GetSpriteRenderer().bounds.extents;
-
-            bool isInBoundsX = btnPos.x - btnScale.x < mousePos.x && btnPos.x + btnScale.x > mousePos.x;
-            bool isInBoundsY = btnPos.y - btnScale.y < mousePos.y && btnPos.y + btnScale.y > mousePos.y;
-            return isInBoundsX && isInBoundsY && IsEnabled && IsActive;*/
-
             int layerObject = 1 << LayerMask.NameToLayer("UI");
             //  layerObject = ~layerObject;
             Vector2 ray = new Vector2(mousePos.x, mousePos.y);
