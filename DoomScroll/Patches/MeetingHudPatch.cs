@@ -40,7 +40,7 @@ namespace Doom_Scroll.Patches
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
-                results += player.name + ": " + HeadlineDisplay.Instance.CalculateEndorsementScores(player.PlayerId);
+                results += player.name + ": " + HeadlineDisplay.Instance.CalculateScores(player.PlayerId);
             }
             DoomScroll._log.LogInfo(results); // debug
 

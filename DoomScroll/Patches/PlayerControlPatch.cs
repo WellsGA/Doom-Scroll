@@ -251,7 +251,7 @@ namespace Doom_Scroll.Patches
                             {
                                 DoomScroll._log.LogInfo("Adding screenshot to images folder.");
                                 FolderManager.Instance.AddImageToScreenshots("evidence_#" + ScreenshotManager.Instance.Screenshots + ".jpg", currentImagesAssembling[(string)$"{playerid}{imageid}"].Image);
-                                ScreenshotManager.Instance.IncrementScreenshots();
+                                // ScreenshotManager.Instance.IncrementScreenshots();
                                 DoomScroll._log.LogInfo("number of screenshots: " + ScreenshotManager.Instance.Screenshots);
                             }
                             return;

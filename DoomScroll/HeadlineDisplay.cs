@@ -146,6 +146,7 @@ namespace Doom_Scroll
         {
             foreach (HeadlineEndorsement headline in endorsemntList)
             {
+                DoomScroll._log.LogInfo("POST ID: " + postId + ", ID OF NEXT POST IN THE LIST: " + headline.Id);
                 if (headline.Id == postId)
                 {
                     if (isEndorse) // endorse
@@ -161,14 +162,11 @@ namespace Doom_Scroll
                     DoomScroll._log.LogInfo("=========== Found news!!!! ==============");
                     return;
                 }
-                else
-                {
-                    DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
-                }
             }
+            DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
         }
 
-        public string CalculateEndorsementScores(byte playerID)
+        public string CalculateScores(byte playerID)
         {
             int numCorrect = 0;
             int numIncorrect = 0;

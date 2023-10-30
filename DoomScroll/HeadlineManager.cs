@@ -64,7 +64,7 @@ namespace Doom_Scroll
             frameOrProtect = new CustomSelect<bool>(newsModal.GetSize());
             frameOrProtect.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, "Protect"));
             frameOrProtect.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(newsModal, radioBtnSprites, "Frame"));
-            frameOrProtect.ArrangeButtons(0.25f, 2, newsModal.GetSize().x / 2 -0.25f, 0.9f);
+            frameOrProtect.ArrangeButtons(0.25f, 2, newsModal.GetSize().x / 2-0.25f, 0.9f);
 
             // player buttons
             playerButtons = new CustomSelect<byte>(newsModal.GetSize());

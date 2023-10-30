@@ -41,7 +41,7 @@ namespace Doom_Scroll
 
 
             RpcSendImageFile(pID, imageFile.Id, image.Length, numMessages);
-           foreach (int i in Enumerable.Range(0, numMessages))
+            foreach (int i in Enumerable.Range(0, numMessages))
             {
                 if (i != numMessages - 1)
                 {
