@@ -20,9 +20,9 @@ namespace Doom_Scroll.Patches
             FolderManager.Instance.CheckForButtonClicks();
             HeadlineDisplay.Instance.CheckForTrustAndShareClicks();
             TaskAssigner.Instance.CheckForShareTaskClicks();
-            foreach(PostEndorsement end in ChatControllerPatch.endorsemntList)
+            foreach(HeadlineEndorsement headline in HeadlineDisplay.Instance.endorsemntList)
             {
-                end.CheckForEndorseClicks();
+                headline.CheckForEndorseClicks();
             }
             if (meetingBeginningToolTip.TextObject.TextMP.text != "" && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Discussion && meetingHudInstance.CurrentState != MeetingHud.VoteStates.Animating)
             {

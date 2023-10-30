@@ -24,7 +24,6 @@ namespace Doom_Scroll.Patches
     {
         public static byte[] screenshot = null; // for sharing images
         public static ChatContent content = ChatContent.TEXT;
-        public static List<PostEndorsement> endorsemntList = new List<PostEndorsement>();
 
         [HarmonyPrefix]
         [HarmonyPatch("AddChat")]
@@ -133,10 +132,10 @@ namespace Doom_Scroll.Patches
 
         private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)
         {
-            PostEndorsement endorsement = new PostEndorsement(chatbubble, size, ID);
+            HeadlineEndorsement endorsement = new HeadlineEndorsement(chatbubble, size, ID);
             float xPosEndorse = isLocalPlayer ? size.x * 1.32f : size.x / 2f;
             endorsement.LikeButtons.ArrangeButtons(0.3f, 2, xPosEndorse, -size.y / 2 + 0.6f);
-            endorsemntList.Add(endorsement);
+            HeadlineDisplay.Instance.endorsemntList.Add(endorsement);
         }
     }
 }

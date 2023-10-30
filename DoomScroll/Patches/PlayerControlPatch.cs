@@ -159,32 +159,7 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SENDENDORSEMENT:
                     {
-                        string postId = reader.ReadString();
-                        bool isEndorse = reader.ReadBoolean();
-                        bool isAddition = reader.ReadBoolean();
-
-                        foreach (PostEndorsement post in ChatControllerPatch.endorsemntList)
-                        {
-                            if(post.Id == postId)
-                            {
-                                if (isEndorse) // endorse
-                                {
-                                    post.TotalEndorsement = isAddition ? post.TotalEndorsement + 1 : post.TotalEndorsement - 1;
-                                    post.LikeLabel.SetText(post.TotalEndorsement.ToString());
-                                }
-                                else  // denounce
-                                {
-                                    post.TotalDenouncement = isAddition ? post.TotalDenouncement + 1 : post.TotalDenouncement - 1; ;
-                                    post.DislikeLabel.SetText(post.TotalDenouncement.ToString());
-                                }
-                                DoomScroll._log.LogInfo("=========== Found news!!!! ==============");
-                                return;
-                            }
-                            else
-                            {
-                                DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
-                            }
-                        }
+                        HeadlineDisplay.Instance.UpdateEndorsementList(reader.ReadString(), reader.ReadBoolean(), reader.ReadBoolean());
                         break;
                     }
                 case (byte)CustomRPC.SENDNEWSTOCHAT:

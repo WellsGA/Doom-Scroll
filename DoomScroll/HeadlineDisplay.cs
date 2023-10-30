@@ -1,4 +1,5 @@
 ﻿using Doom_Scroll.Common;
+using Doom_Scroll.Patches;
 using Doom_Scroll.UI;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,12 @@ namespace Doom_Scroll
         private readonly int maxNewsItemsPerPage = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
+        public Dictionary<byte, string> PlayerScores;
+        public List<HeadlineEndorsement> endorsemntList = new List<HeadlineEndorsement>();
+
+        private HudManager hudManagerInstance;
         private Pageable newsPageHolder;
         private int numPages = 1;
-        public Dictionary<byte, string> PlayerScores;
-        private HudManager hudManagerInstance;
-
         private HeadlineDisplay()
         {
             AllNewsList = new List<Headline>();
@@ -138,6 +140,32 @@ namespace Doom_Scroll
                 }
             }
             return null;
+        }
+
+        public void UpdateEndorsementList(string postId, bool isEndorse, bool isAddition)
+        {
+            foreach (HeadlineEndorsement headline in endorsemntList)
+            {
+                if (headline.Id == postId)
+                {
+                    if (isEndorse) // endorse
+                    {
+                        headline.TotalEndorsement = isAddition ? headline.TotalEndorsement + 1 : headline.TotalEndorsement - 1;
+                        headline.LikeLabel.SetText(headline.TotalEndorsement.ToString());
+                    }
+                    else  // denounce
+                    {
+                        headline.TotalDenouncement = isAddition ? headline.TotalDenouncement + 1 : headline.TotalDenouncement - 1; ;
+                        headline.DislikeLabel.SetText(headline.TotalDenouncement.ToString());
+                    }
+                    DoomScroll._log.LogInfo("=========== Found news!!!! ==============");
+                    return;
+                }
+                else
+                {
+                    DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
+                }
+            }
         }
 
         public string CalculateEndorsementScores(byte playerID)

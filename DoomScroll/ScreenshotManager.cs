@@ -27,13 +27,11 @@ namespace Doom_Scroll
         private CustomButton m_cameraButton;
         private CustomButton m_captureScreenButton;
         private Tooltip m_cameraButtonTooltip;
-        //private Tooltip m_captureScreenTooltip;
 
         private Camera mainCamrea;
         public int Screenshots { get; private set; }
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
-        // public event Action AdjustPositionDoomScroll;
 
         private ScreenshotManager()
         {
@@ -51,30 +49,12 @@ namespace Doom_Scroll
             m_cameraButtonTooltip = new Tooltip(m_cameraButton.UIGameObject, "CameraToggleButton", "Take a photo! Others will\nsee it in the photo folder\nduring meetings", 0.5f, 2.4f, new Vector3(-0.8f, -0.4f, 0), 1f);
             UIOverlay = ScreenshotOverlay.InitCameraOverlay(hudManagerInstance);
             m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay);
-            //m_captureScreenTooltip = new Tooltip(m_captureScreenButton.UIGameObject, "", "", 0.75f, 2f, new Vector3(m_captureScreenButton.UIGameObject.transform.localPosition.x, m_captureScreenButton.UIGameObject.transform.localPosition.y - 2f, 0), 2f);
 
             m_cameraButton.ButtonEvent.MyAction += OnClickCamera;
-            //m_cameraButton.gameObject.AddComponent<AspectPosition>();
             m_captureScreenButton.ButtonEvent.MyAction += OnClickCaptureScreenshot;
             ActivateCameraButton(false);
         }
-        /*public void AdjustPositionCameraButton()
-        {
-            if (m_cameraButton != null && hudManagerInstance != null)
-            {
-                GameObject m_UIParent = hudManagerInstance.gameObject;
-                Vector3 mapBtnPos = hudManagerInstance.MapButton.gameObject.transform.position;
-                SpriteRenderer mapButtonSr = hudManagerInstance.MapButton.gameObject.GetComponent<SpriteRenderer>();
-                Vector2 scaledSize = mapButtonSr.size * hudManagerInstance.MapButton.gameObject.transform.localScale;
-                m_cameraButton.SetLocalPosition(new Vector3(mapBtnPos.x, mapBtnPos.y - mapButtonSr.size.y * hudManagerInstance.MapButton.gameObject.transform.localScale.y, mapBtnPos.z));
-                m_cameraButton.SetSize(scaledSize.x);
-                DoomScroll._log.LogInfo("Camera moved!");
-            }
-        }*/
-        /*public void AdjustPlease()
-        {
-            AdjustPositionDoomScroll?.Invoke();
-        }*/
+       
         private void CaptureScreenshot()
         {
             if (mainCamrea)
@@ -107,6 +87,8 @@ namespace Doom_Scroll
                 UnityEngine.Object.Destroy(screeenShot);
                 Screenshots++;
                 DoomScroll._log.LogInfo("number of screenshots: " + Screenshots);
+
+                //Add image to the image sending queue
             }
         }
 
@@ -138,16 +120,7 @@ namespace Doom_Scroll
 
         public void ActivateCameraButton(bool value)
         {
-            m_cameraButton.ActivateCustomUI(value);
-            /*if (value)
-            {
-                AdjustPositionDoomScroll += AdjustPositionCameraButton;
-            }
-            else
-            {
-
-                AdjustPositionDoomScroll -= AdjustPositionCameraButton;
-            }*/
+            m_cameraButton.ActivateCustomUI(value); 
         }
         public void OnClickCamera()
         {
@@ -191,10 +164,10 @@ namespace Doom_Scroll
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
         }
-        public void IncrementScreenshots()
+       /* public void IncrementScreenshots()
         {
             Screenshots++;
-        }
+        }*/
 
         public void Reset()
         {

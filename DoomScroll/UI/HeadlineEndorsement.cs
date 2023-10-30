@@ -14,7 +14,7 @@ namespace Doom_Scroll.UI
         DISLIKE,
         EMPTY
     }
-    public class PostEndorsement
+    public class HeadlineEndorsement
     {
         // endorsement
         public string Id { get; private set; }
@@ -24,7 +24,7 @@ namespace Doom_Scroll.UI
         public CustomText LikeLabel { get; set; }
         public CustomText DislikeLabel { get; set; }
         private Vote vote;
-        public PostEndorsement(GameObject chatBubble, Vector2 size, string id)
+        public HeadlineEndorsement(GameObject chatBubble, Vector2 size, string id)
         {
             Id = id;
             TotalEndorsement = 0;
@@ -42,17 +42,6 @@ namespace Doom_Scroll.UI
             LikeButtons.AddSelectOption(true, likeBtn);
             LikeButtons.AddSelectOption(false, dislikeBtn);
             LikeButtons.ButtonEvent.MyAction += OnEndorseClick;
-        }
-   
-
-        private void RpcShareEndorsement(bool up, bool add)
-        {
-            // share with others
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDENDORSEMENT, (SendOption)1);
-            messageWriter.Write(Id);
-            messageWriter.Write(up);                // up or down vote
-            messageWriter.Write(add);               // add or deduct
-            messageWriter.EndMessage();
         }
 
         public void CheckForEndorseClicks()
@@ -135,6 +124,15 @@ namespace Doom_Scroll.UI
             DislikeLabel.SetText(TotalDenouncement.ToString());
         }
 
+        private void RpcShareEndorsement(bool up, bool add)
+        {
+            // share with others
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDENDORSEMENT, (SendOption)1);
+            messageWriter.Write(Id);
+            messageWriter.Write(up);                // up or down vote
+            messageWriter.Write(add);               // add or deduct
+            messageWriter.EndMessage();
+        }
 
         private CustomButton CreateEndorsementButton(GameObject chatBubble, Sprite[] icons, float size, Color color)
         {
