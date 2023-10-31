@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using Hazel;
+using System;
 using System.Collections.Generic;
 using Doom_Scroll.Common;
-using Doom_Scroll.UI;
+using System.Text.RegularExpressions;
+using Assets.CoreScripts;
 
 namespace Doom_Scroll.Patches
 {
@@ -30,12 +32,37 @@ namespace Doom_Scroll.Patches
         // static int count = 0; // debug
 
         private static Dictionary<string, DoomScrollImage> currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
-
+        private static int numberOfMessages = 10;
         public static void ResetImageDictionary()
         {
             currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
         }
 
+
+        [HarmonyPrefix]
+        [HarmonyPatch("RpcSendChat")]
+        public static bool PrefixRpcSendChat(PlayerControl __instance, string chatText)
+        {
+            string playerId = __instance.PlayerId < 10 ? "0" + __instance.PlayerId.ToString() : __instance.PlayerId.ToString();
+            chatText = playerId + numberOfMessages.ToString() + Regex.Replace(chatText, "<.*?>", string.Empty);
+            numberOfMessages++;
+            if (string.IsNullOrWhiteSpace(chatText))
+            {
+                return false;
+            }
+            if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+            {
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText, true);
+            }
+            if (chatText.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                DestroyableSingleton<UnityTelemetry>.Instance.SendWho();
+            }
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(__instance.NetId, 13, (SendOption)1);
+            messageWriter.Write(chatText);
+            messageWriter.EndMessage();
+            return true; // make sure you only skip if really necessary
+        }
 
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]

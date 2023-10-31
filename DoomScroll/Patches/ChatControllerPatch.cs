@@ -29,9 +29,8 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("AddChat")]
         public static void PrefixAddChat(out string __state, ref string chatText)
         {
-            // replace chat text with a timestamp (that serves as an id)
-            __state = chatText;
-            chatText = DateTime.Now.ToString("T", CultureInfo.CreateSpecificCulture("en-GB"));
+            __state = chatText.Substring(4);
+            chatText = chatText.Substring(0, 4); ;
         }
 
 
@@ -42,7 +41,7 @@ namespace Doom_Scroll.Patches
 
             if (AmongUsClient.Instance.AmHost)
             {
-                GameLogger.Write(chatText + " - " + sourcePlayer.name + " texted: " + __state);
+                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + __state);
             }
 
             bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
@@ -55,7 +54,6 @@ namespace Doom_Scroll.Patches
                     if (text.text == chatText)
                     {
                         string ID = text.text;
-
                         DoomScroll._log.LogInfo("ChatBubble was found, id: + " + ID + ", text: " + chatText);
                         text.text = __state;
                         Transform chatbubble = text.transform.parent;
