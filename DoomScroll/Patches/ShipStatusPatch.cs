@@ -52,8 +52,8 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo("Name: " + task.name + ", Index: " + task.Index +
                 ", type: " + task.TaskType + ", task steps: " + task.MaxStep);
             }
-            DoomScroll._log.LogInfo("NORMAL TASKS");
-            foreach (NormalPlayerTask task in instance.NormalTasks)
+            DoomScroll._log.LogInfo("SHORT TASKS");
+            foreach (NormalPlayerTask task in instance.ShortTasks)
             {
                 DoomScroll._log.LogInfo("Name: " + task.name + ", Index: " + task.Index +
                 ", type: " + task.TaskType + ", task steps: " + task.MaxStep);
