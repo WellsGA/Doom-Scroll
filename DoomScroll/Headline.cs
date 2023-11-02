@@ -113,12 +113,15 @@ namespace Doom_Scroll
         {
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
+                // add to chat locally
                 ChatControllerPatch.content = ChatContent.HEADLINE;
-                string chatText = NewsToChatText();
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText);
-            }
-            RpcPostNews();
-            PostButton.EnableButton(false);
+                string id = ChatControllerPatch.GetChatID();
+                string chatText = id + NewsToChatText();
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText, false);
+                // send to others
+                RpcPostNews(id);
+                PostButton.EnableButton(false);
+            }         
         }
 
         public string NewsToChatText()
@@ -128,10 +131,11 @@ namespace Doom_Scroll
             return chatText;
         }
 
-        private void RpcPostNews()
+        private void RpcPostNews(string id)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWSTOCHAT, (SendOption)1);
-            messageWriter.Write(HeadlineID);    // id
+            messageWriter.Write(id);            // chatbubble id
+            messageWriter.Write(HeadlineID);    // headlineID
             messageWriter.EndMessage();
         }
 

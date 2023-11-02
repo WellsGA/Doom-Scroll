@@ -1,12 +1,9 @@
 ﻿using Doom_Scroll.Common;
 using Doom_Scroll.UI;
 using HarmonyLib;
-using System.Collections.Generic;
-using System.Globalization;
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 namespace Doom_Scroll.Patches
 {
@@ -15,6 +12,7 @@ namespace Doom_Scroll.Patches
         TEXT,
         HEADLINE,
         SCREENSHOT,
+        DEFAULT
     }
 
     // in the 2023.2.28 release ChatBubble is an internal class,
@@ -24,13 +22,23 @@ namespace Doom_Scroll.Patches
     {
         public static byte[] screenshot = null; // for sharing images
         public static ChatContent content = ChatContent.TEXT;
+        private static int numberOfMessages = 10;
+
+        public static string GetChatID()
+        {
+            string playerId = PlayerControl.LocalPlayer.PlayerId < 10 ? "0" + PlayerControl.LocalPlayer.PlayerId.ToString() : PlayerControl.LocalPlayer.PlayerId.ToString();
+            string id = playerId + numberOfMessages.ToString();
+            numberOfMessages++;
+            return id;
+        }
 
         [HarmonyPrefix]
         [HarmonyPatch("AddChat")]
         public static void PrefixAddChat(out string __state, ref string chatText)
         {
-            __state = chatText.Substring(4);
-            chatText = chatText.Substring(0, 4); ;
+
+            __state = chatText.Substring(4);        // save content into state
+            chatText = chatText.Substring(0, 4);    // id - so we can find the chatbubble after created and added to the scroller
         }
 
 
@@ -38,7 +46,6 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("AddChat")]
         public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText, string __state)
         {
-
             if (AmongUsClient.Instance.AmHost)
             {
                 GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + __state);
@@ -61,10 +68,11 @@ namespace Doom_Scroll.Patches
                         SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
                         TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
                         SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
-                        
+
+                        if (nameText != null) nameText.text = nameText.text + " " + ID;
                         /*RectMask2D mask2D = text.transform.parent.GetComponentInChildren<RectMask2D>();
                         if (mask2D != null) DoomScroll._log.LogInfo("2d mask: " + mask2D.gameObject.name);*/
-                        
+
                         switch (content)
                         {
                             case ChatContent.TEXT:
@@ -121,11 +129,20 @@ namespace Doom_Scroll.Patches
                                     screenshot = null;
                                 }
                                 break;
+                            case ChatContent.DEFAULT:
+                            default:
+                                if (chatbubble != null && background != null && maskArea != null)
+                                {
+                                    background.size = new Vector2(background.size.x, background.size.y + 0.5f);
+                                    background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
+                                    AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
+                                }
+                                return;
                         }
                     }
                 }
             }
-            content = ChatContent.TEXT;  // set back to default
+            content = ChatContent.DEFAULT;  // set back to default
         }
 
         private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)

@@ -67,16 +67,19 @@ namespace Doom_Scroll
             string chatText = "<color=#366999><i>" + cardText.TextMP.text;
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
+                string chatID = ChatControllerPatch.GetChatID();
                 ChatControllerPatch.content = ChatContent.TEXT;
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText);
+                chatText = chatID + chatText;
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText, false);
+
+                RpcPostTask(chatText);
+                PostButton.EnableButton(false);
             }
-            RpcPostTask(chatText);
-            PostButton.EnableButton(false);
         }
 
         private void RpcPostTask(string text)
         {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDTASKTOCHAT, (SendOption)1);
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDTEXTCHAT, (SendOption)1);
             messageWriter.Write(text);
             messageWriter.EndMessage();
         }

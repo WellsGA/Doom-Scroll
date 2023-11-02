@@ -1,10 +1,11 @@
 ﻿using HarmonyLib;
 using Hazel;
-using System;
 using System.Collections.Generic;
 using Doom_Scroll.Common;
 using System.Text.RegularExpressions;
 using Assets.CoreScripts;
+using System;
+
 
 namespace Doom_Scroll.Patches
 {
@@ -12,7 +13,7 @@ namespace Doom_Scroll.Patches
     {
         SENDSABOTAGECONTRIBUTION = 242,
         SENDTRUSTSELECTION = 243,
-        SENDTASKTOCHAT = 244,
+        SENDTEXTCHAT = 244,
         SENDVOTE = 245,
         SENDIMAGETOCHAT = 246,
         SENDENDORSEMENT = 247,
@@ -32,7 +33,7 @@ namespace Doom_Scroll.Patches
         // static int count = 0; // debug
 
         private static Dictionary<string, DoomScrollImage> currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
-        private static int numberOfMessages = 10;
+        
         public static void ResetImageDictionary()
         {
             currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
@@ -41,27 +42,12 @@ namespace Doom_Scroll.Patches
 
         [HarmonyPrefix]
         [HarmonyPatch("RpcSendChat")]
-        public static bool PrefixRpcSendChat(PlayerControl __instance, string chatText)
+        public static bool PrefixRpcSendChat(ref string chatText)
         {
-            string playerId = __instance.PlayerId < 10 ? "0" + __instance.PlayerId.ToString() : __instance.PlayerId.ToString();
-            chatText = playerId + numberOfMessages.ToString() + Regex.Replace(chatText, "<.*?>", string.Empty);
-            numberOfMessages++;
-            if (string.IsNullOrWhiteSpace(chatText))
-            {
-                return false;
-            }
-            if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
-            {
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText, true);
-            }
-            if (chatText.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                DestroyableSingleton<UnityTelemetry>.Instance.SendWho();
-            }
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(__instance.NetId, 13, (SendOption)1);
-            messageWriter.Write(chatText);
-            messageWriter.EndMessage();
-            return true; // make sure you only skip if really necessary
+            ChatControllerPatch.content = ChatContent.DEFAULT;
+            chatText = ChatControllerPatch.GetChatID() + Regex.Replace(chatText, "<.*?>", string.Empty);
+           
+            return true; //  skip origianl method
         }
 
         [HarmonyPostfix]
@@ -140,7 +126,7 @@ namespace Doom_Scroll.Patches
                         }
                     }
                     break;
-                case (byte)CustomRPC.SENDTASKTOCHAT:
+                case (byte)CustomRPC.SENDTEXTCHAT:
                     if (DestroyableSingleton<HudManager>.Instance)
                     {
                         ChatControllerPatch.content = ChatContent.TEXT;
@@ -157,13 +143,13 @@ namespace Doom_Scroll.Patches
                     {
                         byte playerid = reader.ReadByte();
                         int imageid = reader.ReadInt32();
+                        string chatText = reader.ReadString();
                         if (currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage())
                         {
                             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
                             {
                                 ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                                ChatControllerPatch.screenshot = currentImagesAssembling[(string)$"{playerid}{imageid}"].Image;
-                                string chatText = playerid + "#" + imageid;
+                                ChatControllerPatch.screenshot = currentImagesAssembling[(string)$"{playerid}{imageid}"].Image;                    
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
                                // ChatControllerPatch.PostfixAddChat(DestroyableSingleton<HudManager>.Instance.Chat, __instance, chatText);
                                 DoomScroll._log.LogMessage("Should have added image locally!");
@@ -193,11 +179,12 @@ namespace Doom_Scroll.Patches
                     {
                         if (DestroyableSingleton<HudManager>.Instance)
                         {
+                            string id = reader.ReadString();
                             Headline headline = HeadlineDisplay.Instance.GetNewsByID(reader.ReadInt32());
                             if (headline != null)
                             {
                                 ChatControllerPatch.content = ChatContent.HEADLINE;
-                                string chatText = headline.NewsToChatText();
+                                string chatText = id + headline.NewsToChatText();
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
                             }
                         }
