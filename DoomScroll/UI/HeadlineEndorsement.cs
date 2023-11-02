@@ -144,6 +144,7 @@ namespace Doom_Scroll.UI
             btn.Label.SetLocalPosition(new Vector3(0, -size / 2 - 0.07f, 0));
             btn.Label.SetSize(1.3f);
             btn.Label.SetColor(color);
+            btn.Label.TextMP.ForceMeshUpdate(true, true);
             return btn;
         }
     }

@@ -76,7 +76,7 @@ namespace Doom_Scroll
             //DoomScroll._log.LogInfo("Checking for tutorial booklet manager button clicks.");
             if (lobbyBehaviourInstance == null) return;
             // Change buttons icon on hover
-            if (m_tutorialBookletToggleBtn != null)
+            if (m_tutorialBookletToggleBtn != null && m_tutorialBookletToggleBtn.IsEnabled)
             {
                 m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
             }
@@ -86,7 +86,7 @@ namespace Doom_Scroll
             {
                 try
                 {
-                    if (m_tutorialBookletToggleBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    if (m_tutorialBookletToggleBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_tutorialBookletToggleBtn.IsEnabled)
                     {
                         m_tutorialBookletToggleBtn.ButtonEvent.InvokeAction();
                     }
@@ -108,7 +108,7 @@ namespace Doom_Scroll
                     DoomScroll._log.LogError("Error invoking overlay button method: " + e);
                 }
             }
-            if (m_isTutorialBookletOverlayOpen && m_closeBtn != null)
+            if (m_isTutorialBookletOverlayOpen && m_closeBtn != null && m_closeBtn.IsEnabled)
             {
                 try
                 {
@@ -131,6 +131,7 @@ namespace Doom_Scroll
             InitTutorialBookletStructure();
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += OnClickTutorialBookletBtn;
             m_closeBtn.ButtonEvent.MyAction += CloseTutorialBookletOverlay;
+            m_closeBtn.EnableButton(true);
             m_tutorialBookletToggleBtn.EnableButton(true);
             m_tutorialBookletToggleBtn.ActivateCustomUI(true);
         }

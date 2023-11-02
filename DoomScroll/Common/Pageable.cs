@@ -35,7 +35,9 @@ namespace Doom_Scroll.Common
             m_backBtn.ButtonEvent.MyAction += OnClickLeftButton;
             DoomScroll._log.LogInfo("Button events added");
             m_nextBtn.ActivateCustomUI(false);
+            m_nextBtn.EnableButton(true);
             m_backBtn.ActivateCustomUI(false);
+            m_backBtn.EnableButton(true);
             DoomScroll._log.LogInfo("Buttons deactivated");
             
             maxItemsInPage = itemsPerPage;
@@ -87,7 +89,7 @@ namespace Doom_Scroll.Common
                 DoomScroll._log.LogInfo($"Showed buttons");
                 DoomScroll._log.LogInfo("Opening page");
 
-                if (currentPage == 1)
+                if (currentPage <= 1)
                 {
                     m_backBtn.EnableButton(false);
                 }
@@ -95,7 +97,7 @@ namespace Doom_Scroll.Common
                 {
                     m_backBtn.EnableButton(true);
                 }
-                if (currentPage == numPages)
+                if (currentPage >= numPages)
                 {
                     m_nextBtn.EnableButton(false);
                 }
@@ -155,20 +157,20 @@ namespace Doom_Scroll.Common
             try
             {
                 //hovers
-                if (m_nextBtn != null && m_nextBtn.UIGameObject.active)
+                if (m_nextBtn != null && m_nextBtn.UIGameObject.activeSelf && m_nextBtn.IsEnabled)
                 {
                     m_nextBtn.ReplaceImgageOnHover();
                 }
-                if (m_backBtn != null && m_backBtn.UIGameObject.active)
+                if (m_backBtn != null && m_backBtn.UIGameObject.activeSelf && m_backBtn.IsEnabled)
                 {
                     m_backBtn.ReplaceImgageOnHover();
                 }
                 //clicks
-                if (m_nextBtn != null && m_nextBtn.UIGameObject.active && m_nextBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (m_nextBtn != null && m_nextBtn.UIGameObject.activeSelf && m_nextBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_nextBtn.IsEnabled)
                 {
                     m_nextBtn.ButtonEvent.InvokeAction();
                 }
-                if (m_backBtn != null && m_backBtn.UIGameObject.active && m_backBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (m_backBtn != null && m_backBtn.UIGameObject.activeSelf && m_backBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_backBtn.IsEnabled)
                 {
                     m_backBtn.ButtonEvent.InvokeAction();
                 }
