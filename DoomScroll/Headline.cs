@@ -74,13 +74,15 @@ namespace Doom_Scroll
             PostButton.ButtonEvent.MyAction += OnClickShare;
         }
 
-        public void DisplayNewsCard()
+        public void DisplayCardButtons(bool isVoting)
         {
             Card.SetScale(Vector3.one);
             if (trustButtons.HasSelected)
             {
                 trustButtons.Selected.Value.SelectButton(true);
             }
+            trustButtons.ActivateButtons(isVoting);
+            PostButton.ActivateCustomUI(!isVoting);
             Card.ActivateCustomUI(true);
         }
 
@@ -100,7 +102,7 @@ namespace Doom_Scroll
                 sr.sprite = playerSprite;
                 sr.size = new Vector2(Card.GetSize().y, sr.sprite.rect.height * Card.GetSize().y / sr.sprite.rect.width);
                 sr.color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
-                AuthorIcon.transform.localPosition = new Vector3(-Card.GetSize().x / 2 - sr.size.x/1.8f, 0.08f, -10);
+                AuthorIcon.transform.localPosition = new Vector3(-Card.GetSize().x / 2 + sr.size.x/1.8f, 0.08f, -10);
                 AuthorIcon.transform.localScale = Vector3.one;
                 CustomText label = new CustomText(AuthorIcon, playerInfo.PlayerName + "- icon label", playerInfo.PlayerName);
                 label.SetLocalPosition(new Vector3(0, -sr.size.y / 2 - 0.05f, -10));
@@ -168,6 +170,12 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
+        public void SetParentAndSize(GameObject parent, Vector2 size)
+        {
+            Card.UIGameObject.transform.SetParent(parent.transform, false);
+            Card.SetLocalPosition(parent.transform.position + new Vector3(0, 0, -20));
+            Card.SetSize(new Vector3(size.x - 2f, 0.4f, 0));
+        }
         public override string ToString()
         {
             if (AuthorName == null)

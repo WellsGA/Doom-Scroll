@@ -23,6 +23,7 @@ namespace Doom_Scroll.Patches
             FolderManager.Instance.Reset();
             TaskAssigner.Instance.Reset();
             HeadlineManager.Instance.Reset();
+            HeadlineDisplay.Instance.Reset();
             SecondaryWinConditionManager.Reset();
 
             // Tutorial Mode toggle button
@@ -55,7 +56,6 @@ namespace Doom_Scroll.Patches
                 // close the panel if no player was selected but the game is closed
                 TaskAssigner.Instance.ActivatePanel(false);
             }
-
         }
 
         [HarmonyPostfix]

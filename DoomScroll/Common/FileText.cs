@@ -36,7 +36,7 @@ namespace Doom_Scroll.Common
                     }
                 case FileTextType.NEWS:
                     {
-                        HeadlineDisplay.Instance.DisplayNews();
+                        HeadlineDisplay.Instance.DisplayHeadlineInFolder();
                         m_content = HeadlineDisplay.Instance.ToString();
                         break;
                     }

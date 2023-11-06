@@ -72,7 +72,6 @@ namespace Doom_Scroll.UI
             SetScale(Vector3.one);
             collider = DefaultIcon.UIGameObject.AddComponent<BoxCollider2D>();
             DoomScroll._log.LogInfo("BUTTON SIZE AND COLLIDER SIZE: " + DefaultIcon.GetSize() + ", " + collider.size);
-
         }
 
         public Vector2 GetBtnSize()

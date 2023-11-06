@@ -94,5 +94,13 @@ namespace Doom_Scroll.UI
         {
             return buttonList.Count;
         }
+
+        public void ActivateButtons(bool activate)
+        {
+            foreach(CustomButton btn in buttonList.Values)
+            {
+                btn.ActivateCustomUI(activate);
+            }
+        }
     }
 }

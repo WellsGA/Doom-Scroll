@@ -40,6 +40,7 @@ namespace Doom_Scroll
             if (!isTaskDone) isTaskDone = CheckIfFinished(); // checking state again before displaying
             string taskState = isTaskDone ? " finished " : " is working on ";
             cardText.SetText(AssigneeName + taskState + Type.ToString());
+            Card.SetScale(Vector3.one);
             Card.ActivateCustomUI(true);
         }
         public void CreateTaskCard()

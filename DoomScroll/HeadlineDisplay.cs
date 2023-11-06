@@ -1,5 +1,4 @@
 ﻿using Doom_Scroll.Common;
-using Doom_Scroll.Patches;
 using Doom_Scroll.UI;
 using System;
 using System.Collections.Generic;
@@ -23,8 +22,13 @@ namespace Doom_Scroll
         public List<HeadlineEndorsement> endorsemntList = new List<HeadlineEndorsement>();
 
         private HudManager hudManagerInstance;
+
         private Pageable newsPageHolder;
         private int numPages = 1;
+
+        public float discussionStartTimer;
+        public bool HasHeadlineVoteEnded { get; private set; }
+        public bool HasFinishedSetup { get; private set; }
         private HeadlineDisplay()
         {
             AllNewsList = new List<Headline>();
@@ -35,12 +39,15 @@ namespace Doom_Scroll
         public void InitHeadlineDisplay()
         {
             hudManagerInstance = HudManager.Instance;
+            ResetHeadlineVotes();
+           /* numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
+            DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            newsPageHolder = new Pageable(parent, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable 
+            newsPageHolder = new Pageable(parent, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable */
         }
 
-        public void CheckForTrustAndShareClicks()
+        public void CheckForShareClicks()
         {
             if (hudManagerInstance == null) return;
             // If chat and folder overlay are open invoke events on button clicks
@@ -65,6 +72,25 @@ namespace Doom_Scroll
             }
         }
 
+        public void CheckForTrustClicks()
+        {
+            if (hudManagerInstance == null || HasHeadlineVoteEnded || !HasFinishedSetup) return;
+            // If chat and folder overlay are open invoke events on button clicks
+            if (hudManagerInstance.Chat.State == ChatControllerState.Closed && !FolderManager.Instance.IsFolderOpen())
+            {
+                try
+                {
+                    foreach (Headline news in AllNewsList)
+                    {
+                        news.CheckForTrustSelect();
+                    }
+                }
+                catch (Exception e)
+                {
+                    DoomScroll._log.LogError("Error invoking trust click method: " + e);
+                }
+            }
+        }
         public void AddNews(Headline news)
         {
             NotificationManager.ShowNotification("News posted\n " + news.Title + " [" + news.Source + "]");
@@ -85,11 +111,8 @@ namespace Doom_Scroll
         public void DisplayNews()
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-
-            numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
-            DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
-
             List<CustomUI> newsCards = new List<CustomUI>();
+            
             for (int displayPageNum = 1; displayPageNum <= numPages; displayPageNum++)
             {
                 Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
@@ -100,9 +123,7 @@ namespace Doom_Scroll
                     Headline news = AllNewsList[currentNewsIndex];
                     pos.y -= news.Card.GetSize().y + 0.05f;
                     news.Card.SetLocalPosition(pos);
-                    news.DisplayNewsCard();
-                    news.PostButton.ActivateCustomUI(true);
-
+                    news.DisplayCardButtons(false);
                     newsCards.Add(news.Card);
                     news.Card.ActivateCustomUI(false); // unsure if necessary>
                 }
@@ -121,12 +142,70 @@ namespace Doom_Scroll
             newsPageHolder.DisplayPage(1);
 
         }
+        public void SetUpVoteForHeadlines(SpriteRenderer glass)
+        {
+            // stop chat and voting, set screen for headline trust selection
+            DisplayHeadlinesForVote(glass);
+            HasFinishedSetup = true;
+            DoomScroll._log.LogInfo("SETUP OVER");
+        }
+        public void FinishVoteForHeadlines()
+        {
+            HideHeadlinesAfterVote();
+            HasHeadlineVoteEnded = true;
+            DoomScroll._log.LogInfo("VOTING OVER");
+        }
+
+        public void ResetHeadlineVotes()
+        {
+            discussionStartTimer = 0;
+            HasHeadlineVoteEnded = false;
+            HasFinishedSetup = false;
+        }
+        public void DisplayHeadlineInFolder()
+        {
+            Vector3 pos = new Vector3(0, FolderManager.Instance.GetFolderArea().GetSize().y / 2 - 0.8f, -10);
+            foreach (Headline news in AllNewsList)
+            {
+                pos.y -= news.Card.GetSize().y + 0.05f;
+                news.Card.SetLocalPosition(pos);
+                news.DisplayCardButtons(false);
+                news.Card.ActivateCustomUI(true);
+            }
+        }
+        public void DisplayHeadlinesForVote(SpriteRenderer parent)
+        {
+            Vector3 pos = new Vector3(0, parent.size.y / 2 - 0.8f, -10);
+            foreach (Headline news in AllNewsList)
+            {
+                news.SetParentAndSize(parent.gameObject, parent.size);
+                pos.y -= news.Card.GetSize().y + 0.05f;
+                news.Card.SetLocalPosition(pos);
+                news.DisplayCardButtons(true);
+                news.Card.ActivateCustomUI(true);
+            }
+        }
+
+        public void HideHeadlinesAfterVote() 
+        {
+            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            foreach (Headline news in AllNewsList)
+            {
+                news.SetParentAndSize(parent.UIGameObject, parent.GetSize());
+                news.Card.ActivateCustomUI(false);
+            }
+        }
 
         public void HideNews()
         {
-            if (newsPageHolder != null)
+            /*if (newsPageHolder != null)
             {
                 newsPageHolder.HidePage();
+            }*/
+
+            foreach(Headline headline in AllNewsList)
+            {
+                headline.Card.ActivateCustomUI(false);
             }
         }
 

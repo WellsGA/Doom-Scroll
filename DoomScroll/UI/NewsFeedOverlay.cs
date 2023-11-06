@@ -40,6 +40,26 @@ namespace Doom_Scroll.UI
             return newsModal;
         }
 
+        public static CustomModal InitVoteOverlay(GameObject parent)
+        {
+            Vector2 size = parent.GetComponent<SpriteRenderer>().size;
+            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
+            CustomModal headlineModal = new CustomModal(parent, "Headline Modal", spr);
+            headlineModal.SetSize(size);
+            headlineModal.SetLocalPosition(new Vector3(0, 0, -10));
+
+            CustomText title = new CustomText(headlineModal.UIGameObject, "Headline Modal Title", "Which headlines are trustworthy?");
+            title.SetLocalPosition(new Vector3(0, size.y / 2 - 0.5f, -10));
+            title.SetSize(1.5f);
+            CustomText subtitle = new CustomText(headlineModal.UIGameObject, "Headline Modal SubTitle", "Select 'trust' or 'fake'. Correct answers increase your scores.");
+            subtitle.SetLocalPosition(new Vector3(0, size.y / 2 - 0.7f, -10));
+            subtitle.SetSize(1.2f);
+
+            // deactivate by default
+            headlineModal.ActivateCustomUI(false);
+            return headlineModal;
+        }
+
         public static CustomButton CreateRadioButtons(CustomModal parent, Sprite[] radioSprites, string label)
         {
             CustomButton protectButton = new CustomButton(parent.UIGameObject, label + " Radio", radioSprites);
