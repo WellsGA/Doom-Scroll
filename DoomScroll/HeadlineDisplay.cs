@@ -178,7 +178,7 @@ namespace Doom_Scroll
                     else numIncorrect++;
                 }
             }
-            string score = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of" + AllNewsList.Count + "]\n";
+            string score = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of " + AllNewsList.Count + "]\n";
             PlayerScores[playerID] = score;
             return score;
         }
