@@ -40,7 +40,7 @@ namespace Doom_Scroll.Patches
             float size = fontSize;
             if (SecondaryWinConditionManager.GetSWCList().Count >= 8)
             {
-                size = fontSize / 2f;
+                size = fontSize / 2.2f;
             }
             overallResult.SetSize(size);
             Vector3 textPos = new Vector3(overallResult.UIGameObject.transform.localPosition.x, overallResult.UIGameObject.transform.localPosition.y - 0.9f, overallResult.UIGameObject.transform.localPosition.z);

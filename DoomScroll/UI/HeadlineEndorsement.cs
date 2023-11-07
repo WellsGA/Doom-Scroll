@@ -35,9 +35,9 @@ namespace Doom_Scroll.UI
             Sprite[] unEndorseSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.unEndorse.png", ImageLoader.slices3);
 
             LikeButtons = new CustomSelect<bool>(size);
-            CustomButton likeBtn = CreateEndorsementButton(chatBubble, endorseSprites, 0.3f, Color.green);
+            CustomButton likeBtn = CreateEndorsementButton(chatBubble, endorseSprites, 0.3f, Color.black);
             LikeLabel = likeBtn.Label;
-            CustomButton dislikeBtn = CreateEndorsementButton(chatBubble, unEndorseSprites, 0.3f, Color.red);
+            CustomButton dislikeBtn = CreateEndorsementButton(chatBubble, unEndorseSprites, 0.3f, Color.black);
             DislikeLabel = dislikeBtn.Label;
             LikeButtons.AddSelectOption(true, likeBtn);
             LikeButtons.AddSelectOption(false, dislikeBtn);

@@ -69,32 +69,36 @@ namespace Doom_Scroll.Patches
                         TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
                         SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
 
-                        if (nameText != null) nameText.text = nameText.text + " " + ID;
+                        // if (nameText != null) nameText.text = nameText.text + " " + ID; // debug
                         /*RectMask2D mask2D = text.transform.parent.GetComponentInChildren<RectMask2D>();
                         if (mask2D != null) DoomScroll._log.LogInfo("2d mask: " + mask2D.gameObject.name);*/
 
                         switch (content)
                         {
                             case ChatContent.TEXT:
-                                if(chatbubble != null && background != null && maskArea != null)
+                                if(chatbubble != null && nameText != null && background != null && maskArea != null)
                                 {
                                     background.color = new Color(0.94f, 0.93f, 0.99f, 1);
-                                    background.size = new Vector2(background.size.x, background.size.y+0.5f);
-                                    background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
+                                    text.ForceMeshUpdate(true, true);
+                                    background.size = new Vector2(background.size.x, background.size.y + 0.3f);
+                                    maskArea.size = background.size - new Vector2(0f, 0.03f);
+                                    background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
+                                    maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
                                     AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
+
                                 }
                                 return;
                             case ChatContent.HEADLINE:
-                                if (chatbubble != null)
+                                if (chatbubble != null && nameText != null && background != null && maskArea != null)
                                 {
-                                    if(nameText != null && background != null && maskArea != null)
-                                    {
-                                        background.color = new Color(0.97f,0.96f,0.90f, 1);
-                                        background.size = new Vector2(5.52f, 0.5f + nameText.GetRenderedHeight() + text.GetRenderedHeight() + 0.5f);
-                                        maskArea.size = background.size - new Vector2(0f, 0.03f);
-                                        background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
-                                        AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
-                                    }
+                                    background.color = new Color(0.97f, 0.96f, 0.90f, 1);
+                                    text.ForceMeshUpdate(true, true);
+                                    background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight());
+                                    maskArea.size = background.size - new Vector2(0f, 0.03f);
+                                    background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
+                                    maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
+                                    AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
+
                                 }
                                 break;
                             case ChatContent.SCREENSHOT:
@@ -121,9 +125,11 @@ namespace Doom_Scroll.Patches
                                     image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
                                     if (nameText != null && background != null && maskArea != null)
                                     {
+                                        text.ForceMeshUpdate(true, true);
                                         background.size = new Vector2(5.52f, 0.2f + nameText.GetNotDumbRenderedHeight() + sr.size.y);
-                                        maskArea.size = background.size - new Vector2(0f, 0.08f);
+                                        maskArea.size = background.size - new Vector2(0f, 0.03f);
                                         background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 3, background.transform.localPosition.z);
+                                        maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
                                         AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
                                     }
                                     screenshot = null;
@@ -131,10 +137,13 @@ namespace Doom_Scroll.Patches
                                 break;
                             case ChatContent.DEFAULT:
                             default:
-                                if (chatbubble != null && background != null && maskArea != null)
+                                if (chatbubble != null && nameText != null && background != null && maskArea != null)
                                 {
-                                    background.size = new Vector2(background.size.x, background.size.y + 0.5f);
-                                    background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 4, background.transform.localPosition.z);
+                                    text.ForceMeshUpdate(true, true);
+                                    background.size = new Vector2(background.size.x, background.size.y + 0.3f);
+                                    maskArea.size = background.size - new Vector2(0f, 0.03f);
+                                    background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
+                                    maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
                                     AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
                                 }
                                 return;
