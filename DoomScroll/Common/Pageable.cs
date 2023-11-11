@@ -156,23 +156,26 @@ namespace Doom_Scroll.Common
         {
             try
             {
-                //hovers
-                if (m_nextBtn != null && m_nextBtn.UIGameObject.activeSelf && m_nextBtn.IsEnabled)
+                //next
+                if (m_nextBtn != null && m_nextBtn.UIGameObject.activeSelf)
                 {
                     m_nextBtn.ReplaceImgageOnHover();
+
+                    if(m_nextBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_nextBtn.IsEnabled)
+                    {
+                        m_nextBtn.ButtonEvent.InvokeAction();
+                    }
                 }
-                if (m_backBtn != null && m_backBtn.UIGameObject.activeSelf && m_backBtn.IsEnabled)
+
+                //back
+                if (m_backBtn != null && m_backBtn.UIGameObject.activeSelf)
                 {
                     m_backBtn.ReplaceImgageOnHover();
-                }
-                //clicks
-                if (m_nextBtn != null && m_nextBtn.UIGameObject.activeSelf && m_nextBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_nextBtn.IsEnabled)
-                {
-                    m_nextBtn.ButtonEvent.InvokeAction();
-                }
-                if (m_backBtn != null && m_backBtn.UIGameObject.activeSelf && m_backBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_backBtn.IsEnabled)
-                {
-                    m_backBtn.ButtonEvent.InvokeAction();
+
+                    if(m_backBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0) && m_backBtn.IsEnabled)
+                    {
+                        m_backBtn.ButtonEvent.InvokeAction();
+                    }
                 }
             }
             catch (Exception e)
@@ -198,7 +201,7 @@ namespace Doom_Scroll.Common
             Vector2 parentSize = parent.GetSize();
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 forwardPosition = new Vector3(parentSize.x * 0.41f, yPos, -5f);
-            return new CustomButton(parent.UIGameObject, "Flip to next page", backBtnImg, forwardPosition, -customButtonSize.x);
+            return new CustomButton(parent.UIGameObject, "Flip to next page", backBtnImg, forwardPosition, customButtonSize.x);
 
         }
     }
