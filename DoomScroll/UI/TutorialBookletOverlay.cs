@@ -13,7 +13,7 @@ namespace Doom_Scroll.UI
             Vector3 pos = parent.transform.localPosition;
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             Vector2 size = sr ? sr.size : new Vector2(1f, 1f);
-            Vector3 position = new(pos.x+size.x*3.7f, pos.y + size.y * 5f, pos.z);
+            Vector3 position = new(pos.x+size.x*3.7f, pos.y + size.y * 5f, pos.z - 100f);
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialBookletToggle.png", ImageLoader.slices2);
             CustomButton tutorialBookletBtn = new CustomButton(parent, "TutorialBookletToggleButton", btnSprites, position, size.x);
             tutorialBookletBtn.ActivateCustomUI(false);

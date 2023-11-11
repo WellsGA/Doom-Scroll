@@ -76,13 +76,13 @@ namespace Doom_Scroll
             //DoomScroll._log.LogInfo("Checking for tutorial booklet manager button clicks.");
             if (lobbyBehaviourInstance == null) return;
             // Change buttons icon on hover
-            if (m_tutorialBookletToggleBtn != null && m_tutorialBookletToggleBtn.IsEnabled)
+            if (m_tutorialBookletToggleBtn != null && m_tutorialBookletToggleBtn.IsActive && m_tutorialBookletToggleBtn.IsEnabled)
             {
                 m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
             }
 
             // If the TutorialBooklet toggle button is active invoke toggle on mouse click 
-            if (m_tutorialBookletToggleBtn != null)
+            if (m_tutorialBookletToggleBtn != null && m_tutorialBookletToggleBtn.IsActive)
             {
                 try
                 {
@@ -108,7 +108,7 @@ namespace Doom_Scroll
                     DoomScroll._log.LogError("Error invoking overlay button method: " + e);
                 }
             }
-            if (m_isTutorialBookletOverlayOpen && m_closeBtn != null && m_closeBtn.IsEnabled)
+            if (m_isTutorialBookletOverlayOpen && m_closeBtn != null && m_closeBtn.IsActive && m_closeBtn.IsEnabled)
             {
                 try
                 {
