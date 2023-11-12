@@ -19,49 +19,55 @@ namespace Doom_Scroll.Patches
         {
             if (__instance.CurrentState == MeetingHud.VoteStates.Animating)
             {
-                return false;
+                return true;
             }
-            if (!HeadlineDisplay.Instance.HasFinishedSetup)
+            if(__instance.CurrentState == MeetingHud.VoteStates.Results)
             {
-                if (DestroyableSingleton<HudManager>.Instance.Chat.gameObject.active)
+                if (!HeadlineDisplay.Instance.HasFinishedSetup)
                 {
-                    DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(false); ;
-                }
-                if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolderOverlay();
-                if (playerVoters.Length > 0)
-                {
-                    foreach (PlayerVoteArea playerVoteArea in playerVoters)
+                    if (DestroyableSingleton<HudManager>.Instance.Chat.gameObject.active)
                     {
-                        playerVoteArea.gameObject.SetActive(false);
+                        DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(false); ;
                     }
-                }
-                __instance.TitleText.text = "Which headlines do you trust?";
-                HeadlineDisplay.Instance.SetUpVoteForHeadlines(__instance.Glass);
-                return false;
-            }
-            if (HeadlineDisplay.Instance.discussionStartTimer <= 20)
-            {
-                HeadlineDisplay.Instance.CheckForTrustClicks();
-                float timeRemaining = 20 - HeadlineDisplay.Instance.discussionStartTimer;
-                __instance.TimerText.text = "Sorting headlines ends: " + Mathf.CeilToInt(timeRemaining).ToString();
-                HeadlineDisplay.Instance.discussionStartTimer += Time.deltaTime;
-                return false;
-            }
-            else if (!HeadlineDisplay.Instance.HasHeadlineVoteEnded)
-            {
-                if (playerVoters.Length > 0)
-                {
-                    foreach (PlayerVoteArea playerVoteArea in playerVoters)
+                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolderOverlay();
+                    if (playerVoters.Length > 0)
                     {
-                        playerVoteArea.gameObject.SetActive(true);
+                        foreach (PlayerVoteArea playerVoteArea in playerVoters)
+                        {
+                            playerVoteArea.gameObject.SetActive(false);
+                        }
                     }
+                    __instance.TitleText.text = "Which headlines do you trust?";
+                    HeadlineDisplay.Instance.SetUpVoteForHeadlines(__instance.Glass);
+                    __instance.ProceedButton.gameObject.SetActive(false);
+                    return false;
                 }
-                HeadlineDisplay.Instance.FinishVoteForHeadlines();
-                __instance.TitleText.text = "Who is the impostor?";
-                DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(true);
-                __instance.discussionTimer = Time.deltaTime;
-                return false;
-            }
+                if (HeadlineDisplay.Instance.discussionStartTimer <= 20)
+                {
+                    HeadlineDisplay.Instance.CheckForTrustClicks();
+                    float timeRemaining = 20 - HeadlineDisplay.Instance.discussionStartTimer;
+                    if (!__instance.TimerText.isActiveAndEnabled) { __instance.TimerText.gameObject.SetActive(true); }
+                    __instance.TimerText.text = "Sorting headlines ends: " + Mathf.CeilToInt(timeRemaining).ToString();
+                    HeadlineDisplay.Instance.discussionStartTimer += Time.deltaTime;
+                    return false;
+                }
+                else if (!HeadlineDisplay.Instance.HasHeadlineVoteEnded)
+                {
+                    if (playerVoters.Length > 0)
+                    {
+                        foreach (PlayerVoteArea playerVoteArea in playerVoters)
+                        {
+                            playerVoteArea.gameObject.SetActive(true);
+                        }
+                    }
+                    HeadlineDisplay.Instance.FinishVoteForHeadlines();
+                    __instance.TitleText.text = "Voting is Over";
+                    //DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(true);
+                    //__instance.discussionTimer = Time.deltaTime;
+                    __instance.ProceedButton.gameObject.SetActive(true);
+                    return false;
+                }
+            } 
             return true;
         }
 

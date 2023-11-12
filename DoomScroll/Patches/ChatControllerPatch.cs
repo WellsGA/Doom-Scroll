@@ -98,7 +98,6 @@ namespace Doom_Scroll.Patches
                                     background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
                                     maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
                                     AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
-
                                 }
                                 break;
                             case ChatContent.SCREENSHOT:
