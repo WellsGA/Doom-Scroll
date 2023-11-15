@@ -24,6 +24,7 @@ namespace Doom_Scroll
         private HudManager hudManagerInstance;
 
         private Pageable newsPageHolder;
+        private static Tooltip voteForHeadlinesTooltip;
         private int numPages = 1;
 
         public float discussionStartTimer;
@@ -145,6 +146,7 @@ namespace Doom_Scroll
         public void SetUpVoteForHeadlines(SpriteRenderer glass)
         {
             // stop chat and voting, set screen for headline trust selection
+            voteForHeadlinesTooltip = new Tooltip(glass.gameObject, "VoteForHeadlines", "Tooltip on left side!\nUse \\n every twenty\ncharacters, at most.", 3.7f, 0.37f, new Vector3(-3.3f, 0, 0), 1.4f);
             DisplayHeadlinesForVote(glass);
             HasFinishedSetup = true;
             DoomScroll._log.LogInfo("SETUP OVER");
@@ -188,6 +190,7 @@ namespace Doom_Scroll
 
         public void HideHeadlinesAfterVote() 
         {
+            voteForHeadlinesTooltip.ActivateToolTip(false);
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             foreach (Headline news in AllNewsList)
             {
