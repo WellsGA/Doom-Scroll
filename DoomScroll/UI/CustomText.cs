@@ -42,5 +42,9 @@ namespace Doom_Scroll.UI
         {
             TextMP.m_StencilValue = 3;
         }
+        public Vector2 GetRenderSize()
+        {
+           return TextMP.bounds.size;
+        }
     }
 }

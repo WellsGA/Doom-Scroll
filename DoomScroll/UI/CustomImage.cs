@@ -17,7 +17,7 @@ namespace Doom_Scroll.UI
         {
             m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
         }
-        public void SetSize(Vector3 size)
+        public void SetSize(Vector2 size)
         {
             m_spriteRenderer.size = size;
         }
@@ -37,7 +37,7 @@ namespace Doom_Scroll.UI
         }
         public Vector2 GetSize()
         {
-            return m_spriteRenderer.size * UIGameObject.transform.localScale;
+            return m_spriteRenderer.size;
         }
 
         public SpriteRenderer GetSpriteRenderer() { return m_spriteRenderer; }

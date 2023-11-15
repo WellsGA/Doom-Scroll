@@ -18,7 +18,7 @@ namespace Doom_Scroll.Patches
     class MainMenuManagerPatch
     {
         private static Vector2 buttonSize = new Vector2(1.5f, 1.5f);
-        public static CustomButton test_button;
+        public static CustomButton DoomScrollInfoToggle;
         public static CustomModal credits_overlay;
         public static CustomButton close_button;
         public static CustomButton link_button;
@@ -57,7 +57,7 @@ namespace Doom_Scroll.Patches
         {
             if (AreCreditsOpen)
             {
-                test_button.EnableButton(true);
+                DoomScrollInfoToggle.EnableButton(true);
                 credits_overlay.ActivateCustomUI(false);
                 close_button.EnableButton(false);
                 link_button.EnableButton(false);
@@ -66,7 +66,7 @@ namespace Doom_Scroll.Patches
             }
             else
             {
-                test_button.EnableButton(false);
+                DoomScrollInfoToggle.EnableButton(false);
                 credits_overlay.ActivateCustomUI(true);
                 close_button.EnableButton(true);
                 link_button.EnableButton(true);
@@ -101,14 +101,14 @@ namespace Doom_Scroll.Patches
             Vector4[] slices = { new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 1, 0.5f) };
             Sprite[] doomscrollBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.MainMenu_Button_Green.png", slices);
 
-            test_button = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
+            DoomScrollInfoToggle = new CustomButton(m_UIParent, "DoomScroll Info Toggle Button", doomscrollBtnSprites, position, scaledSize.x);
 
-            test_button.ActivateCustomUI(false);
-            test_button.ActivateCustomUI(true);
-            test_button.UIGameObject.gameObject.SetActive(false);
-            test_button.UIGameObject.gameObject.SetActive(true);
+            DoomScrollInfoToggle.ActivateCustomUI(false);
+            DoomScrollInfoToggle.ActivateCustomUI(true);
+            DoomScrollInfoToggle.UIGameObject.gameObject.SetActive(false);
+            DoomScrollInfoToggle.UIGameObject.gameObject.SetActive(true);
 
-            test_button.ButtonEvent.MyAction += OnClickDoomScroll;
+            DoomScrollInfoToggle.ButtonEvent.MyAction += OnClickDoomScroll;
 
             credits_overlay = CreateCreditsOverlay(mainMenuManagerInstance.DefaultButtonSelected.transform.gameObject);
             close_button = AddCloseButton(credits_overlay.UIGameObject);
@@ -149,14 +149,14 @@ namespace Doom_Scroll.Patches
         {
             if (mainMenuManagerInstance == null) return;
 
-            test_button.ReplaceImgageOnHover();
+            DoomScrollInfoToggle.ReplaceImgageOnHover();
 
             try
             {
                 // Invoke methods on mouse click - open DoomScroll info popup
-                if (test_button.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                if (DoomScrollInfoToggle.isHovered() && Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    test_button.ButtonEvent.InvokeAction();
+                    DoomScrollInfoToggle.ButtonEvent.InvokeAction();
                 }
             }
             catch (System.Exception e)

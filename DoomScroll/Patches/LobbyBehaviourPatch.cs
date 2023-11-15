@@ -21,8 +21,8 @@ namespace Doom_Scroll.Patches
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
         public static TutorialBookletManager tutorialBookletManagerInstance;
-        public static CustomButton tutorialBookletButton;
-        public static CustomModal tutorialBookletOverlay;
+        /*public static CustomButton tutorialBookletButton;
+        public static CustomModal tutorialBookletOverlay;*/
         public static bool gameBegun = false;
 
         [HarmonyPostfix]

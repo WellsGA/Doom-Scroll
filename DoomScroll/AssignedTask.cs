@@ -20,7 +20,7 @@ namespace Doom_Scroll
 
         public CustomButton PostButton { get; private set; }
 
-        public CustomModal Card { get; private set; }
+        public CustomImage Card { get; private set; }
 
         // private Time timeAdded;
         // other fields
@@ -47,7 +47,7 @@ namespace Doom_Scroll
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            Card = new CustomModal(parent.UIGameObject, "card item", spr);
+            Card = new CustomImage(parent.UIGameObject, "card item", spr);
             Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0)); 
             cardText = new CustomText(Card.UIGameObject, "task", "Default");
             cardText.SetSize(1.5f);

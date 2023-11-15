@@ -82,9 +82,9 @@ namespace Doom_Scroll.Patches
                 ScreenshotManager.Instance.ToggleCamera();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED");
             }
-            if (HeadlineManager.Instance.IsInputpanelOpen)
+            if (HeadlineManager.Instance.NewsModal.IsModalOpen)
             {
-                HeadlineManager.Instance.ToggleNewsForm();
+                HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
 

@@ -29,7 +29,7 @@ namespace Doom_Scroll.Patches
                     {
                         DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(false); ;
                     }
-                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolderOverlay();
+                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolders();
                     if (playerVoters.Length > 0)
                     {
                         foreach (PlayerVoteArea playerVoteArea in playerVoters)
@@ -62,8 +62,7 @@ namespace Doom_Scroll.Patches
                     }
                     HeadlineDisplay.Instance.FinishVoteForHeadlines();
                     __instance.TitleText.text = "Voting is Over";
-                    //DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(true);
-                    //__instance.discussionTimer = Time.deltaTime;
+                    __instance.TimerText.gameObject.SetActive(false);
                     __instance.ProceedButton.gameObject.SetActive(true);
                     return false;
                 }
@@ -96,7 +95,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixClose()
         {
             // calculate vote
-            FolderManager.Instance.CloseFolderOverlay();
+            FolderManager.Instance.CloseFolders();
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {

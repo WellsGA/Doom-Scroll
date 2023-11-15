@@ -23,7 +23,7 @@ namespace Doom_Scroll
         }
         private HudManager hudManagerInstance;
         
-        private CustomModal UIOverlay;
+        private CustomImage UIOverlay;
         private CustomButton m_cameraButton;
         private CustomButton m_captureScreenButton;
         private Tooltip m_cameraButtonTooltip;
@@ -110,7 +110,10 @@ namespace Doom_Scroll
             }
             else
             {
-                if (HeadlineManager.Instance.IsInputpanelOpen) { HeadlineManager.Instance.ToggleNewsForm(); } // close news form if oopen
+                if (HeadlineManager.Instance.NewsModal.IsModalOpen) 
+                {
+                    HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction(); 
+                } // close news form if oopen
                 UIOverlay.ActivateCustomUI(true);
                 m_captureScreenButton.EnableButton(true);
                 IsCameraOpen = true;

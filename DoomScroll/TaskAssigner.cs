@@ -32,7 +32,7 @@ namespace Doom_Scroll
         public uint CurrentMinigameTask { get; private set; }
         
         // UI elements
-        public CustomModal PlayerButtonHolder { get; private set; }
+        public CustomImage PlayerButtonHolder { get; private set; }
         private Tooltip playerButtonHolderTooltip;
         public bool isAssignerPanelActive;
 
@@ -223,7 +223,7 @@ namespace Doom_Scroll
             // create the panel
             DoomScroll._log.LogInfo("player count: " + GameData.Instance.AllPlayers.Count);
             GameObject parentPanel = HudManager.Instance.gameObject;
-            PlayerButtonHolder = new CustomModal(parentPanel, "Button holder", panelSprite);
+            PlayerButtonHolder = new CustomImage(parentPanel, "Button holder", panelSprite);
             Vector2 size = new Vector2(GameData.Instance.AllPlayers.Count/1.5f, 1f);
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Vector3 pos = new Vector3(0, -bounds.y/2+size.y/2,- 50);
@@ -246,7 +246,7 @@ namespace Doom_Scroll
                     btn.SetDefaultBtnColor(btn.TopIcon, Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId]);
                     PlayerButtons.AddSelectOption(playerInfo.PlayerId, btn);      
                 }
-                PlayerButtons.ArrangeButtons(0.48f, PlayerButtons.GetNumberOfOptions(), 0.48f, 0.7f);
+                PlayerButtons.ArrangeButtons(0.48f, PlayerButtons.GetNumberOfOptions(), 0.48f, 0.6f);
             }
             // inactive at first, gets activated on task completition
             ActivatePanel(false);

@@ -71,7 +71,7 @@ namespace Doom_Scroll.UI
             ChangeButtonState(ButtonState.DEFAULT);
             SetScale(Vector3.one);
             collider = DefaultIcon.UIGameObject.AddComponent<BoxCollider2D>();
-            DoomScroll._log.LogInfo("BUTTON SIZE AND COLLIDER SIZE: " + DefaultIcon.GetSize() + ", " + collider.size);
+            // DoomScroll._log.LogInfo("BUTTON SIZE AND COLLIDER SIZE: " + DefaultIcon.GetSize() + ", " + collider.size);
         }
 
         public Vector2 GetBtnSize()
@@ -84,6 +84,14 @@ namespace Doom_Scroll.UI
             if (hoverIcon != null) { hoverIcon.SetSize(scaledWidth); }
             if (selectIcon != null) { selectIcon.SetSize(scaledWidth); }
             if(TopIcon != null) { TopIcon.SetSize(scaledWidth); }
+            collider.size = DefaultIcon.GetSize();
+        }
+        public void SetSize(Vector2 size)
+        {
+            DefaultIcon.SetSize(size);
+            if (hoverIcon != null) { hoverIcon.SetSize(size); }
+            if (selectIcon != null) { selectIcon.SetSize(size); }
+            if (TopIcon != null) { TopIcon.SetSize(size); }
             collider.size = DefaultIcon.GetSize();
         }
         public void SetDefaultBtnColor(CustomImage image, Color color)
