@@ -181,12 +181,10 @@ namespace Doom_Scroll
             m_taskFolderTooltip.ActivateToolTip(false);
             m_postFolderTooltip.ActivateToolTip(false);
             m_postFolderVotingTooltip.ActivateToolTip(false);
-<<<<<<< HEAD
+
             m_HeadlinesTooltip.ActivateToolTip(false);
 
 
-=======
->>>>>>> 4378c11295bd4ea6bfceeeffef5b354f000a444f
         }
         private void InitFolderStructure()
         {
@@ -195,8 +193,8 @@ namespace Doom_Scroll
             m_screenshotsTooltip = new Tooltip(m_screenshots.Dir, "ScreenshotsFolderBtn", "Your photos will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
             m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea, FileTextType.TASKS);
             m_tasksTooltip = new Tooltip(m_tasks.Dir, "TasksFolderBtn", "Your task sign-ins will\nshow up here.", 0.5f, 4f, new Vector3(0, -1f, 0), 2f);
-            m_posts = new FileText(m_root.Path, "Posts", m_folderArea, FileTextType.NEWS);
-            m_postsTooltip = new Tooltip(m_posts.Dir, "PostsFolderBtn", "Your posts will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
+            m_posts = new FileText(m_root.Path, "Headlines", m_folderArea, FileTextType.NEWS);
+            m_postsTooltip = new Tooltip(m_posts.Dir, "PostsFolderBtn", "Your headlines will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(m_posts);
