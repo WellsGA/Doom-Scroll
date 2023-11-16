@@ -162,7 +162,6 @@ namespace Doom_Scroll
             m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
 
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen, m_folderToggleBtn);
-            m_folderArea.CloseButton.ButtonEvent.MyAction += CloseFolders;
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
             m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
             m_pathText = FolderOverlay.AddPath(m_folderArea.UIGameObject);

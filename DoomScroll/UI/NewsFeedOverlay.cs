@@ -26,13 +26,7 @@ namespace Doom_Scroll.UI
             Vector2 size = bounds /2f;
             newsModal.SetSize(size);
             newsModal.SetLocalPosition(new Vector3(0, 0, -10));
-            CustomText title = new CustomText(newsModal.UIGameObject, "News Modal Title", "Create a Headline");
-            title.SetLocalPosition(new Vector3(0, size.y / 2 - 0.4f, -10));
-            title.SetSize(1.7f);
-            CustomText subtitle = new CustomText(newsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
-            subtitle.SetLocalPosition(new Vector3(0, size.y / 2 - 0.55f, -10));
-            subtitle.SetSize(1.2f);
-
+           
             // deactivate by default
             newsModal.ActivateCustomUI(false);
             return newsModal;

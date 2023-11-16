@@ -9,6 +9,7 @@ using Doom_Scroll.Patches;
 using static Il2CppMono.Security.X509.X520;
 using static Il2CppSystem.Runtime.Remoting.RemotingServices;
 using UnityEngine.Networking.Types;
+using System.Drawing;
 
 namespace Doom_Scroll
 {
@@ -28,6 +29,8 @@ namespace Doom_Scroll
         private HudManager hudManagerInstance;
         public CustomModal NewsModal { get; private set; }
         private CustomImage modalFrame;
+        private CustomText modalTitle;
+        private CustomText modalSubTitle;
         private CustomButton toggleModalBtn;
         private Tooltip headlineBtnTooltip;
         private Tooltip headlinePopupModalTooltip;
@@ -65,6 +68,10 @@ namespace Doom_Scroll
             Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.phone.png", ImageLoader.slices2);
             NewsModal = NewsFeedOverlay.InitInputOverlay(hudManagerInstance, toggleModalBtn, spr[1]);
             modalFrame = new CustomImage(NewsModal.UIGameObject, "Phone overlay", spr[0]);
+            modalTitle = new CustomText(NewsModal.UIGameObject, "News Modal Title", "Create a Headline");
+            modalTitle.SetSize(1.7f);
+            modalSubTitle = new CustomText(NewsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
+            modalSubTitle.SetSize(1.2f);
 
             headlinePopupModalTooltip = new Tooltip(NewsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.5f, 9.5f, new Vector3(0, -1.8f, 0), 1.75f);
             
@@ -72,7 +79,6 @@ namespace Doom_Scroll
             frameOrProtect = new CustomSelect<bool>(NewsModal.GetSize());
             frameOrProtect.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(NewsModal.UIGameObject, radioBtnSprites, "Protect"));
             frameOrProtect.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(NewsModal.UIGameObject, radioBtnSprites, "Frame"));
-            frameOrProtect.ArrangeButtons(0.3f, 2, 0.7f, 1.4f);
 
             // player buttons
             playerButtons = new CustomSelect<byte>(NewsModal.GetSize());
@@ -120,10 +126,13 @@ namespace Doom_Scroll
             NewsModal.SetSize(modalWidth); // margin, buttons and fram/protect select
             modalFrame.SetSize(modalWidth * 1.02f);
             headlineSelect.SetParentSize(NewsModal.GetSize());
+            modalTitle.SetLocalPosition(new Vector3(0, NewsModal.GetSize().y / 2 - 0.3f, -10));
+            modalSubTitle.SetLocalPosition(new Vector3(0, NewsModal.GetSize().y / 2 - 0.4f, -10));
             modalFrame.SetLocalPosition(new Vector3(0, 0, -20));
-            playerButtons.ArrangeButtons(btnsSize, itemsInARow, 1.7f , 1.62f);
+            frameOrProtect.ArrangeButtons(0.3f, 2, -NewsModal.GetSize().y / 2 + 0.7f, 1.4f);
+            playerButtons.ArrangeButtons(btnsSize, itemsInARow, -NewsModal.GetSize().y / 2 + 1.7f , 1.62f);
         }
-
+         
         public void OnSelectTargetAndGoal(bool protect, byte targetPlayer)
         {
             headlineSelect.ClearSelection();
