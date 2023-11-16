@@ -9,13 +9,13 @@ namespace Doom_Scroll.UI
     {
         public KeyValuePair<T, CustomButton> Selected { get; private set; }
         public bool HasSelected { get; private set; }
-        private Vector3 parentSize;
+        private Vector2 parentSize;
         private Dictionary<T, CustomButton> buttonList;
 
         public DoomScrollEvent ButtonEvent = new DoomScrollEvent();
 
 
-        public CustomSelect(Vector3 size)
+        public CustomSelect(Vector2 size)
         {
             parentSize = size;
             HasSelected = false;
@@ -41,7 +41,7 @@ namespace Doom_Scroll.UI
                 DoomScroll._log.LogInfo(", X pos" + nextPos.x + ", Y pos" + nextPos.y);
                 btn.SetSize(btnSize);
                 btn.SetLocalPosition(nextPos);
-                btn.Label.SetLocalPosition(new Vector3(0, -btnSize / 1.8f, -10));
+                btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().y / 2f-0.015f, -10));
                 btn.Label.SetSize(1f);
             }
         }
@@ -101,6 +101,11 @@ namespace Doom_Scroll.UI
             {
                 btn.ActivateCustomUI(activate);
             }
+        }
+
+        public void SetParentSize(Vector2 size)
+        {
+            parentSize = size;
         }
     }
 }

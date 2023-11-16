@@ -19,50 +19,22 @@ namespace Doom_Scroll.UI
             return new CustomButton(UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
         }
 
-        public static CustomModal InitInputOverlay(HudManager hud)
+        public static CustomModal InitInputOverlay(HudManager hud, CustomButton toggler, Sprite spr)
         {
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
-            CustomModal newsModal = new CustomModal(hud.gameObject, "News Form Overlay", spr);
-            Vector2 size = new Vector2(bounds.x, bounds.y);
+            CustomModal newsModal = new CustomModal(hud.gameObject, "News Form Overlay", spr, toggler, true);
+            Vector2 size = bounds /2f;
             newsModal.SetSize(size);
             newsModal.SetLocalPosition(new Vector3(0, 0, -10));
-
-            CustomText title = new CustomText(newsModal.UIGameObject, "News Modal Title", "Create a Headline");
-            title.SetLocalPosition(new Vector3(0, size.y / 2 - 0.5f, -10));
-            title.SetSize(1.5f);
-            CustomText subtitle = new CustomText(newsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
-            subtitle.SetLocalPosition(new Vector3(0, size.y / 2 - 0.7f, -10));
-            subtitle.SetSize(1.2f);
-
+           
             // deactivate by default
             newsModal.ActivateCustomUI(false);
             return newsModal;
         }
 
-        public static CustomModal InitVoteOverlay(GameObject parent)
+        public static CustomButton CreateRadioButtons(GameObject parent, Sprite[] radioSprites, string label)
         {
-            Vector2 size = parent.GetComponent<SpriteRenderer>().size;
-            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.panel.png");
-            CustomModal headlineModal = new CustomModal(parent, "Headline Modal", spr);
-            headlineModal.SetSize(size);
-            headlineModal.SetLocalPosition(new Vector3(0, 0, -10));
-
-            CustomText title = new CustomText(headlineModal.UIGameObject, "Headline Modal Title", "Which headlines are trustworthy?");
-            title.SetLocalPosition(new Vector3(0, size.y / 2 - 0.5f, -10));
-            title.SetSize(1.5f);
-            CustomText subtitle = new CustomText(headlineModal.UIGameObject, "Headline Modal SubTitle", "Select 'trust' or 'fake'. Correct answers increase your scores.");
-            subtitle.SetLocalPosition(new Vector3(0, size.y / 2 - 0.7f, -10));
-            subtitle.SetSize(1.2f);
-
-            // deactivate by default
-            headlineModal.ActivateCustomUI(false);
-            return headlineModal;
-        }
-
-        public static CustomButton CreateRadioButtons(CustomModal parent, Sprite[] radioSprites, string label)
-        {
-            CustomButton protectButton = new CustomButton(parent.UIGameObject, label + " Radio", radioSprites);
+            CustomButton protectButton = new CustomButton(parent, label + " Radio", radioSprites);
             protectButton.Label.SetText(label);
             return protectButton;
         }

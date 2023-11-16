@@ -29,7 +29,7 @@ namespace Doom_Scroll.Patches
                     {
                         DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(false); ;
                     }
-                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolderOverlay();
+                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolders();
                     if (playerVoters.Length > 0)
                     {
                         foreach (PlayerVoteArea playerVoteArea in playerVoters)
@@ -62,8 +62,7 @@ namespace Doom_Scroll.Patches
                     }
                     HeadlineDisplay.Instance.FinishVoteForHeadlines();
                     __instance.TitleText.text = "Voting is Over";
-                    //DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(true);
-                    //__instance.discussionTimer = Time.deltaTime;
+                    __instance.TimerText.gameObject.SetActive(false);
                     __instance.ProceedButton.gameObject.SetActive(true);
                     return false;
                 }
@@ -96,7 +95,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixClose()
         {
             // calculate vote
-            FolderManager.Instance.CloseFolderOverlay();
+            FolderManager.Instance.CloseFolders();
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
@@ -113,7 +112,7 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo("Meeting Hud starting! Trying to add tooltip.");
             GameObject uiParent = __instance.TitleText.gameObject;
             Vector3 textPos = new Vector3(0, -3f, -10);
-            meetingBeginningToolTip = new Tooltip(uiParent, "DiscussionTime", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>", 0.75f, 9.5f, textPos, 3f);
+            meetingBeginningToolTip = new Tooltip(uiParent, "DiscussionTime", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.\nInvestigate the information to determine the truth!</size>", 0.75f, 9.5f, textPos, 3f);
             DoomScroll._log.LogInfo("ToolTip should be activated if Tutorial Mode is On!");
 
             playerVoters = __instance.GetComponentsInChildren<PlayerVoteArea>();

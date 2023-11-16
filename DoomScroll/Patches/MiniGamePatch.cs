@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using System.Linq;
-using UnityEngine;
+﻿using HarmonyLib; 
 
 namespace Doom_Scroll.Patches
 {

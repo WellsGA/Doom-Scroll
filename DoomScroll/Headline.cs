@@ -17,7 +17,7 @@ namespace Doom_Scroll
         public string Title { get; private set; }
         public bool IsTrue { get; private set; }
         public string Source { get; private set; }
-        public CustomModal Card { get; private set; }
+        public CustomImage Card { get; private set; }
         public CustomButton PostButton { get; private set; }
         public Dictionary<byte, bool> PlayersTrustSelections { get; private set; }
 
@@ -41,8 +41,8 @@ namespace Doom_Scroll
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            Card = new CustomModal(parent.UIGameObject, "card item", spr);
-            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.4f, 0));  
+            Card = new CustomImage(parent.UIGameObject, "card item", spr);
+            Card.SetSize(new Vector2(parent.GetSize().x - 2f, 0.4f));  
             titleUI = new CustomText(Card.UIGameObject, "Headline", Title);
             sourceUI = new CustomText(Card.UIGameObject, "Source", Source);
             titleUI.SetSize(1.2f);
@@ -61,8 +61,8 @@ namespace Doom_Scroll
             // trust & not trust
             Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);
             trustButtons = new CustomSelect<bool>(new Vector2(0.4f, 1f));
-            trustButtons.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(Card, radioBtnSprites, "Trusted"));
-            trustButtons.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(Card, radioBtnSprites, "Fake"));
+            trustButtons.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(Card.UIGameObject, radioBtnSprites, "Trusted"));
+            trustButtons.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(Card.UIGameObject, radioBtnSprites, "Fake"));
             trustButtons.ArrangeButtons(0.22f, 2, Card.GetSize().x / 2 - 0.44f, 0.45f);
             trustButtons.ButtonEvent.MyAction += UpdateTrustSelection;
 

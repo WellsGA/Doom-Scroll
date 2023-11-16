@@ -29,19 +29,20 @@ namespace Doom_Scroll.UI
             return folderBtn;
         }
 
-        public static CustomModal CreateFolderOverlay(GameObject parent)
+        public static CustomModal CreateFolderOverlay(GameObject parent, CustomButton toggler)
         {
             GameObject cahtScreen = parent.transform.Find("ChatScreenRoot/ChatScreenContainer").gameObject;
-            SpriteRenderer backgroundSR = cahtScreen.transform.Find("Background").GetComponent<SpriteRenderer>();
+            GameObject bg = cahtScreen.transform.Find("Background").gameObject;
+            SpriteRenderer backgroundSR = bg.GetComponent<SpriteRenderer>();
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
 
             // create the overlay background
-            CustomModal folderOverlay = new CustomModal(cahtScreen, "FolderOverlay", spr);  
+            CustomModal folderOverlay = new CustomModal(cahtScreen, "FolderOverlay", spr, toggler, true);  
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));       
             if (backgroundSR != null)
             {
                folderOverlay.SetSize(backgroundSR.size * 0.85f);
-               folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-30));
+               folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-10));
             }
             else
             {
@@ -50,13 +51,6 @@ namespace Doom_Scroll.UI
             return folderOverlay;
         }
 
-        public static CustomButton AddCloseButton(CustomModal parent)
-        {
-            Vector2 size = parent.GetSize();
-            Vector3 position = new Vector3(-size.x / 2 - buttonSize.x / 2, size.y / 2 - buttonSize.y / 2, -5f);
-            Sprite[] closeBtnImg = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            return new CustomButton(parent.UIGameObject, "Close Overlay", closeBtnImg, position, buttonSize.x);
-        }
         public static CustomButton AddHomeButton(CustomModal parent)
         {
             Vector2 size = parent.GetSize();

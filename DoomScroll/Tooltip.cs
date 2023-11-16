@@ -1,17 +1,9 @@
 ﻿using Doom_Scroll.Common;
 using Doom_Scroll.UI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using System.Threading.Tasks;
 using System.Reflection;
-using System.Collections.Generic;
-using UnityEngine;
-using Doom_Scroll.UI;
-using HarmonyLib;
 
 namespace Doom_Scroll
 {

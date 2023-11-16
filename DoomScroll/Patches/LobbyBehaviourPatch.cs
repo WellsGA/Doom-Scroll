@@ -21,8 +21,8 @@ namespace Doom_Scroll.Patches
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
         public static TutorialBookletManager tutorialBookletManagerInstance;
-        public static CustomButton tutorialBookletButton;
-        public static CustomModal tutorialBookletOverlay;
+        /*public static CustomButton tutorialBookletButton;
+        public static CustomModal tutorialBookletOverlay;*/
         public static bool gameBegun = false;
 
         [HarmonyPostfix]
@@ -36,7 +36,7 @@ namespace Doom_Scroll.Patches
             //Create tooltip
             DoomScroll._log.LogInfo("Lobby starting! Trying to add tooltip.");
             GameObject uiParent = playerCountText;
-            lobbyToolTipText = new CustomText(uiParent, "LobbyTooltip", "<b>Recommended Rules</b>:\r\n-No Voice Chat! To simulate a social media discussion,\n only use the text chat during meetings.\r\n-Add 30 seconds to Meetings. Use the extra time to \nexamine the evidence in the folder.");
+            lobbyToolTipText = new CustomText(uiParent, "LobbyTooltip", "<b>Recommended Rules</b>:\r\n-No Voice Chat! To simulate a social media discussion,\n only use the text chat during meetings.\r\n-Add 30 seconds to Meetings. Use the extra time to \nexamine the evidence in the folder.\r\n-7 players minimum.");
             lobbyToolTipText.SetColor(UnityEngine.Color.yellow);
             lobbyToolTipText.SetSize(3f);
             Vector3 textPos = uiParent.transform.localPosition;

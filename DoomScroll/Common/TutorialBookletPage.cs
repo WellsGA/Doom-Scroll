@@ -128,7 +128,8 @@ namespace Doom_Scroll.Common
             descriptionText.ActivateCustomUI(false);
             DoomScroll._log.LogInfo("Closing page");
         }
-       /* public static CustomButton AddLeftButton(GameObject parent, bool inFolderSystem)
+       
+        /* public static CustomButton AddLeftButton(GameObject parent, bool inFolderSystem)
         {
             float yPos = inFolderSystem ? -0.3f : 4.5f;
             Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize;

@@ -22,7 +22,7 @@ namespace Doom_Scroll.UI
             return new CustomButton(m_UIParent, "Camera Toggle Button", cameraBtnSprites, position, scaledSize.x);
         }
 
-        public static CustomButton CreateCaptureButton(CustomModal parent)
+        public static CustomButton CreateCaptureButton(CustomImage parent)
         {
             Sprite[] captureSprite = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.captureScreenNew.png", ImageLoader.slices2);
             Vector2 size = parent.GetSize();
@@ -31,10 +31,10 @@ namespace Doom_Scroll.UI
             return new CustomButton(parent.UIGameObject, "Screenshot Button", captureSprite, pos, 0.6f);
         }
 
-        public static CustomModal InitCameraOverlay(HudManager hud)
+        public static CustomImage InitCameraOverlay(HudManager hud)
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraOverlay.png");
-            CustomModal cameraOverlay = new CustomModal(hud.gameObject, "ScreenshotOverlay", spr);  
+            CustomImage cameraOverlay = new CustomImage(hud.gameObject, "ScreenshotOverlay", spr);  
             cameraOverlay.SetLocalPosition(new Vector3(0f, 0f, -5));
 
             // deactivate by default
