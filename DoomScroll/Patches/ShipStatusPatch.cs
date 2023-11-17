@@ -13,7 +13,7 @@ namespace Doom_Scroll.Patches
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
             HeadlineManager.Instance.ActivateNewsButton(true);
-            HeadlineManager.Instance.CanPostNews(false); // by edfault player cannot create news
+            HeadlineManager.Instance.CanPostNews(true); // by edfault player cann create one news
 
             DoomScroll._log.LogInfo("ShipStatusPatch.Start ---- CAMERA AND NEWS INIT");
 

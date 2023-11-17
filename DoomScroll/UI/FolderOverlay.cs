@@ -38,11 +38,11 @@ namespace Doom_Scroll.UI
 
             // create the overlay background
             CustomModal folderOverlay = new CustomModal(cahtScreen, "FolderOverlay", spr, toggler, true);  
-            folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -10f));       
+            folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -30f));       
             if (backgroundSR != null)
             {
                folderOverlay.SetSize(backgroundSR.size * 0.85f);
-               folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-10));
+               folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-30));
             }
             else
             {

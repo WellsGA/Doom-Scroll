@@ -10,7 +10,7 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(MMOnlineManager))]
     class MMOnlineManagerPatch
     {
-        private static Vector2 buttonSize = new Vector2(1.5f, 1.5f);
+        private static Vector2 buttonSize = new Vector2(0.7f, 0.7f);
         public static CustomButton DoomScrollInfoToggle;
         public static CustomModal credits_overlay;
         public static CustomButton link_button_pre;
@@ -99,7 +99,7 @@ namespace Doom_Scroll.Patches
             CustomText credits_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", creditsText);
             credits_text.SetColor(Color.black);
             credits_text.SetSize(1f);
-            Vector3 textPos = new Vector3(0, 0, -10);
+            Vector3 textPos = new Vector3(0, 0.5f, -10);
             credits_text.SetLocalPosition(textPos);
             credits_text.TextMP.m_enableWordWrapping = false;
             credits_text.ActivateCustomUI(true);
@@ -109,17 +109,17 @@ namespace Doom_Scroll.Patches
             CustomText link_text = new CustomText(credits_overlay.UIGameObject, "DoomScrollTeamCredits", linkText);
             link_text.SetColor(Color.black);
             link_text.SetSize(1f);
-            Vector3 linkTextPos = textPos + new Vector3(0, -credits_overlay.GetSize().y / 2 + 1.2f, 0);
+            Vector3 linkTextPos = new Vector3(0, -credits_overlay.GetSize().y / 2 + 0.8f, 0);
             link_text.SetLocalPosition(linkTextPos);
             link_text.TextMP.m_enableWordWrapping = false;
             link_text.ActivateCustomUI(true);
 
             //<<CREATE LINK BUTTON>>
-            Vector3 link_button_pre_pos = textPos + new Vector3(-5, -5.8f, 0);
+            Vector3 link_button_pre_pos = new Vector3(-2, -credits_overlay.GetSize().y / 2 + 0.8f, 0);
             link_button_pre = new CustomButton(credits_overlay.UIGameObject, "Open Pre Survey", doomscrollBtnSprites, link_button_pre_pos, buttonSize.x);
             link_button_pre.ButtonEvent.MyAction += OpenPreLink;
 
-            Vector3 link_button_post_pos = textPos + new Vector3(5, -5.8f, 0);
+            Vector3 link_button_post_pos = new Vector3(2, -credits_overlay.GetSize().y / 2 + 0.8f, 0);
             link_button_post = new CustomButton(credits_overlay.UIGameObject, "Open Post Survey", doomscrollBtnSprites, link_button_post_pos, buttonSize.x);
             link_button_post.ButtonEvent.MyAction += OpenPostLink;
 

@@ -81,12 +81,12 @@ namespace Doom_Scroll
             }
             else if (hudManagerInstance.Chat.IsClosedOrClosing && m_folderToggleBtn.IsActive)
             {
-                m_folderToggleBtn.ActivateCustomUI(false);
                 if (m_folderArea.IsModalOpen)
                 {
-                    m_folderToggleBtn.ButtonEvent.InvokeAction();
+                    CloseFolders();
                     DoomScroll._log.LogInfo("NEED TO CLOSE CURRENT FOLDER ");
                 }
+                m_folderToggleBtn.ActivateCustomUI(false);
             }
 
             // If chat is open and the foder toggle button is active invoke toggle on mouse click 
