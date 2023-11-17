@@ -130,8 +130,8 @@ namespace Doom_Scroll
             modalTitle.SetLocalPosition(new Vector3(0, NewsModal.GetSize().y / 2 - 0.3f, -10));
             modalSubTitle.SetLocalPosition(new Vector3(0, NewsModal.GetSize().y / 2 - 0.4f, -10));
             modalFrame.SetLocalPosition(new Vector3(0, 0, -20));
-            frameOrProtect.ArrangeButtons(0.3f, 2, -NewsModal.GetSize().y / 2 + 0.7f, 1.4f);
-            playerButtons.ArrangeButtons(btnsSize, itemsInARow, -NewsModal.GetSize().y / 2 + 1.7f , 1.62f);
+            frameOrProtect.ArrangeButtons(0.3f, 2, -NewsModal.GetSize().y / 2 + 0.7f, 1.2f);
+            playerButtons.ArrangeButtons(btnsSize, itemsInARow, -NewsModal.GetSize().y / 2 + 1.7f , 1.42f);
         }
          
         public void OnSelectTargetAndGoal(bool protect, byte targetPlayer)
