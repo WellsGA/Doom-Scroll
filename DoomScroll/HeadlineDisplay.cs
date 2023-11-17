@@ -188,15 +188,18 @@ namespace Doom_Scroll
             }
         }
 
-        public void HideHeadlinesAfterVote() 
+        public void HideHeadlinesAfterVote()
         {
             voteForHeadlinesTooltip.ActivateToolTip(false);
             CustomModal parent = FolderManager.Instance.GetFolderArea();
+            int currentVotedHeadlinesCount = 0;
             foreach (Headline news in AllNewsList)
             {
                 news.SetParentAndSize(parent.UIGameObject, parent.GetSize());
                 news.Card.ActivateCustomUI(false);
+                currentVotedHeadlinesCount++;
             }
+            DoomScrollVictoryManager.LastMeetingNewsItemsCount = currentVotedHeadlinesCount;
         }
 
         public void HideNews()

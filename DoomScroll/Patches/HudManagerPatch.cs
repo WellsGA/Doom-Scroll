@@ -101,7 +101,7 @@ namespace Doom_Scroll.Patches
                     HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomFakeNews());
                 }
                 // selects new players to post news
-                HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
+                //HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
 
                 // game log 
                 GameLogger.Write(GameLogger.GetTime() + " - " + ((reporter != null) ? reporter.ToString() + " called for a meeting." : " Meeting was called"));

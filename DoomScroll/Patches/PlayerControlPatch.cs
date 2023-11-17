@@ -201,7 +201,20 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SENDNEWS:
                     {
-                        HeadlineDisplay.Instance.AddNews(new Headline(reader.ReadInt32(), reader.ReadByte(), reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
+                        int headlineID = reader.ReadInt32();
+                        byte authorID = reader.ReadByte();
+                        if (HeadlineManager.Instance != null)
+                        {
+                            if (HeadlineManager.Instance.numTimesPlayersPosted.ContainsKey(authorID))
+                            {
+                                HeadlineManager.Instance.numTimesPlayersPosted[authorID] += 1;
+                            }
+                            else
+                            {
+                                HeadlineManager.Instance.numTimesPlayersPosted[authorID] = 1;
+                            }
+                        }
+                        HeadlineDisplay.Instance.AddNews(new Headline(headlineID, authorID, reader.ReadString(), reader.ReadBoolean(), reader.ReadString()));
                         return;
                     }
                 case (byte)CustomRPC.DEATHNOTE:

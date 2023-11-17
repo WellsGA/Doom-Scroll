@@ -39,7 +39,8 @@ namespace Doom_Scroll
         private Sprite[] headlineButtonSprites;
         private CustomSelect<byte> playerButtons;
         private CustomSelect<bool> frameOrProtect;
-        private CustomSelect<Headline> headlineSelect; 
+        private CustomSelect<Headline> headlineSelect;
+        public Dictionary<byte, int> numTimesPlayersPosted { get; set; } = new Dictionary<byte, int>();
 
         private bool canPostNews;
 
@@ -214,20 +215,13 @@ namespace Doom_Scroll
         public void SelectPLayersWhoCanPostNews()
         {
             if (!PlayerControl.LocalPlayer.AmOwner) return;
-            // select 1/5th of the players randomly and enable news creation for them
+            // ALLOWS ALL TO POST ONCE!
             List<PlayerControl> allPlayer = new List<PlayerControl>();
             double numberWhoCanPost = Math.Ceiling((double)PlayerControl.AllPlayerControls.Count/5);
             foreach (PlayerControl pc in PlayerControl.AllPlayerControls)
             {
-                allPlayer.Add(pc);
+                RPCPLayerCanCreateNews(pc);
             }
-            for (int i = 0; i < numberWhoCanPost; i++)
-            {
-                int playerIndex = UnityEngine.Random.Range(0, allPlayer.Count);
-                RPCPLayerCanCreateNews(allPlayer[playerIndex]);
-                allPlayer.RemoveAt(playerIndex);
-            }
-            RPCPLayerCanCreateNews(PlayerControl.LocalPlayer); //debug: host can always post
         }
 
         public void RPCPLayerCanCreateNews(PlayerControl player)
@@ -266,6 +260,7 @@ namespace Doom_Scroll
             hudManagerInstance = HudManager.Instance;
             canPostNews = false;
             NewsPostedByLocalPLayer = 0;
+            numTimesPlayersPosted = new Dictionary<byte, int>();
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");
         }

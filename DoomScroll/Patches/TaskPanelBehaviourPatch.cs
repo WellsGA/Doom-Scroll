@@ -6,6 +6,7 @@ using Doom_Scroll.Common;
 using Microsoft.Extensions.Logging;
 using Il2CppSystem;
 using Il2CppSystem.Text;
+using static Il2CppSystem.Net.UnsafeNclNativeMethods.HttpApi;
 
 namespace Doom_Scroll.Patches
 {
@@ -16,7 +17,20 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("SetTaskText")]
         public static void PrefixSetTaskText(ref string str)
         {
-            // why did we check for game running?
+            if (HeadlineManager.Instance != null)
+            {
+                if (HeadlineManager.Instance.NewsPostedByLocalPLayer > 0)
+                {
+                    str += "\n<color=#00DD00FF>";
+                    str += "Headline Post button: Post a Headline (1/1)</color>";
+                }
+                else
+                {
+                    str += "\n<color=#FFFF00FF>";
+                    str += "Headline Post button: Post a Headline (0/1)</color>";
+                }
+            }
+
             if (SecondaryWinConditionManager.LocalPLayerSWC != null)
             {
                 str = str + "<color=\"orange\">\nSWC: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color>";
