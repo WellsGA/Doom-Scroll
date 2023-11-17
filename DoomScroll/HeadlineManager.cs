@@ -63,7 +63,7 @@ namespace Doom_Scroll
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += ToggleFormItems;
             headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.5f, 2.7f, new Vector3(-0.8f, -0.4f, 0), 1f);
-            ActivateNewsButton(false);
+            
 
             // news modal
             Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.phone.png", ImageLoader.slices2);
@@ -87,7 +87,8 @@ namespace Doom_Scroll
             // headlines
             headlineButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png", ImageLoader.slices2);
             headlineSelect = new CustomSelect<Headline>(NewsModal.GetSize());
-           }
+            ActivateNewsButton(false);
+        }
 
         private void ToggleFormItems()
         {
@@ -105,11 +106,12 @@ namespace Doom_Scroll
             }
         }
 
-        private void CloseFormItems()
+        public void CloseFormItems()
         {
             frameOrProtect.ClearSelection();
             playerButtons.ClearSelection();
             headlineSelect.ClearSelection();
+            DoomScroll._log.LogInfo("CLOSE HEADLINE");
         }
 
         private void CreatePlayerButtons()
@@ -171,7 +173,12 @@ namespace Doom_Scroll
         }
         public void ActivateNewsButton(bool value)
         {
-            toggleModalBtn.ActivateCustomUI(value); ;
+            toggleModalBtn.ActivateCustomUI(value);
+            if(!value)
+            {
+                NewsModal.CloseButton.ButtonEvent.InvokeAction();
+            }
+
         }
 
         public void CanPostNews(bool value)

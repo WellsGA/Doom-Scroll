@@ -76,6 +76,11 @@ namespace Doom_Scroll.UI
             ActivateCustomUI(IsModalOpen);
             DoomScroll._log.LogInfo("MODAL TOGGLE: " + IsModalOpen);
         }
+        
+        public void SetIsOpen(bool value)
+        {
+            IsModalOpen = value;
+        }
 
         private CustomButton AddCloseButton(float buttonSize)
         {

@@ -84,6 +84,7 @@ namespace Doom_Scroll.Patches
             }
             if (HeadlineManager.Instance.NewsModal.IsModalOpen)
             {
+                HeadlineManager.Instance.CloseFormItems();
                 HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
