@@ -23,7 +23,7 @@ namespace Doom_Scroll
             {
                 if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 {
-                    if (player.RoleType == RoleTypes.Impostor || player.RoleType == RoleTypes.ImpostorGhost)
+                    if (player.Role.IsImpostor)
                     {
                         return true;
                     }
@@ -37,21 +37,15 @@ namespace Doom_Scroll
         }
         public static bool CheckVotingSuccess()
         {
+            if (CheckLocalImpostor())
+            {
+                return true;
+            }
+
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
-                if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
-                {
-                    if (player.RoleType == RoleTypes.Impostor || player.RoleType == RoleTypes.ImpostorGhost)
-                    {
-                        return true;
-                    }
-                    break;
-                }
-            }
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
                 byte pID = player.PlayerId;
-                if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID))
+                if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID) && !player.Role.IsImpostor)
                 {
                     string strippedScoreText = HeadlineDisplay.Instance.PlayerScores[pID].Trim(' ', '\n', '\t', '[', ']'); //new char[' ','\n','\t','[',']']
                     DoomScroll._log.LogInfo("Current strippedScoreText: " + strippedScoreText);
@@ -67,6 +61,7 @@ namespace Doom_Scroll
                         DoomScroll._log.LogError("Couldn't parse number to string: [" + currentScore + "], error message " + e);
                     }
                     DoomScroll._log.LogInfo("Current numScore: " + numScore.ToString());
+                    DoomScroll._log.LogInfo("LastMeetingNewsItemsCount: " + LastMeetingNewsItemsCount.ToString());
                     if (numScore < LastMeetingNewsItemsCount)
                     {
                         return false;

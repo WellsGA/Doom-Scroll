@@ -34,7 +34,7 @@ namespace Doom_Scroll.Patches
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"red\">Failure: Some crewmates didn't vote correctly.</color></color></size>";
                 }
-                else if (!DoomScrollVictoryManager.CheckLocalImpostor())
+                else if (!DoomScrollVictoryManager.CheckLocalImpostor() && DoomScrollVictoryManager.CheckVotingSuccess())
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"blue\">Success: All crewmates voted correctly!</color></color></size>";
                 }
@@ -55,7 +55,7 @@ namespace Doom_Scroll.Patches
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"red\">Failure: Some crewmates didn't vote correctly.</color></color></size>";
                 }
-                else if (!DoomScrollVictoryManager.CheckLocalImpostor())
+                else if (!DoomScrollVictoryManager.CheckLocalImpostor() && DoomScrollVictoryManager.CheckVotingSuccess())
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"blue\">Success: All crewmates voted correctly!</color></color></size>";
                 }
