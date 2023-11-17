@@ -146,7 +146,7 @@ namespace Doom_Scroll
         public void SetUpVoteForHeadlines(SpriteRenderer glass)
         {
             // stop chat and voting, set screen for headline trust selection
-            voteForHeadlinesTooltip = new Tooltip(glass.gameObject, "VoteForHeadlines", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 2.5f, 4f, new Vector3(-3.3f, 0, 0), 1.4f);
+            voteForHeadlinesTooltip = new Tooltip(glass.gameObject, "VoteForHeadlines", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 2.5f, .6f, new Vector3(-3.3f, 0, 0), 1.4f);
             DisplayHeadlinesForVote(glass);
             HasFinishedSetup = true;
             DoomScroll._log.LogInfo("SETUP OVER");
@@ -188,15 +188,18 @@ namespace Doom_Scroll
             }
         }
 
-        public void HideHeadlinesAfterVote() 
+        public void HideHeadlinesAfterVote()
         {
             voteForHeadlinesTooltip.ActivateToolTip(false);
             CustomModal parent = FolderManager.Instance.GetFolderArea();
+            int currentVotedHeadlinesCount = 0;
             foreach (Headline news in AllNewsList)
             {
                 news.SetParentAndSize(parent.UIGameObject, parent.GetSize());
                 news.Card.ActivateCustomUI(false);
+                currentVotedHeadlinesCount++;
             }
+            DoomScrollVictoryManager.LastMeetingNewsItemsCount = currentVotedHeadlinesCount;
         }
 
         public void HideNews()
