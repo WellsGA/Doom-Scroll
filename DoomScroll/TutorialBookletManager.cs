@@ -103,11 +103,11 @@ namespace Doom_Scroll
         }
         private void CreateTutorialBookletOverlayUI()
         {
-             GameObject righBox = GameObject.Find("RightBox") ? GameObject.Find("RightBox") : lobbyBehaviourInstance.gameObject;
+            GameObject bottomCodeText = GameObject.Find("GameRoomButton") ? GameObject.Find("GameRoomButton") : lobbyBehaviourInstance.gameObject;
             //GameObject chatScreen = lobbyBehaviourInstance.Chat.OpenKeyboardButton.transform.parent.gameObject;
-            m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(righBox);
+            m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += TogglePager;
-            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(righBox, m_tutorialBookletToggleBtn);
+            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText, m_tutorialBookletToggleBtn);
             m_tutorialBookletArea.CloseButton.ButtonEvent.MyAction += ClosePager;
             tutorialBookletPager = new Pageable(m_tutorialBookletArea, new List<CustomUI>(), 1, false);
         }

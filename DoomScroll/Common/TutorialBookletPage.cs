@@ -35,16 +35,16 @@ namespace Doom_Scroll.Common
             //set titleUI text
             titleText = new CustomText(parentOverlay.UIGameObject, $"TitleText{title}", $"<b>{title}</b>");
             titleText.SetColor(Color.black);
-            titleText.SetSize(5f);
-            Vector3 titleTextPos = new Vector3(0, parentOverlay.GetSize().y-8f, -10);
+            titleText.SetSize(1.5f);
+            Vector3 titleTextPos = new Vector3(0, 1f, -10);
             titleText.SetLocalPosition(titleTextPos);
             titleText.TextMP.m_enableWordWrapping = false;
 
             //set description text
             descriptionText = new CustomText(parentOverlay.UIGameObject, $"DescriptionText{title}", description);
             descriptionText.SetColor(Color.black);
-            descriptionText.SetSize(4f);
-            Vector3 descTextPos = new Vector3(0, parentOverlay.GetSize().y-17f, -10);
+            descriptionText.SetSize(1f);
+            Vector3 descTextPos = new Vector3(0, -1f, -10);
             descriptionText.SetLocalPosition(descTextPos);
             descriptionText.TextMP.m_enableWordWrapping = false;
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -56,11 +56,11 @@ namespace Doom_Scroll.Common
                     tutorialPictureOne = ImageLoader.ReadImageFromAssembly(assembly, imgName); //will appear as default file icon for now
                     imageOne = new CustomImage(parentOverlay.UIGameObject, $"TutorialPictureOne{title}", tutorialPictureOne);
                     imageOne.SetSize(parentOverlay.GetSize().x * 0.28f); // square ratio
-                    imageOne.SetLocalPosition(new Vector3(0f, 1.5f, -50f));
+                    imageOne.SetLocalPosition(new Vector3(0f, 0.3f, -50f));
                 }
                 else
                 {
-                    descriptionText.SetLocalPosition(new Vector3(0, parentOverlay.GetSize().y - 14f, -10));
+                    descriptionText.SetLocalPosition(new Vector3(0, 0.1f, -10));
                 }
             }
             else
@@ -69,19 +69,19 @@ namespace Doom_Scroll.Common
                 tutorialPictureOne = ImageLoader.ReadImageFromAssembly(assembly, imgName); //will appear as default file icon for now
                 imageOne = new CustomImage(parentOverlay.UIGameObject, $"TutorialPictureOne{title}", tutorialPictureOne);
                 imageOne.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x) * 0.28f); // landscape 2:3 ratio
-                imageOne.SetLocalPosition(new Vector3(-3.8f, 0f, -50f));
+                imageOne.SetLocalPosition(new Vector3(-0.5f, 0f, -50f));
                 //set second image;
                 tutorialPictureTwo = ImageLoader.ReadImageFromAssembly(assembly, secondImgName); //will appear as default file icon for now
                 imageTwo = new CustomImage(parentOverlay.UIGameObject, $"TutorialPictureTwo{title}", tutorialPictureTwo);
                 imageTwo.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x) * 0.28f); // landscape 2:3 ratio
-                imageTwo.SetLocalPosition(new Vector3(3.8f, 0f, -50f));
+                imageTwo.SetLocalPosition(new Vector3(0.5f, 0f, -50f));
                 if (iconButton != null)
                 {
                     //set third image;
                     tutorialPictureThree = ImageLoader.ReadImageFromAssembly(assembly, iconButton.Item1); //will appear as default file icon for now
                     imageThree = new CustomImage(parentOverlay.UIGameObject, $"TutorialPictureThree{title}", tutorialPictureThree);
                     imageThree.SetSize(new Vector3(parentOverlay.GetSize().x, parentOverlay.GetSize().x * iconButton.Item2)*((2f - iconButton.Item2)/2.5f) * 0.28f); // uses provided ratio
-                    imageThree.SetLocalPosition(new Vector3(0f, 3.5f, -50f));
+                    imageThree.SetLocalPosition(new Vector3(0f, 1.5f, -50f));
                 }
             }
             HidePage();

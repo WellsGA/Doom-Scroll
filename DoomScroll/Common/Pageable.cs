@@ -186,8 +186,8 @@ namespace Doom_Scroll.Common
 
         public static CustomButton AddLeftButton(CustomModal parent, bool inFolderSystem)
         {
-            float yPos = inFolderSystem ? -0.3f : 4.5f;
-            Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize;
+            float yPos = inFolderSystem ? -0.3f : 1.5f;
+            Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize*0.3f;
             Vector2 parentSize = parent.GetSize();
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 backPosition = new Vector3(-parentSize.x * 0.41f, yPos, -5f);
@@ -196,8 +196,8 @@ namespace Doom_Scroll.Common
         }
         public static CustomButton AddRightButton(CustomModal parent, bool inFolderSystem)
         {
-            float yPos = inFolderSystem ? -0.3f : 4.5f;
-            Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize;
+            float yPos = inFolderSystem ? -0.3f : 1.5f;
+            Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize*0.3f;
             Vector2 parentSize = parent.GetSize();
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 forwardPosition = new Vector3(parentSize.x * 0.41f, yPos, -5f);
