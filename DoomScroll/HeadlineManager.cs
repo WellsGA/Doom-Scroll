@@ -73,7 +73,7 @@ namespace Doom_Scroll
             modalTitle.SetSize(1.7f);
             modalSubTitle = new CustomText(NewsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
             modalSubTitle.SetSize(1.2f);
-
+            NewsModal.CloseButton.ButtonEvent.MyAction += CloseFormItems;
             headlinePopupModalTooltip = new Tooltip(NewsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.5f, 9.5f, new Vector3(0, -1.8f, 0), 1.75f);
             
             // frame and protect buttons
@@ -103,6 +103,13 @@ namespace Doom_Scroll
                 if (ScreenshotManager.Instance.IsCameraOpen) { ScreenshotManager.Instance.ToggleCamera(); } // close camera if oopen
                 CreatePlayerButtons();
             }
+        }
+
+        private void CloseFormItems()
+        {
+            frameOrProtect.ClearSelection();
+            playerButtons.ClearSelection();
+            headlineSelect.ClearSelection();
         }
 
         private void CreatePlayerButtons()
