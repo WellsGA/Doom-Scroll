@@ -130,15 +130,16 @@ namespace Doom_Scroll
             int itemsInARow = playerButtons.GetNumberOfOptions() < 8 ? playerButtons.GetNumberOfOptions() : 8;
             float xOffset = 0.5f;
             float btnsSize = 0.45f;
-            float modalWidth = (2 * xOffset) + (itemsInARow * (btnsSize + 0.02f)) + 1.6f;
+            float width = (2 * xOffset) + (itemsInARow * (btnsSize + 0.02f)) + 1.6f;
+            float modalWidth = width < 5.2f ? 5.2f : width;
             NewsModal.SetSize(modalWidth); // margin, buttons and fram/protect select
             modalFrame.SetSize(modalWidth * 1.02f);
             headlineSelect.SetParentSize(NewsModal.GetSize());
             modalTitle.SetLocalPosition(new Vector3(0, NewsModal.GetSize().y / 2 - 0.3f, -10));
             modalSubTitle.SetLocalPosition(new Vector3(0, NewsModal.GetSize().y / 2 - 0.4f, -10));
             modalFrame.SetLocalPosition(new Vector3(0, 0, -20));
-            frameOrProtect.ArrangeButtons(0.3f, 2, -NewsModal.GetSize().y / 2 + 0.7f, 1.2f);
-            playerButtons.ArrangeButtons(btnsSize, itemsInARow, -NewsModal.GetSize().y / 2 + 1.7f , 1.42f);
+            frameOrProtect.ArrangeButtons(0.3f, 2, -NewsModal.GetSize().y / 2 + 0.9f, 1.2f);
+            playerButtons.ArrangeButtons(btnsSize, itemsInARow, -NewsModal.GetSize().y / 2 + 1.9f , 1.42f);
         }
          
         public void OnSelectTargetAndGoal(bool protect, byte targetPlayer)
