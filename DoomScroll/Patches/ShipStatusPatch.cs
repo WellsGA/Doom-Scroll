@@ -35,7 +35,7 @@ namespace Doom_Scroll.Patches
             }
 
             SecondaryWinConditionManager.SetSecondaryWinConditions();
-            HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
+            // HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
         }
 
         public static void PrintAllTasksToConsole(ShipStatus instance)

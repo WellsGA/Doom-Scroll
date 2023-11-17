@@ -88,11 +88,11 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
 
-            HeadlineManager.Instance.CanPostNews(false); // cannot create news
+            // HeadlineManager.Instance.CanPostNews(false); // cannot create news
             if (PlayerControl.LocalPlayer.AmOwner)
             {
                 // create a random news
-                if (Random.Range(0, 2) == 0)
+                if (Random.value > 0.75f)
                 {
                     HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomTrueNews());
                 }

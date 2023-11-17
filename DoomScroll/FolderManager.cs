@@ -305,6 +305,7 @@ namespace Doom_Scroll
         {
             if (m_folderArea.IsModalOpen)
             {
+                ChangeDirectory(m_root);
                 m_folderArea.CloseButton.ButtonEvent.InvokeAction();
                 m_current.HideContent();
                 DoomScroll._log.LogInfo("MEETING OVER, FOLDER CLOSED");
