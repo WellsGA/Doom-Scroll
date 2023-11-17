@@ -27,7 +27,7 @@ namespace Doom_Scroll.Common
             Vector3 pos = HudManager.Instance.SettingsButton.transform.localPosition;
             notificationBg.SetSize(5.5f);
             Vector2 size = notificationBg.GetSize();
-            notificationBg.SetLocalPosition(new Vector3(pos.x - size.x / 2 - 0.2f, pos.y, -70));
+            notificationBg.SetLocalPosition(new Vector3(pos.x - size.x / 2 - 0.2f, pos.y, -500));
             CustomText infoText = new CustomText(notificationBg.UIGameObject, "notification", notification);
             infoText.SetSize(1.1f);
             infoText.SetLocalPosition(new Vector3(0.2f, 0, -10));
