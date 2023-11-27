@@ -56,6 +56,11 @@ namespace Doom_Scroll.Patches
                 // close the panel if no player was selected but the game is closed
                 TaskAssigner.Instance.ActivatePanel(false);
             }
+            if (!NotificationManager.isBroadcasting && NotificationManager.NotificationQueue.Count > 0)
+            {
+                NotificationManager.ShowNextNotification();
+            }
+
         }
 
         [HarmonyPostfix]
@@ -93,7 +98,7 @@ namespace Doom_Scroll.Patches
             if (PlayerControl.LocalPlayer.AmOwner)
             {
                 // create a random news
-                if (Random.value > 0.75f)
+                if (Random.value > 0.25f)
                 {
                     bool protect = Random.value > 0.5f;
                     PlayerControl pl = PlayerControl.AllPlayerControls[Random.Range(0, PlayerControl.AllPlayerControls.Count)];

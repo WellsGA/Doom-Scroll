@@ -94,7 +94,7 @@ namespace Doom_Scroll
                 {
                     AssignedTask assTask = new AssignedTask(task.Id, task.TaskType, sender.PlayerId, playerID);
                     AssignedTasks.Insert(0, assTask);
-                    NotificationManager.ShowNotification(assTask.AssigneeName + " signed into a task.");
+                    NotificationManager.QueuNotification(assTask.AssigneeName + " signed into a task.");
                     DoomScroll._log.LogInfo("New task assigned\n player: " + assTask.AssigneeName + ", task: " + assTask.Type);
                     if (AmongUsClient.Instance.AmHost)
                     {

@@ -94,7 +94,7 @@ namespace Doom_Scroll
         }
         public void AddNews(Headline news)
         {
-            NotificationManager.ShowNotification("News posted\n " + news.Title + " [" + news.Source + "]");
+            NotificationManager.QueuNotification("News posted\n " + news.Title + " [" + news.Source + "]");
             if (news.AuthorID != 255)
             {
                 news.CreateAuthorIcon();

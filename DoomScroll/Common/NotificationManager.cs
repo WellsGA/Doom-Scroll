@@ -10,14 +10,30 @@ namespace Doom_Scroll.Common
     {
         // private static List<CustomModal> newsList = new List<CustomModal>(); 
         // Thread.Sleep() // will stop the app from responding?
-        public static async void ShowNotification(string notification)
+
+        public static Queue<string> NotificationQueue = new Queue<string>();
+        public static bool isBroadcasting = false;
+
+        public static void QueuNotification(string noification)
         {
-            // code before delay       
-            CustomImage infoBackground = CreateInfoModal(notification);
-            // newsList.Add(notificationBg);
+            NotificationQueue.Enqueue(noification);
+        } 
+
+        public static async void ShowNextNotification()
+        {
+            // code before delay
+            isBroadcasting = true;
+            CustomImage infoBackground = CreateInfoModal(NotificationQueue.Peek());
+            DoomScroll._log.LogInfo("NOTICICATON ON");
             await Task.Delay(3000);
             // code after delay
             Object.Destroy(infoBackground.UIGameObject);
+            NotificationQueue.Dequeue();
+            DoomScroll._log.LogInfo("BREAK");
+            await Task.Delay(2000);
+            isBroadcasting = false;
+            DoomScroll._log.LogInfo("READY FOR THE NEXT NOTIFICATION");
+
         }
 
         private static CustomImage CreateInfoModal(string notification)
