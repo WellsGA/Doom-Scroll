@@ -123,7 +123,7 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("CastVote")]
         public static void PostFixCastVote(byte srcPlayerId, byte suspectPlayerId)
         {
-            string voter = GameData.Instance.GetPlayerById(srcPlayerId) == null ? "no one" : GameData.Instance.GetPlayerById(srcPlayerId).PlayerName;
+            string voter = GameData.Instance.GetPlayerById(srcPlayerId) == null ? "some one" : GameData.Instance.GetPlayerById(srcPlayerId).PlayerName;
             string suspect = GameData.Instance.GetPlayerById(suspectPlayerId) == null ? "no one" : GameData.Instance.GetPlayerById(suspectPlayerId).PlayerName;
 
             if (AmongUsClient.Instance.AmHost)
@@ -132,13 +132,15 @@ namespace Doom_Scroll.Patches
             }
             else
             {
-                RPCVote(voter, suspect);
+                HeadlineCreator.UpdatePlayerVote(srcPlayerId, voter + " has voted for " + suspect);
+                RPCVote(srcPlayerId, voter, suspect);
             }
         }
 
-        public static void RPCVote(string voter, string suspect)
+        public static void RPCVote(byte playerId, string voter, string suspect)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDVOTE, (SendOption)1);
+            messageWriter.Write(playerId);
             messageWriter.Write(voter);
             messageWriter.Write(suspect);
             messageWriter.EndMessage();

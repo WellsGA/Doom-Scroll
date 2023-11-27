@@ -11,6 +11,8 @@ namespace Doom_Scroll
     {
         private static Dictionary<byte, int> playerIDHasHelpedFixSabotage = new Dictionary<byte, int>();
         private static Dictionary<byte, bool> playerIDHasStartedSabotage = new Dictionary<byte, bool>();
+        public static Dictionary<byte, string> LastMeetingVotes { get; private set; } = new Dictionary<byte, string>();
+
         public static void AddToFixSabotage(byte id)
         {
             if (playerIDHasHelpedFixSabotage == null)
@@ -48,10 +50,22 @@ namespace Doom_Scroll
 
         // Create post by player
         public static Headline CreateRandomNews(bool protect, PlayerControl player)
+        {     
+            bool isTrue = Random.value > 0.75f;
+            if (isTrue)
+            {
+                return CreateRandomTrueNews(player, protect);
+            }
+            else
+            {
+                return PlayerCreateFakeHeadline(protect, player);
+            }
+        }
+
+        private static Headline PlayerCreateFakeHeadline(bool protect, PlayerControl player)
         {
             string headline;
             string source;
-            // bool isTrustworthy = UnityEngine.Random.value > 0.5f;
             if (protect)
             {
                 int rand1 = Random.Range(0, NewsStrings.unTrustProtect.Length);
@@ -62,11 +76,12 @@ namespace Doom_Scroll
                 int rand2 = Random.Range(0, NewsStrings.unTrustFrame.Length);
                 headline = NewsStrings.unTrustFrame[rand2];
             }
-            headline = ReplaceSymbolsInHeadline(headline, player.name, GetFinishedTaskCount(player.PlayerId));
+            headline = ReplaceSymbolsInHeadline(headline, player, GetFinishedTaskCount(player.PlayerId));
 
             source = SelectSource(NewsStrings.unTrustSource);
             GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(player.PlayerId);
-            string randomPlayer = GetRandomPlayer().name;
+            // do they sign with their misspelled names?
+            string randomPlayer = GetRandomPlayer().name; // or player.name
             source = ReplaceSymbolsInSource(source, playerInfo.GetPlayerColorString(), randomPlayer);
 
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
@@ -91,15 +106,13 @@ namespace Doom_Scroll
                 headline = NewsStrings.autoUnTrustFrame[rand1];
             }
             PlayerControl pl = GetRandomPlayer();
-            headline = ReplaceSymbolsInHeadline(headline, pl.name, GetFinishedTaskCount(pl.PlayerId));
+            headline = ReplaceSymbolsInHeadline(headline, pl, GetFinishedTaskCount(pl.PlayerId));
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
             return new Headline(id, 255, headline, false, source);
         }
 
-        public static Headline CreateRandomTrueNews()
+        public static Headline CreateRandomTrueNews(PlayerControl pl, bool protect)
         {
-            bool protect = Random.value > 0.5f;
-            PlayerControl pl = GetRandomPlayer();
             string headline = "";
             int randSource = Random.Range(0, NewsStrings.autoTrustSource.Length);
             string source = NewsStrings.autoTrustSource[randSource]; // no string replace
@@ -117,7 +130,7 @@ namespace Doom_Scroll
                             if ((completedTasks > 0 && protect) || (completedTasks == 0 && !protect))
                             {
                                 headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[0]) : SelectHeadline(NewsStrings.autoTrustFrame[0]);
-                                headline = ReplaceSymbolsInHeadline(headline, pl.name, completedTasks);
+                                headline = ReplaceSymbolsInHeadline(headline, pl, completedTasks);
                                 foundNews = true;
                             }
                             else
@@ -133,7 +146,7 @@ namespace Doom_Scroll
                             if ((signedInTasks > 0 && protect) || (signedInTasks == 0 && !protect))
                             {
                                 headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[1]) : SelectHeadline(NewsStrings.autoTrustFrame[1]);
-                                headline = ReplaceSymbolsInHeadline(headline, pl.name, signedInTasks);
+                                headline = ReplaceSymbolsInHeadline(headline, pl, signedInTasks);
                                 if (headline.Contains("{TN}")) headline = headline.Replace("{TN}", GetSignedInTaskName(pl.PlayerId).ToString());
                                 foundNews = true;
                             }
@@ -182,13 +195,19 @@ namespace Doom_Scroll
                             }
                             break;
                         }
+                    case "default":
                     default: // none of the headlines appeared correct ...
                         {
-                            headline = protect ? 
-                                "My cat Sir Wigglesworth loves " + pl.name + ", and Big Wigs hates everyone" :
-                                "My cat Santiago hates "  + pl.name + " and baby Teegs can see your soul.";
-                            foundNews = true;
-                            break;
+                            if (LastMeetingVotes.ContainsKey(pl.PlayerId))
+                            {
+                                headline = LastMeetingVotes[pl.PlayerId];
+                            }
+                            else
+                            {
+                                headline = pl.name + " had no chance to vote, yet.";
+                            }
+                            int hlId = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
+                            return new Headline(hlId, PlayerControl.LocalPlayer.PlayerId, headline, true, source);
                         }
                 }
             }
@@ -196,10 +215,15 @@ namespace Doom_Scroll
             return new Headline(id, 255, headline, true, source);
         }
 
-        private static string ReplaceSymbolsInHeadline(string raw, string name, int count)
+        public static void UpdatePlayerVote(byte plyerId, string vote)
         {
-            if (raw.Contains("{X}")) raw = raw.Replace("{X}", name);
-            if (raw.Contains("{Y}")) raw = raw.Replace("{Y}", GetRandomPlayer().name);
+            LastMeetingVotes[plyerId] = vote;
+        }
+
+        private static string ReplaceSymbolsInHeadline(string raw, PlayerControl pl, int count)
+        {
+            if (raw.Contains("{X}")) raw = raw.Replace("{X}", pl.name);
+            if (raw.Contains("{Y}")) raw = raw.Replace("{Y}", GetRandomPlayer(pl.PlayerId).name);
             if (raw.Contains("{#}")) raw = raw.Replace("{#}", count.ToString());
             return raw;
         }
@@ -227,6 +251,18 @@ namespace Doom_Scroll
         private static PlayerControl GetRandomPlayer()
         {
             int rand = Random.Range(0, PlayerControl.AllPlayerControls.Count);
+            return PlayerControl.AllPlayerControls[rand];
+        }
+
+        private static PlayerControl GetRandomPlayer(byte playerId)
+        {
+            bool isAnotherPlayer;
+            int rand;
+            do
+            {
+                rand = Random.Range(0, PlayerControl.AllPlayerControls.Count);
+                isAnotherPlayer = playerId == PlayerControl.AllPlayerControls[rand].PlayerId;
+            }while(isAnotherPlayer);
             return PlayerControl.AllPlayerControls[rand];
         }
         private static int GetFinishedTaskCount(byte id)
@@ -288,7 +324,7 @@ namespace Doom_Scroll
 
         private static string RemoveRandomLetter(string name)
         {
-            int rand = UnityEngine.Random.Range(0, name.Length);
+            int rand = Random.Range(0, name.Length);
             name = name.Remove(rand, 1);
             return name;
         }

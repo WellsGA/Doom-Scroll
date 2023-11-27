@@ -134,9 +134,12 @@ namespace Doom_Scroll.Patches
                     }
                     return;
                 case (byte)CustomRPC.SENDVOTE:
+                    byte playerId = reader.ReadByte();
+                    string vote = reader.ReadString() + " has voted for " + reader.ReadString();
+                    HeadlineCreator.UpdatePlayerVote(playerId, vote);
                     if (AmongUsClient.Instance.AmHost)
                     {
-                        GameLogger.Write(GameLogger.GetTime() + " - " + reader.ReadString() + " has voted for " + reader.ReadString());
+                        GameLogger.Write(GameLogger.GetTime() + " - " + vote);
                     }
                     return;
                 case (byte)CustomRPC.SENDIMAGETOCHAT:

@@ -95,7 +95,9 @@ namespace Doom_Scroll.Patches
                 // create a random news
                 if (Random.value > 0.75f)
                 {
-                    HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomTrueNews());
+                    bool protect = Random.value > 0.5f;
+                    PlayerControl pl = PlayerControl.AllPlayerControls[Random.Range(0, PlayerControl.AllPlayerControls.Count)];
+                    HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomTrueNews(pl, protect));
                 }
                 else
                 {
