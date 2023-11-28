@@ -31,7 +31,7 @@ namespace Doom_Scroll.Patches
                 await Task.Delay(500);
             }
             GameData.TaskInfo dummyTask = new GameData.TaskInfo();
-            dummyTask.Id= 0;
+            dummyTask.Id= 255;
             dummyTask.TypeId = 255;
             localPlayerInfo.Tasks.Add(dummyTask);
         }
@@ -47,6 +47,8 @@ namespace Doom_Scroll.Patches
                         if (task.TypeId == 255)
                         {
                             task.Complete = true;
+                            PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
+                            break;
                         }
                     }
                 }
