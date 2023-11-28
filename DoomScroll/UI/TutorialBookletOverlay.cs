@@ -22,10 +22,10 @@ namespace Doom_Scroll.UI
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-            Vector2 size = bounds * 0.95f;
+            Vector2 size = bounds * 1.15f;
             // create the overlay background
             CustomModal tutorialBookletOverlay = new CustomModal(parent, "TutorialBookletOverlay", spr, toggler, true);
-            tutorialBookletOverlay.SetLocalPosition(new Vector3(0f, 1.5f, -50f));
+            tutorialBookletOverlay.SetLocalPosition(new Vector3(0f, 2.2f, -50f));
             tutorialBookletOverlay.SetSize(size);
             // deactivate by default
             tutorialBookletOverlay.ActivateCustomUI(false);
