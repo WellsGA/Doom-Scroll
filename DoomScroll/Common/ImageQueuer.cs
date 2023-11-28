@@ -32,7 +32,7 @@ namespace Doom_Scroll.Common
         public static void NextCanShare()
         {
             KeyValuePair<byte, string> nextInLine = imageSharingQueue.Peek();
-            if (AmongUsClient.Instance.AmHost)
+            if (nextInLine.Key == PlayerControl.LocalPlayer.PlayerId)
             {
                 DoomScroll._log.LogInfo("2) You can send image (LP): " + nextInLine.Value);
                 ScreenshotManager.Instance.SendImageInPieces(nextInLine.Value);
