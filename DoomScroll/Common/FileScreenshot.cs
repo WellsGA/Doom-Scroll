@@ -10,45 +10,34 @@ namespace Doom_Scroll.Common
     public class FileScreenshot : File
     {
         public static int ImageSize = 15;
-        public static int ImageSectionLength = 1000;
-
- 
         public CustomImage Screenshot { get; private set; }
         private byte[] m_content;
-        private int m_id;
-        public int Id { get; }
-        private static int m_idCounter = 0;
-        // private bool m_shareable = false;
-        public bool Shareable { get; }
+        private string m_id;
+        public string Id { get { return m_id; } } // this was not set and was always null
+        private bool m_shareable;
+        private bool shareable;
 
         public FileScreenshot(string parentPath, string name, CustomModal parentPanel, byte[] image) : base(parentPath, name, parentPanel)
         {
             Sprite[] shareBtn = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", ImageLoader.slices2);
-            m_id = m_idCounter++;
+            m_id = name;
             m_content = image;
             Sprite picture = ImageLoader.ReadImageFromByteArray(image);
             Btn.ResetButtonImages(shareBtn);
             DisplayImageOnButton(picture, 0.9f);  /// set screenshot as a background image
             Btn.Label.SetLocalPosition(new Vector3(0, -0.5f, 0));
             Btn.EnableButton(false); // now sets false initially; sets true once fully shared
-
+            m_shareable = false;
         }
-        public override void DisplayContent()
+        public override void DisplayContent() // this shares the image in the chat instead of opening
         {
-            byte[] image = Screenshot.GetSprite().texture.EncodeToJPG(ImageSize);
-            DoomScroll._log.LogInfo("file size: " + image.Length);
+            if(!m_shareable) return;
+            byte[] image = Screenshot.GetSprite().texture.EncodeToJPG(ImageSize);  // we could use m_content but the size may be bigger
+            DoomScroll._log.LogInfo("Original size: " + m_content.Length + ", New image size: " + image.Length);
             // set locally
-            if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
-            {
-                string chatBubbleID = ChatControllerPatch.GetChatID();
-                ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                ChatControllerPatch.screenshot = image;
-                string chatText = chatBubbleID + "Screenshot #" + ScreenshotManager.Instance.Screenshots.ToString();
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText, false);
-
-                //sending RPCs
-                RpcSendChatImage(chatText, m_id);
-            }
+            ScreenshotManager.Instance.AddImageToChat(m_id);
+            // rpc
+            RpcAddImageToChat(m_id);
         }
 
         public override void HideContent()
@@ -56,13 +45,16 @@ namespace Doom_Scroll.Common
             // doesn't need to do anything
         }
 
-        public void RpcSendChatImage(string chatText, int imageID)
+        public void SetImageActive()
         {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGETOCHAT, (SendOption)1);
-            DoomScroll._log.LogInfo("Sending image to chat! Player: " + PlayerControl.LocalPlayer.name + ", image id " + imageID);
-            messageWriter.Write(PlayerControl.LocalPlayer.PlayerId);
+            Btn.EnableButton(true); // now sets false initially; sets true once fully shared
+            m_shareable = true;
+        }
+
+        public void RpcAddImageToChat(string imageID)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ADDIMAGETOCHAT, (SendOption)1);
             messageWriter.Write(imageID);
-            messageWriter.Write(chatText);
             messageWriter.EndMessage();
         }
 

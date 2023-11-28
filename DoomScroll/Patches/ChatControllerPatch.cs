@@ -87,7 +87,7 @@ namespace Doom_Scroll.Patches
                                     AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
 
                                 }
-                                return;
+                                break;
                             case ChatContent.HEADLINE:
                                 if (chatbubble != null && nameText != null && background != null && maskArea != null)
                                 {

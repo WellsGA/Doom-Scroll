@@ -11,11 +11,13 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        IMAGESENDINGCOMPLETE = 240,
+        CANSENDIMAGE = 241,
         SENDSABOTAGECONTRIBUTION = 242,
         SENDTRUSTSELECTION = 243,
         SENDTEXTCHAT = 244,
         SENDVOTE = 245,
-        SENDIMAGETOCHAT = 246,
+        ADDIMAGETOCHAT = 246,
         SENDENDORSEMENT = 247,
         SENDNEWSTOCHAT = 248,
         SENDPLAYERCANPOST = 249,
@@ -31,14 +33,6 @@ namespace Doom_Scroll.Patches
     public static class PlayerControlPatch
     {
         // static int count = 0; // debug
-
-        private static Dictionary<string, DoomScrollImage> currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
-        
-        public static void ResetImageDictionary()
-        {
-            currentImagesAssembling = new Dictionary<string, DoomScrollImage>();
-        }
-
 
         [HarmonyPrefix]
         [HarmonyPatch("RpcSendChat")]
@@ -141,38 +135,7 @@ namespace Doom_Scroll.Patches
                     {
                         GameLogger.Write(GameLogger.GetTime() + " - " + vote);
                     }
-                    return;
-                case (byte)CustomRPC.SENDIMAGETOCHAT:
-                    {
-                        byte playerid = reader.ReadByte();
-                        int imageid = reader.ReadInt32();
-                        string chatText = reader.ReadString();
-                        if (currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage())
-                        {
-                            if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
-                            {
-                                ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                                ChatControllerPatch.screenshot = currentImagesAssembling[(string)$"{playerid}{imageid}"].Image;                    
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
-                               // ChatControllerPatch.PostfixAddChat(DestroyableSingleton<HudManager>.Instance.Chat, __instance, chatText);
-                                DoomScroll._log.LogMessage("Should have added image locally!");
-                            }
-                            return;
-                        }
-                        else
-                        {
-                            DoomScroll._log.LogMessage("TRIED TO SEND IMAGE IN CHAT, BUT IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogMessage($"MISSING SECTIONS:");
-                            foreach (int line in currentImagesAssembling[(string)$"{playerid}{imageid}"].GetMissingLines())
-                            {
-                                DoomScroll._log.LogMessage($"{line.ToString()}");
-                            }
-
-                            DoomScroll._log.LogMessage($"ENDING RPC FOR IMAGE WITH pID {playerid} AND imgID {imageid}\n");
-                            // LATER HERE WE CAN FIX THIS
-                        }
-                        return;
-                    }
+                    return;               
                 case (byte)CustomRPC.SENDENDORSEMENT:
                     {
                         HeadlineDisplay.Instance.UpdateEndorsementList(reader.ReadString(), reader.ReadBoolean(), reader.ReadBoolean());
@@ -236,64 +199,44 @@ namespace Doom_Scroll.Patches
                         SecondaryWinConditionManager.AddToPlayerSWCList(new SecondaryWinCondition(reader.ReadByte(), (Goal)reader.ReadByte(), reader.ReadByte()));
                         return;
                     }
-                case (byte)CustomRPC.SENDIMAGE:
+                case (byte)CustomRPC.ADDIMAGETOCHAT: // add image that has been sent over earlier
                     {
-                        DoomScroll._log.LogInfo("--------------\nReceiving RPC image\n--------------");
-                        int numMessages = reader.ReadInt32();
-                        byte pID = reader.ReadByte();
-                        int imgID = reader.ReadInt32();
-                        DoomScrollImage currentImage = new DoomScrollImage(numMessages, pID, imgID);
-                        string currentImageKey = $"{pID}{imgID}";
-                        currentImagesAssembling.Add((string)$"{pID}{imgID}", currentImage);
-                        DoomScroll._log.LogInfo($"Received image info, inserted to currentImagesAssembling as DoomScrollImage({numMessages}, {pID}, {imgID})");
-                        DoomScroll._log.LogInfo($"Image stored at key {currentImageKey}. Current Dictionary items: ");
-                        foreach (string key in currentImagesAssembling.Keys)
-                        {
-                            DoomScroll._log.LogInfo($"- item key: {key}, item info: {currentImagesAssembling[key].ToString()}");
-                        }
-                        DoomScroll._log.LogInfo($"Current Dictionary over.");
-                        return;
+                        ScreenshotManager.Instance.AddImageToChat(reader.ReadString());
+                        break;
                     }
-                case (byte)CustomRPC.SENDIMAGEPIECE:
+                case (byte)CustomRPC.CANSENDIMAGE:  // host notifies the next in line
                     {
-                        byte playerid = reader.ReadByte();
-                        int imageid = reader.ReadInt32();
-                        int sectionIndex = reader.ReadInt32();
-                        byte[] imageBytesSection = reader.ReadBytesAndSize();
-                        DoomScroll._log.LogInfo($"Trying to access at key \'{playerid}{imageid}\'. Current Dictionary: {currentImagesAssembling}");
-                        DoomScroll._log.LogInfo($"Accessed DoomScrollImage successfully: {currentImagesAssembling[(string)$"{playerid}{imageid}"]}");
-                        currentImagesAssembling[(string)$"{playerid}{imageid}"].InsertByteChunk(sectionIndex, imageBytesSection);
-                        DoomScroll._log.LogInfo($"Received image chunk #{sectionIndex}, inserted to current DoomScrollImage");
-
-                        DoomScroll._log.LogInfo($"Final expected section index in Image?: {currentImagesAssembling[(string)$"{playerid}{imageid}"].GetNumByteArraysExpected() - 1}");
-                        DoomScroll._log.LogInfo($"Does Image compile yet?: {currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage()}");
-
-                        if (sectionIndex == currentImagesAssembling[(string)$"{playerid}{imageid}"].GetNumByteArraysExpected()-1 && currentImagesAssembling[(string)$"{playerid}{imageid}"].CompileImage())
+                        byte id = reader.ReadByte();
+                        string itemId = reader.ReadString();
+                        if(id == PlayerControl.LocalPlayer.PlayerId)
                         {
-                            DoomScroll._log.LogInfo("IMAGE COMPLETELY RECEIVED.");
-                            /*string arrayString = "";
-                            foreach (byte b in currentImagesAssembling[(string)$"{playerid}{imageid}"].Image)
-                            {
-                                arrayString += " " + b.ToString();
-                            }
-                            DoomScroll._log.LogInfo("Byte array: " + arrayString);*/
-                            if (FolderManager.Instance != null && ScreenshotManager.Instance != null)
-                            {
-                                DoomScroll._log.LogInfo("Adding screenshot to images folder.");
-                                FolderManager.Instance.AddImageToScreenshots("evidence_#" + ScreenshotManager.Instance.Screenshots + ".jpg", currentImagesAssembling[(string)$"{playerid}{imageid}"].Image);
-                                // ScreenshotManager.Instance.IncrementScreenshots();
-                                DoomScroll._log.LogInfo("number of screenshots: " + ScreenshotManager.Instance.Screenshots);
-                            }
-                            return;
+                            DoomScroll._log.LogInfo("Local player can send image: " + itemId);
+                            // send
+                            ScreenshotManager.Instance.SendImageInPieces(itemId);
                         }
                         else
                         {
-                            DoomScroll._log.LogInfo("CAN'T COMPILE IMAGE YET, IMAGE MISSING SECTION(S)");
-                            DoomScroll._log.LogInfo("IMAGE NOT COMPLETELY RECEIVED.");
+                            DoomScroll._log.LogInfo("Player " + id + " can send image: " + itemId);
+                            // create a dictionary entry with the id to prepare for receiving
                         }
                         break;
                     }
-
+                case (byte)CustomRPC.IMAGESENDINGCOMPLETE:
+                    {
+                        string itemID = reader.ReadString();
+                        if (PlayerControl.LocalPlayer.AmOwner)
+                        {
+                            ImageQueuer.FinishedSharing(__instance.PlayerId, itemID);
+                        }
+                        // check if image is complete and add it to the dictionary of images
+                        break;
+                    }
+                case (byte)CustomRPC.SENDIMAGEPIECE:
+                    {
+                        // receive image and add piece to the byte array 
+                        break;
+                    }
+               
             }
         }
     }

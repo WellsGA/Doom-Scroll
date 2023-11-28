@@ -10,11 +10,6 @@ namespace Doom_Scroll
     public sealed class FolderManager
     {
 
-
-        //tooltips
-        private Tooltip m_folderToggleTooltip;
-        private Tooltip m_chatWindowTooltip;
-
         //modal
         private CustomModal m_folderArea;
         private CustomText m_pathText;
@@ -32,6 +27,8 @@ namespace Doom_Scroll
         private Folder m_screenshots;
 
         // tooltips
+        private Tooltip m_folderToggleTooltip;
+        private Tooltip m_chatWindowTooltip;
         private Tooltip m_tasksTooltip;
         private Tooltip m_postsTooltip;
         private Tooltip m_screenshotsTooltip;
@@ -40,9 +37,6 @@ namespace Doom_Scroll
         private Tooltip m_postFolderVotingTooltip;
         private Tooltip m_screenshotFolderTooltip;
         private Tooltip m_HeadlinesTooltip;
-
-        // image sending
-        private ImageSender m_imageSender;
 
         private HudManager hudManagerInstance;
 
@@ -148,7 +142,6 @@ namespace Doom_Scroll
             if (hudManagerInstance == null) return;
             CreateFolderOverlayUI();
             InitFolderStructure();
-            CreateImageSender();
             m_homeBtn.ButtonEvent.MyAction += OnClickHomeButton;
             m_backBtn.ButtonEvent.MyAction += OnClickBackButton;
         }
@@ -202,11 +195,6 @@ namespace Doom_Scroll
             m_current = m_root;
             m_previous = m_root;
 
-        }
-        private void CreateImageSender()
-        {
-            m_imageSender = new ImageSender();
-            DoomScroll._log.LogInfo("m_imageSender created: " + m_imageSender.ToString());
         }
 
         private void ToggleFolders()
@@ -316,14 +304,6 @@ namespace Doom_Scroll
         {
             FileScreenshot file = new FileScreenshot(m_screenshots.Path, name, m_folderArea, img);
             m_screenshots.AddItem(file);
-            if (m_imageSender != null)
-            {
-                m_imageSender.SendCurrentImageMethod(file, img);
-            }
-            else
-            {
-                DoomScroll._log.LogInfo("Could not send image in background. ImageSender was null.");
-            }
         }
 
         public CustomModal GetFolderArea()

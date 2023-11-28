@@ -56,9 +56,15 @@ namespace Doom_Scroll.Patches
                 // close the panel if no player was selected but the game is closed
                 TaskAssigner.Instance.ActivatePanel(false);
             }
+            // show the next noticifation if any
             if (!NotificationManager.isBroadcasting && NotificationManager.NotificationQueue.Count > 0)
             {
                 NotificationManager.ShowNextNotification();
+            }
+            // send the next image if any is queuing
+            if (PlayerControl.LocalPlayer.AmOwner && !ImageQueuer.isSharing && ImageQueuer.HasItems())
+            {
+                ImageQueuer.RPCNextCanShare();
             }
 
         }

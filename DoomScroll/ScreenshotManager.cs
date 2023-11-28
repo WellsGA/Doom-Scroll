@@ -2,6 +2,10 @@
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Patches;
+using System.Collections.Generic;
+using System.Linq;
+using Hazel;
+using System.Threading.Tasks;
 
 namespace Doom_Scroll
 {
@@ -33,6 +37,7 @@ namespace Doom_Scroll
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
 
+        private Dictionary<string, byte[]> AllScreenshots;
         private ScreenshotManager()
         {
             mainCamrea = Camera.main;
@@ -40,6 +45,7 @@ namespace Doom_Scroll
             Screenshots = 0;
             m_maxPictures = 3;
             IsCameraOpen = false;
+            AllScreenshots = new Dictionary<string, byte[]>();
             InitializeManager();
             DoomScroll._log.LogInfo("SCREENSHOT MANAGER CONSTRUCTOR");
         }
@@ -70,7 +76,8 @@ namespace Doom_Scroll
 
                 Texture2D screeenShot = new Texture2D(Screen.width, Screen.height, TextureFormat.ARGB32, false);
                 screeenShot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-                byte[] byteArray = screeenShot.EncodeToJPG();
+                byte[] imageBytes = screeenShot.EncodeToJPG();
+                
                 // reset camera, show player and overlay
                 RenderTexture.active = null;
                 screenTexture.Release();
@@ -80,10 +87,13 @@ namespace Doom_Scroll
                 ShowOverlays(true);
 
                 // save the image locally -- for testing purposes
-                // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + Screenshots + ".png", byteArray);
+                // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + Screenshots + ".png", imageBytes);
 
-                // save the image in the inventory folder
-                FolderManager.Instance.AddImageToScreenshots("evidence_#" + Screenshots + ".jpg", byteArray);
+                // save the image in the inventory folder and add it to the dictionary of all screenshots
+                string imageId = (PlayerControl.LocalPlayer.PlayerId * 10 + Screenshots).ToString();
+                FolderManager.Instance.AddImageToScreenshots(imageId, imageBytes);
+                AddImage(imageId, imageBytes);
+                
                 UnityEngine.Object.Destroy(screeenShot);
                 Screenshots++;
                 DoomScroll._log.LogInfo("number of screenshots: " + Screenshots);
@@ -167,11 +177,81 @@ namespace Doom_Scroll
                 DoomScroll._log.LogError("Error invoking method: " + e);
             }
         }
-       /* public void IncrementScreenshots()
+       
+        public void AddImage(string id, byte[] image)
         {
-            Screenshots++;
-        }*/
+            AllScreenshots[id] = image; // it will overwrite if the same id already exists.
+        }
 
+        public byte[] GetScreenshotById(string id)
+        {
+            if (AllScreenshots.ContainsKey(id))
+            {
+                return AllScreenshots[id];
+            }
+            return null;
+
+        }
+
+        public void AddImageToChat(string id)
+        {
+            if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
+            {
+                string chatBubbleID = ChatControllerPatch.GetChatID();  
+                ChatControllerPatch.screenshot = GetScreenshotById(id);
+                if(ChatControllerPatch.screenshot != null)
+                {
+                    ChatControllerPatch.content = ChatContent.SCREENSHOT;
+                    string chatText = chatBubbleID + "Evidence #" + id;
+                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText, false);
+                }
+                else
+                {
+                    DoomScroll._log.LogInfo("Couldn't find and share the requested image, ID: " + id);
+                }
+                    
+            }
+        }
+
+        public void SendImageInPieces(string id)
+        {
+            if (AllScreenshots.ContainsKey(id))
+            {
+                SendPieces(id, AllScreenshots[id]);
+            }
+            else  // unlikely but..
+            {
+                DoomScroll._log.LogInfo("Couldn't find image: " + id + ", next can send...");
+                RPCFinishedSending(id);
+            }
+        }
+
+        private void RPCFinishedSending(string id)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IMAGESENDINGCOMPLETE, (SendOption)1);
+            messageWriter.Write(id);
+            messageWriter.EndMessage();
+        }
+
+        public  async void SendPieces(string id, byte[] image)
+        {
+            int length = 1000;
+            // get the first part and send
+            for(int i = 0; i<image.Length; i += length)
+            {
+                byte[] piece = image.Skip(i).Take(length).ToArray();
+                RPCImagePiece(id, piece);
+                await Task.Delay(2000);
+            }          
+        }
+
+        public void RPCImagePiece(string id, byte[] piece)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGEPIECE, (SendOption)1);
+            messageWriter.Write(id);
+            messageWriter.Write(piece);
+            messageWriter.EndMessage();
+        }
         public void Reset()
         {
             Screenshots = 0;
@@ -182,7 +262,7 @@ namespace Doom_Scroll
                 hudManagerInstance = HudManager.Instance;
                 InitializeManager();
             }
-            PlayerControlPatch.ResetImageDictionary();
+            AllScreenshots.Clear();
             DoomScroll._log.LogInfo("SCREENSHOT MANAGER RESET");
         }
     }
