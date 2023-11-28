@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using System.Threading.Tasks;
+using Doom_Scroll.Common;
 
 namespace Doom_Scroll
 {
@@ -89,16 +90,17 @@ namespace Doom_Scroll
                 // save the image locally -- for testing purposes
                 // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + Screenshots + ".png", imageBytes);
 
-                // save the image in the inventory folder and add it to the dictionary of all screenshots
+                // save the image in the inventory folder, add it to the dictionary of all screenshots
                 string imageId = (PlayerControl.LocalPlayer.PlayerId * 10 + Screenshots).ToString();
-                FolderManager.Instance.AddImageToScreenshots(imageId, imageBytes);
+                FolderManager.Instance.AddImageToScreenshots("image Id: " + imageId, imageBytes);
                 AddImage(imageId, imageBytes);
-                
+
                 UnityEngine.Object.Destroy(screeenShot);
                 Screenshots++;
                 DoomScroll._log.LogInfo("number of screenshots: " + Screenshots);
 
                 //Add image to the image sending queue
+                EnqueueImage(imageId);
             }
         }
 
@@ -178,6 +180,7 @@ namespace Doom_Scroll
             }
         }
        
+        // MANAGE SHARING AND POSTING SCREENSHOTS
         public void AddImage(string id, byte[] image)
         {
             AllScreenshots[id] = image; // it will overwrite if the same id already exists.
@@ -190,7 +193,6 @@ namespace Doom_Scroll
                 return AllScreenshots[id];
             }
             return null;
-
         }
 
         public void AddImageToChat(string id)
@@ -212,6 +214,27 @@ namespace Doom_Scroll
                     
             }
         }
+        
+        private void EnqueueImage(string id)
+        {
+            if (AmongUsClient.Instance.AmHost)
+            {
+                DoomScroll._log.LogInfo("1) Adding image to the queue (host)");
+                ImageQueuer.AddToQueue(PlayerControl.LocalPlayer.PlayerId, id);
+            }
+            else
+            {
+                RPCEnqueueImage(id);
+            }
+        }
+
+        private void RPCEnqueueImage(string id)
+        {
+            DoomScroll._log.LogInfo("1) Sending image to the queue (LP)");
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ENQUEUEIMAGE, (SendOption)1);
+            messageWriter.Write(id);
+            messageWriter.EndMessage();
+        }
 
         public void SendImageInPieces(string id)
         {
@@ -222,15 +245,9 @@ namespace Doom_Scroll
             else  // unlikely but..
             {
                 DoomScroll._log.LogInfo("Couldn't find image: " + id + ", next can send...");
-                RPCFinishedSending(id);
+                FinishedSending(id);
+                // do we want to queue it again??
             }
-        }
-
-        private void RPCFinishedSending(string id)
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IMAGESENDINGCOMPLETE, (SendOption)1);
-            messageWriter.Write(id);
-            messageWriter.EndMessage();
         }
 
         public  async void SendPieces(string id, byte[] image)
@@ -240,11 +257,36 @@ namespace Doom_Scroll
             for(int i = 0; i<image.Length; i += length)
             {
                 byte[] piece = image.Skip(i).Take(length).ToArray();
-                RPCImagePiece(id, piece);
+                RPCImagePiece(id, piece);  // missing: check for success and handle errors
+                DoomScroll._log.LogInfo("3) Sending image part: " + i/1000);
                 await Task.Delay(2000);
-            }          
+            }
+            FinishedSending(id); // done sending, notify host and players
+            EnableScreenshotPosting(id);
         }
-
+        
+        private void FinishedSending(string id)
+        {
+            if (AmongUsClient.Instance.AmHost)
+            {
+                ImageQueuer.FinishedSharing(PlayerControl.LocalPlayer.PlayerId, id);
+            }
+            else
+            {
+                RPCFinishedSending(id);
+            }
+        }
+        private void EnableScreenshotPosting(string id)
+        {
+            foreach (FileScreenshot screenshot in FolderManager.Instance.GetScreenshots())
+            {
+                if (screenshot.Id == id)
+                {
+                    screenshot.SetImageActive();
+                    DoomScroll._log.LogInfo("5) Image is enabled in the Folder.");
+                }
+            }
+        }
         public void RPCImagePiece(string id, byte[] piece)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGEPIECE, (SendOption)1);
@@ -252,6 +294,13 @@ namespace Doom_Scroll
             messageWriter.Write(piece);
             messageWriter.EndMessage();
         }
+        private void RPCFinishedSending(string id)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IMAGESENDINGCOMPLETE, (SendOption)1);
+            messageWriter.Write(id);
+            messageWriter.EndMessage();
+        }
+
         public void Reset()
         {
             Screenshots = 0;

@@ -117,7 +117,7 @@ namespace Doom_Scroll.Patches
                                     DoomScroll._log.LogInfo("Image size: " + sr.size);
                                     DoomScroll._log.LogInfo("chatbubble name: " + chatbubble.name);
 
-                                    text.text = "";
+                                    // text.text = "";
                                     text.ForceMeshUpdate(true, true);
                                     Vector3 chatpos = text.transform.localPosition;
                                     float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
@@ -125,9 +125,10 @@ namespace Doom_Scroll.Patches
                                     if (nameText != null && background != null && maskArea != null)
                                     {
                                         text.ForceMeshUpdate(true, true);
-                                        background.size = new Vector2(5.52f, 0.2f + nameText.GetNotDumbRenderedHeight() + sr.size.y);
+                                        background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight() + sr.size.y);
                                         maskArea.size = background.size - new Vector2(0f, 0.03f);
-                                        background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 3, background.transform.localPosition.z);
+                                        // background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 3, background.transform.localPosition.z);
+                                        background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
                                         maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
                                         AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
                                     }

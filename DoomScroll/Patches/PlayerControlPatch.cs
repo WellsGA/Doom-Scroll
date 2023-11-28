@@ -3,14 +3,14 @@ using Hazel;
 using System.Collections.Generic;
 using Doom_Scroll.Common;
 using System.Text.RegularExpressions;
-using Assets.CoreScripts;
-using System;
+using UnityEngine;
 
 
 namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        ENQUEUEIMAGE = 239,
         IMAGESENDINGCOMPLETE = 240,
         CANSENDIMAGE = 241,
         SENDSABOTAGECONTRIBUTION = 242,
@@ -66,7 +66,7 @@ namespace Doom_Scroll.Patches
                     }
                     for (int i = 0; i < TaskAssigner.Instance.MaxAssignableTasks; i++)
                     {
-                        int taskIndex = UnityEngine.Random.Range(0, taskIds.Count);
+                        int taskIndex = Random.Range(0, taskIds.Count);
                         assignableTasks.Add(taskIds[taskIndex]);
                         taskIds.RemoveAt(taskIndex);
                     }
@@ -210,33 +210,55 @@ namespace Doom_Scroll.Patches
                         string itemId = reader.ReadString();
                         if(id == PlayerControl.LocalPlayer.PlayerId)
                         {
-                            DoomScroll._log.LogInfo("Local player can send image: " + itemId);
-                            // send
+                            DoomScroll._log.LogInfo("2) You can send image (LP): " + itemId);
                             ScreenshotManager.Instance.SendImageInPieces(itemId);
                         }
                         else
-                        {
-                            DoomScroll._log.LogInfo("Player " + id + " can send image: " + itemId);
-                            // create a dictionary entry with the id to prepare for receiving
+                        {   // create a dictionary entry with the id to prepare for receiving
+                            DoomScroll._log.LogInfo("2) Player " + id + " will send an image: " + itemId);
                         }
                         break;
                     }
-                case (byte)CustomRPC.IMAGESENDINGCOMPLETE:
+                case (byte)CustomRPC.IMAGESENDINGCOMPLETE: // sender notifies players and host that the sending is complete
                     {
                         string itemID = reader.ReadString();
-                        if (PlayerControl.LocalPlayer.AmOwner)
+                        if (AmongUsClient.Instance.AmHost)
                         {
                             ImageQueuer.FinishedSharing(__instance.PlayerId, itemID);
                         }
-                        // check if image is complete and add it to the dictionary of images
+                        DoomScroll._log.LogInfo("4) Image sending complete" + itemID);
                         break;
                     }
-                case (byte)CustomRPC.SENDIMAGEPIECE:
+                case (byte)CustomRPC.SENDIMAGEPIECE:  // receive image and add piece to the byte array 
                     {
-                        // receive image and add piece to the byte array 
+                        string id = reader.ReadString();
+                        byte[] nextPart = reader.ReadBytesAndSize();
+                        byte[] firstPart = ScreenshotManager.Instance.GetScreenshotById(id);
+                        if(firstPart == null)
+                        {
+                            ScreenshotManager.Instance.AddImage(id, nextPart); // add the first part to the dictionary
+                        }
+                        else
+                        {
+                            byte[] combinedPart = new byte[firstPart.Length + nextPart.Length];
+                            firstPart.CopyTo(combinedPart, 0);
+                            nextPart.CopyTo(combinedPart, firstPart.Length);
+                            ScreenshotManager.Instance.AddImage(id, combinedPart); // upserts item in the dictionary
+                        }
+                        break;
+                    } 
+                case (byte)CustomRPC.ENQUEUEIMAGE:  // send the image id to the host to queue
+                    {
+                        if (AmongUsClient.Instance.AmHost)
+                        {
+                            ImageQueuer.AddToQueue(__instance.PlayerId, reader.ReadString());
+                        }
+                        else
+                        {
+                            DoomScroll._log.LogInfo("I'm not the host....");
+                        }
                         break;
                     }
-               
             }
         }
     }

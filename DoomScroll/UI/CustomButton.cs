@@ -53,7 +53,6 @@ namespace Doom_Scroll.UI
 
         private void CreateBasicButton(Sprite[] images)
         {
-           
             DefaultIcon = new CustomImage(UIGameObject, "default btn icon", images[0]);
 
             if (images.Length > 2) selectIcon = new CustomImage(UIGameObject, "Select icon", images[2]);
@@ -93,6 +92,14 @@ namespace Doom_Scroll.UI
             if (selectIcon != null) { selectIcon.SetSize(size); }
             if (TopIcon != null) { TopIcon.SetSize(size); }
             collider.size = DefaultIcon.GetSize();
+        }
+        public void SetButtonScale(Vector3 scale)
+        {
+            SetScale(scale);
+            DefaultIcon.SetScale(scale);
+            if (hoverIcon != null) { hoverIcon.SetScale(scale); }
+            if (selectIcon != null) { selectIcon.SetScale(scale); }
+            if (TopIcon != null) { TopIcon.SetScale(scale); }
         }
         public void SetDefaultBtnColor(CustomImage image, Color color)
         {
@@ -151,7 +158,7 @@ namespace Doom_Scroll.UI
 
         public void ReplaceImgageOnHover()
         {
-            if (IsHovered() && !isHovered)
+            if (IsHovered() && !isHovered && IsEnabled)
             {
                 isHovered = true;
                 ChangeButtonState(ButtonState.HOVERED);
@@ -170,7 +177,47 @@ namespace Doom_Scroll.UI
 
         public void ResetButtonImages(Sprite[] newImages)
         {
-            CreateBasicButton(newImages);
+            DefaultIcon.SetSprite(newImages[0]);
+            if (newImages.Length > 2)
+            {
+                if(selectIcon == null)
+                {
+                    selectIcon = new CustomImage(UIGameObject, "Select icon", newImages[2]);
+                }
+                else
+                {
+                    selectIcon.SetSprite(newImages[2]);
+                }
+            }
+            if (newImages.Length > 1)
+            {
+                
+                if (hoverIcon == null)
+                {
+                    hoverIcon = new CustomImage(UIGameObject, "Hover icon", newImages[1]);
+                }
+                else
+                {
+                    hoverIcon.SetSprite(newImages[1]);
+                }
+            }
+            if (newImages.Length > 3)
+            {
+                if (TopIcon == null)
+                {
+                    TopIcon = new CustomImage(UIGameObject, "Top icon", newImages[3]);
+                }
+                else
+                {
+                    TopIcon.SetSprite(newImages[3]);
+                }
+                hasBackgroundIcon = true;          
+                TopIcon.SetLocalPosition(new Vector3(0, 0, -10));
+            }
+            else
+            {
+                hasBackgroundIcon = false;
+            }
         }
 
         public void SetVisibleInsideMask()

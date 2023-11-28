@@ -14,19 +14,41 @@ namespace Doom_Scroll.Common
         public static void AddToQueue(byte playerId, string itemId)
         {
             imageSharingQueue.Enqueue(new KeyValuePair<byte, string>(playerId, itemId));
+            DoomScroll._log.LogInfo("image queued, id: " + itemId + ", currently sharing: " + isSharing);
         }
 
         public static bool HasItems()
         {
-            return imageSharingQueue.Count > 0;
+            if (imageSharingQueue == null)
+            {
+                return false;
+            }
+            else
+            {
+                return imageSharingQueue.Count > 0;
+            }
         }
 
-        public static void RPCNextCanShare()
+        public static void NextCanShare()
         {
+            KeyValuePair<byte, string> nextInLine = imageSharingQueue.Peek();
+            if (AmongUsClient.Instance.AmHost)
+            {
+                DoomScroll._log.LogInfo("2) You can send image (LP): " + nextInLine.Value);
+                ScreenshotManager.Instance.SendImageInPieces(nextInLine.Value);
+            }
+            else
+            {
+                RPCNextCanShare(nextInLine);
+            }
             isSharing = true;
+        }
+        public static void RPCNextCanShare(KeyValuePair<byte, string> next)
+        {
+            
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CANSENDIMAGE, (SendOption)1);
-            messageWriter.Write(imageSharingQueue.Peek().Key);    // id of who can share
-            messageWriter.Write(imageSharingQueue.Peek().Value);  // id of what can they share
+            messageWriter.Write(next.Key);    // id of who can share
+            messageWriter.Write(next.Value);  // id of what can they share
             messageWriter.EndMessage();
         }
 

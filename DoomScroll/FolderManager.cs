@@ -2,6 +2,7 @@
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
+using System.Collections.Generic;
 
 namespace Doom_Scroll
 {
@@ -314,6 +315,16 @@ namespace Doom_Scroll
         {
             return m_folderArea.IsModalOpen;
         }
+        public List<FileScreenshot> GetScreenshots() 
+        {
+            List<FileScreenshot> screenshots = new List<FileScreenshot>();
+            foreach(IDirectory file in m_screenshots.Content)
+            {
+                screenshots.Add((FileScreenshot)file);
+            }
+            return screenshots;
+        }
+
         public void Reset()
         {
             if (hudManagerInstance == null)

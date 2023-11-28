@@ -33,7 +33,6 @@ namespace Doom_Scroll.Common
             await Task.Delay(2000);
             isBroadcasting = false;
             DoomScroll._log.LogInfo("READY FOR THE NEXT NOTIFICATION");
-
         }
 
         private static CustomImage CreateInfoModal(string notification)

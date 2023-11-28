@@ -57,16 +57,18 @@ namespace Doom_Scroll.Patches
                 TaskAssigner.Instance.ActivatePanel(false);
             }
             // show the next noticifation if any
-            if (!NotificationManager.isBroadcasting && NotificationManager.NotificationQueue.Count > 0)
+            if (NotificationManager.NotificationQueue != null)
             {
-                NotificationManager.ShowNextNotification();
+                if(!NotificationManager.isBroadcasting && NotificationManager.NotificationQueue.Count > 0)
+                {
+                    NotificationManager.ShowNextNotification();
+                }
             }
             // send the next image if any is queuing
-            if (PlayerControl.LocalPlayer.AmOwner && !ImageQueuer.isSharing && ImageQueuer.HasItems())
+            if (AmongUsClient.Instance.AmHost && !ImageQueuer.isSharing && ImageQueuer.HasItems())
             {
-                ImageQueuer.RPCNextCanShare();
+                ImageQueuer.NextCanShare();
             }
-
         }
 
         [HarmonyPostfix]
