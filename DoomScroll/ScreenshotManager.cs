@@ -280,11 +280,12 @@ namespace Doom_Scroll
         {
             foreach (FileScreenshot screenshot in FolderManager.Instance.GetScreenshots())
             {
-                if (screenshot.Id == id)
+                if (id.Equals(screenshot.Id))
                 {
                     screenshot.SetImageActive();
                     DoomScroll._log.LogInfo("5) Image is enabled in the Folder.");
                 }
+                DoomScroll._log.LogInfo("IDs don't match: " + id + " and " + screenshot.Id);
             }
         }
         public void RPCImagePiece(string id, byte[] piece)

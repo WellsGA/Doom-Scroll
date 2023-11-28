@@ -122,7 +122,7 @@ namespace Doom_Scroll
             {
                 int rand = Random.Range(0, types.Count);
                 string type = types[rand];
-                switch ("default")
+                switch (type)
                 {
                     case "task":
                         {
