@@ -259,6 +259,7 @@ namespace Doom_Scroll
         {
             // set locally
             NewsPostedByLocalPLayer++;
+            GameDataPatch.UpdateBlankHeadlineTaskCompletion();
             HeadlineDisplay.Instance.AddNews(news);
             // share
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
