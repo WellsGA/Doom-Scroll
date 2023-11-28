@@ -27,7 +27,8 @@ namespace Doom_Scroll.Common
             m_Screenshot = ImageLoader.ReadImageFromByteArray(image);
             Sprite[] newBUttonSprites = { shareBtn[0], shareBtn[1], shareBtn[0], m_Screenshot };
             Btn.ResetButtonImages(newBUttonSprites);
-            Btn.SetButtonScale(Vector3.one); 
+            Btn.SetButtonScale(Vector3.one);
+            Btn.Label.SetText("image Id: " + name);
             Btn.Label.SetLocalPosition(new Vector3(0, 0.6f, 0));
             Btn.EnableButton(false); // now sets false initially; sets true once fully shared
             m_shareable = false;

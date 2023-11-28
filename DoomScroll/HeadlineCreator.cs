@@ -122,7 +122,7 @@ namespace Doom_Scroll
             {
                 int rand = Random.Range(0, types.Count);
                 string type = types[rand];
-                switch (type)
+                switch ("default")
                 {
                     case "task":
                         {
@@ -269,6 +269,7 @@ namespace Doom_Scroll
         {
             int count = 0;
             GameData.PlayerInfo player = GameData.Instance.GetPlayerById(id);
+            if(player.Role.Role == RoleTypes.Impostor) return count;
             foreach (GameData.TaskInfo task in player.Tasks)
             {
                 if (task.Complete) count++;

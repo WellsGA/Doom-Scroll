@@ -92,7 +92,7 @@ namespace Doom_Scroll
 
                 // save the image in the inventory folder, add it to the dictionary of all screenshots
                 string imageId = (PlayerControl.LocalPlayer.PlayerId * 10 + Screenshots).ToString();
-                FolderManager.Instance.AddImageToScreenshots("image Id: " + imageId, imageBytes);
+                FolderManager.Instance.AddImageToScreenshots(imageId, imageBytes);
                 AddImage(imageId, imageBytes);
 
                 UnityEngine.Object.Destroy(screeenShot);
