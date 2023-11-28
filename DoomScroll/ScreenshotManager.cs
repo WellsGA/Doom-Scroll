@@ -291,7 +291,7 @@ namespace Doom_Scroll
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGEPIECE, (SendOption)1);
             messageWriter.Write(id);
-            messageWriter.Write(piece);
+            messageWriter.WriteBytesAndSize(piece);
             messageWriter.EndMessage();
         }
         private void RPCFinishedSending(string id)
