@@ -130,11 +130,8 @@ namespace Doom_Scroll.Patches
             {
                  GameLogger.Write(GameLogger.GetTime() + " - " + voter + " has voted for " + suspect);
             }
-            else
-            {
                 HeadlineCreator.UpdatePlayerVote(srcPlayerId, voter + " has voted for " + suspect);
                 RPCVote(srcPlayerId, voter, suspect);
-            }
         }
 
         public static void RPCVote(byte playerId, string voter, string suspect)
