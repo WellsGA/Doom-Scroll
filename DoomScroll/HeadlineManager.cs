@@ -169,6 +169,7 @@ namespace Doom_Scroll
         {
             if (headlineSelect.GetNumberOfOptions() == 0 || !headlineSelect.HasSelected) return;
             RPCSandNews(headlineSelect.Selected.Key);
+            GameDataPatch.UpdateBlankHeadlineTaskCompletion();
             CanPostNews(false);
         }
         public void ActivateNewsButton(bool value)
@@ -259,7 +260,6 @@ namespace Doom_Scroll
         {
             // set locally
             NewsPostedByLocalPLayer++;
-            GameDataPatch.UpdateBlankHeadlineTaskCompletion();
             HeadlineDisplay.Instance.AddNews(news);
             // share
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDNEWS, (SendOption)1);
