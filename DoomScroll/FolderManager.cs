@@ -301,9 +301,9 @@ namespace Doom_Scroll
             }
         }
 
-        public void AddImageToScreenshots(string name, byte[] img)
+        public void AddImageToScreenshots(int id, byte[] img)
         {
-            FileScreenshot file = new FileScreenshot(m_screenshots.Path, name, m_folderArea, img);
+            FileScreenshot file = new FileScreenshot(m_screenshots.Path, "image: #"+id , m_folderArea, img, id);
             m_screenshots.AddItem(file);
         }
 

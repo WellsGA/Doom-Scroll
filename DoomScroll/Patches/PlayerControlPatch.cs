@@ -201,13 +201,13 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.ADDIMAGETOCHAT: // add image that has been sent over earlier
                     {
-                        ScreenshotManager.Instance.AddImageToChat(reader.ReadString());
+                        ScreenshotManager.Instance.AddImageToChat(reader.ReadInt32());
                         break;
                     }
                 case (byte)CustomRPC.CANSENDIMAGE:  // host notifies the next in line
                     {
                         byte id = reader.ReadByte();
-                        string itemId = reader.ReadString();
+                        int itemId = reader.ReadInt32();
                         if(id == PlayerControl.LocalPlayer.PlayerId)
                         {
                             DoomScroll._log.LogInfo("2) You can send image (LP): " + itemId);
@@ -221,7 +221,7 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.IMAGESENDINGCOMPLETE: // sender notifies players and host that the sending is complete
                     {
-                        string itemID = reader.ReadString();
+                        int itemID = reader.ReadInt32();
                         if (AmongUsClient.Instance.AmHost)
                         {
                             ImageQueuer.FinishedSharing(__instance.PlayerId, itemID);
@@ -231,7 +231,7 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SENDIMAGEPIECE:  // receive image and add piece to the byte array 
                     {
-                        string id = reader.ReadString();
+                        int id = reader.ReadInt32();
                         byte[] nextPart = reader.ReadBytesAndSize();
                         byte[] firstPart = ScreenshotManager.Instance.GetScreenshotById(id);
                         if(firstPart == null)
@@ -251,7 +251,7 @@ namespace Doom_Scroll.Patches
                     {
                         if (AmongUsClient.Instance.AmHost)
                         {
-                            ImageQueuer.AddToQueue(__instance.PlayerId, reader.ReadString());
+                            ImageQueuer.AddToQueue(__instance.PlayerId, reader.ReadInt32());
                         }
                         else
                         {

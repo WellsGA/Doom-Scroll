@@ -9,11 +9,11 @@ namespace Doom_Scroll.Common
     static internal class ImageQueuer
     {
         public static bool isSharing = false;
-        private static Queue<KeyValuePair<byte, string>> imageSharingQueue = new Queue<KeyValuePair<byte, string>>();
+        private static Queue<KeyValuePair<byte, int>> imageSharingQueue = new Queue<KeyValuePair<byte, int>>();
 
-        public static void AddToQueue(byte playerId, string itemId)
+        public static void AddToQueue(byte playerId, int itemId)
         {
-            imageSharingQueue.Enqueue(new KeyValuePair<byte, string>(playerId, itemId));
+            imageSharingQueue.Enqueue(new KeyValuePair<byte, int>(playerId, itemId));
             DoomScroll._log.LogInfo("image queued, id: " + itemId + ", currently sharing: " + isSharing);
         }
 
@@ -31,7 +31,7 @@ namespace Doom_Scroll.Common
 
         public static void NextCanShare()
         {
-            KeyValuePair<byte, string> nextInLine = imageSharingQueue.Peek();
+            KeyValuePair<byte, int> nextInLine = imageSharingQueue.Peek();
             if (nextInLine.Key == PlayerControl.LocalPlayer.PlayerId)
             {
                 DoomScroll._log.LogInfo("2) You can send image (LP): " + nextInLine.Value);
@@ -43,7 +43,7 @@ namespace Doom_Scroll.Common
             }
             isSharing = true;
         }
-        public static void RPCNextCanShare(KeyValuePair<byte, string> next)
+        public static void RPCNextCanShare(KeyValuePair<byte, int> next)
         {
             
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CANSENDIMAGE, (SendOption)1);
@@ -52,7 +52,7 @@ namespace Doom_Scroll.Common
             messageWriter.EndMessage();
         }
 
-        public static void FinishedSharing(byte id, string itemID)
+        public static void FinishedSharing(byte id, int itemID)
         {
             if(imageSharingQueue.Peek().Key == id && imageSharingQueue.Peek().Value == itemID)
             {

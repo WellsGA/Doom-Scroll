@@ -38,7 +38,7 @@ namespace Doom_Scroll
         private int m_maxPictures;
         public bool IsCameraOpen { get; private set; }
 
-        private Dictionary<string, byte[]> AllScreenshots;
+        private Dictionary<int, byte[]> AllScreenshots;
         private ScreenshotManager()
         {
             mainCamrea = Camera.main;
@@ -46,7 +46,7 @@ namespace Doom_Scroll
             Screenshots = 0;
             m_maxPictures = 3;
             IsCameraOpen = false;
-            AllScreenshots = new Dictionary<string, byte[]>();
+            AllScreenshots = new Dictionary<int, byte[]>();
             InitializeManager();
             DoomScroll._log.LogInfo("SCREENSHOT MANAGER CONSTRUCTOR");
         }
@@ -91,7 +91,7 @@ namespace Doom_Scroll
                 // System.IO.File.WriteAllBytes(Application.dataPath + "/cameracapture_" + Screenshots + ".png", imageBytes);
 
                 // save the image in the inventory folder, add it to the dictionary of all screenshots
-                string imageId = (PlayerControl.LocalPlayer.PlayerId * 10 + Screenshots).ToString();
+                int imageId = PlayerControl.LocalPlayer.PlayerId * 10 + Screenshots;
                 FolderManager.Instance.AddImageToScreenshots(imageId, imageBytes);
                 AddImage(imageId, imageBytes);
 
@@ -181,12 +181,12 @@ namespace Doom_Scroll
         }
        
         // MANAGE SHARING AND POSTING SCREENSHOTS
-        public void AddImage(string id, byte[] image)
+        public void AddImage(int id, byte[] image)
         {
             AllScreenshots[id] = image; // it will overwrite if the same id already exists.
         }
 
-        public byte[] GetScreenshotById(string id)
+        public byte[] GetScreenshotById(int id)
         {
             if (AllScreenshots.ContainsKey(id))
             {
@@ -195,7 +195,7 @@ namespace Doom_Scroll
             return null;
         }
 
-        public void AddImageToChat(string id)
+        public void AddImageToChat(int id)
         {
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
@@ -215,7 +215,7 @@ namespace Doom_Scroll
             }
         }
         
-        private void EnqueueImage(string id)
+        private void EnqueueImage(int id)
         {
             if (AmongUsClient.Instance.AmHost)
             {
@@ -228,7 +228,7 @@ namespace Doom_Scroll
             }
         }
 
-        private void RPCEnqueueImage(string id)
+        private void RPCEnqueueImage(int id)
         {
             DoomScroll._log.LogInfo("1) Sending image to the queue (LP)");
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ENQUEUEIMAGE, (SendOption)1);
@@ -236,7 +236,7 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
-        public void SendImageInPieces(string id)
+        public void SendImageInPieces(int id)
         {
             if (AllScreenshots.ContainsKey(id))
             {
@@ -250,7 +250,7 @@ namespace Doom_Scroll
             }
         }
 
-        public  async void SendPieces(string id, byte[] image)
+        public  async void SendPieces(int id, byte[] image)
         {
             int length = 1000;
             // get the first part and send
@@ -265,7 +265,7 @@ namespace Doom_Scroll
             EnableScreenshotPosting(id);
         }
         
-        private void FinishedSending(string id)
+        private void FinishedSending(int id)
         {
             if (AmongUsClient.Instance.AmHost)
             {
@@ -276,11 +276,11 @@ namespace Doom_Scroll
                 RPCFinishedSending(id);
             }
         }
-        private void EnableScreenshotPosting(string id)
+        private void EnableScreenshotPosting(int id)
         {
             foreach (FileScreenshot screenshot in FolderManager.Instance.GetScreenshots())
             {
-                if (id.Equals(screenshot.Id))
+                if (screenshot.Id == id)
                 {
                     screenshot.SetImageActive();
                     DoomScroll._log.LogInfo("5) Image:" + id  + "is enabled in the Folder.");
@@ -288,14 +288,14 @@ namespace Doom_Scroll
                 DoomScroll._log.LogInfo("IDs don't match: " + id + " and " + screenshot.Id);
             }
         }
-        public void RPCImagePiece(string id, byte[] piece)
+        public void RPCImagePiece(int id, byte[] piece)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDIMAGEPIECE, (SendOption)1);
             messageWriter.Write(id);
             messageWriter.WriteBytesAndSize(piece);
             messageWriter.EndMessage();
         }
-        private void RPCFinishedSending(string id)
+        private void RPCFinishedSending(int id)
         {
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IMAGESENDINGCOMPLETE, (SendOption)1);
             messageWriter.Write(id);
