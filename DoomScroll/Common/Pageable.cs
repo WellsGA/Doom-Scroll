@@ -72,6 +72,7 @@ namespace Doom_Scroll.Common
         {
             if (numPages != 0)
             {
+                HidePage();
                 DoomScroll._log.LogInfo($"Entering HidePage()!");
                 if (displayPageNum < 1 || displayPageNum > numPages)
                 {
