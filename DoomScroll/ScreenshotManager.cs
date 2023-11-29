@@ -77,7 +77,7 @@ namespace Doom_Scroll
 
                 Texture2D screeenShot = new Texture2D(Screen.width, Screen.height, TextureFormat.ARGB32, false);
                 screeenShot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-                byte[] imageBytes = screeenShot.EncodeToJPG();
+                byte[] imageBytes = screeenShot.EncodeToJPG(40);
                 
                 // reset camera, show player and overlay
                 RenderTexture.active = null;
@@ -259,7 +259,7 @@ namespace Doom_Scroll
                 byte[] piece = image.Skip(i).Take(length).ToArray();
                 RPCImagePiece(id, piece);  // missing: check for success and handle errors
                 DoomScroll._log.LogInfo("3) Sending image part: " + i/1000);
-                await Task.Delay(2000);
+                await Task.Delay(1000);
             }
             FinishedSending(id); // done sending, notify host and players
             EnableScreenshotPosting(id);
@@ -283,7 +283,7 @@ namespace Doom_Scroll
                 if (id.Equals(screenshot.Id))
                 {
                     screenshot.SetImageActive();
-                    DoomScroll._log.LogInfo("5) Image is enabled in the Folder.");
+                    DoomScroll._log.LogInfo("5) Image:" + id  + "is enabled in the Folder.");
                 }
                 DoomScroll._log.LogInfo("IDs don't match: " + id + " and " + screenshot.Id);
             }

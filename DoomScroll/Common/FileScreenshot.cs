@@ -16,11 +16,9 @@ namespace Doom_Scroll.Common
         private string m_id;
         public string Id { get { return m_id; } } // this was not set and was always null
         private bool m_shareable;
-        private CustomModal m_parent;
 
         public FileScreenshot(string parentPath, string name, CustomModal parentPanel, byte[] image) : base(parentPath, name, parentPanel)
         {
-            m_parent = parentPanel;
             m_id = name;
             m_content = image;
             Sprite[] shareBtn = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", ImageLoader.slices2);
