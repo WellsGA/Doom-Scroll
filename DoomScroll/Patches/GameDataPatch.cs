@@ -34,6 +34,7 @@ namespace Doom_Scroll.Patches
             dummyTask.Id= 255;
             dummyTask.TypeId = 255;
             localPlayerInfo.Tasks.Add(dummyTask);
+            DoomScroll._log.LogInfo("Added headline task!: " + dummyTask.ToString());
         }
 
         public static void UpdateBlankHeadlineTaskCompletion()
@@ -44,10 +45,13 @@ namespace Doom_Scroll.Patches
                 {
                     foreach (GameData.TaskInfo task in playerInfo.Tasks)
                     {
+                        DoomScroll._log.LogInfo("Not headline task.");
                         if (task.TypeId == 255)
                         {
+                            DoomScroll._log.LogInfo("Headline task found!");
                             task.Complete = true;
-                            PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
+                            PlayerControl.LocalPlayer.RpcCompleteTask(task.TypeId);
+                            DoomScroll._log.LogInfo("RPC for Complete headline task sent!");
                             break;
                         }
                     }
