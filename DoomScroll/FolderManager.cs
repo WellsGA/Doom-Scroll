@@ -303,7 +303,7 @@ namespace Doom_Scroll
 
         public void AddImageToScreenshots(int id, byte[] img)
         {
-            FileScreenshot file = new FileScreenshot(m_screenshots.Path, "image: #"+id , m_folderArea, img, id);
+            FileScreenshot file = new FileScreenshot(m_screenshots.Path, "Uploading ..." , m_folderArea, img, id);
             m_screenshots.AddItem(file);
         }
 

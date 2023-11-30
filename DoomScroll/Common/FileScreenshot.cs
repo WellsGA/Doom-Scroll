@@ -25,7 +25,7 @@ namespace Doom_Scroll.Common
             Sprite[] newBUttonSprites = { shareBtn[0], shareBtn[1], shareBtn[0], m_Screenshot };
             Btn.ResetButtonImages(newBUttonSprites);
             Btn.SetButtonScale(Vector3.one);
-            Btn.Label.SetText("image Id: " + name);
+            Btn.Label.SetText(name);
             Btn.Label.SetLocalPosition(new Vector3(0, 0.6f, 0));
             Btn.EnableButton(false); // now sets false initially; sets true once fully shared
             m_shareable = false;
@@ -35,10 +35,7 @@ namespace Doom_Scroll.Common
             if(!m_shareable) return;
             byte[] image = m_Screenshot.texture.EncodeToJPG(ImageSize);  // we could use m_content but the size may be bigger
             DoomScroll._log.LogInfo("Original size: " + m_content.Length + ", New image size: " + image.Length);
-            // set locally
-            ScreenshotManager.Instance.AddImageToChat(m_id);
-            // rpc
-            RpcAddImageToChat(m_id);
+            ScreenshotManager.Instance.SendImageToChat(m_id);
         }
 
         public override void HideContent()
@@ -48,16 +45,11 @@ namespace Doom_Scroll.Common
 
         public void SetImageActive()
         {
+            Btn.Label.SetText("Image #: " + m_id);
             Btn.EnableButton(true); // now sets false initially; sets true once fully shared
             m_shareable = true;
         }
 
-        public void RpcAddImageToChat(int imageID)
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ADDIMAGETOCHAT, (SendOption)1);
-            messageWriter.Write(imageID);
-            messageWriter.EndMessage();
-        }
     }
 }
 

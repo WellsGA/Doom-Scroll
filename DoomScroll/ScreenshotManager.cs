@@ -197,22 +197,28 @@ namespace Doom_Scroll
 
         public void AddImageToChat(int id)
         {
-            if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
+            int playerId = (int)id / 10;
+            foreach (PlayerControl pl in PlayerControl.AllPlayerControls)
             {
-                string chatBubbleID = ChatControllerPatch.GetChatID();  
-                ChatControllerPatch.screenshot = GetScreenshotById(id);
-                if(ChatControllerPatch.screenshot != null)
+                if (playerId == pl.PlayerId)
                 {
-                    ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                    string chatText = chatBubbleID + "Evidence #" + id;
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText, false);
+                    string chatBubbleID = ChatControllerPatch.GetChatID();
+                    ChatControllerPatch.screenshot = GetScreenshotById(id);
+                    if (ChatControllerPatch.screenshot != null)
+                    {
+                        ChatControllerPatch.content = ChatContent.SCREENSHOT;
+                        string chatText = chatBubbleID + "Evidence #" + id;
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(pl, chatText, false);
+                    }
+                    else
+                    {
+                        DoomScroll._log.LogInfo("Couldn't find and share the requested image, ID: " + id);
+                    }
+                    return;
                 }
-                else
-                {
-                    DoomScroll._log.LogInfo("Couldn't find and share the requested image, ID: " + id);
-                }
-                    
             }
+            DoomScroll._log.LogInfo("Couldn't find the player control, cannot share the image in chat!");
+
         }
         
         private void EnqueueImage(int id)
@@ -287,6 +293,21 @@ namespace Doom_Scroll
                 }
                 DoomScroll._log.LogInfo("IDs don't match: " + id + " and " + screenshot.Id);
             }
+        }
+
+        public void SendImageToChat(int id)
+        {
+            // set locally
+            AddImageToChat(id);
+            // rpc
+            RpcAddImageToChat(id);
+        }
+
+        public void RpcAddImageToChat(int imageID)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ADDIMAGETOCHAT, (SendOption)1);
+            messageWriter.Write(imageID);
+            messageWriter.EndMessage();
         }
         public void RPCImagePiece(int id, byte[] piece)
         {
