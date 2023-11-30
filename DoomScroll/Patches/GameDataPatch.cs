@@ -13,28 +13,18 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("RpcSetTasks")]
         public static async void PostfixRPCSetTasks(GameData __instance)
         {
-            GameData.PlayerInfo localPlayerInfo = null;
-
             foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
-                if (playerInfo.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                while (playerInfo.Tasks == null || playerInfo.Tasks.Count == 0)
                 {
-                    localPlayerInfo = playerInfo;
+                    await Task.Delay(500);
                 }
+                GameData.TaskInfo dummyTask = new GameData.TaskInfo();
+                dummyTask.Id = 255;
+                dummyTask.TypeId = 255;
+                playerInfo.Tasks.Add(dummyTask);
+                DoomScroll._log.LogInfo($"Added headline task for player {playerInfo.PlayerId}!: " + dummyTask.ToString());
             }
-            if (localPlayerInfo == null)
-            {
-                return;
-            }
-            while (localPlayerInfo.Tasks == null || localPlayerInfo.Tasks.Count == 0)
-            {
-                await Task.Delay(500);
-            }
-            GameData.TaskInfo dummyTask = new GameData.TaskInfo();
-            dummyTask.Id= 255;
-            dummyTask.TypeId = 255;
-            localPlayerInfo.Tasks.Add(dummyTask);
-            DoomScroll._log.LogInfo("Added headline task!: " + dummyTask.ToString());
         }
 
         public static void UpdateBlankHeadlineTaskCompletion()
