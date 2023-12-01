@@ -140,11 +140,12 @@ namespace Doom_Scroll.Common
            "Spaceship News Network",
            "Amongus Weekly",
            "Buffington Post",
-           "Crewmate Community Board",
-           "ZotZotZot Chronicles",
-           "Julia the Journalist",
-           "Crews News",
-           "The Gopher Report"
+           "Crewmate Associated Press",
+           "Zot Chronicles",
+           "Julia Minnetian, Spaceship News Network Journalist",
+           "Crew News",
+           "The Gopher Report",
+           "Versace Pelligrini | Reporter @BuffingtonPost"
 
        };
 
@@ -157,8 +158,11 @@ namespace Doom_Scroll.Common
            "Imposter Kyle's Personal Blog",
            "Amogus Weekly",
            "Bluffington Post",
-           "@GLSNews",
-           "The Selfless Report"
+           "@GLSNewsBot",
+           "The Gopher Report",
+           "Vincenzo Moriarti, Amogus Weekly Editor-in-Chief",
+           "Bobby Doubt, Host of The Gopher Report",
+           "@CelebNewsBot"
        };
 
   }
