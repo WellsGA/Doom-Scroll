@@ -69,8 +69,7 @@ namespace Doom_Scroll.Patches
                 {
                     foreach (GameData.TaskInfo task in playerInfo.Tasks)
                     {
-                        DoomScroll._log.LogInfo("Not headline task.");
-                        if (task.TypeId == 255)
+                        if (task.TypeId == headlineTaskID)
                         {
                             DoomScroll._log.LogInfo("Headline task found!");
                             // The code that they use
@@ -80,10 +79,10 @@ namespace Doom_Scroll.Patches
                                 if (DestroyableSingleton<HudManager>.InstanceExists)
                                 {
                                     DestroyableSingleton<HudManager>.Instance.ShowTaskComplete();
-                                    if (PlayerTask.AllTasksCompleted(PlayerControl.LocalPlayer))
+                                    /*if (PlayerTask.AllTasksCompleted(PlayerControl.LocalPlayer))
                                     {
                                         StatsManager.Instance.IncrementStat(StringNames.StatsAllTasksCompleted);
-                                    }
+                                    }*/
                                 }
                                 PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
                                 DoomScroll._log.LogInfo("RPC for Complete headline task sent!");
@@ -98,6 +97,7 @@ namespace Doom_Scroll.Patches
                             break;
                             */
                         }
+                        DoomScroll._log.LogInfo("Not headline task.");
                     }
                 }
             }
