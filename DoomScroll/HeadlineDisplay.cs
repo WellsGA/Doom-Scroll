@@ -18,7 +18,7 @@ namespace Doom_Scroll
         private readonly int maxNewsItemsPerPage = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
-        public Dictionary<byte, string> PlayerScores;
+        public Dictionary<byte, Tuple<int, int>> PlayerScores;
         public List<HeadlineEndorsement> endorsemntList = new List<HeadlineEndorsement>();
 
         private HudManager hudManagerInstance;
@@ -33,7 +33,7 @@ namespace Doom_Scroll
         private HeadlineDisplay()
         {
             AllNewsList = new List<Headline>();
-            PlayerScores = new Dictionary<byte, string>();
+            PlayerScores = new Dictionary<byte, Tuple<int, int>>();
             InitHeadlineDisplay();
         }
 
@@ -251,7 +251,7 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("=========== Couldn't find news!!!! ==============");
         }
 
-        public string CalculateScores(byte playerID)
+        public string CalculateScoreStrings(byte playerID)
         {
             int numCorrect = 0;
             int numIncorrect = 0;
@@ -263,9 +263,10 @@ namespace Doom_Scroll
                     else numIncorrect++;
                 }
             }
-            string score = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of " + AllNewsList.Count + "]\n";
+            Tuple<int, int> score = new Tuple<int, int>(numCorrect, numIncorrect);
             PlayerScores[playerID] = score;
-            return score;
+            string scoreString = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of " + AllNewsList.Count + "]\n";
+            return scoreString;
         }
 
         public void CheckForDisplayedNewsPageButtonClicks()

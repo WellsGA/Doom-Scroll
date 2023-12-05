@@ -47,22 +47,10 @@ namespace Doom_Scroll
                 byte pID = player.PlayerId;
                 if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID) && !player.Role.IsImpostor)
                 {
-                    string strippedScoreText = HeadlineDisplay.Instance.PlayerScores[pID].Trim(' ', '\n', '\t', '[', ']'); //new char[' ','\n','\t','[',']']
-                    DoomScroll._log.LogInfo("Current strippedScoreText: " + strippedScoreText);
-                    string currentScore = strippedScoreText.Substring(0, 2);
-                    currentScore.TrimEnd();
-                    int numScore = 0;
-                    try
-                    {
-                        numScore = System.Int32.Parse(currentScore);
-                    }
-                    catch (System.Exception e)
-                    {
-                        DoomScroll._log.LogError("Couldn't parse number to string: [" + currentScore + "], error message " + e);
-                    }
-                    DoomScroll._log.LogInfo("Current numScore: " + numScore.ToString());
+                    int currentScore = HeadlineDisplay.Instance.PlayerScores[pID].Item1;
+                    DoomScroll._log.LogInfo("Current numScore: " + currentScore.ToString());
                     DoomScroll._log.LogInfo("LastMeetingNewsItemsCount: " + LastMeetingNewsItemsCount.ToString());
-                    if (numScore < LastMeetingNewsItemsCount)
+                    if (currentScore < LastMeetingNewsItemsCount)
                     {
                         return false;
                     }

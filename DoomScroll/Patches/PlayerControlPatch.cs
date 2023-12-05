@@ -10,6 +10,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        SETDUMMYTASKS = 238,
         ENQUEUEIMAGE = 239,
         IMAGESENDINGCOMPLETE = 240,
         CANSENDIMAGE = 241,
@@ -256,6 +257,14 @@ namespace Doom_Scroll.Patches
                         else
                         {
                             DoomScroll._log.LogInfo("I'm not the host....");
+                        }
+                        break;
+                    }
+                case (byte)CustomRPC.SETDUMMYTASKS:
+                    {
+                        foreach (PlayerControl playerControl in PlayerControl.AllPlayerControls)
+                        {
+                            GameDataPatch.AddDummyTasksToThisList(playerControl.PlayerId);
                         }
                         break;
                     }

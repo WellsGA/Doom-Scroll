@@ -99,7 +99,7 @@ namespace Doom_Scroll.Patches
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
-                results += player.name + ": " + HeadlineDisplay.Instance.CalculateScores(player.PlayerId);
+                results += player.name + ": " + HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId);
             }
             DoomScroll._log.LogInfo(results); // debug
             

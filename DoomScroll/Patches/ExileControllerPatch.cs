@@ -19,23 +19,12 @@ namespace Doom_Scroll.Patches
                 byte pID = player.PlayerId;
                 if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID))
                 {
-                    string strippedScoreText = HeadlineDisplay.Instance.PlayerScores[pID].Trim(' ', '\n', '\t', '[', ']'); //new char[' ','\n','\t','[',']']
-                    DoomScroll._log.LogInfo("Current strippedScoreText: "+strippedScoreText);
-                    string currentScore = strippedScoreText.Substring(0, 2);
-                    currentScore.TrimEnd();
-                    int numScore = 0;
-                    try
-                    {
-                        numScore = System.Int32.Parse(currentScore);
-                    }
-                    catch (System.Exception e)
-                    {
-                        DoomScroll._log.LogError("Couldn't parse number to string: [" + currentScore + "], error message " + e);
-                    }
-                    DoomScroll._log.LogInfo("Current numScore: " + numScore.ToString());
+                    int currentScore = HeadlineDisplay.Instance.PlayerScores[pID].Item1;
+                    DoomScroll._log.LogInfo("Current numScore: " + currentScore.ToString());
+                    DoomScroll._log.LogInfo("LastMeetingNewsItemsCount: " + DoomScrollVictoryManager.LastMeetingNewsItemsCount.ToString());
                     if (scoresByNumCorrect.Count == 0)
                     {
-                        scoresByNumCorrect.Add(new System.Tuple<int, string, string>(numScore, player.name, strippedScoreText + "\n"));
+                        scoresByNumCorrect.Add(new System.Tuple<int, string, string>(currentScore, player.name, HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId).Trim(' ', '\n', '\t', '[', ']')));
                     }
                     else
                     {
@@ -43,14 +32,14 @@ namespace Doom_Scroll.Patches
                         {
                             DoomScroll._log.LogInfo("Count is " + scoresByNumCorrect.Count.ToString() + " and current i is " + i.ToString());
                             DoomScroll._log.LogInfo("Loop " + i.ToString() + "of scoresByNumCorrect");
-                            if (scoresByNumCorrect[i].Item1 < numScore)
+                            if (scoresByNumCorrect[i].Item1 < currentScore)
                             {
-                                scoresByNumCorrect.Insert(i, new System.Tuple<int, string, string>(numScore, player.name, strippedScoreText + "\n"));
+                                scoresByNumCorrect.Insert(i, new System.Tuple<int, string, string>(currentScore, player.name, HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId).Trim(' ', '\n', '\t', '[', ']')));
                                 break;
                             }
                             else if (i == scoresByNumCorrect.Count - 1)
                             {
-                                scoresByNumCorrect.Add(new System.Tuple<int, string, string>(numScore, player.name, strippedScoreText + "\n"));
+                                scoresByNumCorrect.Add(new System.Tuple<int, string, string>(currentScore, player.name, HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId).Trim(' ', '\n', '\t', '[', ']')));
                                 break;
                             }
                         }
