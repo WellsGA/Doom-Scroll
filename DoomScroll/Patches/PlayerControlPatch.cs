@@ -10,6 +10,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        COMPLETEDUMMYTASK = 237,
         SETDUMMYTASKS = 238,
         ENQUEUEIMAGE = 239,
         IMAGESENDINGCOMPLETE = 240,
@@ -262,6 +263,15 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SETDUMMYTASKS:
                     {
+                        foreach (PlayerControl playerControl in PlayerControl.AllPlayerControls)
+                        {
+                            GameDataPatch.AddDummyTasksToThisList(playerControl.PlayerId);
+                        }
+                        break;
+                    }
+                case (byte)CustomRPC.COMPLETEDUMMYTASK:
+                    {
+
                         foreach (PlayerControl playerControl in PlayerControl.AllPlayerControls)
                         {
                             GameDataPatch.AddDummyTasksToThisList(playerControl.PlayerId);

@@ -13,15 +13,32 @@ namespace Doom_Scroll.Patches
         private static byte votingTaskID = 255;
         private static byte headlineTaskID = 254;
 
-        public static void RPCDummyTasks()
+        [HarmonyPostfix]
+        [HarmonyPatch("SetTasks")]
+        public static void PostfixSetTasks(ref byte playerId)
         {
             // set locally
             foreach (PlayerControl playerControl in PlayerControl.AllPlayerControls)
             {
-                AddDummyTasksToThisList(playerControl.PlayerId);
+                if (playerControl.PlayerId == playerId)
+                {
+                    AddDummyTasksToThisList(playerControl.PlayerId);
+                    return;
+                }
             }
-            // share
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SETDUMMYTASKS, (SendOption)1);
+        }
+        public static void RPCCompleteHeadlineDummyTask()
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.COMPLETEDUMMYTASK, (SendOption)1); // sends through the TaskTypeID as well as the id of the player sending it
+            messageWriter.Write(headlineTaskID);
+            messageWriter.Write(PlayerControl.LocalPlayer.PlayerId);
+            messageWriter.EndMessage();
+        }
+        public static void RPCCompleteVotingDummyTask()
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.COMPLETEDUMMYTASK, (SendOption)1);
+            messageWriter.Write(votingTaskID);
+            messageWriter.Write(PlayerControl.LocalPlayer.PlayerId);
             messageWriter.EndMessage();
         }
 
@@ -69,8 +86,11 @@ namespace Doom_Scroll.Patches
                 {
                     foreach (GameData.TaskInfo task in playerInfo.Tasks)
                     {
+
+                        DoomScroll._log.LogInfo($"task type id is {task.TypeId}");
                         if (task.TypeId == headlineTaskID)
                         {
+                            DoomScroll._log.LogInfo($"Does {task.TypeId} == {headlineTaskID}? Yes!");
                             DoomScroll._log.LogInfo("Headline task found!");
                             // The code that they use
                             task.Complete = true;
