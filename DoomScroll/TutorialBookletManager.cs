@@ -19,6 +19,7 @@ namespace Doom_Scroll
         // pages
         private TutorialBookletPage m_titlePage;
         private TutorialBookletPage m_headlines;
+        private TutorialBookletPage m_objectives;
         private TutorialBookletPage m_headlinesThree;
         private TutorialBookletPage m_headlinesTwo;
         private TutorialBookletPage m_signInForms;
@@ -34,6 +35,7 @@ namespace Doom_Scroll
         // text for different pages
 
         private string m_titlePageText = "Click through the following pages to learn more about DoomScroll and its\n misinformation features!";
+        private string m_objectivesText = "DoomScroll adds new objectives for you to complete in order to win.\r\n\r\nTo win as a CREWMATE, you must complete all tasks OR vote out the imposters, PLUS:\n*Successfully frame (eliminate) or protect (keep alive) your target player\n*Reach 100% accuracy AS A CREW on the headline voting\r\n\r\nTo win as an IMPOSTER, you must eliminate a sufficient number of crewmates, PLUS:\n*Successfully frame (eliminate) or protect (keep alive) your target player\r\n\r\nRead further to learn more about how the features in this mod can help you\n mislead your opponents or figure out the truth!";
         private string m_headlinesText = "Headlines can provide useful clues, but are they always trustworthy? When\n the NEWS button is yellow, click to choose a headline that will\n help your fellow crewmates (or trick them).\r\nTIP: Evaluate the evidence thoroughly to look for mistakes or inconsistencies.\r\n";
         private string m_headlinesTextThree = "After every meeting, players MUST vote on the reliability of each headline.\r\n * To win, ALL CREWMATES (OR ALL IMPOSTERS) MUST ACHIEVE 100% ACCURACY *\r\n Work together during meetings to improve your scores!\r\n\r\n* During meetings, use the like :) and dislike :( buttons to share your opinions\r\n on different posts. Then click the arrow to share to the chat.\r\n"; //* Click the T or F button to vote whether you think the post is TRUE\r\n or FALSE. Everyone’s scores will be revealed at the end of the game!\r\n";
         private string m_headlinesTextTwo = "\r\nCOMMON SIGNS OF FAKE NEWS:\r\n\r\n* Emotionally provocative/polarizing content          \r\n* Hyperbolic claims\r\n* Many claims at once          \r\n* Hyperpartisan bias\r\n* Misleading/biased statistics          \r\n* Conspiracy theories\r\n* Trolling          \r\n* Discredits or attacks opposing individuals/groups\r\n\r\n COMMON SIGNS OF UNTRUSTWORTHY SOURCES:          \r\n* Domains impersonating more reputable sources\r\n* Fake/Misleading domains          \r\n* Less trustworthy sponsors (e.g. blogs, forums)\r\n\r\n";
@@ -115,7 +117,9 @@ namespace Doom_Scroll
         {
             m_titlePage = new TutorialBookletPage("DoomScroll Tutorial Booklet", m_titlePageText, m_tutorialBookletArea, "Doom_Scroll.Assets.MainMenu_Button_Basic.png");
             m_headlines = new TutorialBookletPage("Headlines", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsSelect.png", "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
-            m_headlinesThree = new TutorialBookletPage("Headlines", m_headlinesTextThree, m_tutorialBookletArea);
+            m_objectives = new TutorialBookletPage("Objectives", m_objectivesText, m_tutorialBookletArea);
+
+            m_headlinesThree = new TutorialBookletPage("Headlines", m_headlinesTextThree, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
             m_headlinesTwo = new TutorialBookletPage("Headlines", m_headlinesTextTwo, m_tutorialBookletArea);
             m_signInForms = new TutorialBookletPage("Sign-In Forms", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
             m_infiniteChatLogs = new TutorialBookletPage("Infinite Chat Logs", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatAfter.png", "Doom_Scroll.Assets.infiniteChatBefore.png");
@@ -126,6 +130,7 @@ namespace Doom_Scroll
             m_pageOrder = new List<CustomUI>
             {
                 m_titlePage,
+                m_objectives,
                 m_headlines,
                 m_headlinesThree,
                 m_headlinesTwo,
