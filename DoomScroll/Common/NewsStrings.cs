@@ -144,7 +144,6 @@ namespace Doom_Scroll.Common
            "Zot Chronicles",
            "Julia Minnetian, Spaceship News Network Journalist",
            "Crew News",
-           "The Gopher Report",
            "Versace Pelligrini | Reporter @BuffingtonPost"
 
        };
