@@ -263,18 +263,17 @@ namespace Doom_Scroll.Patches
                     }
                 case (byte)CustomRPC.SETDUMMYTASKS:
                     {
-                        foreach (PlayerControl playerControl in PlayerControl.AllPlayerControls)
+                        foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
                         {
-                            GameDataPatch.AddDummyTasksToThisList(playerControl.PlayerId);
+                            GameDataPatch.AddDummyTasksToThisList(playerInfo);
                         }
                         break;
                     }
                 case (byte)CustomRPC.COMPLETEDUMMYTASK:
                     {
-
-                        foreach (PlayerControl playerControl in PlayerControl.AllPlayerControls)
+                        if (reader.ReadByte() == GameDataPatch.headlineTaskID)
                         {
-                            GameDataPatch.AddDummyTasksToThisList(playerControl.PlayerId);
+                            GameDataPatch.UpdateBlankHeadlineTaskCompletion(reader.ReadByte());
                         }
                         break;
                     }

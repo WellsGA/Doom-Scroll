@@ -169,7 +169,13 @@ namespace Doom_Scroll
         {
             if (headlineSelect.GetNumberOfOptions() == 0 || !headlineSelect.HasSelected) return;
             RPCSandNews(headlineSelect.Selected.Key);
-            GameDataPatch.UpdateBlankHeadlineTaskCompletion();
+
+            // Headline task stuff
+            GameDataPatch.RPCCompleteHeadlineDummyTask();
+            DoomScroll._log.LogInfo("RPC for Complete headline task sent!");
+            GameDataPatch.UpdateBlankHeadlineTaskCompletion(PlayerControl.LocalPlayer.PlayerId);
+            // Headline task stuff
+
             CanPostNews(false);
         }
         public void ActivateNewsButton(bool value)

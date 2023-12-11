@@ -2,16 +2,124 @@
 using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Doom_Scroll.Patches
 {
     [HarmonyPatch(typeof(ExileController))]
     static class ExileControllerPatch
     {
+        private static string _retainedExileString;
+        public static GameData.PlayerInfo OriginalExiledPlayer;
+        private static bool _exiledWasModified;
+
+        [HarmonyPrefix]
+        [HarmonyPatch("Begin")]
+        public static bool PrefixBegin(ExileController __instance, object[] __args)
+        {
+
+            int num = 0;
+            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
+            {
+                if (p.Role.IsImpostor && !p.IsDead && !p.Disconnected)
+                {
+                    num++;
+                }
+            }
+
+            int num2 = 0;
+            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
+            {
+                if (p.Role.IsImpostor)
+                {
+                    num2++;
+                }
+            }
+
+            int numAlivePlayers = 0;
+            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
+            {
+                if (!p.Role.IsImpostor && !p.IsDead && !p.Disconnected)
+                {
+                    numAlivePlayers++;
+                }
+            }
+
+
+            if (!DoomScrollVictoryManager.CheckVotingSuccess())
+            {
+
+                if (OriginalExiledPlayer != null)
+                {
+                    DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer: " + OriginalExiledPlayer.ToString());
+                    //CALLS SAME STUFF AS ACTUAL THING, BUT THEN ADDS MESSAGE ABOUT VOTING TO THE END
+
+                    //^SIKE, NOT ANYMORE. THAT WAS A LIE.
+
+
+                    if (OriginalExiledPlayer.Role.IsImpostor)
+                    {
+                        if (num2 > 1)
+                        {
+                            if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor
+                            {
+                                return true;
+                            }
+                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
+                        }
+                        else
+                        {
+                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
+                        }
+                    }
+
+                    __args[0] = null;
+                    _exiledWasModified = true;
+                    __instance.gameObject.GetComponent<MonoBehaviour>().StartCoroutine(__instance.Animate());
+
+
+                    if (num == 1)
+                    {
+                        __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainS, num);
+                    }
+                    else
+                    {
+                        __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainP, num);
+                    }
+
+                    return false;
+                }
+            }
+            return true;
+        }
         [HarmonyPostfix]
         [HarmonyPatch("Begin")]
         public static void PostfixBegin(ExileController __instance)
         {
+            //
+            //  ADD EDITED VOTING STRING HERE, AND DON'T LET THEM VOTE IMPOSTOR OUT UNTIL THEY GET ALL HEADLINE VOTES CORRECT
+            //
+            if (_exiledWasModified)
+            {
+                __instance.completeString = _retainedExileString;
+            }
+            if (!DoomScrollVictoryManager.CheckVotingSuccess())
+            {
+                if (OriginalExiledPlayer != null)
+                {
+                    __instance.completeString += $"\nHOWEVER, {OriginalExiledPlayer.PlayerName} was not ejected, because Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
+                }
+                else
+                {
+                    __instance.completeString += $"\nHOWEVER, Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
+                }
+            }
+            else
+            {
+                __instance.completeString += "\nCrewmates have voted correctly for all current Headlines,\nand can now win the game through voting or tasks.";
+            }
+
+
             List<System.Tuple<int, string, string>> scoresByNumCorrect = new List<System.Tuple<int, string, string>>();
             int currentHighScore = 0;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -53,7 +161,7 @@ namespace Doom_Scroll.Patches
             foreach (System.Tuple<int, string, string> thing in scoresByNumCorrect)
             {
                 DoomScroll._log.LogInfo(thing.Item3);
-                votingResultsText += thing.Item2 + ": " + thing.Item3;
+                votingResultsText += thing.Item2 + ": " + thing.Item3 + "\n";
             }
 
 
@@ -72,6 +180,12 @@ namespace Doom_Scroll.Patches
             scoreBoard.SetLocalPosition(new Vector3(2f, -1.3f, -10f));
             scoreBoard.SetSize(1.5f);
             scoreBoard.SetColor(Color.yellow);
+
+            GameDataPatch.UpdateDummyVotingTaskCompletion(DoomScrollVictoryManager.CheckVotingSuccess());
+
+            //Reset exile stuff
+            OriginalExiledPlayer = null;
+            _exiledWasModified = false;
         }
     }
 }

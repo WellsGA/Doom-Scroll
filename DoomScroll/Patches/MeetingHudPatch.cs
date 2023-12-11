@@ -77,7 +77,7 @@ namespace Doom_Scroll.Patches
             FolderManager.Instance.CheckForButtonClicks();
             HeadlineDisplay.Instance.CheckForShareClicks();
             TaskAssigner.Instance.CheckForShareTaskClicks();
-            foreach(HeadlineEndorsement headline in HeadlineDisplay.Instance.endorsemntList)
+            foreach(HeadlineEndorsement headline in HeadlineDisplay.Instance.endorsementList)
             {
                 headline.CheckForEndorseClicks();
             }
@@ -141,6 +141,46 @@ namespace Doom_Scroll.Patches
             messageWriter.Write(voter);
             messageWriter.Write(suspect);
             messageWriter.EndMessage();
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("VotingComplete")]
+        public static void PrefixVotingComplete(object[] __args)
+        {
+            foreach(object thing in __args)
+            {
+                if (thing == null)
+                {
+                    DoomScroll._log.LogInfo("Current __args thing is NULL.");
+                }
+                else
+                {
+                    DoomScroll._log.LogInfo("Current __args thing is NOT null.");
+                }
+
+            }
+            if (__args[1] != null)
+            {
+                DoomScroll._log.LogInfo("__args[1] is not null.");
+                if (__args[1] != null)
+                {
+                    DoomScroll._log.LogInfo("__args[1] to String is " + __args[1].ToString());
+                    DoomScroll._log.LogInfo("__args[1] as a PlayerInfo is " + (GameData.PlayerInfo)__args[1]);
+                    DoomScroll._log.LogInfo("__args[1] is indeed a GameData.PlayerInfo");
+                    ExileControllerPatch.OriginalExiledPlayer = (GameData.PlayerInfo)__args[1];
+                    DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer is being set as: " + (GameData.PlayerInfo)__args[1] + ", " + ((GameData.PlayerInfo)__args[1]).PlayerName);
+                }
+            }
+            if (__args[2] != null)
+            {
+                DoomScroll._log.LogInfo("__args[2] is not null.");
+                if ((bool)__args[2] != null)
+                {
+                    DoomScroll._log.LogInfo("__args[2] is indeed a bool");
+                    DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Tie is being set as: " + ((bool)__args[2]).ToString());
+                }
+            }
+            
         }
     }
 }

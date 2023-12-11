@@ -159,7 +159,7 @@ namespace Doom_Scroll.Patches
             HeadlineEndorsement endorsement = new HeadlineEndorsement(chatbubble, size, ID);
             float xPosEndorse = isLocalPlayer ? size.x * 1.32f : size.x / 2f;
             endorsement.LikeButtons.ArrangeButtons(0.3f, 2, xPosEndorse, -size.y / 2 + 0.6f);
-            HeadlineDisplay.Instance.endorsemntList.Add(endorsement);
+            HeadlineDisplay.Instance.endorsementList.Add(endorsement);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Doom_Scroll
 
         public List<Headline> AllNewsList { get; private set; }
         public Dictionary<byte, Tuple<int, int>> PlayerScores;
-        public List<HeadlineEndorsement> endorsemntList = new List<HeadlineEndorsement>();
+        public List<HeadlineEndorsement> endorsementList = new List<HeadlineEndorsement>();
 
         private HudManager hudManagerInstance;
 
@@ -229,7 +229,7 @@ namespace Doom_Scroll
 
         public void UpdateEndorsementList(string postId, bool isEndorse, bool isAddition)
         {
-            foreach (HeadlineEndorsement headline in endorsemntList)
+            foreach (HeadlineEndorsement headline in endorsementList)
             {
                 DoomScroll._log.LogInfo("POST ID: " + postId + ", ID OF NEXT POST IN THE LIST: " + headline.Id);
                 if (headline.Id == postId)
