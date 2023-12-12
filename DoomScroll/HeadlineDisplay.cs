@@ -41,11 +41,11 @@ namespace Doom_Scroll
         {
             hudManagerInstance = HudManager.Instance;
             ResetHeadlineVotes();
-           /* numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
+            numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            newsPageHolder = new Pageable(parent, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable */
+            newsPageHolder = new Pageable(parent, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable
         }
 
         public void CheckForShareClicks()
@@ -204,15 +204,15 @@ namespace Doom_Scroll
 
         public void HideNews()
         {
-            /*if (newsPageHolder != null)
+            if (newsPageHolder != null)
             {
                 newsPageHolder.HidePage();
-            }*/
+            }
 
-            foreach(Headline headline in AllNewsList)
+            /*foreach(Headline headline in AllNewsList)
             {
                 headline.Card.ActivateCustomUI(false);
-            }
+            }*/
         }
 
         public Headline GetNewsByID(int id)
