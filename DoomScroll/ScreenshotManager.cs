@@ -7,6 +7,7 @@ using System.Linq;
 using Hazel;
 using System.Threading.Tasks;
 using Doom_Scroll.Common;
+using Iced.Intel;
 
 namespace Doom_Scroll
 {
@@ -32,11 +33,13 @@ namespace Doom_Scroll
         private CustomButton m_cameraButton;
         private CustomButton m_captureScreenButton;
         private Tooltip m_cameraButtonTooltip;
+       
 
         private Camera mainCamrea;
         public int Screenshots { get; private set; }
-        private int m_maxPictures;
+        // private int m_maxPictures = 3;
         public bool IsCameraOpen { get; private set; }
+        private List<byte> screenshotWaitlist;
 
         private Dictionary<int, byte[]> AllScreenshots;
         private ScreenshotManager()
@@ -44,9 +47,9 @@ namespace Doom_Scroll
             mainCamrea = Camera.main;
             hudManagerInstance = HudManager.Instance;
             Screenshots = 0;
-            m_maxPictures = 3;
             IsCameraOpen = false;
             AllScreenshots = new Dictionary<int, byte[]>();
+            screenshotWaitlist = new List<byte>();
             InitializeManager();
             DoomScroll._log.LogInfo("SCREENSHOT MANAGER CONSTRUCTOR");
         }
@@ -59,7 +62,8 @@ namespace Doom_Scroll
 
             m_cameraButton.ButtonEvent.MyAction += OnClickCamera;
             m_captureScreenButton.ButtonEvent.MyAction += OnClickCaptureScreenshot;
-            ActivateCameraButton(false);
+            EnableCameraButton(false); //disable camera btn
+            ActivateCameraButton(false); //hide camera btn
         }
        
         private void CaptureScreenshot()
@@ -121,11 +125,11 @@ namespace Doom_Scroll
                 HudManager.Instance.SetHudActive(true);
             }
             else
-            {
+            {   // close news form if oopen
                 if (HeadlineManager.Instance.NewsModal.IsModalOpen) 
                 {
                     HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction(); 
-                } // close news form if oopen
+                } 
                 UIOverlay.ActivateCustomUI(true);
                 m_captureScreenButton.EnableButton(true);
                 IsCameraOpen = true;
@@ -137,6 +141,11 @@ namespace Doom_Scroll
         {
             m_cameraButton.ActivateCustomUI(value); 
         }
+
+        public void EnableCameraButton(bool value)
+        {
+            m_cameraButton.EnableButton(value);
+        }
         public void OnClickCamera()
         {
             ToggleCamera();
@@ -147,16 +156,17 @@ namespace Doom_Scroll
             if (!m_cameraButton.IsActive) { DoomScroll._log.LogInfo("NO CAM"); return; }
             CaptureScreenshot();
             ToggleCamera();
+            EnableCameraButton(false);
 
-            if (Screenshots == m_maxPictures)
+            /*if (Screenshots == m_maxPictures)
             {
-                m_cameraButton.EnableButton(false);
-            }
+                EnableCameraButton(false);
+            }*/
         }
 
         public void CheckButtonClicks()
         {
-            if (hudManagerInstance == null) return;
+            if (hudManagerInstance == null || !UIOverlay.UIGameObject || !m_cameraButton.IsEnabled) return;
             // Replace sprite on mouse hover for both buttons
             m_cameraButton.ReplaceImgageOnHover();
             m_captureScreenButton.ReplaceImgageOnHover();
@@ -323,6 +333,44 @@ namespace Doom_Scroll
             messageWriter.EndMessage();
         }
 
+        // Selecting player to take a screenshot
+        public void AddPlayerToTheWaitList(byte playerId) 
+        {
+            screenshotWaitlist.Add(playerId);
+        }
+
+        public void SelectAPlayerToTakeScreenshot() // only called by the host
+        {
+            bool gotAPlayer = false;
+            do
+            {
+                int index = UnityEngine.Random.Range(0, screenshotWaitlist.Count);
+                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(screenshotWaitlist[index]);
+                if (player != null) //player is still in the game
+                {
+                    PlayerCanScreenshot(player.PlayerId);
+                    RPCPlayerCanScreenshot(player.PlayerId);
+                    gotAPlayer = true;
+                }
+                 
+            } while (!gotAPlayer);
+        }
+
+        public void PlayerCanScreenshot(byte playerId)
+        {
+            screenshotWaitlist.Remove(playerId);
+            if(playerId == PlayerControl.LocalPlayer.PlayerId) 
+            {
+                EnableCameraButton(true);
+            }
+        }
+
+        public void RPCPlayerCanScreenshot(byte player)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SETPLAYERFORSCREENSHOT, (SendOption)1);
+            messageWriter.Write(player);
+            messageWriter.EndMessage();
+        }
         public void Reset()
         {
             Screenshots = 0;
@@ -334,6 +382,7 @@ namespace Doom_Scroll
                 InitializeManager();
             }
             AllScreenshots.Clear();
+            screenshotWaitlist.Clear();    
             DoomScroll._log.LogInfo("SCREENSHOT MANAGER RESET");
         }
     }

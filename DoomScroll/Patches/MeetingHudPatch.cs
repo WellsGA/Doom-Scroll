@@ -94,7 +94,7 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("Close")]
         public static void PostfixClose()
         {
-            // calculate vote
+            // VOTING
             FolderManager.Instance.CloseFolderOverlay();
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -102,7 +102,11 @@ namespace Doom_Scroll.Patches
                 results += player.name + ": " + HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId);
             }
             DoomScroll._log.LogInfo(results); // debug
-            
+            // SCREENSHOT
+            if (AmongUsClient.Instance.AmHost)
+            {
+                ScreenshotManager.Instance.SelectAPlayerToTakeScreenshot();
+            }
         }
 
         [HarmonyPostfix]

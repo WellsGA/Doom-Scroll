@@ -10,6 +10,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        SETPLAYERFORSCREENSHOT = 236,
         COMPLETEDUMMYTASK = 237,
         SETDUMMYTASKS = 238,
         ENQUEUEIMAGE = 239,
@@ -275,6 +276,11 @@ namespace Doom_Scroll.Patches
                         {
                             GameDataPatch.UpdateBlankHeadlineTaskCompletion(reader.ReadByte());
                         }
+                        break;
+                    }
+                case (byte)CustomRPC.SETPLAYERFORSCREENSHOT:
+                    {
+                        ScreenshotManager.Instance.PlayerCanScreenshot(reader.ReadByte());
                         break;
                     }
             }

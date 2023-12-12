@@ -101,7 +101,7 @@ namespace Doom_Scroll.Patches
                 HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
             }
-
+            // HEADLINES
             // HeadlineManager.Instance.CanPostNews(false); // cannot create news
             if (PlayerControl.LocalPlayer.AmOwner)
             {
@@ -123,7 +123,8 @@ namespace Doom_Scroll.Patches
                 GameLogger.Write(GameLogger.GetTime() + " - " + ((reporter != null) ? reporter.ToString() + " called for a meeting." : " Meeting was called"));
             }
             DoomScroll._log.LogInfo(HeadlineManager.Instance.ToString()); // debug
-
+            // SCREENSHOTS
+            ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
         }
 
         [HarmonyPostfix]

@@ -15,6 +15,13 @@ namespace Doom_Scroll.Patches
         public static byte headlineTaskID { get; private set; } = 254;
 
         [HarmonyPostfix]
+        [HarmonyPatch("AddPlayer")]
+        public static void PostfixAddPlayer(PlayerControl pc) 
+        {
+            ScreenshotManager.Instance.AddPlayerToTheWaitList(pc.PlayerId); // fills up the waitlist for screenshot taking
+        }
+
+        [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
         public static void PostfixSetTasks(ref byte playerId)
         {

@@ -37,8 +37,8 @@ namespace Doom_Scroll.Patches
             SecondaryWinConditionManager.SetSecondaryWinConditions();
             // HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
 
-            //Task stuff
-
+            //Select first player to share screenshot
+            ScreenshotManager.Instance.SelectAPlayerToTakeScreenshot();
         }
 
         public static void PrintAllTasksToConsole(ShipStatus instance)
