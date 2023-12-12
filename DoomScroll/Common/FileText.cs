@@ -56,7 +56,7 @@ namespace Doom_Scroll.Common
                 case FileTextType.NEWS:
                     {
                         HeadlineDisplay.Instance.HideNews();
-                        //NewsFeedManager.Instance.HidePageButtons();
+                        //HeadlineDisplay.Instance.HidePageButtons();
                         break;
                     }
             }

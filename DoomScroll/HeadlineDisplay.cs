@@ -166,14 +166,7 @@ namespace Doom_Scroll
         }
         public void DisplayHeadlineInFolder()
         {
-            Vector3 pos = new Vector3(0, FolderManager.Instance.GetFolderArea().GetSize().y / 2 - 0.8f, -10);
-            foreach (Headline news in AllNewsList)
-            {
-                pos.y -= news.Card.GetSize().y + 0.05f;
-                news.Card.SetLocalPosition(pos);
-                news.DisplayCardButtons(false);
-                news.Card.ActivateCustomUI(true);
-            }
+            DisplayNews();
         }
         public void DisplayHeadlinesForVote(SpriteRenderer parent)
         {
