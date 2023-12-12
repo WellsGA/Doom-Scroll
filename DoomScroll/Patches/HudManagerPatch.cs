@@ -90,6 +90,8 @@ namespace Doom_Scroll.Patches
         public static void PrefixOpenMeetingRoom(PlayerControl reporter)
         {
             DoomScroll._log.LogInfo("MEETING OPENED");
+            // SCREENSHOTS
+            ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
             if (ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ToggleCamera();
@@ -118,13 +120,10 @@ namespace Doom_Scroll.Patches
                 }
                 // selects new players to post news
                 //HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
-
                 // game log 
                 GameLogger.Write(GameLogger.GetTime() + " - " + ((reporter != null) ? reporter.ToString() + " called for a meeting." : " Meeting was called"));
             }
-            DoomScroll._log.LogInfo(HeadlineManager.Instance.ToString()); // debug
-            // SCREENSHOTS
-            ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
+            DoomScroll._log.LogInfo(HeadlineManager.Instance.ToString()); // debug          
         }
 
         [HarmonyPostfix]
