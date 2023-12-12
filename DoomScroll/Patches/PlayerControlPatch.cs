@@ -90,6 +90,23 @@ namespace Doom_Scroll.Patches
         }
 
         [HarmonyPrefix]
+        [HarmonyPatch("Exiled")]
+        public static bool PrefixExiled()
+        {
+            return false;
+        }
+
+        public static void DoomScrollExiled(PlayerControl player)
+        {
+            player.Die(DeathReason.Exile, true);
+            if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+            {
+                DoomScroll._log.LogInfo("Self was exiled!");
+                StatsManager.Instance.IncrementStat(StringNames.StatsTimesEjected);
+            }
+        }
+
+            [HarmonyPrefix]
         [HarmonyPatch("HandleRpc")]
         public static void PrefixHandleRpc([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader, PlayerControl __instance)
         {

@@ -192,6 +192,17 @@ namespace Doom_Scroll.Patches
             DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting = DoomScrollVictoryManager.CheckVotingSuccess();
 
             //Reset exile stuff
+            if (OriginalExiledPlayer != null && !_exiledWasModified)
+            {
+                foreach (PlayerControl exiled in PlayerControl.AllPlayerControls)
+                {
+                    if (exiled.PlayerId == OriginalExiledPlayer.PlayerId)
+                    {
+                        PlayerControlPatch.DoomScrollExiled(exiled);
+                    }
+                }
+            }
+
             OriginalExiledPlayer = null;
             _exiledWasModified = false;
         }
