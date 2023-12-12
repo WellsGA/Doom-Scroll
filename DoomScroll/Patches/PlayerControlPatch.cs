@@ -93,6 +93,7 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("Exiled")]
         public static bool PrefixExiled()
         {
+            DoomScroll._log.LogInfo("Trying to stop Among Us EXILED method!!!");
             return false;
         }
 

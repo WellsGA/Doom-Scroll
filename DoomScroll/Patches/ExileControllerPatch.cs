@@ -198,6 +198,7 @@ namespace Doom_Scroll.Patches
                 {
                     if (exiled.PlayerId == OriginalExiledPlayer.PlayerId)
                     {
+                        DoomScroll._log.LogInfo("Calling DoomScroll exiled!!!");
                         PlayerControlPatch.DoomScrollExiled(exiled);
                     }
                 }
