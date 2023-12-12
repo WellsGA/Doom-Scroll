@@ -38,6 +38,7 @@ namespace Doom_Scroll.Patches
             // HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
 
             //Task stuff
+
         }
 
         public static void PrintAllTasksToConsole(ShipStatus instance)

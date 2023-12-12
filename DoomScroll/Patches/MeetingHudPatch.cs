@@ -29,7 +29,7 @@ namespace Doom_Scroll.Patches
                     {
                         DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(false); ;
                     }
-                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolders();
+                    if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolderOverlay();
                     if (playerVoters.Length > 0)
                     {
                         foreach (PlayerVoteArea playerVoteArea in playerVoters)
@@ -95,7 +95,7 @@ namespace Doom_Scroll.Patches
         public static void PostfixClose()
         {
             // calculate vote
-            FolderManager.Instance.CloseFolders();
+            FolderManager.Instance.CloseFolderOverlay();
             string results = "";
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {

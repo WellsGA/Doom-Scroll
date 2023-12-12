@@ -54,7 +54,7 @@ namespace Doom_Scroll
             bool isTrue = Random.value > 0.75f;
             if (isTrue)
             {
-                return CreateRandomTrueNews(player, protect);
+                return CreateRandomTrueNews(PlayerControl.LocalPlayer.PlayerId, player, protect);
             }
             else
             {
@@ -111,7 +111,7 @@ namespace Doom_Scroll
             return new Headline(id, 255, headline, false, source);
         }
 
-        public static Headline CreateRandomTrueNews(PlayerControl pl, bool protect)
+        public static Headline CreateRandomTrueNews(byte sender, PlayerControl pl, bool protect)
         {
             string headline = "";
             int randSource = Random.Range(0, NewsStrings.autoTrustSource.Length);
@@ -212,7 +212,7 @@ namespace Doom_Scroll
                 }
             }
             int id = PlayerControl.LocalPlayer.PlayerId * 10 + HeadlineManager.Instance.NewsPostedByLocalPLayer;
-            return new Headline(id, 255, headline, true, source);
+            return new Headline(id, sender, headline, true, source);
         }
 
         public static void UpdatePlayerVote(byte plyerId, string vote)

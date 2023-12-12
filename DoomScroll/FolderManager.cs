@@ -78,7 +78,7 @@ namespace Doom_Scroll
             {
                 if (m_folderArea.IsModalOpen)
                 {
-                    CloseFolders();
+                    CloseFolderOverlay();
                     DoomScroll._log.LogInfo("NEED TO CLOSE CURRENT FOLDER ");
                 }
                 m_folderToggleBtn.ActivateCustomUI(false);
@@ -160,6 +160,7 @@ namespace Doom_Scroll
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
             m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
             m_pathText = FolderOverlay.AddPath(m_folderArea.UIGameObject);
+            m_folderArea.CloseButton.ButtonEvent.MyAction += CloseFolder;
 
             // Tooltip in-folder setup
             m_screenshotFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideScreenshotsFolder", "Notice any clues? How can you use these\nphotos in your arguments?", 0.4f, 7.5f, new Vector3(0, -0.4f, 0), 1.5f);
@@ -290,15 +291,16 @@ namespace Doom_Scroll
             ChangeDirectory(m_previous);
         }
 
-        public void CloseFolders()
+        public void CloseFolderOverlay()
         {
-            if (m_folderArea.IsModalOpen)
-            {
-                ChangeDirectory(m_root);
-                m_folderArea.CloseButton.ButtonEvent.InvokeAction();
-                m_current.HideContent();
-                DoomScroll._log.LogInfo("MEETING OVER, FOLDER CLOSED");
-            }
+            m_folderArea.CloseButton.ButtonEvent.InvokeAction();         
+        }
+
+        public void CloseFolder()
+        {
+            ChangeDirectory(m_root);
+            m_current.HideContent();
+            DoomScroll._log.LogInfo("FOLDER CLOSED");
         }
 
         public void AddImageToScreenshots(int id, byte[] img)

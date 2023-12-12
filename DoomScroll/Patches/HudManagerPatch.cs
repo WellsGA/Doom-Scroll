@@ -106,11 +106,11 @@ namespace Doom_Scroll.Patches
             if (PlayerControl.LocalPlayer.AmOwner)
             {
                 // create a random news
-                if (Random.value > 0.25f)
+                if (Random.value > 0.33f)
                 {
                     bool protect = Random.value > 0.5f;
                     PlayerControl pl = PlayerControl.AllPlayerControls[Random.Range(0, PlayerControl.AllPlayerControls.Count)];
-                    HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomTrueNews(pl, protect));
+                    HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomTrueNews(255, pl, protect));
                 }
                 else
                 {
