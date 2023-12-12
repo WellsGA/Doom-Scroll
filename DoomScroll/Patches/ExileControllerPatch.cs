@@ -182,6 +182,7 @@ namespace Doom_Scroll.Patches
             scoreBoard.SetColor(Color.yellow);
 
             GameDataPatch.UpdateDummyVotingTaskCompletion(DoomScrollVictoryManager.CheckVotingSuccess());
+            DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting = DoomScrollVictoryManager.CheckVotingSuccess();
 
             //Reset exile stuff
             OriginalExiledPlayer = null;

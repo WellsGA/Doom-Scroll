@@ -9,9 +9,11 @@ namespace Doom_Scroll
     public static class DoomScrollVictoryManager
     {
         public static int LastMeetingNewsItemsCount = 0;
+        public static bool VotingTaskCompleteAsOfLastMeeting = false;
         public static void Reset()
         {
             LastMeetingNewsItemsCount = 0;
+            VotingTaskCompleteAsOfLastMeeting= false;
         }
         public static bool CheckVictory()
         {

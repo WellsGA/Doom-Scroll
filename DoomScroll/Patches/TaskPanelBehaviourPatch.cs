@@ -31,6 +31,17 @@ namespace Doom_Scroll.Patches
                 }
             }
 
+            if (DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting)
+            {
+                str += "\n<color=#00DD00FF>";
+                str += "Crewmate Voting: Everyone vote on headlines correctly</color>";
+            }
+            else
+            {
+                str += "\n<color=#FFFF00FF>";
+                str += "Crewmate Voting: Everyone vote on headlines correctly</color>";
+            }
+
             if (SecondaryWinConditionManager.LocalPLayerSWC != null)
             {
                 str = str + "<color=\"orange\">\nSWC: " + SecondaryWinConditionManager.LocalPLayerSWC.ToString() + "</color>";
