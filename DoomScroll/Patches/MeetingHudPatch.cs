@@ -169,6 +169,7 @@ namespace Doom_Scroll.Patches
                     DoomScroll._log.LogInfo("__args[1] is indeed a GameData.PlayerInfo");
                     ExileControllerPatch.OriginalExiledPlayer = (GameData.PlayerInfo)__args[1];
                     DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer is being set as: " + (GameData.PlayerInfo)__args[1] + ", " + ((GameData.PlayerInfo)__args[1]).PlayerName);
+                    __args[1] = null;
                 }
             }
             if (__args[2] != null)

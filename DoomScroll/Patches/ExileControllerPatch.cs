@@ -61,8 +61,9 @@ namespace Doom_Scroll.Patches
                     {
                         if (num2 > 1)
                         {
-                            if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor
+                            if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
                             {
+                                __args[0] = OriginalExiledPlayer;
                                 return true;
                             }
                             _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
@@ -72,8 +73,12 @@ namespace Doom_Scroll.Patches
                             _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
                         }
                     }
+                    else // IF THEY VOTED SOMEONE OUT AND THEY AREN'T WINNING FROM IT, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
+                    {
+                        __args[0] = OriginalExiledPlayer;
+                        return true;
+                    }
 
-                    __args[0] = null;
                     _exiledWasModified = true;
                     __instance.gameObject.GetComponent<MonoBehaviour>().StartCoroutine(__instance.Animate());
 
@@ -90,6 +95,8 @@ namespace Doom_Scroll.Patches
                     return false;
                 }
             }
+            // IF THEY VOTED CORRECTLY, THEY CAN VOTE OUT WHOEVER THEY WANT AND RUN THE REAL METHOD
+            __args[0] = OriginalExiledPlayer;
             return true;
         }
         [HarmonyPostfix]
