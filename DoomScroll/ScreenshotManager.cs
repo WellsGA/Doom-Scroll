@@ -145,6 +145,7 @@ namespace Doom_Scroll
         public void EnableCameraButton(bool value)
         {
             m_cameraButton.EnableButton(value);
+            Debug.Log("CAMERA ENABLED: " + value);
         }
         public void OnClickCamera()
         {

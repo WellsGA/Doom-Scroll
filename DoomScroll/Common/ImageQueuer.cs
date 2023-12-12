@@ -1,6 +1,7 @@
 ﻿using Doom_Scroll.Patches;
 using Hazel;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 
 namespace Doom_Scroll.Common
