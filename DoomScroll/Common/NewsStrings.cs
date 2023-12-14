@@ -14,7 +14,8 @@ namespace Doom_Scroll.Common
             "{X} just saved my puppy from a burning building!",
             "{X} just saved the ship from sabotage #hero",
             "{X} is a superhero sent to protect us we luv {X} <3  <3 <3",
-            "I can't believe {X} and {Y} are DATING #scandalous"
+            "I can't believe {X} and {Y} are DATING #scandalous",
+            "{X} is smart, funny, brilliant, can definitely kickflip"
         };
 
         // UNTRUSTWORTHY - frame
@@ -29,7 +30,8 @@ namespace Doom_Scroll.Common
             "{X} just stole my lunch from the fridge :(",
             "{X} KEPT ME UP ALL NIGHT! STOP PARTYING PLEASE",
             "{X} says {Y} hasn't done ANY tasks???? INSANE",
-            "I just caught {X} loitering near vents???"
+            "I just caught {X} loitering near vents???",
+            "I've never seen {X} kickflip even ONCE"
         };
 
         // 2) AUTO GENERATED
@@ -51,7 +53,7 @@ namespace Doom_Scroll.Common
             },
             new string[]
             {
-                 "\"{X} is no longer a suspect\", local investigators state." // role
+                 "\"{X} is not currently a suspect\", local investigators state." // role
             },
              new string[]
              {
@@ -93,7 +95,10 @@ namespace Doom_Scroll.Common
        {
            "HERO: {X} Saves Ship from Sabotage.",
            "{X} saves Puppy from Burning Building!",
-           "Streets safe again: Our very own innocent {X} didn't kill anyone last round!!!"
+           "Streets safe again: Our very own innocent {X} didn't kill anyone last round!!!",
+           "{X} Does Tasks Quickly, Votes Correctly Every Time.",
+           "{X} Finishes Tasks at \"World Record Pace\", Says Self-Proclaimed Task Expert.",
+           "Art Professor: \"As a doctor, I'm 100% certain that {X} is NOT an impostor.\""
        };
 
         // UNTRUSTWORTHY - frame
@@ -117,7 +122,10 @@ namespace Doom_Scroll.Common
             "BREAKING: {X} has only signed in to {#} tasks all game",
             "{X} Seen Loitering Near Vents.",
             "{X} Frustrated, Blames {Y} for Slow Task Completion",
-            "TENSION ON THE SHIP! {X} seen arguing with {Y}."
+            "TENSION ON THE SHIP! {X} seen arguing with {Y}.",
+            "{X} Has Done Zero Tasks AND Has Not Voted, Suspicious?",
+            "Economist: \"I diagnose {X} with the psychological profile of an impostor\""
+            
         };
 
         // SOURCES
@@ -131,7 +139,9 @@ namespace Doom_Scroll.Common
             "@{N}_1515386",
             "@REAL{N}",
             "@{N}official",
-            "@{NR}"
+            "@{NR}",
+            "@VersacePelligrino",
+            "@JMinietian | Journalist @SpaceshipNewsNetw0rk"
         };
 
 
@@ -144,7 +154,11 @@ namespace Doom_Scroll.Common
            "Zot Chronicles",
            "Julia Minnetian, Spaceship News Network Journalist",
            "Crew News",
-           "Versace Pelligrini | Reporter @BuffingtonPost"
+           "Versace Pelligrini | Reporter @BuffingtonPost",
+           "@JMinnetian | Journalist @SpaceshipNewsNetwork",
+           "@SpaceshipNewsNetwork",
+           "@VersacePelligrini",
+           "@BuffingtonPost"
 
        };
 
@@ -161,7 +175,10 @@ namespace Doom_Scroll.Common
            "The Gopher Report",
            "Vincenzo Moriarti, Amogus Weekly Editor-in-Chief",
            "Bobby Doubt, Host of The Gopher Report",
-           "@CelebNewsBot"
+           "@CelebNewsBot",
+           "@SusBot",
+           "@SpaceshipNewsNetw0rk",
+           "@BüffingtonPośt_"
        };
 
   }
