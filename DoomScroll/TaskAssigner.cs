@@ -152,23 +152,19 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
 
             List<CustomUI> taskCards = new List<CustomUI>();
-            for (int displayPageNum = 1; displayPageNum <= numPages; displayPageNum++)
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            foreach (AssignedTask taskItem in AssignedTasks)
             {
-                Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-                for (int currentTaskIndex = (displayPageNum - 1) * maxTaskItemsPerPage; currentTaskIndex < AssignedTasks.Count && currentTaskIndex < displayPageNum * maxTaskItemsPerPage; currentTaskIndex++)
-                // stops before index out of range and before printing tasks that should be on next page
-                {
-                    DoomScroll._log.LogInfo($"Current task Index: {currentTaskIndex}, AssignedTasks list Count: {AssignedTasks.Count}");
-                    AssignedTask task = AssignedTasks[currentTaskIndex];
-                    task.DisplayTaskCard();
-                    pos.y -= task.Card.GetSize().y + 0.05f;
-                    task.Card.SetLocalPosition(pos);
-                    task.Card.ActivateCustomUI(true);
-                    task.PostButton.ActivateCustomUI(true);
+                DoomScroll._log.LogInfo($"Current task: {taskItem.ToString()}");
+                AssignedTask task = taskItem;
+                task.DisplayTaskCard();
+                pos.y -= task.Card.GetSize().y + 0.05f;
+                task.Card.SetLocalPosition(pos);
+                task.Card.ActivateCustomUI(true);
+                task.PostButton.ActivateCustomUI(true);
 
-                    taskCards.Add(task.Card);
-                    task.Card.ActivateCustomUI(false); // unsure if necessary>
-                }
+                taskCards.Add(task.Card);
+                task.Card.ActivateCustomUI(false); // unsure if necessary>
             }
 
             // always show page 1 first

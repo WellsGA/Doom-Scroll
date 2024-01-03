@@ -113,21 +113,16 @@ namespace Doom_Scroll
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             List<CustomUI> newsCards = new List<CustomUI>();
-            
-            for (int displayPageNum = 1; displayPageNum <= numPages; displayPageNum++)
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            foreach (Headline newsPost in AllNewsList)
             {
-                Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
-                for (int currentNewsIndex = (displayPageNum - 1) * maxNewsItemsPerPage; currentNewsIndex < AllNewsList.Count && currentNewsIndex < displayPageNum * maxNewsItemsPerPage; currentNewsIndex++)
-                // stops before index out of range and before printing tasks that should be on next page
-                {
-                    DoomScroll._log.LogInfo($"Current News Index: {currentNewsIndex}, allnewsList Count: {AllNewsList.Count}");
-                    Headline news = AllNewsList[currentNewsIndex];
-                    pos.y -= news.Card.GetSize().y + 0.05f;
-                    news.Card.SetLocalPosition(pos);
-                    news.DisplayCardButtons(false);
-                    newsCards.Add(news.Card);
-                    news.Card.ActivateCustomUI(false); // unsure if necessary>
-                }
+                DoomScroll._log.LogInfo($"Current News: {newsPost.ToString()}");
+                Headline news = newsPost;
+                pos.y -= news.Card.GetSize().y + 0.05f;
+                news.Card.SetLocalPosition(pos);
+                news.DisplayCardButtons(false);
+                newsCards.Add(news.Card);
+                news.Card.ActivateCustomUI(false); // unsure if necessary>
             }
             // always show page 1 first
             if (newsPageHolder == null)
