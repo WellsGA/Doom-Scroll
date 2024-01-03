@@ -153,6 +153,7 @@ namespace Doom_Scroll
 
             List<CustomUI> taskCards = new List<CustomUI>();
             Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            int numOnPage = 0;
             foreach (AssignedTask taskItem in AssignedTasks)
             {
                 DoomScroll._log.LogInfo($"Current task: {taskItem.ToString()}");
@@ -165,6 +166,11 @@ namespace Doom_Scroll
 
                 taskCards.Add(task.Card);
                 task.Card.ActivateCustomUI(false); // unsure if necessary>
+                if (numOnPage >= maxTaskItemsPerPage)
+                {
+                    numOnPage = 0;
+                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                }
             }
 
             // always show page 1 first

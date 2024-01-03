@@ -114,6 +114,7 @@ namespace Doom_Scroll
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             List<CustomUI> newsCards = new List<CustomUI>();
             Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            int numOnPage = 0;
             foreach (Headline newsPost in AllNewsList)
             {
                 DoomScroll._log.LogInfo($"Current News: {newsPost.ToString()}");
@@ -123,6 +124,12 @@ namespace Doom_Scroll
                 news.DisplayCardButtons(false);
                 newsCards.Add(news.Card);
                 news.Card.ActivateCustomUI(false); // unsure if necessary>
+                numOnPage++;
+                if (numOnPage >= maxNewsItemsPerPage)
+                {
+                    numOnPage = 0;
+                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                }
             }
             // always show page 1 first
             if (newsPageHolder == null)
