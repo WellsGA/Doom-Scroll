@@ -211,5 +211,14 @@ namespace Doom_Scroll.Patches
             OriginalExiledPlayer = null;
             _exiledWasModified = false;
         }
+        [HarmonyPostfix]
+        [HarmonyPatch("WrapUp")]
+        public static void PostfixWrapUp(ExileController __instance)
+        {
+            if (_exiledWasModified)
+            {
+                __instance.ReEnableGameplay();
+            }
+        }
     }
 }
