@@ -367,7 +367,7 @@ namespace Doom_Scroll
             screenshotWaitlist.Remove(playerId);
             if(playerId == PlayerControl.LocalPlayer.PlayerId) 
             {
-                NotificationManager.QueuNotification("<color=\"red\">Now is your turn!\nTke a screenshot before the next meeting!");
+                NotificationManager.QueuNotification("<color=\"red\">Now is your turn!\n Take a screenshot before the next meeting!");
                 EnableCameraButton(true);
             }
         }
