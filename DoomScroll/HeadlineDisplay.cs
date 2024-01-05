@@ -46,7 +46,7 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            newsPageHolder = new Pageable(parent, new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable
+            newsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable
         }
 
         public void CheckForShareClicks()
@@ -136,7 +136,7 @@ namespace Doom_Scroll
             if (newsPageHolder == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
+                newsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
             }
             else
             {
@@ -150,11 +150,7 @@ namespace Doom_Scroll
         {
             // stop chat and voting, set screen for headline trust selection
             voteForHeadlinesTooltip = new Tooltip(glass.gameObject, "VoteForHeadlines", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 2.5f, .6f, new Vector3(-3.3f, 0, 0), 1.4f);
-            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
-            Sprite[] closeButtonImgs = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
-            CustomModal voteForHeadlinesModal = new CustomModal(glass.gameObject, "HeadlineVotingModal", spr, new CustomButton(glass.gameObject, "NonexistentHeadlineVotingModalToggler", closeButtonImgs), false);
-            voteForHeadlinesModal.ActivateCustomUI(true);
-            DisplayHeadlinesForVote(voteForHeadlinesModal);
+            DisplayHeadlinesForVote(glass);
             HasFinishedSetup = true;
             DoomScroll._log.LogInfo("SETUP OVER");
         }
@@ -175,14 +171,14 @@ namespace Doom_Scroll
         {
             DisplayNews();
         }
-        public void DisplayHeadlinesForVote(CustomModal parent)
+        public void DisplayHeadlinesForVote(SpriteRenderer parent)
         {
             List<CustomUI> newsCards = new List<CustomUI>();
             int numOnPage = 0;
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            Vector3 pos = new Vector3(0, parent.size.y / 2 - 0.8f, -10);
             foreach (Headline news in AllNewsList)
             {
-                news.SetParentAndSize(parent.UIGameObject, parent.GetSize());
+                news.SetParentAndSize(parent.gameObject, parent.size);
                 pos.y -= news.Card.GetSize().y + 0.05f;
                 news.Card.SetLocalPosition(pos);
                 news.DisplayCardButtons(true);
@@ -192,7 +188,7 @@ namespace Doom_Scroll
                 if (numOnPage >= maxNewsItemsPerPage)
                 {
                     numOnPage = 0;
-                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                    pos = new Vector3(0, parent.size.y / 2 - 0.8f, -10);
                 }
             }
             // always show page 1 first

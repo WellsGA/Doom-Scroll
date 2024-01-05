@@ -56,7 +56,7 @@ namespace Doom_Scroll
 
             // set up stuff for folder display, paging through. Set it false for now because not necessary yet.
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            taskPageHolder = new Pageable(parent, new List<CustomUI>(), maxTaskItemsPerPage); // sets up an empty pageable 
+            taskPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxTaskItemsPerPage); // sets up an empty pageable 
         }
 
         public void ActivatePanel(bool flag) 
@@ -177,7 +177,7 @@ namespace Doom_Scroll
             if (taskPageHolder == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                taskPageHolder = new Pageable(parent, taskCards, maxTaskItemsPerPage); // sets up an empty pageable 
+                taskPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), taskCards, maxTaskItemsPerPage); // sets up an empty pageable 
             }
             else
             {
