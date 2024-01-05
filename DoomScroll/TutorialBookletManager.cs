@@ -110,7 +110,6 @@ namespace Doom_Scroll
             {
                 GameObject settingsButton = hudManagerInstance.SettingsButton.gameObject;
                 CreateTutorialBookletOverlayUI(false, settingsButton);
-                m_tutorialBookletToggleBtn.ActivateCustomUI(true);
                 DoomScroll._log.LogInfo("Tryna add tutorial booklet to hud settings button.");
             }
             InitTutorialBookletStructure();
@@ -120,9 +119,9 @@ namespace Doom_Scroll
             //GameObject chatScreen = lobbyBehaviourInstance.Chat.OpenKeyboardButton.transform.parent.gameObject;
             m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(inLobby, parent);
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += TogglePager;
-            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(parent, m_tutorialBookletToggleBtn);
+            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(inLobby, parent, m_tutorialBookletToggleBtn);
             m_tutorialBookletArea.CloseButton.ButtonEvent.MyAction += ClosePager;
-            tutorialBookletPager = new Pageable(m_tutorialBookletArea, new List<CustomUI>(), 1, false);
+            tutorialBookletPager = new Pageable(m_tutorialBookletArea.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), 1, false);
         }
         private void InitTutorialBookletStructure()
         {

@@ -25,25 +25,31 @@ namespace Doom_Scroll.UI
                 HudManager hud = HudManager.Instance;
                 DoomScroll._log.LogInfo("TRYING TO ADD TUTORIAL BOOKLET BUTTON TO HUDMANAGER INSTEAD OF LOBBY.");
                 //   NEW CODE TO SET UP BUTTON:
-                Vector3 position = new Vector3(-3f, -3f, 0);
+                Vector3 position = new Vector3(-8f, -6f, 0);
                 Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialBookletToggle.png", ImageLoader.slices2);
                 CustomButton tutorialBookletBtn = new CustomButton(parent, "TutorialBookletToggleButton", btnSprites, position, size.x);
-                return tutorialBookletBtn;
-                tutorialBookletBtn.ActivateCustomUI(true);
-
                 return tutorialBookletBtn;
             }
         }
 
-        public static CustomModal CreateTutorialBookletOverlay(GameObject parent, CustomButton toggler)
+        public static CustomModal CreateTutorialBookletOverlay(bool inLobby, GameObject parent, CustomButton toggler)
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
             Vector2 bounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
             Vector2 size = bounds * 1.15f;
             // create the overlay background
             CustomModal tutorialBookletOverlay = new CustomModal(parent, "TutorialBookletOverlay", spr, toggler, true);
-            tutorialBookletOverlay.SetLocalPosition(new Vector3(0f, 2.2f, -50f));
-            tutorialBookletOverlay.SetSize(size);
+
+            if (inLobby)
+            {
+                tutorialBookletOverlay.SetLocalPosition(new Vector3(0f, 2.2f, -50f));
+                tutorialBookletOverlay.SetSize(size);
+            }
+            else
+            {
+                tutorialBookletOverlay.SetLocalPosition(new Vector3(-3f, -2.2f, -50f));
+                tutorialBookletOverlay.SetSize(size);
+            }
             // deactivate by default
             tutorialBookletOverlay.ActivateCustomUI(false);
             return tutorialBookletOverlay;

@@ -28,7 +28,7 @@ namespace Doom_Scroll.Patches
             TutorialBookletManager.Instance.Reset();
 
             // Tutorial Mode toggle button
-            m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-3f, 0, 0));
+            m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-9f, -6f, 0));
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += ToggleTutorialButtonSelected;
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
             m_tutorialModeToggleBtn.SelectButton(Tooltip.TutorialModeOn);
@@ -37,7 +37,7 @@ namespace Doom_Scroll.Patches
             m_tutorialModeToggleBtn.ActivateCustomUI(true);
 
             // Tooltip
-            taskPanelSWCTooltip = new Tooltip(__instance.TaskPanel.gameObject, "TaskPanelSWC", "This is your secondary objective. You must succeed as\ncrew/imposter AND complete this objective to win.\nProtect = Keep target player alive.\nFrame = Make sure target player is eliminated.", 0.65f, 4f, new Vector3(1.38f, -2.6f, 0), 1f);
+            taskPanelSWCTooltip = new Tooltip(__instance.TaskPanel.gameObject, "TaskPanelSWC", "This is your secondary objective. You must succeed as\ncrew/imposter AND complete this objective to win.\nProtect = Keep target player alive.\nFrame = Make sure target player is eliminated.", 0.65f, 4f, new Vector3(1.38f, 2.6f, 0), 1f);
         }
 
         [HarmonyPostfix]
