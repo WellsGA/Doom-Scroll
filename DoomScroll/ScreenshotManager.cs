@@ -342,6 +342,7 @@ namespace Doom_Scroll
 
         public void SelectAPlayerToTakeScreenshot() // only called by the host
         {
+            if(screenshotWaitlist.Count <= 0) return;
             bool gotAPlayer = false;
             do
             {
