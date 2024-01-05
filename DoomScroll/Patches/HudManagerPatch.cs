@@ -89,10 +89,7 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("OpenMeetingRoom")]
         public static void PrefixOpenMeetingRoom(PlayerControl reporter)
         {
-            DoomScroll._log.LogInfo("MEETING OPENED");
-            // SCREENSHOTS
-            ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
-            if (ScreenshotManager.Instance.IsCameraOpen)
+            /*if (ScreenshotManager.Instance.IsCameraOpen)
             {
                 ScreenshotManager.Instance.ToggleCamera();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED");
@@ -102,10 +99,10 @@ namespace Doom_Scroll.Patches
                 HeadlineManager.Instance.CloseFormItems();
                 HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction();
                 DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
-            }
+            } */
             // HEADLINES
             // HeadlineManager.Instance.CanPostNews(false); // cannot create news
-            if (PlayerControl.LocalPlayer.AmOwner)
+            if (PlayerControl.LocalPlayer.AmOwner)  // OpenMeetingRoom is called by the host only - but just in case
             {
                 // create a random news
                 if (Random.value > 0.33f)
@@ -118,12 +115,9 @@ namespace Doom_Scroll.Patches
                 {
                     HeadlineManager.Instance.RPCSandNews(HeadlineCreator.CreateRandomFakeNews());
                 }
-                // selects new players to post news
-                //HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
                 // game log 
                 GameLogger.Write(GameLogger.GetTime() + " - " + ((reporter != null) ? reporter.ToString() + " called for a meeting." : " Meeting was called"));
-            }
-            DoomScroll._log.LogInfo(HeadlineManager.Instance.ToString()); // debug          
+            }        
         }
 
         [HarmonyPostfix]

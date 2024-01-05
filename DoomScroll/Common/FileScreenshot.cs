@@ -13,7 +13,7 @@ namespace Doom_Scroll.Common
         private Sprite m_Screenshot;
         private byte[] m_content;
         private int m_id;
-        public int Id { get { return m_id; } } // this was not set and was always null
+        public int Id { get { return m_id; } }
         private bool m_shareable;
 
         public FileScreenshot(string parentPath, string name, CustomModal parentPanel, byte[] image, int id) : base(parentPath, name, parentPanel)
@@ -22,7 +22,7 @@ namespace Doom_Scroll.Common
             m_content = image;
             Sprite[] shareBtn = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.shareButton.png", ImageLoader.slices2);
             m_Screenshot = ImageLoader.ReadImageFromByteArray(image);
-            Sprite[] newBUttonSprites = { shareBtn[0], shareBtn[1], shareBtn[0], m_Screenshot };
+            Sprite[] newBUttonSprites = { m_Screenshot, shareBtn[1], shareBtn[0], shareBtn[0] };
             Btn.ResetButtonImages(newBUttonSprites);
             Btn.SetButtonScale(Vector3.one);
             Btn.Label.SetText(name);

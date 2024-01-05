@@ -353,6 +353,10 @@ namespace Doom_Scroll
                     RPCPlayerCanScreenshot(player.PlayerId);
                     gotAPlayer = true;
                 }
+                else
+                {
+                    screenshotWaitlist.RemoveAt(index); // remove disconnected player form the host's list
+                }
                  
             } while (!gotAPlayer);
         }
@@ -362,6 +366,7 @@ namespace Doom_Scroll
             screenshotWaitlist.Remove(playerId);
             if(playerId == PlayerControl.LocalPlayer.PlayerId) 
             {
+                NotificationManager.QueuNotification("<color=\"red\">Now is your turn!\nTke a screenshot before the next meeting!");
                 EnableCameraButton(true);
             }
         }

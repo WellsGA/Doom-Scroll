@@ -121,6 +121,8 @@ namespace Doom_Scroll.Patches
 
             playerVoters = __instance.GetComponentsInChildren<PlayerVoteArea>();
             HeadlineDisplay.Instance.ResetHeadlineVotes();
+
+            ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
         }
 
         [HarmonyPostfix]

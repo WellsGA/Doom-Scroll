@@ -38,7 +38,9 @@ namespace Doom_Scroll.Patches
             // HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
 
             //Select first player to share screenshot
-            ScreenshotManager.Instance.SelectAPlayerToTakeScreenshot();
+            //ScreenshotManager.Instance.SelectAPlayerToTakeScreenshot();
+            ScreenshotManager.Instance.PlayerCanScreenshot(PlayerControl.LocalPlayer.PlayerId);
+            ScreenshotManager.Instance.RPCPlayerCanScreenshot(PlayerControl.LocalPlayer.PlayerId);
         }
 
         public static void PrintAllTasksToConsole(ShipStatus instance)
