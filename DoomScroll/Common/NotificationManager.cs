@@ -25,7 +25,7 @@ namespace Doom_Scroll.Common
             isBroadcasting = true;
             CustomImage infoBackground = CreateInfoModal(NotificationQueue.Peek());
             DoomScroll._log.LogInfo("NOTICICATON ON");
-            await Task.Delay(3000);
+            await Task.Delay(5000);
             // code after delay
             Object.Destroy(infoBackground.UIGameObject);
             NotificationQueue.Dequeue();
