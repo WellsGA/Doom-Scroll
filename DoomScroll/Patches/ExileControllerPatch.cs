@@ -207,9 +207,6 @@ namespace Doom_Scroll.Patches
                     }
                 }
             }
-
-            OriginalExiledPlayer = null;
-            _exiledWasModified = false;
         }
         [HarmonyPostfix]
         [HarmonyPatch("WrapUp")]
@@ -219,6 +216,9 @@ namespace Doom_Scroll.Patches
             {
                 __instance.ReEnableGameplay();
             }
+
+            OriginalExiledPlayer = null;
+            _exiledWasModified = false;
         }
     }
 }
