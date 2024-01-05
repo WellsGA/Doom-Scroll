@@ -2,6 +2,7 @@
 using Doom_Scroll.UI;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 namespace Doom_Scroll
 {
@@ -15,7 +16,7 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
-        private readonly int maxNewsItemsPerPage = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private readonly int maxNewsItemsPerPage = 2; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
         public Dictionary<byte, Tuple<int, int>> PlayerScores;
@@ -149,7 +150,11 @@ namespace Doom_Scroll
         {
             // stop chat and voting, set screen for headline trust selection
             voteForHeadlinesTooltip = new Tooltip(glass.gameObject, "VoteForHeadlines", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 2.5f, .6f, new Vector3(-3.3f, 0, 0), 1.4f);
-            DisplayHeadlinesForVote(glass);
+            Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
+            Sprite[] closeButtonImgs = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.closeButton.png") };
+            CustomModal voteForHeadlinesModal = new CustomModal(glass.gameObject, "HeadlineVotingModal", spr, new CustomButton(glass.gameObject, "NonexistentHeadlineVotingModalToggler", closeButtonImgs), false);
+            voteForHeadlinesModal.ActivateCustomUI(true);
+            DisplayHeadlinesForVote(voteForHeadlinesModal);
             HasFinishedSetup = true;
             DoomScroll._log.LogInfo("SETUP OVER");
         }
@@ -170,17 +175,38 @@ namespace Doom_Scroll
         {
             DisplayNews();
         }
-        public void DisplayHeadlinesForVote(SpriteRenderer parent)
+        public void DisplayHeadlinesForVote(CustomModal parent)
         {
-            Vector3 pos = new Vector3(0, parent.size.y / 2 - 0.8f, -10);
+            List<CustomUI> newsCards = new List<CustomUI>();
+            int numOnPage = 0;
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
             foreach (Headline news in AllNewsList)
             {
-                news.SetParentAndSize(parent.gameObject, parent.size);
+                news.SetParentAndSize(parent.UIGameObject, parent.GetSize());
                 pos.y -= news.Card.GetSize().y + 0.05f;
                 news.Card.SetLocalPosition(pos);
                 news.DisplayCardButtons(true);
-                news.Card.ActivateCustomUI(true);
+                newsCards.Add(news.Card);
+                news.Card.ActivateCustomUI(false); // unsure if necessary>
+                numOnPage++;
+                if (numOnPage >= maxNewsItemsPerPage)
+                {
+                    numOnPage = 0;
+                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                }
             }
+            // always show page 1 first
+            if (newsPageHolder == null)
+            {
+                DoomScroll._log.LogInfo($"Creating new pageable");
+                newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
+            }
+            else
+            {
+                DoomScroll._log.LogInfo($"Updating pageable");
+                newsPageHolder.UpdatePages(newsCards);
+            }
+            newsPageHolder.DisplayPage(1);
         }
 
         public void HideHeadlinesAfterVote()
