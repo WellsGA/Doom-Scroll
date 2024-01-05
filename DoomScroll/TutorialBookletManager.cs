@@ -47,6 +47,7 @@ namespace Doom_Scroll
         private string m_folderSystemText = "Headline Reports and the Sign-In Sheet are saved in the Folder System.\n During meetings, take a moment to investigate the evidence and see how\n it can help support your argument (or how it refutes someone else’s).\r\nTIP: Evaluating the evidence first will strengthen your arguments.";
 
         private LobbyBehaviour lobbyBehaviourInstance;
+        private HudManager hudManagerInstance;
 
         private static TutorialBookletManager _instance;
         public static TutorialBookletManager Instance
@@ -65,14 +66,15 @@ namespace Doom_Scroll
         {
             DoomScroll._log.LogInfo("Initializing tutorial booklet manager instance.");
             lobbyBehaviourInstance = LobbyBehaviour.Instance;
+            hudManagerInstance = HudManager.Instance;
             InitializeTutorialBookletManager();
             DoomScroll._log.LogInfo("TUTORIAL BOOKLET MANAGER CONSTRUCTOR");
         }
 
-        public void CheckForButtonClicks()
+        public void CheckForButtonClicks(bool inLobby)
         {
             //DoomScroll._log.LogInfo("Checking for tutorial booklet manager button clicks.");
-            if (lobbyBehaviourInstance == null || m_tutorialBookletToggleBtn == null) return;
+            if ((inLobby && lobbyBehaviourInstance == null) || m_tutorialBookletToggleBtn == null || (!inLobby && hudManagerInstance == null)) return;  
             // Change buttons icon on hover
             m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
             try
@@ -99,17 +101,26 @@ namespace Doom_Scroll
 
         private void InitializeTutorialBookletManager()
         {
-            if (lobbyBehaviourInstance == null) return;
-            CreateTutorialBookletOverlayUI();
+            if (lobbyBehaviourInstance != null)
+            {
+                GameObject bottomCodeText = GameObject.Find("GameRoomButton") ? GameObject.Find("GameRoomButton") : lobbyBehaviourInstance.gameObject;
+                CreateTutorialBookletOverlayUI(true, bottomCodeText);
+            }
+            else if (hudManagerInstance != null)
+            {
+                GameObject settingsButton = hudManagerInstance.SettingsButton.gameObject;
+                CreateTutorialBookletOverlayUI(false, settingsButton);
+                m_tutorialBookletToggleBtn.ActivateCustomUI(true);
+                DoomScroll._log.LogInfo("Tryna add tutorial booklet to hud settings button.");
+            }
             InitTutorialBookletStructure();
         }
-        private void CreateTutorialBookletOverlayUI()
+        private void CreateTutorialBookletOverlayUI(bool inLobby, GameObject parent)
         {
-            GameObject bottomCodeText = GameObject.Find("GameRoomButton") ? GameObject.Find("GameRoomButton") : lobbyBehaviourInstance.gameObject;
             //GameObject chatScreen = lobbyBehaviourInstance.Chat.OpenKeyboardButton.transform.parent.gameObject;
-            m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
+            m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(inLobby, parent);
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += TogglePager;
-            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText, m_tutorialBookletToggleBtn);
+            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(parent, m_tutorialBookletToggleBtn);
             m_tutorialBookletArea.CloseButton.ButtonEvent.MyAction += ClosePager;
             tutorialBookletPager = new Pageable(m_tutorialBookletArea, new List<CustomUI>(), 1, false);
         }
@@ -173,9 +184,10 @@ namespace Doom_Scroll
 
         public void Reset()
         {
-            if (lobbyBehaviourInstance == null)
+            if (lobbyBehaviourInstance == null || hudManagerInstance == null)
             {
                 lobbyBehaviourInstance = LobbyBehaviour.Instance;
+                hudManagerInstance = HudManager.Instance;
                 _instance = new TutorialBookletManager();
             }
             DoomScroll._log.LogInfo("TUTORIAL BOOKLET MANAGER RESET");

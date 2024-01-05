@@ -25,6 +25,7 @@ namespace Doom_Scroll.Patches
             HeadlineManager.Instance.Reset();
             HeadlineDisplay.Instance.Reset();
             SecondaryWinConditionManager.Reset();
+            TutorialBookletManager.Instance.Reset();
 
             // Tutorial Mode toggle button
             m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-3f, 0, 0));
@@ -46,6 +47,11 @@ namespace Doom_Scroll.Patches
             ScreenshotManager.Instance.CheckButtonClicks();
             HeadlineManager.Instance.CheckButtonClicks();
             HudManagerCheckForButtonClicks();
+
+            if (TutorialBookletManager.Instance != null && LobbyBehaviourPatch.gameBegun)
+            {
+                TutorialBookletManager.Instance.CheckForButtonClicks(false);
+            }
 
             if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
             {
@@ -82,6 +88,7 @@ namespace Doom_Scroll.Patches
             }
             HeadlineManager.Instance.ActivateNewsButton(isActive);
             DoomScroll._log.LogInfo("HudManager.SetHudActive ---- NEWS BUTTON ACTIVE: " + isActive);
+
 
         }
 

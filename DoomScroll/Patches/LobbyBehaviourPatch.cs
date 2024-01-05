@@ -71,7 +71,7 @@ namespace Doom_Scroll.Patches
         {
             if (!gameBegun && playerCountText != null && playerCountText.activeSelf)
             {
-                tutorialBookletManagerInstance.CheckForButtonClicks();
+                tutorialBookletManagerInstance.CheckForButtonClicks(true);
             }
         }
     }
