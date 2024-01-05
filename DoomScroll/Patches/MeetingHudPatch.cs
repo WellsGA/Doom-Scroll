@@ -4,6 +4,7 @@ using HarmonyLib;
 using Hazel;
 using UnityEngine;
 using System;
+using System.Reflection;
 
 namespace Doom_Scroll.Patches
 {
@@ -181,11 +182,6 @@ namespace Doom_Scroll.Patches
             if (__args[2] != null)
             {
                 DoomScroll._log.LogInfo("__args[2] is not null.");
-                if ((bool)__args[2] != null)
-                {
-                    DoomScroll._log.LogInfo("__args[2] is indeed a bool");
-                    DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Tie is being set as: " + ((bool)__args[2]).ToString());
-                }
             }
             
         }
