@@ -138,7 +138,7 @@ namespace Doom_Scroll
             tutorialModeBtn.ButtonEvent.MyAction += Tooltip.ToggleTutorialMode;
 
             // Add tooltip as well
-            Tooltip toggleBtnTooltip = new Tooltip(tutorialModeBtn.UIGameObject, "TutorialModeToggleBtn", "Click this button to activate or\ndeactivate Tooltips such as this one", 0.5f, 3.3f, new Vector3(0, -0.5f, 0), 1f);
+            Tooltip toggleBtnTooltip = new Tooltip(tutorialModeBtn.UIGameObject, "TutorialModeToggleBtn", "Click this button to activate or\ndeactivate Tooltips such as this one", 0.5f, 3.3f, new Vector3(0, 0.5f, 0), 1f);
             toggleBtnTooltip.ActivateToolTip(TutorialModeOn);
 
             return tutorialModeBtn;

@@ -28,7 +28,7 @@ namespace Doom_Scroll.Patches
             TutorialBookletManager.Instance.Reset();
 
             // Tutorial Mode toggle button
-            m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-9f, -6f, 0));
+            m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-10.6f, -6.6f, 0));
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += ToggleTutorialButtonSelected;
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
             m_tutorialModeToggleBtn.SelectButton(Tooltip.TutorialModeOn);
@@ -48,7 +48,7 @@ namespace Doom_Scroll.Patches
             HeadlineManager.Instance.CheckButtonClicks();
             HudManagerCheckForButtonClicks();
 
-            if (TutorialBookletManager.Instance != null && LobbyBehaviourPatch.gameBegun)
+            if (TutorialBookletManager.Instance != null)
             {
                 TutorialBookletManager.Instance.CheckForButtonClicks(false);
             }

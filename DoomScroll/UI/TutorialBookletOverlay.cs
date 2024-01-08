@@ -25,7 +25,7 @@ namespace Doom_Scroll.UI
                 HudManager hud = HudManager.Instance;
                 DoomScroll._log.LogInfo("TRYING TO ADD TUTORIAL BOOKLET BUTTON TO HUDMANAGER INSTEAD OF LOBBY.");
                 //   NEW CODE TO SET UP BUTTON:
-                Vector3 position = new Vector3(-8f, -6f, 0);
+                Vector3 position = new Vector3(-9.7f, -6.6f, 0);
                 Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tutorialBookletToggle.png", ImageLoader.slices2);
                 CustomButton tutorialBookletBtn = new CustomButton(parent, "TutorialBookletToggleButton", btnSprites, position, size.x);
                 return tutorialBookletBtn;
@@ -47,7 +47,7 @@ namespace Doom_Scroll.UI
             }
             else
             {
-                tutorialBookletOverlay.SetLocalPosition(new Vector3(-3f, -2.2f, -50f));
+                tutorialBookletOverlay.SetLocalPosition(new Vector3(-5.75f, -3.5f, -50f));
                 tutorialBookletOverlay.SetSize(size);
             }
             // deactivate by default
