@@ -16,7 +16,7 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
-        private readonly int maxNewsItemsPerPage = 2; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private readonly int maxNewsItemsPerPage = 1; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
         public Dictionary<byte, Tuple<int, int>> PlayerScores;
@@ -46,7 +46,7 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            newsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable
+            newsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable  
         }
 
         public void CheckForShareClicks()
@@ -195,7 +195,7 @@ namespace Doom_Scroll
             if (newsPageHolder == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
+                newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable 
             }
             else
             {

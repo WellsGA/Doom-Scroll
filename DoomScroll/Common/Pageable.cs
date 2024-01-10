@@ -21,14 +21,14 @@ namespace Doom_Scroll.Common
         private CustomButton m_nextBtn;
         private CustomButton m_backBtn;
 
-        public Pageable(SpriteRenderer parent, List<CustomUI> items, int itemsPerPage, bool inFolderSystem = true)
+        public Pageable(SpriteRenderer parent, List<CustomUI> items, int itemsPerPage, bool inFolderSystem = true, bool headlineVoting = false)
         {
             // set up page buttons
             DoomScroll._log.LogInfo("Tryna add buttons");
             DoomScroll._log.LogInfo(parent.gameObject.name);
-            m_nextBtn = AddRightButton(parent, inFolderSystem);
+            m_nextBtn = AddRightButton(parent, inFolderSystem, headlineVoting);
             DoomScroll._log.LogInfo("Right button added");
-            m_backBtn = AddLeftButton(parent, inFolderSystem);
+            m_backBtn = AddLeftButton(parent, inFolderSystem, headlineVoting);
             m_nextBtn.SetScale(new Vector3(-1, 1, 1));
             DoomScroll._log.LogInfo("Left button added");
             m_nextBtn.ButtonEvent.MyAction += OnClickRightButton;
@@ -185,23 +185,27 @@ namespace Doom_Scroll.Common
             }
         }
 
-        public static CustomButton AddLeftButton(SpriteRenderer parent, bool inFolderSystem)
+        public static CustomButton AddLeftButton(SpriteRenderer parent, bool inFolderSystem, bool headlineVoting = false)
         {
             float yPos = inFolderSystem ? -0.3f : 1.2f;
+            yPos = headlineVoting ? 0f : yPos;
             Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize*0.35f;
             Vector2 parentSize = parent.size;
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 backPosition = new Vector3(-parentSize.x * 0.41f, yPos, -5f);
+            backPosition = headlineVoting ? new Vector3(-0f, yPos, -25f) : backPosition;
             return new CustomButton(parent.gameObject, "Flip to prior page", backBtnImg, backPosition, customButtonSize.x);
 
         }
-        public static CustomButton AddRightButton(SpriteRenderer parent, bool inFolderSystem)
+        public static CustomButton AddRightButton(SpriteRenderer parent, bool inFolderSystem, bool headlineVoting = false)
         {
             float yPos = inFolderSystem ? -0.3f : 1.2f;
+            yPos = headlineVoting ? 0f : yPos;
             Vector2 customButtonSize = inFolderSystem ? buttonSize * 0.4f : buttonSize*0.35f;
             Vector2 parentSize = parent.size;
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 forwardPosition = new Vector3(parentSize.x * 0.41f, yPos, -5f);
+            forwardPosition = headlineVoting ? new Vector3(0f, yPos, -25f) : forwardPosition;
             return new CustomButton(parent.gameObject, "Flip to next page", backBtnImg, forwardPosition, customButtonSize.x);
 
         }
