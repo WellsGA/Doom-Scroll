@@ -24,7 +24,8 @@ namespace Doom_Scroll
 
         private HudManager hudManagerInstance;
 
-        private Pageable newsPageHolder;
+        private Pageable folderNewsPageHolder;
+        private Pageable votingNewsPageHolder;
         private static Tooltip voteForHeadlinesTooltip;
         private int numPages = 1;
 
@@ -46,7 +47,7 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
             // pagination
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            newsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable  
+            folderNewsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable
         }
 
         public void CheckForShareClicks()
@@ -133,17 +134,17 @@ namespace Doom_Scroll
                 }
             }
             // always show page 1 first
-            if (newsPageHolder == null)
+            if (folderNewsPageHolder == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                newsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
+                folderNewsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
             }
             else
             {
                 DoomScroll._log.LogInfo($"Updating pageable");
-                newsPageHolder.UpdatePages(newsCards);
+                folderNewsPageHolder.UpdatePages(newsCards);
             }
-            newsPageHolder.DisplayPage(1);
+            folderNewsPageHolder.DisplayPage(1);
 
         }
         public void SetUpVoteForHeadlines(SpriteRenderer glass)
@@ -192,10 +193,17 @@ namespace Doom_Scroll
                 }
             }
             // always show page 1 first
-            DoomScroll._log.LogInfo($"Creating new pageable");
-            newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable
-            newsPageHolder.UpdatePages(newsCards);
-            newsPageHolder.DisplayPage(1);
+            if (votingNewsPageHolder == null)
+            {
+                DoomScroll._log.LogInfo($"Creating new pageable");
+                votingNewsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable 
+            }
+            else
+            {
+                DoomScroll._log.LogInfo($"Updating pageable");
+                votingNewsPageHolder.UpdatePages(newsCards);
+            }
+            votingNewsPageHolder.DisplayPage(1);
         }
 
         public void HideHeadlinesAfterVote()
@@ -214,9 +222,9 @@ namespace Doom_Scroll
 
         public void HideNews()
         {
-            if (newsPageHolder != null)
+            if (folderNewsPageHolder != null)
             {
-                newsPageHolder.HidePage();
+                folderNewsPageHolder.HidePage();
             }
 
             /*foreach(Headline headline in AllNewsList)
@@ -281,9 +289,9 @@ namespace Doom_Scroll
 
         public void CheckForDisplayedNewsPageButtonClicks()
         {
-            if (newsPageHolder != null)
+            if (folderNewsPageHolder != null)
             {
-                newsPageHolder.CheckForDisplayedPageButtonClicks();
+                folderNewsPageHolder.CheckForDisplayedPageButtonClicks();
             }
         }
         public override string ToString()
