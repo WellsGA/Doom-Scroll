@@ -193,7 +193,7 @@ namespace Doom_Scroll.Common
             Vector2 parentSize = parent.size;
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 backPosition = new Vector3(-parentSize.x * 0.41f, yPos, -5f);
-            backPosition = headlineVoting ? new Vector3(-0f, yPos, -25f) : backPosition;
+            backPosition = headlineVoting ? new Vector3(-0.3f, yPos, -25f) : backPosition;
             return new CustomButton(parent.gameObject, "Flip to prior page", backBtnImg, backPosition, customButtonSize.x);
 
         }
@@ -205,7 +205,7 @@ namespace Doom_Scroll.Common
             Vector2 parentSize = parent.size;
             Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
             Vector3 forwardPosition = new Vector3(parentSize.x * 0.41f, yPos, -5f);
-            forwardPosition = headlineVoting ? new Vector3(0f, yPos, -25f) : forwardPosition;
+            forwardPosition = headlineVoting ? new Vector3(0.3f, yPos, -25f) : forwardPosition;
             return new CustomButton(parent.gameObject, "Flip to next page", backBtnImg, forwardPosition, customButtonSize.x);
 
         }

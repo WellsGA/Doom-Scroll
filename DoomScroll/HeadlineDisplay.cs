@@ -192,16 +192,9 @@ namespace Doom_Scroll
                 }
             }
             // always show page 1 first
-            if (newsPageHolder == null)
-            {
-                DoomScroll._log.LogInfo($"Creating new pageable");
-                newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable 
-            }
-            else
-            {
-                DoomScroll._log.LogInfo($"Updating pageable");
-                newsPageHolder.UpdatePages(newsCards);
-            }
+            DoomScroll._log.LogInfo($"Creating new pageable");
+            newsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable
+            newsPageHolder.UpdatePages(newsCards);
             newsPageHolder.DisplayPage(1);
         }
 
