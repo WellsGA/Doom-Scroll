@@ -208,7 +208,7 @@ namespace Doom_Scroll.Patches
 
 
         [HarmonyPrefix]
-        [HarmonyPatch("PrefixCastVote")]
+        [HarmonyPatch("CastVote")]
         public static bool PrefixCastVote(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)
         {
             if (AmongUsClient.Instance.AmHost)
