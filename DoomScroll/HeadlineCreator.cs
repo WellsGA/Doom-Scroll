@@ -11,7 +11,7 @@ namespace Doom_Scroll
     {
         private static Dictionary<byte, int> playerIDHasHelpedFixSabotage = new Dictionary<byte, int>();
         private static Dictionary<byte, bool> playerIDHasStartedSabotage = new Dictionary<byte, bool>();
-        public static Dictionary<byte, string> LastMeetingVotes { get; private set; } = new Dictionary<byte, string>();
+        public static Dictionary<byte, byte> LastMeetingVotes { get; private set; } = new Dictionary<byte, byte>();
 
         public static void AddToFixSabotage(byte id)
         {
@@ -200,7 +200,14 @@ namespace Doom_Scroll
                         {
                             if (LastMeetingVotes.ContainsKey(pl.PlayerId))
                             {
-                                headline = LastMeetingVotes[pl.PlayerId];
+                                string voter = GameData.Instance.GetPlayerById(pl.PlayerId) == null ? "some one" : GameData.Instance.GetPlayerById(pl.PlayerId).PlayerName;
+                                string suspect = GameData.Instance.GetPlayerById(LastMeetingVotes[pl.PlayerId]) == null ? "no one" : GameData.Instance.GetPlayerById(LastMeetingVotes[pl.PlayerId]).PlayerName;
+
+                                if (AmongUsClient.Instance.AmHost)
+                                {
+                                    GameLogger.Write(GameLogger.GetTime() + " - " + voter + " has voted for " + suspect);
+                                }
+                                headline = voter + " has voted for " + suspect;
                             }
                             else
                             {
@@ -215,9 +222,9 @@ namespace Doom_Scroll
             return new Headline(id, sender, headline, true, source);
         }
 
-        public static void UpdatePlayerVote(byte plyerId, string vote)
+        public static void UpdatePlayerVote(byte voterId, byte suspectId)
         {
-            LastMeetingVotes[plyerId] = vote;
+            LastMeetingVotes[voterId] = suspectId;
         }
 
         private static string ReplaceSymbolsInHeadline(string raw, PlayerControl pl, int count)

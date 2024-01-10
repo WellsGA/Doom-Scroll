@@ -19,7 +19,7 @@ namespace Doom_Scroll.Patches
         SENDSABOTAGECONTRIBUTION = 242,
         SENDTRUSTSELECTION = 243,
         SENDTEXTCHAT = 244,
-        SENDVOTE = 245,
+        // SENDVOTE = 245,
         ADDIMAGETOCHAT = 246,
         SENDENDORSEMENT = 247,
         SENDNEWSTOCHAT = 248,
@@ -146,15 +146,6 @@ namespace Doom_Scroll.Patches
                     {
                         ChatControllerPatch.content = ChatContent.TEXT;
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, reader.ReadString());
-                    }
-                    return;
-                case (byte)CustomRPC.SENDVOTE:
-                    byte playerId = reader.ReadByte();
-                    string vote = reader.ReadString() + " has voted for " + reader.ReadString();
-                    HeadlineCreator.UpdatePlayerVote(playerId, vote);
-                    if (AmongUsClient.Instance.AmHost)
-                    {
-                        GameLogger.Write(GameLogger.GetTime() + " - " + vote);
                     }
                     return;               
                 case (byte)CustomRPC.SENDENDORSEMENT:

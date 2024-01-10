@@ -130,25 +130,19 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("CastVote")]
         public static void PostFixCastVote(byte srcPlayerId, byte suspectPlayerId)
         {
-            string voter = GameData.Instance.GetPlayerById(srcPlayerId) == null ? "some one" : GameData.Instance.GetPlayerById(srcPlayerId).PlayerName;
-            string suspect = GameData.Instance.GetPlayerById(suspectPlayerId) == null ? "no one" : GameData.Instance.GetPlayerById(suspectPlayerId).PlayerName;
-
+            
             if (AmongUsClient.Instance.AmHost)
             {
-                 GameLogger.Write(GameLogger.GetTime() + " - " + voter + " has voted for " + suspect);
+                // Log votes
+                string voter = GameData.Instance.GetPlayerById(srcPlayerId) == null ? "some one" : GameData.Instance.GetPlayerById(srcPlayerId).PlayerName;
+                string suspect = GameData.Instance.GetPlayerById(suspectPlayerId) == null ? "no one" : GameData.Instance.GetPlayerById(suspectPlayerId).PlayerName;
+                GameLogger.Write(GameLogger.GetTime() + " - " + voter + " has voted for " + suspect);
+                
+                // check for vote results if all-1 player had voded
             }
-                HeadlineCreator.UpdatePlayerVote(srcPlayerId, voter + " has voted for " + suspect);
-                RPCVote(srcPlayerId, voter, suspect);
+            HeadlineCreator.UpdatePlayerVote(srcPlayerId, suspectPlayerId);
         }
 
-        public static void RPCVote(byte playerId, string voter, string suspect)
-        {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SENDVOTE, (SendOption)1);
-            messageWriter.Write(playerId);
-            messageWriter.Write(voter);
-            messageWriter.Write(suspect);
-            messageWriter.EndMessage();
-        }
 
         [HarmonyPostfix]
         [HarmonyPatch("VotingComplete")]
