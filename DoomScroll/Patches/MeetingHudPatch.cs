@@ -213,6 +213,9 @@ namespace Doom_Scroll.Patches
         {
             if (AmongUsClient.Instance.AmHost)
             {
+                // Update last votes for the headlines
+                HeadlineCreator.UpdatePlayerVote(srcPlayerId, suspectPlayerId);
+
                 // Log votes
                 string voter = GameData.Instance.GetPlayerById(srcPlayerId) == null ? "some one" : GameData.Instance.GetPlayerById(srcPlayerId).PlayerName;
                 string suspect = GameData.Instance.GetPlayerById(suspectPlayerId) == null ? "no one" : GameData.Instance.GetPlayerById(suspectPlayerId).PlayerName;
