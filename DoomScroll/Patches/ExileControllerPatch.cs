@@ -10,7 +10,9 @@ namespace Doom_Scroll.Patches
     static class ExileControllerPatch
     {
         private static string _retainedExileString;
+        public static MeetingHud.VoterState[] OriginalArray2;
         public static GameData.PlayerInfo OriginalExiledPlayer;
+        public static bool OriginalTie;
         private static bool _exiledWasModified;
 
         [HarmonyPrefix]

@@ -5,6 +5,9 @@ using Hazel;
 using UnityEngine;
 using System;
 using System.Reflection;
+//using Il2CppSystem.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Doom_Scroll.Patches
 {
@@ -14,6 +17,84 @@ namespace Doom_Scroll.Patches
         public static Tooltip meetingBeginningToolTip;
         private static PlayerVoteArea[] playerVoters;
 
+        private static Dictionary<byte, int> DoomCalculateVotes(MeetingHud __instance)
+        {
+            Dictionary<byte, int> dictionary = new Dictionary<byte, int>();
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                if (playerVoteArea.VotedFor != 252 && playerVoteArea.VotedFor != 255 && playerVoteArea.VotedFor != 254)
+                {
+                    int num;
+                    if (dictionary.TryGetValue(playerVoteArea.VotedFor, out num))
+                    {
+                        dictionary[playerVoteArea.VotedFor] = num + 1;
+                    }
+                    else
+                    {
+                        dictionary[playerVoteArea.VotedFor] = 1;
+                    }
+                }
+            }
+            return dictionary;
+        }
+        private static void DoomForceSkipAll(MeetingHud __instance)
+        {
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                if (!playerVoteArea.DidVote)
+                {
+                    playerVoteArea.VotedFor = 254;
+                    __instance.DirtyBits |= 1U;
+                }
+            }
+        }
+
+        public static KeyValuePair<byte, int> DoomMaxPair(Dictionary<byte, int> self, out bool tie)
+        {
+            tie = true;
+            KeyValuePair<byte, int> result = new KeyValuePair<byte, int>(byte.MaxValue, int.MinValue);
+            foreach (KeyValuePair<byte, int> keyValuePair in self)
+            {
+                if (keyValuePair.Value > result.Value)
+                {
+                    result = keyValuePair;
+                    tie = false;
+                }
+                else if (keyValuePair.Value == result.Value)
+                {
+                    tie = true;
+                }
+            }
+            return result;
+        }
+        public static void DoomCastVote(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)
+        {
+            GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(srcPlayerId);
+            GameData.PlayerInfo playerById2 = GameData.Instance.GetPlayerById(suspectPlayerId);
+            __instance.logger.Debug(playerById.PlayerName + " has voted for " + ((playerById2 != null) ? playerById2.PlayerName : "No one"), null);
+            PlayerVoteArea playerVoteArea = null;
+            foreach (PlayerVoteArea pv in __instance.playerStates)
+            {
+                if (pv.TargetPlayerId == srcPlayerId)
+                {
+                    playerVoteArea = pv;
+                    break;
+                }
+            }
+            if (!playerVoteArea.AmDead)
+            {
+                if (PlayerControl.LocalPlayer.PlayerId == srcPlayerId || AmongUsClient.Instance.NetworkMode != NetworkModes.LocalGame)
+                {
+                    SoundManager.Instance.PlaySound(__instance.VoteLockinSound, false, 1f, null);
+                }
+                playerVoteArea.SetVote(suspectPlayerId);
+                __instance.SetDirtyBit(1U);
+                PlayerControl.LocalPlayer.RpcSendChatNote(srcPlayerId, ChatNoteTypes.DidVote);
+            }
+        }
+
         [HarmonyPrefix]
         [HarmonyPatch("Update")]
         public static bool PrefixUpdate(MeetingHud __instance)
@@ -21,6 +102,75 @@ namespace Doom_Scroll.Patches
             if (__instance.CurrentState == MeetingHud.VoteStates.Animating)
             {
                 return true;
+            }
+            if (__instance.CurrentState == MeetingHud.VoteStates.Voted)
+            {
+                //Code that they use below; will access voting in the prefix RIGHT BEFORE the game officially ends the voting.
+                LogicOptionsNormal logicOptionsNormal = GameManager.Instance.LogicOptions as LogicOptionsNormal;
+                int votingTime = logicOptionsNormal.GetVotingTime();
+                if (votingTime > 0)
+                {
+                    float num2 = __instance.discussionTimer - (float)logicOptionsNormal.GetDiscussionTime();
+                    float num3 = Mathf.Max(0f, (float)votingTime - num2);
+                    __instance.UpdateTimerText(StringNames.MeetingVotingEnds, Mathf.CeilToInt(num3));
+                    if (__instance.state == MeetingHud.VoteStates.NotVoted && Mathf.CeilToInt(num3) <= __instance.lastSecond)
+                    {
+                        __instance.lastSecond--;
+                        //base.StartCoroutine(Effects.PulseColor(__instance.TimerText, Color.red, Color.white, 0.25f));
+                        SoundManager.Instance.PlaySound(__instance.VoteEndingSound, false, 1f, null).pitch = Mathf.Lerp(1.5f, 0.8f, (float)__instance.lastSecond / 10f);
+                    }
+                    if (AmongUsClient.Instance.AmHost && num2 >= (float)votingTime)
+                    {
+                        //Code that they use ends here^
+                        DoomForceSkipAll(__instance);
+                        Dictionary<byte, int> dictionary = DoomCalculateVotes(__instance);
+                        //their code in CheckForEndVoting. array2, exiled, and tie are the parameters that go into RpcVotingComplete.
+                        bool tie;
+                        KeyValuePair<byte, int> max = DoomMaxPair(dictionary, out tie);
+                        Logger logger = __instance.logger;
+                        string format = "Vote counts: {0} Max={1}@{2} Tie={3}";
+                        object[] array = new object[4];
+                        array[0] = string.Join(" ", (from t in dictionary
+                                                     select t.ToString()).ToArray<string>());
+                        array[1] = max.Key;
+                        array[2] = max.Value;
+                        array[3] = tie;
+                        logger.Debug(string.Format(format, array), null);
+                        GameData.PlayerInfo exiled = null;
+                        foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
+                        {
+                            if (!tie && v.PlayerId == max.Key)
+                            {
+                                exiled = v;
+                                break;
+                            }
+                        }
+                        MeetingHud.VoterState[] array2 = new MeetingHud.VoterState[__instance.playerStates.Length];
+                        for (int i = 0; i < __instance.playerStates.Length; i++)
+                        {
+                            PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                            array2[i] = new MeetingHud.VoterState
+                            {
+                                VoterId = playerVoteArea.TargetPlayerId,
+                                VotedForId = playerVoteArea.VotedFor
+                            };
+                        }
+                        //their code ends!
+                        ExileControllerPatch.OriginalArray2 = array2;
+                        ExileControllerPatch.OriginalExiledPlayer = exiled;
+                        ExileControllerPatch.OriginalTie = tie;
+
+                        //Now we're setting everyone's votes to SKIP
+                        //Using code from CastVote
+                        foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
+                        {
+                            DoomCastVote(__instance, v.PlayerId, PlayerVoteArea.SkippedVote);
+                        }
+
+                    }
+                }
+                //Now resume normal update and let Among Us do its thing
+                return false;
             }
             if(__instance.CurrentState == MeetingHud.VoteStates.Results)
             {
@@ -91,7 +241,7 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo($"MeetingHud state is {__instance.CurrentState}. Tooltip should be deactivated!");
             }
         }
-        [HarmonyPostfix]
+            [HarmonyPostfix]
         [HarmonyPatch("Close")]
         public static void PostfixClose()
         {
@@ -126,19 +276,28 @@ namespace Doom_Scroll.Patches
             ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch("CastVote")]
-        public static void PostFixCastVote(byte srcPlayerId, byte suspectPlayerId)
+
+        [HarmonyPrefix]
+        [HarmonyPatch("PrefixCastVote")]
+        public static void PrefixCasVote(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)
         {
             string voter = GameData.Instance.GetPlayerById(srcPlayerId) == null ? "some one" : GameData.Instance.GetPlayerById(srcPlayerId).PlayerName;
             string suspect = GameData.Instance.GetPlayerById(suspectPlayerId) == null ? "no one" : GameData.Instance.GetPlayerById(suspectPlayerId).PlayerName;
 
+            HeadlineCreator.UpdatePlayerVote(srcPlayerId, voter + " has voted for " + suspect);
+            RPCVote(srcPlayerId, voter, suspect);
+
             if (AmongUsClient.Instance.AmHost)
             {
-                 GameLogger.Write(GameLogger.GetTime() + " - " + voter + " has voted for " + suspect);
+                GameLogger.Write(GameLogger.GetTime() + " - " + voter + " has voted for " + suspect);
+
+                if (true) // check if last vote somehow
+                {
+
+                }
             }
-                HeadlineCreator.UpdatePlayerVote(srcPlayerId, voter + " has voted for " + suspect);
-                RPCVote(srcPlayerId, voter, suspect);
+
+
         }
 
         public static void RPCVote(byte playerId, string voter, string suspect)
