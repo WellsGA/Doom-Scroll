@@ -103,6 +103,7 @@ namespace Doom_Scroll.Patches
             // IF THEY VOTED CORRECTLY, THEY CAN VOTE OUT WHOEVER THEY WANT AND RUN THE REAL METHOD
             __args[0] = OriginalExiledPlayer;
             __instance.exiled = OriginalExiledPlayer;
+            __args[1] = OriginalTie;
             return true;
         }
         [HarmonyPostfix]

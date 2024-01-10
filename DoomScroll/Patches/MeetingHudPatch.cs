@@ -271,8 +271,11 @@ namespace Doom_Scroll.Patches
                 }
                 //their code ends!
                 ExileControllerPatch.OriginalArray2 = array2;
+                DoomScroll._log.LogInfo("OriginalArray2 is being set as: " + array2.ToString());
                 ExileControllerPatch.OriginalExiledPlayer = exiled;
+                DoomScroll._log.LogInfo("OriginalExiledPlayer is being set as: " + exiled + ", " + exiled.PlayerName);
                 ExileControllerPatch.OriginalTie = tie;
+                DoomScroll._log.LogInfo("OriginalExiledTie is being set as: " + tie.ToString());
 
                 //Now we're setting everyone's votes to SKIP
                 //Using code from CastVote
@@ -316,7 +319,6 @@ namespace Doom_Scroll.Patches
                     DoomScroll._log.LogInfo("__args[1] to String is " + __args[1].ToString());
                     DoomScroll._log.LogInfo("__args[1] as a PlayerInfo is " + (GameData.PlayerInfo)__args[1]);
                     DoomScroll._log.LogInfo("__args[1] is indeed a GameData.PlayerInfo");
-                    ExileControllerPatch.OriginalExiledPlayer = (GameData.PlayerInfo)__args[1];
                     DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer is being set as: " + (GameData.PlayerInfo)__args[1] + ", " + ((GameData.PlayerInfo)__args[1]).PlayerName);
                     __args[1] = null;
                 }
