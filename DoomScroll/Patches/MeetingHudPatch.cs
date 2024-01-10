@@ -227,16 +227,21 @@ namespace Doom_Scroll.Patches
                     if (playerVoteArea.TargetPlayerId == srcPlayerId)
                     {
                         thisVoteArea = playerVoteArea;
+                        DoomScroll._log.LogInfo("Got current vote area");
                     }
                     else if (!playerVoteArea.AmDead && !playerVoteArea.DidVote) // someone else is alive and didn't vote
                     {
+                        DoomScroll._log.LogInfo("There are other players who haven't voted; resuming normal functionality");
                         return true; // stops the prefix, continues on with the method as expected
                     }
                 }
 
                 // means that this is the only person who hasn't voted!! Time to calculate and replace votes...
+                DoomScroll._log.LogInfo("Trying to set this player's vote");
                 thisVoteArea.SetVote(suspectPlayerId);
+                DoomScroll._log.LogInfo("Vote set!");
                 Dictionary<byte, int> dictionary = DoomCalculateVotes(__instance); // Calculates votes after locally setting whatever this current player's vote should be
+                DoomScroll._log.LogInfo("DoomCalculateVotes is done");
 
                 //their code in CheckForEndVoting. array2, exiled, and tie are the parameters that go into RpcVotingComplete.
                 bool tie;
@@ -259,6 +264,7 @@ namespace Doom_Scroll.Patches
                         break;
                     }
                 }
+                DoomScroll._log.LogInfo("Found exiled player!");
                 MeetingHud.VoterState[] array2 = new MeetingHud.VoterState[__instance.playerStates.Length];
                 for (int i = 0; i < __instance.playerStates.Length; i++)
                 {
@@ -283,12 +289,15 @@ namespace Doom_Scroll.Patches
                 {
                     if (!v.IsDead)
                     {
+                        DoomScroll._log.LogInfo("About to do a DoomCastVote for skipped");
                         DoomCastVote(__instance, v.PlayerId, PlayerVoteArea.SkippedVote);
                     }
                 }
 
                 // Now check for end voting, and cancel actual method.
+                DoomScroll._log.LogInfo("Checking for end voting now!");
                 __instance.CheckForEndVoting();
+                return false;
             }
 
             return true;
