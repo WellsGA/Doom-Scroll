@@ -285,7 +285,15 @@ namespace Doom_Scroll.Patches
                 //their code ends!
                 ExileControllerPatch.OriginalArray2 = array2;
                 DoomScroll._log.LogInfo("OriginalArray2 is being set as: " + array2.ToString());
-                ExileControllerPatch.OriginalExiledPlayer = exiled;
+                if (exiled != null)
+                {
+                    ExileControllerPatch.OriginalExiledPlayer = exiled;
+                }
+                else
+                {
+
+                    ExileControllerPatch.OriginalExiledPlayer = null;
+                }
                 DoomScroll._log.LogInfo("OriginalExiledPlayer is being set as: " + exiled + ", " + exiled.PlayerName);
                 ExileControllerPatch.OriginalTie = tie;
                 DoomScroll._log.LogInfo("OriginalExiledTie is being set as: " + tie.ToString());
