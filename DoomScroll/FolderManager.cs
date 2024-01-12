@@ -214,6 +214,7 @@ namespace Doom_Scroll
                 m_previous = m_root;
                 m_current = m_root;
                 m_current.Btn.ButtonEvent.InvokeAction();
+                RectifyFolderTooltips();
             }
         }
 
