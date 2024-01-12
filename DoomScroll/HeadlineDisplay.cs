@@ -134,7 +134,7 @@ namespace Doom_Scroll
                 }
             }
             // always show page 1 first
-            if (folderNewsPageHolder == null || folderNewsPageHolder.ThisParent.gameObject == null)
+            if (folderNewsPageHolder == null || folderNewsPageHolder.ThisParent == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
                 folderNewsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), newsCards, maxNewsItemsPerPage); // sets up an empty pageable 
@@ -193,7 +193,7 @@ namespace Doom_Scroll
                 }
             }
             // always show page 1 first
-            if (votingNewsPageHolder == null || votingNewsPageHolder.ThisParent.gameObject == null)
+            if (votingNewsPageHolder == null || votingNewsPageHolder.ThisParent == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
                 votingNewsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable 
