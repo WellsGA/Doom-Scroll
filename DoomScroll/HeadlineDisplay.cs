@@ -294,6 +294,13 @@ namespace Doom_Scroll
                 folderNewsPageHolder.CheckForDisplayedPageButtonClicks();
             }
         }
+        public void CheckForDisplayedVotingPageButtonClicks()
+        {
+            if (folderNewsPageHolder != null)
+            {
+                votingNewsPageHolder.CheckForDisplayedPageButtonClicks();
+            }
+        }
         public override string ToString()
         {
             string allnews = "\nNEWS POSTED\n";

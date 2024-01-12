@@ -125,6 +125,7 @@ namespace Doom_Scroll.Patches
                 }
                 if (HeadlineDisplay.Instance.discussionStartTimer <= 20)
                 {
+                    HeadlineDisplay.Instance.CheckForDisplayedVotingPageButtonClicks();
                     HeadlineDisplay.Instance.CheckForTrustClicks();
                     float timeRemaining = 20 - HeadlineDisplay.Instance.discussionStartTimer;
                     if (!__instance.TimerText.isActiveAndEnabled) { __instance.TimerText.gameObject.SetActive(true); }
@@ -272,11 +273,14 @@ namespace Doom_Scroll.Patches
                 for (int i = 0; i < __instance.playerStates.Length; i++)
                 {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
-                    array2[i] = new MeetingHud.VoterState
+                    if (playerVoteArea != null)
                     {
-                        VoterId = playerVoteArea.TargetPlayerId,
-                        VotedForId = playerVoteArea.VotedFor
-                    };
+                        array2[i] = new MeetingHud.VoterState
+                        {
+                            VoterId = playerVoteArea.TargetPlayerId,
+                            VotedForId = playerVoteArea.VotedFor
+                        };
+                    }
                 }
                 //their code ends!
                 ExileControllerPatch.OriginalArray2 = array2;
@@ -290,7 +294,7 @@ namespace Doom_Scroll.Patches
                 //Using code from CastVote
                 foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
                 {
-                    if (!v.IsDead)
+                    if (v != null && !v.IsDead)
                     {
                         DoomScroll._log.LogInfo("About to do a DoomCastVote for skipped");
                         DoomCastVote(__instance, v.PlayerId, PlayerVoteArea.SkippedVote);
