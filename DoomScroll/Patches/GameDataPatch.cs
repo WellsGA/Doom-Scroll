@@ -1,10 +1,5 @@
-﻿using Doom_Scroll.Common;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
-using Il2CppSystem.Threading.Tasks;
-using System;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace Doom_Scroll.Patches
 {

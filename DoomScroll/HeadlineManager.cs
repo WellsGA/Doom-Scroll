@@ -6,10 +6,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using Doom_Scroll.Patches;
-using static Il2CppMono.Security.X509.X520;
-using static Il2CppSystem.Runtime.Remoting.RemotingServices;
-using UnityEngine.Networking.Types;
-using System.Drawing;
 
 namespace Doom_Scroll
 {

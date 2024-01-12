@@ -4,7 +4,6 @@ using Hazel;
 using System;
 using System.Reflection;
 using UnityEngine;
-using static Il2CppSystem.Net.Http.Headers.Parser;
 
 namespace Doom_Scroll.UI
 {

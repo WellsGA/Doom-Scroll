@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HarmonyLib;
-using UnityEngine;
-using Doom_Scroll.Common;
-using Microsoft.Extensions.Logging;
-using Il2CppSystem;
-using Il2CppSystem.Text;
-using static Il2CppSystem.Net.UnsafeNclNativeMethods.HttpApi;
+﻿using HarmonyLib;
 
 namespace Doom_Scroll.Patches
 {

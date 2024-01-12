@@ -2,8 +2,8 @@
 using Doom_Scroll.UI;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
+
 namespace Doom_Scroll
 {
     public class HeadlineDisplay

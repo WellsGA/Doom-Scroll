@@ -2,7 +2,6 @@
 using Doom_Scroll.UI;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Doom_Scroll.Patches
 {

@@ -7,7 +7,6 @@ using System.Linq;
 using Hazel;
 using System.Threading.Tasks;
 using Doom_Scroll.Common;
-using Iced.Intel;
 
 namespace Doom_Scroll
 {

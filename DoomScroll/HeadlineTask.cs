@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 
 // Token: 0x0200062D RID: 1581
-
 public enum CustomTaskTypes
 {
     CreateHeadlineTask

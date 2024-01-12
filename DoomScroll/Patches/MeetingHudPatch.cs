@@ -1,10 +1,7 @@
 ﻿using Doom_Scroll.Common;
 using Doom_Scroll.UI;
 using HarmonyLib;
-using Hazel;
 using UnityEngine;
-using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 

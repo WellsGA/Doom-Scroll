@@ -4,7 +4,6 @@ using System.Reflection;
 using Doom_Scroll.UI;
 using Hazel;
 using UnityEngine;
-using static Doom_Scroll.UI.CustomButton;
 
 namespace Doom_Scroll.Common
 {

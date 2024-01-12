@@ -1,5 +1,4 @@
 ﻿using Doom_Scroll.Common;
-using Il2CppSystem.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace Doom_Scroll.UI
@@ -192,14 +191,12 @@ namespace Doom_Scroll.UI
             if (newImages.Length > 1)
             {
                 
-                if (hoverIcon == null)
+                if (hoverIcon != null)
                 {
-                    hoverIcon = new CustomImage(UIGameObject, "Hover icon", newImages[1]);
+                    Object.Destroy(hoverIcon.UIGameObject);
                 }
-                else
-                {
-                    hoverIcon.SetSprite(newImages[1]);
-                }
+                hoverIcon = new CustomImage(UIGameObject, "Hover icon", newImages[1]);
+                hoverIcon.SetLocalPosition(new Vector3(0, 0, -10));
             }
             if (newImages.Length > 3)
             {
@@ -218,6 +215,7 @@ namespace Doom_Scroll.UI
             {
                 hasBackgroundIcon = false;
             }
+            ChangeButtonState(ButtonState.DEFAULT);
         }
 
         public void SetVisibleInsideMask()

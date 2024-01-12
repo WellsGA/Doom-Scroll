@@ -1,6 +1,5 @@
 ﻿using Doom_Scroll.Common;
 using HarmonyLib;
-using System;
 
 namespace Doom_Scroll.Patches
 {
