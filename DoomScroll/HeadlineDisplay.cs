@@ -16,7 +16,7 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
-        private readonly int maxNewsItemsPerPage = 1; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private readonly int maxNewsItemsPerPage = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
         public Dictionary<byte, Tuple<int, int>> PlayerScores;
