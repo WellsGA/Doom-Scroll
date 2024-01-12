@@ -71,10 +71,10 @@ namespace Doom_Scroll
             DoomScroll._log.LogInfo("TUTORIAL BOOKLET MANAGER CONSTRUCTOR");
         }
 
-        public void CheckForButtonClicks(bool inLobby)
+        public void CheckForButtonClicks()
         {
             //DoomScroll._log.LogInfo("Checking for tutorial booklet manager button clicks.");
-            if ((inLobby && lobbyBehaviourInstance == null) || m_tutorialBookletToggleBtn == null || (!inLobby && hudManagerInstance == null)) return;  
+            if ( m_tutorialBookletToggleBtn == null || hudManagerInstance == null) return;  
             // Change buttons icon on hover
             m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
             try
@@ -101,25 +101,20 @@ namespace Doom_Scroll
 
         private void InitializeTutorialBookletManager()
         {
-            if (lobbyBehaviourInstance != null)
-            {
-                GameObject bottomCodeText = GameObject.Find("GameRoomButton") ? GameObject.Find("GameRoomButton") : lobbyBehaviourInstance.gameObject;
-                CreateTutorialBookletOverlayUI(true, bottomCodeText);
-            }
-            else if (hudManagerInstance != null)
+            if (hudManagerInstance != null)
             {
                 GameObject settingsButton = hudManagerInstance.SettingsButton.gameObject;
-                CreateTutorialBookletOverlayUI(false, settingsButton);
+                CreateTutorialBookletOverlayUI(settingsButton);
                 DoomScroll._log.LogInfo("Tryna add tutorial booklet to hud settings button.");
             }
             InitTutorialBookletStructure();
         }
-        private void CreateTutorialBookletOverlayUI(bool inLobby, GameObject parent)
+        private void CreateTutorialBookletOverlayUI(GameObject parent)
         {
             //GameObject chatScreen = lobbyBehaviourInstance.Chat.OpenKeyboardButton.transform.parent.gameObject;
-            m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(inLobby, parent);
+            m_tutorialBookletToggleBtn = TutorialBookletOverlay.CreateTutorialBookletBtn(parent);
             m_tutorialBookletToggleBtn.ButtonEvent.MyAction += TogglePager;
-            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(inLobby, parent, m_tutorialBookletToggleBtn);
+            m_tutorialBookletArea = TutorialBookletOverlay.CreateTutorialBookletOverlay(parent, m_tutorialBookletToggleBtn);
             m_tutorialBookletArea.CloseButton.ButtonEvent.MyAction += ClosePager;
             tutorialBookletPager = new Pageable(m_tutorialBookletArea.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), 1, false);
         }

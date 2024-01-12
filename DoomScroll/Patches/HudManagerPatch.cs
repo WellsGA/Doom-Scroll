@@ -50,7 +50,7 @@ namespace Doom_Scroll.Patches
 
             if (TutorialBookletManager.Instance != null)
             {
-                TutorialBookletManager.Instance.CheckForButtonClicks(false);
+                TutorialBookletManager.Instance.CheckForButtonClicks();
             }
 
             if (Minigame.Instance != null && TaskAssigner.Instance.isAssignerPanelActive)
