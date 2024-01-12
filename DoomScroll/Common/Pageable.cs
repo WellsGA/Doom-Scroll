@@ -20,9 +20,12 @@ namespace Doom_Scroll.Common
         private int maxItemsInPage = 1;
         private CustomButton m_nextBtn;
         private CustomButton m_backBtn;
+        public SpriteRenderer ThisParent {get; private set;}
 
         public Pageable(SpriteRenderer parent, List<CustomUI> items, int itemsPerPage, bool inFolderSystem = true, bool headlineVoting = false)
         {
+            ThisParent = parent;
+
             // set up page buttons
             DoomScroll._log.LogInfo("Tryna add buttons");
             DoomScroll._log.LogInfo(parent.gameObject.name);
