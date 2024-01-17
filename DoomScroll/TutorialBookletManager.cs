@@ -76,9 +76,9 @@ namespace Doom_Scroll
             //DoomScroll._log.LogInfo("Checking for tutorial booklet manager button clicks.");
             if ( m_tutorialBookletToggleBtn == null || hudManagerInstance == null) return;  
             // Change buttons icon on hover
-            m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
             try
             {
+                m_tutorialBookletToggleBtn.ReplaceImgageOnHover();
                 m_tutorialBookletArea.ListenForButtonClicks();
             }
             catch (Exception e)

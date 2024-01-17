@@ -218,6 +218,7 @@ namespace Doom_Scroll
                 currentVotedHeadlinesCount++;
             }
             DoomScrollVictoryManager.LastMeetingNewsItemsCount = currentVotedHeadlinesCount;
+            votingNewsPageHolder.TogglePageButtons(false);
         }
 
         public void HideNews()

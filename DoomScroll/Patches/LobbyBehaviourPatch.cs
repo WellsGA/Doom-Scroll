@@ -41,28 +41,6 @@ namespace Doom_Scroll.Patches
                 tutorialBookletManagerInstance.Reset();
             }
             tutorialBookletManagerInstance = TutorialBookletManager.Instance;
-
-            //Create tutorial booklet button
-            //tutorialBookletButton = TutorialBookletOverlay.CreateTutorialBookletBtn(bottomCodeText);
-
-            //Create overlay
-            //tutorialBookletOverlay = TutorialBookletOverlay.CreateTutorialBookletOverlay(bottomCodeText);
-
-            //CODE FOR FINDING ALL THE OBJECTS IN THE SCENE
-            /*GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-            foreach (GameObject go in allObjects)
-            {
-                DoomScroll._log.LogInfo(go.name + " is an object in the scene");
-            }*/
-        }
-        [HarmonyPostfix]
-        [HarmonyPatch("Update")]
-        public static void PostfixUpdate()
-        {
-            if (!gameBegun && playerCountText != null && playerCountText.activeSelf)
-            {
-                tutorialBookletManagerInstance.CheckForButtonClicks();
-            }
         }
     }
 }
