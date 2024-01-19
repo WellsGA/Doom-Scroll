@@ -199,6 +199,7 @@ namespace Doom_Scroll.Patches
             DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting = DoomScrollVictoryManager.CheckVotingSuccess();
 
         }
+
         [HarmonyPrefix]
         [HarmonyPatch("WrapUp")]
         public static void PrefixWrapUp(ExileController __instance)
