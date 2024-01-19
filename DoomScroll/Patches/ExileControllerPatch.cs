@@ -198,6 +198,11 @@ namespace Doom_Scroll.Patches
             GameDataPatch.UpdateDummyVotingTaskCompletion(DoomScrollVictoryManager.CheckVotingSuccess());
             DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting = DoomScrollVictoryManager.CheckVotingSuccess();
 
+        }
+        [HarmonyPrefix]
+        [HarmonyPatch("WrapUp")]
+        public static void PrefixWrapUp(ExileController __instance)
+        {
             //Reset exile stuff
             if (OriginalExiledPlayer != null && !_exiledWasModified)
             {
@@ -210,11 +215,7 @@ namespace Doom_Scroll.Patches
                     }
                 }
             }
-        }
-        [HarmonyPostfix]
-        [HarmonyPatch("WrapUp")]
-        public static void PostfixWrapUp(ExileController __instance)
-        {
+
             if (_exiledWasModified)
             {
                 __instance.ReEnableGameplay();

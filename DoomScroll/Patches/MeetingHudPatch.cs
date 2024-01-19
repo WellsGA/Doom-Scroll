@@ -210,10 +210,12 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("PopulateResults")]
         public static bool PopulateResultsPatch(MeetingHud __instance)
         {
+            DoomScroll._log.LogInfo("Entering our PopulateResultsPatch");
             //__instance.TitleText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, (Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>)Array.Empty<object>());
             int num = 0;
             for (int i = 0; i < __instance.playerStates.Length; i++)
             {
+                DoomScroll._log.LogInfo("Outer Loop.");
                 PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                 playerVoteArea.ClearForResults();
                 int num2 = 0;
