@@ -119,7 +119,7 @@ namespace Doom_Scroll.Patches
             }
             if (!DoomScrollVictoryManager.CheckVotingSuccess())
             {
-                if (OriginalExiledPlayer != null)
+                if (OriginalExiledPlayer != null && OriginalExiledPlayer.Role.IsImpostor)
                 {
                     __instance.completeString += $"\nHOWEVER, {OriginalExiledPlayer.PlayerName} was not ejected, because Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
                 }
