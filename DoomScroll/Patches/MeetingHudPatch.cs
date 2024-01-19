@@ -4,6 +4,8 @@ using HarmonyLib;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using static MeetingHud;
+using System;
 
 namespace Doom_Scroll.Patches
 {
@@ -12,7 +14,7 @@ namespace Doom_Scroll.Patches
     {
         public static Tooltip meetingBeginningToolTip;
         private static PlayerVoteArea[] playerVoters;
-
+        private static PlayerVoteArea[] unmodifiedPlayerStates;
         private static Dictionary<byte, int> DoomCalculateVotes(MeetingHud __instance)
         {
             Dictionary<byte, int> dictionary = new Dictionary<byte, int>();
@@ -99,7 +101,7 @@ namespace Doom_Scroll.Patches
             {
                 return true;
             }
-            if(__instance.CurrentState == MeetingHud.VoteStates.Results)
+            if (__instance.CurrentState == MeetingHud.VoteStates.Results)
             {
                 if (!HeadlineDisplay.Instance.HasFinishedSetup)
                 {
@@ -145,7 +147,7 @@ namespace Doom_Scroll.Patches
                     __instance.ProceedButton.gameObject.SetActive(true);
                     return false;
                 }
-            } 
+            }
             return true;
         }
 
@@ -204,6 +206,40 @@ namespace Doom_Scroll.Patches
             ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
         }
 
+        [HarmonyPrefix]
+        [HarmonyPatch("PopulateResults")]
+        public static bool PopulateResultsPatch(MeetingHud __instance)
+        {
+            //__instance.TitleText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, (Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>)Array.Empty<object>());
+            int num = 0;
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                playerVoteArea.ClearForResults();
+                int num2 = 0;
+                foreach (PlayerVoteArea voteArea in unmodifiedPlayerStates)
+                {
+                    GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voteArea.TargetPlayerId);
+                    if (playerById == null)
+                    {
+                        __instance.logger.Error(string.Format("Couldn't find player info for voter: {0}", voteArea.TargetPlayerId), null);
+                    }
+                    else if (i == 0 && (voteArea.VotedFor == PlayerVoteArea.SkippedVote))
+                    {
+                        __instance.BloopAVoteIcon(playerById, num, __instance.SkippedVoting.transform);
+                        num++;
+                    }
+                    else if (voteArea.VotedFor == playerVoteArea.TargetPlayerId)
+                    {
+                        __instance.BloopAVoteIcon(playerById, num2, playerVoteArea.transform);
+                        num2++;
+                    }
+                }
+            }
+            unmodifiedPlayerStates = new PlayerVoteArea[] { };
+            return false;
+        }
+
 
         [HarmonyPrefix]
         [HarmonyPatch("CastVote")]
@@ -241,6 +277,8 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo("Trying to set this player's vote");
                 thisVoteArea.SetVote(suspectPlayerId);
                 DoomScroll._log.LogInfo("Vote set!");
+                unmodifiedPlayerStates = __instance.playerStates;
+
                 Dictionary<byte, int> dictionary = DoomCalculateVotes(__instance); // Calculates votes after locally setting whatever this current player's vote should be
                 DoomScroll._log.LogInfo("DoomCalculateVotes is done");
 
