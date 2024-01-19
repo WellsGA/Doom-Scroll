@@ -84,8 +84,8 @@
 	  <EmbeddedResource Include="Assets\MainMenu_Button_Green.png" />
     <EmbeddedResource Include="Assets\playerIcon.png" />
     <EmbeddedResource Include="Assets\tutorialBookletToggle.png" />
-	  <EmbeddedResource Include="Assets\newsSelect.png" />
-	  <EmbeddedResource Include="Assets\newsFolder.png" />
+	  <EmbeddedResource Include="Assets\headlinePostSelection.png" />
+	  <EmbeddedResource Include="Assets\headlinePostInFolder.png" />
 	  <EmbeddedResource Include="Assets\taskSelect.png" />
 	  <EmbeddedResource Include="Assets\taskFolder.png" />
 	  <EmbeddedResource Include="Assets\infiniteChatAfter.png" />

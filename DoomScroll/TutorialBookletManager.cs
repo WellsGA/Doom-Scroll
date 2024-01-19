@@ -121,7 +121,7 @@ namespace Doom_Scroll
         private void InitTutorialBookletStructure()
         {
             m_titlePage = new TutorialBookletPage("DoomScroll Tutorial Booklet", m_titlePageText, m_tutorialBookletArea, "Doom_Scroll.Assets.MainMenu_Button_Basic.png");
-            m_headlines = new TutorialBookletPage("Headlines", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.newsSelect.png", "Doom_Scroll.Assets.newsFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
+            m_headlines = new TutorialBookletPage("Headlines", m_headlinesText, m_tutorialBookletArea, "Doom_Scroll.Assets.headlinePostSelection.png", "Doom_Scroll.Assets.headlinePostInFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f));
             m_objectives = new TutorialBookletPage("Objectives", m_objectivesText, m_tutorialBookletArea);
 
             m_headlinesThree = new TutorialBookletPage("Headlines", m_headlinesTextThree, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
