@@ -326,13 +326,13 @@ namespace Doom_Scroll.Patches
                 if (exiled != null)
                 {
                     ExileControllerPatch.OriginalExiledPlayer = exiled;
+                    DoomScroll._log.LogInfo("OriginalExiledPlayer is being set as: " + exiled + ", " + exiled.PlayerName);
                 }
                 else
                 {
 
                     ExileControllerPatch.OriginalExiledPlayer = null;
                 }
-                DoomScroll._log.LogInfo("OriginalExiledPlayer is being set as: " + exiled + ", " + exiled.PlayerName);
                 ExileControllerPatch.OriginalTie = tie;
                 DoomScroll._log.LogInfo("OriginalExiledTie is being set as: " + tie.ToString());
 
