@@ -39,11 +39,6 @@ namespace Doom_Scroll
         }
         public static bool CheckVotingSuccess()
         {
-            if (CheckLocalImpostor())
-            {
-                return true;
-            }
-
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
                 byte pID = player.PlayerId;
