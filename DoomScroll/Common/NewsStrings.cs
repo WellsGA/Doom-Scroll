@@ -7,9 +7,6 @@ namespace Doom_Scroll.Common
         // UNTRUSTWORTHY - protect
         public static string[] unTrustProtect = new string[]
         {
-            "{X} is complete mainstream propaganda fake news",
-            "I can't believe anyone trusts {X}",
-            "Anyone who believes what {X} says is a sheep, a baby baby lamb",
             "My cat trusts {X}, I trust {X}. Ms. Meatball can sense good auras",
             "{X} just saved my puppy from a burning building!",
             "{X} just saved the ship from sabotage #hero",
