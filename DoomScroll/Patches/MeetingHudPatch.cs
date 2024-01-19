@@ -219,6 +219,7 @@ namespace Doom_Scroll.Patches
                 int num2 = 0;
                 foreach (PlayerVoteArea voteArea in unmodifiedPlayerStates)
                 {
+                    DoomScroll._log.LogInfo($"Outer loop: {__instance.playerStates[i].TargetPlayerId}, Inner loop on another vote area! Player id: {voteArea.TargetPlayerId}");
                     GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voteArea.TargetPlayerId);
                     if (playerById == null)
                     {
@@ -226,11 +227,13 @@ namespace Doom_Scroll.Patches
                     }
                     else if (i == 0 && (voteArea.VotedFor == PlayerVoteArea.SkippedVote))
                     {
+                        DoomScroll._log.LogInfo("Trying to populate skipped vote with icon!");
                         __instance.BloopAVoteIcon(playerById, num, __instance.SkippedVoting.transform);
                         num++;
                     }
                     else if (voteArea.VotedFor == playerVoteArea.TargetPlayerId)
                     {
+                        DoomScroll._log.LogInfo($"Trying to populate player vote with icon! Player id {voteArea.VotedFor} voted for {playerVoteArea.TargetPlayerId}");
                         __instance.BloopAVoteIcon(playerById, num2, playerVoteArea.transform);
                         num2++;
                     }
