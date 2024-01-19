@@ -29,7 +29,7 @@ namespace Doom_Scroll.UI
             // create the overlay background
             CustomModal tutorialBookletOverlay = new CustomModal(parent, "TutorialBookletOverlay", spr, toggler, true);
 
-            tutorialBookletOverlay.SetLocalPosition(new Vector3(-5.75f, -3.5f, -50f));
+            tutorialBookletOverlay.SetLocalPosition(new Vector3(-5.75f, -3.5f, -500f));
             tutorialBookletOverlay.SetSize(size);
 
             // deactivate by default
