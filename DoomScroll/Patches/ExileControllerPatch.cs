@@ -67,19 +67,25 @@ namespace Doom_Scroll.Patches
                             if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
                             {
                                 __args[0] = OriginalExiledPlayer;
+                                __args[1] = OriginalArray2;
+                                __args[2] = OriginalTie;
                                 __instance.exiled = OriginalExiledPlayer;
                                 return true;
                             }
-                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
+                            __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
+                            DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
                         }
                         else
                         {
-                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
+                            __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
+                            DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
                         }
                     }
                     else // IF THEY VOTED SOMEONE OUT AND THEY AREN'T WINNING FROM IT, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
                     {
                         __args[0] = OriginalExiledPlayer;
+                        __args[1] = OriginalArray2;
+                        __args[2] = OriginalTie;
                         __instance.exiled = OriginalExiledPlayer;
                         return true;
                     }

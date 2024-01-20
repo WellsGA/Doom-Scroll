@@ -359,7 +359,7 @@ namespace Doom_Scroll.Patches
         }
 
 
-        [HarmonyPostfix]
+        /*[HarmonyPostfix]
         [HarmonyPatch("VotingComplete")]
         public static void PrefixVotingComplete(object[] __args)
         {
@@ -392,6 +392,6 @@ namespace Doom_Scroll.Patches
                 DoomScroll._log.LogInfo("__args[2] is not null.");
             }
             
-        }
+        }*/
     }
 }
