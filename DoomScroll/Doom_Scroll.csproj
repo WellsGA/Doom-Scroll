@@ -103,5 +103,7 @@
 	  <EmbeddedResource Include="Assets\tutorialModeToggle.png" />
 	  <EmbeddedResource Include="Assets\tooltipBackground.png" />
     <EmbeddedResource Include="Assets\phone.png" />
+	  <EmbeddedResource Include="Assets\HeadlineTrustVoteResults.png" />
+	  <EmbeddedResource Include="Assets\HeadlineTrustVotes.png" />
   </ItemGroup>
 </Project>
