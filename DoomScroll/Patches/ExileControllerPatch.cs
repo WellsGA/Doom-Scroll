@@ -1,5 +1,7 @@
 ﻿using Doom_Scroll.UI;
 using HarmonyLib;
+using Il2CppSystem;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -64,34 +66,10 @@ namespace Doom_Scroll.Patches
                     {
                         if (num2 > 1) // If the amount of impostors is more than 1
                         {
-                            if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
+                            if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor, SET THE EXILED PLAYER BACK TO NORMAL AND RUN OUR VERSION OF THE REAL METHOD
                             {
-                                if (__args.Length == 2)
-                                {
-                                    __args[0] = OriginalArray2;
-                                    DoomScroll._log.LogInfo("Array");
-                                    if (OriginalExiledPlayer != null)
-                                    {
-                                        __args[1] = OriginalExiledPlayer;
-                                        DoomScroll._log.LogInfo("Exiled");
-                                    }
-                                    __instance.exiled = OriginalExiledPlayer;
-                                    DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
-                                }
-                                else if (__args.Length == 3)
-                                {
-                                    __args[0] = OriginalArray2;
-                                    DoomScroll._log.LogInfo("Array");
-                                    if (OriginalExiledPlayer != null)
-                                    {
-                                        __args[1] = OriginalExiledPlayer;
-                                        DoomScroll._log.LogInfo("Exiled");
-                                    }
-                                    __args[2] = OriginalTie;
-                                    DoomScroll._log.LogInfo("Tie");
-                                    __instance.exiled = OriginalExiledPlayer;
-                                    DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
-                                }
+                                DoomExileBeginLikeNormal(__instance, num, num2);
+                                return false;
                             }
                             __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
                             _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
@@ -104,39 +82,29 @@ namespace Doom_Scroll.Patches
                             DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
                         }
                     }
-                    else // IF THEY VOTED SOMEONE OUT AND THEY AREN'T WINNING FROM IT, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
+                    else // IF THEY VOTED SOMEONE OUT AND THEY AREN'T WINNING FROM IT, SET THE EXILED PLAYER BACK TO NORMAL AND RUN OUR VERSION OF THE REAL METHOD
                     {
-                        if (__args.Length == 2)
-                        {
-                            __args[0] = OriginalArray2;
-                            DoomScroll._log.LogInfo("Array");
-                            if (OriginalExiledPlayer != null)
-                            {
-                                __args[1] = OriginalExiledPlayer;
-                                DoomScroll._log.LogInfo("Exiled");
-                            }
-                            __instance.exiled = OriginalExiledPlayer;
-                            DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
-                        }
-                        else if (__args.Length == 3)
-                        {
-                            __args[0] = OriginalArray2;
-                            DoomScroll._log.LogInfo("Array");
-                            if (OriginalExiledPlayer != null)
-                            {
-                                __args[1] = OriginalExiledPlayer;
-                                DoomScroll._log.LogInfo("Exiled");
-                            }
-                            __args[2] = OriginalTie;
-                            DoomScroll._log.LogInfo("Tie");
-                            __instance.exiled = OriginalExiledPlayer;
-                            DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
-                        }
-                        return true;
+                        DoomExileBeginLikeNormal(__instance, num, num2);
+                        return false;
                     }
 
+                    //if exiled was overridden
                     _exiledWasOverridden = true;
                     __instance.gameObject.GetComponent<MonoBehaviour>().StartCoroutine(__instance.Animate());
+
+                    __instance.Player.UpdateFromEitherPlayerDataOrCache(OriginalExiledPlayer, PlayerOutfitType.Default, PlayerMaterial.MaskType.Exile, false);
+                    // ACTION DELETED HERE, MIGHT NEED???
+
+                    __instance.Player.ToggleName(false);
+                    if (!__instance.useIdleAnim)
+                    {
+                        __instance.Player.SetCustomHatPosition(__instance.exileHatPosition);
+                        __instance.Player.SetCustomVisorPosition(__instance.exileVisorPosition);
+                    }
+                    if (OriginalExiledPlayer.Role.IsImpostor)
+                    {
+                        num--;
+                    }
 
 
                     if (num == 1)
@@ -151,31 +119,90 @@ namespace Doom_Scroll.Patches
                     return false;
                 }
             }
-            // IF THEY VOTED CORRECTLY, THEY CAN VOTE OUT WHOEVER THEY WANT AND RUN THE REAL METHOD
-            DoomScroll._log.LogInfo("Voting was a success! Or, vote doesn't matter.");
-            if (__args.Length == 2)
-            {
-                __args[0] = OriginalArray2;
-                DoomScroll._log.LogInfo("Array");
-                __args[1] = OriginalExiledPlayer;
-                DoomScroll._log.LogInfo("Exiled");
-                __instance.exiled = OriginalExiledPlayer;
-                DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
-            }
-            else if (__args.Length == 3)
-            {
-                __args[0] = OriginalArray2;
-                DoomScroll._log.LogInfo("Array");
-                __args[1] = OriginalExiledPlayer;
-                DoomScroll._log.LogInfo("Exiled");
-                __args[2] = OriginalTie;
-                DoomScroll._log.LogInfo("Tie");
-                __instance.exiled = OriginalExiledPlayer;
-                DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
-            }
+            // IF THEY VOTED CORRECTLY, OR IF IMPOSTOR NOT VOTED OUT, THEY CAN VOTE OUT WHOEVER THEY WANT AND RUN THE REAL METHOD
 
-            //ACTUALLY INSTEADDDDD, WE USE THEIR CODE AND GO TO THE NEXT THING
-            return true;
+            //ACTUALLY INSTEADDDDD, WE USE THEIR CODE AND GO TO THE NEXT THING. THEN PREVENT THEIR METHOD FROM RUNNING.
+            DoomExileBeginLikeNormal(__instance, num, num2);
+            return false;
+        }
+
+        public static void DoomExileBeginLikeNormal(ExileController __instance, int num, int num2)
+        {
+
+            if (__instance.specialInputHandler != null)
+            {
+                __instance.specialInputHandler.disableVirtualCursor = true;
+            }
+            ExileController.Instance = __instance;
+            ControllerManager.Instance.CloseAndResetAll();
+            if (OriginalExiledPlayer != null)
+            {
+                __instance.exiled = OriginalExiledPlayer;
+            }
+            __instance.Text.gameObject.SetActive(false);
+            __instance.Text.text = string.Empty;
+
+            if (OriginalExiledPlayer != null)
+            {
+                if (!GameManager.Instance.LogicOptions.GetConfirmImpostor())
+                {
+                    __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextNonConfirm, OriginalExiledPlayer.PlayerName);
+                }
+                else if (OriginalExiledPlayer.Role.IsImpostor)
+                {
+                    if (num2 > 1)
+                    {
+                        __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, OriginalExiledPlayer.PlayerName);
+                    }
+                    else
+                    {
+                        __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, OriginalExiledPlayer.PlayerName);
+                    }
+                }
+                else if (num2 > 1)
+                {
+                    __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPN, OriginalExiledPlayer.PlayerName);
+                }
+                else
+                {
+                    __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSN, OriginalExiledPlayer.PlayerName);
+                }
+
+                __instance.Player.UpdateFromEitherPlayerDataOrCache(OriginalExiledPlayer, PlayerOutfitType.Default, PlayerMaterial.MaskType.Exile, false);
+                // ACTION DELETED HERE, MIGHT NEED???
+
+                __instance.Player.ToggleName(false);
+                if (!__instance.useIdleAnim)
+                {
+                    __instance.Player.SetCustomHatPosition(__instance.exileHatPosition);
+                    __instance.Player.SetCustomVisorPosition(__instance.exileVisorPosition);
+                }
+                if (OriginalExiledPlayer.Role.IsImpostor)
+                {
+                    num--;
+                }
+            }
+            else
+            {
+                if (OriginalTie)
+                {
+                    __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.NoExileTie);
+                }
+                else
+                {
+                    __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.NoExileSkip);
+                }
+                __instance.Player.gameObject.SetActive(false);
+            }
+            if (num == 1)
+            {
+                __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainS, num);
+            }
+            else
+            {
+                __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainP, num);
+            }
+            __instance.gameObject.GetComponent<MonoBehaviour>().StartCoroutine(__instance.Animate());
         }
 
         [HarmonyPostfix]
@@ -197,7 +224,7 @@ namespace Doom_Scroll.Patches
                 }
                 else
                 {
-                    __instance.completeString += $"\nHOWEVER, Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
+                    __instance.completeString += $"Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
                 }
             }
             else
