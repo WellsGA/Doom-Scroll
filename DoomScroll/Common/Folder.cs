@@ -47,20 +47,20 @@ namespace Doom_Scroll.Common
             Vector3 pos = new Vector3(0f, 0f, -20f);
             float width = parentSize.x * 0.9f;
             float height = parentSize.y - 1.5f;
-
-            // display items on a 3x2 grid 
+            // display items on a 4x2 grid 
+            int maxInRow = 4;
             for (int i = 0; i < 2; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     if (j + i * 5 < Content.Count)
                     {
-                        pos.x = j * width / 3 - width / 2 + 1.2f;
-                        pos.y = i * -height / 2 + height / 2 - 1.2f;
-                        GameObject dir = Content[j + i * 5].Dir;
-                        CustomButton btn = Content[j + i * 5].Btn;
+                        pos.x = j * width / 4 - width / 2 + 0.8f;
+                        pos.y = i * -height / 2 + height / 2 - 0.8f;
+                        GameObject dir = Content[j + i * maxInRow].Dir;
+                        CustomButton btn = Content[j + i * maxInRow].Btn;
                         dir.transform.localPosition = pos;
-                        btn.SetSize(width / 3 - 0.3f);
+                        btn.SetSize(width / maxInRow - 0.3f);
                         dir.SetActive(true);
                         btn.ActivateCustomUI(true);
                     }

@@ -13,7 +13,7 @@ namespace Doom_Scroll
     // relies on the common language runtime to initialize the variable
     public sealed class TaskAssigner
     {
-        private int maxTaskItemsPerPage = 9; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private int maxTaskItemsPerPage = 4; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         private static readonly TaskAssigner _instance = new TaskAssigner(); // readonly: can be assigned only during static initialization
         public static TaskAssigner Instance

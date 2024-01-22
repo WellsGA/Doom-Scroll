@@ -7,7 +7,7 @@ namespace Doom_Scroll.UI
     //a static container for a set of methods operating on input parameters without having to get or set any internal instance fields.
     public static class FolderOverlay
     {
-        private static Vector2 buttonSize = new Vector2(0.5f, 0.5f);
+        private static Vector2 buttonSize = new Vector2(0.4f, 0.4f);
         public static CustomButton CreateFolderBtn(GameObject parent)
         {
             PassiveButton[] srs = parent.gameObject.GetComponentsInChildren<PassiveButton>(true);
@@ -41,8 +41,8 @@ namespace Doom_Scroll.UI
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -30f));       
             if (backgroundSR != null)
             {
-               folderOverlay.SetSize(backgroundSR.size * 0.85f);
-               folderOverlay.SetLocalPosition(new Vector3(-0.65f,0,-30));
+               folderOverlay.SetSize(backgroundSR.size.x * 0.85f);
+               folderOverlay.SetLocalPosition(new Vector3(-0.65f, backgroundSR.size.y /2 - folderOverlay.GetSize().y /2 - 0.3f, -30));
             }
             else
             {
@@ -67,11 +67,11 @@ namespace Doom_Scroll.UI
             return new CustomButton(parent.UIGameObject, "Back to Previous", backBtnImg, backPosition, buttonSize.x);
 
         }
-        public static CustomText AddPath(GameObject parent)
+        public static CustomText AddPath(CustomModal parent)
         {
-            CustomText pathText = new CustomText(parent, "PathName", "Home");
-            pathText.SetLocalPosition(new Vector3(0, 2f, -10));
-            pathText.SetSize(2.6f);
+            CustomText pathText = new CustomText(parent.UIGameObject, "PathName", "Home");
+            pathText.SetLocalPosition(new Vector3(0, parent.GetSize().y /2 -0.45f, -10));
+            pathText.SetSize(1.9f);
             return pathText;
         }
 

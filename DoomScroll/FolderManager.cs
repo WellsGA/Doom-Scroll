@@ -10,7 +10,7 @@ namespace Doom_Scroll
     // basic singleton pattern - not thread safe
     public sealed class FolderManager
     {
-
+        public SourceDisplay Sources { get; private set; }
         //modal
         private CustomModal m_folderArea;
         private CustomText m_pathText;
@@ -25,6 +25,7 @@ namespace Doom_Scroll
         private IDirectory m_current;
         private FileText m_tasks;
         private FileText m_posts;
+        private FileText m_sources;
         private Folder m_screenshots;
 
         // tooltips
@@ -130,6 +131,11 @@ namespace Doom_Scroll
                     {
                         HeadlineDisplay.Instance.CheckForDisplayedNewsPageButtonClicks();
                     }
+                    if (Sources.AreSourcesDisplayed)
+                    {
+                        Sources.CheckForDisplayedSourcesPageButtonClicks();
+                    }
+
                 }
                 catch (Exception e)
                 {
@@ -159,7 +165,7 @@ namespace Doom_Scroll
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen, m_folderToggleBtn);
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
             m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
-            m_pathText = FolderOverlay.AddPath(m_folderArea.UIGameObject);
+            m_pathText = FolderOverlay.AddPath(m_folderArea);
             m_folderArea.CloseButton.ButtonEvent.MyAction += CloseFolder;
 
             // Tooltip in-folder setup
@@ -183,6 +189,7 @@ namespace Doom_Scroll
         }
         private void InitFolderStructure()
         {
+            Sources = new SourceDisplay(m_folderArea);
             m_root = new Folder("", "Home", m_folderArea);
             m_screenshots = new Folder(m_root.Path, "Images", m_folderArea);
             m_screenshotsTooltip = new Tooltip(m_screenshots.Dir, "ScreenshotsFolderBtn", "Your photos will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
@@ -190,9 +197,11 @@ namespace Doom_Scroll
             m_tasksTooltip = new Tooltip(m_tasks.Dir, "TasksFolderBtn", "Your task sign-ins will\nshow up here.", 0.5f, 4f, new Vector3(0, -1f, 0), 2f);
             m_posts = new FileText(m_root.Path, "Headlines", m_folderArea, FileTextType.NEWS);
             m_postsTooltip = new Tooltip(m_posts.Dir, "PostsFolderBtn", "Your headlines will\nshow up here.", 0.5f, 3.5f, new Vector3(0, -1f, 0), 2f);
+            m_sources = new FileText(m_root.Path, "Sources", m_folderArea, FileTextType.SOURCES);
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(m_posts);
+            m_root.AddItem(m_sources);
 
             m_current = m_root;
             m_previous = m_root;

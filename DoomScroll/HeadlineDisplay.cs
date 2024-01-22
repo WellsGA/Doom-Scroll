@@ -16,7 +16,8 @@ namespace Doom_Scroll
                 return _instance;
             }
         }
-        private readonly int maxNewsItemsPerPage = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private readonly int maxNewsItemsPerPage = 3; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private readonly int maxNewsItemsPerPageVote = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
         public Dictionary<byte, Tuple<int, int>> PlayerScores;
@@ -115,13 +116,13 @@ namespace Doom_Scroll
         {
             CustomModal parent = FolderManager.Instance.GetFolderArea();
             List<CustomUI> newsCards = new List<CustomUI>();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.75f, -10);
             int numOnPage = 0;
             foreach (Headline newsPost in AllNewsList)
             {
                 DoomScroll._log.LogInfo($"Current News: {newsPost.ToString()}");
                 Headline news = newsPost;
-                pos.y -= news.Card.GetSize().y + 0.05f;
+                pos.y -= news.Card.GetSize().y + 0.045f;
                 news.Card.SetLocalPosition(pos);
                 news.DisplayCardButtons(false);
                 newsCards.Add(news.Card);
@@ -130,7 +131,7 @@ namespace Doom_Scroll
                 if (numOnPage >= maxNewsItemsPerPage)
                 {
                     numOnPage = 0;
-                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.75f, -10);
                 }
             }
             // always show page 1 first
@@ -186,7 +187,7 @@ namespace Doom_Scroll
                 newsCards.Add(news.Card);
                 news.Card.ActivateCustomUI(false); // unsure if necessary>
                 numOnPage++;
-                if (numOnPage >= maxNewsItemsPerPage)
+                if (numOnPage >= maxNewsItemsPerPageVote)
                 {
                     numOnPage = 0;
                     pos = new Vector3(0, parent.size.y / 2 - 0.8f, -10);
@@ -196,7 +197,7 @@ namespace Doom_Scroll
             if (votingNewsPageHolder == null || votingNewsPageHolder.ThisParent == null)
             {
                 DoomScroll._log.LogInfo($"Creating new pageable");
-                votingNewsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPage, true, true); // sets up an empty pageable 
+                votingNewsPageHolder = new Pageable(parent, newsCards, maxNewsItemsPerPageVote, true, true); // sets up an empty pageable 
             }
             else
             {

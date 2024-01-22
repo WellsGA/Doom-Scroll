@@ -142,7 +142,7 @@ namespace Doom_Scroll.Common
         };
 
 
-        public static string[] autoTrustSource = new string[]
+       public static string[] autoTrustSource = new string[]
        {
            "Spaceship News Network",
            "Amongus Weekly",
@@ -156,10 +156,9 @@ namespace Doom_Scroll.Common
            "@SpaceshipNewsNetwork",
            "@VersacePelligrini",
            "@BuffingtonPost"
-
        };
 
-        public static string[] autoUnTrustSource = new string[]
+       public static string[] autoUnTrustSource = new string[]
        {
            "SusAmongUs on reddit",
            "RedNewsMedia.blogsite.web",
@@ -178,5 +177,50 @@ namespace Doom_Scroll.Common
            "@BüffingtonPośt_"
        };
 
-  }
+        // SOURCES LONG
+       public static string[] SourceDescriptions = new string[]
+       {
+           "<color=\"blue\">Julia Minnetian\r\n</color>" +
+           "Julia Hazel Minnetian (born Nov. 14, 1993) is an award-winning American journalist currently working as the editor-in-chief " +
+           "\nat Spaceship News Network. " +
+           "\nMinnetian won the 2019 Macey Award for Outstanding Journalism for her investigative reporting on the gruesome deaths " +
+           "\ntaking place in The Skeld cafeteria. She is renowned for her accurate, objective journalism." +
+           "\r\nBorn October 4, 1993" +
+           "\r\nEducation: " +
+           "\r\nKornberg School of Journalism - De Groot University, Class of 2016 (Bachelor of Arts)" +
+           "\r\nWork History:" +
+           "\r\nBuffington Post 2016-2017" +
+           "\r\nSpaceship News Network 2018-Present\n",
+
+           "<color=\"blue\">Spaceship News Network</color>\r\n" +
+           "\tArm Yourself with Knowledge" +
+           "\r\nTOP STORIES:" +
+           "\r\nAliens are feared to have infiltrated the ship, impersonating crewmates." +
+           "\r\n“Imposters are sabotaging our efforts”, officials report. " +
+           "\r\nImposters are unable to complete tasks." +
+           "\r\nNews anchor Bobby Doubt sued by local crewmates for defamation." +
+           "\r\nAuthorities: “Report any suspicious activity (or dead bodies) immediately”.\r\n",
+
+           "<color=\"blue\">Bluffington Post</color>\r\n" +
+           "Completely Objective, Absolutely Accurate. 100%." +
+           "\r\nTOP STORIES:" +
+           "\r\nARE IMPOSTERS REALLY THAT BAD? THIS NEW REPORT WILL SHOCK YOU" +
+           "\r\nDISGUSTING!!! Blue crewmate caught SHOWERING in TOILET?" +
+           "\r\nAnonymous Source: “We are completely safe”. Is everyone overreacting?" +
+           "\r\nGreen crewmate has done ZERO tasks, keeps slipping on banana peel. " +
+           "\n“It was their own banana”, says Red.\r\n",
+
+           "<color=\"blue\">Imposter Kyle’s Personal Blog</color>\r\n" +
+           "@imposterkylespersonalbl0g" +
+           "\r\nAbout me:" +
+           "\r\nWhatup Im Imposter Kyle, i’ve been working on the crew for yearsss. I like doing my tasks, participating in meetings " +
+           "\nand definitely not sneaking up on my crewmates when they’re alone. I also like cereal and doing sick flips on my skateboard " +
+           "\nin the parking lot XD Hit subscribe for more of my thoughts and dreams, my plans and my schemes!!!!!1!1" +
+           "\r\nPOSTS" +
+           "\r\n10/25/2013: Im SOOOO tired of Purple…" +
+           "\r\nJust got out of a meeting and purple was completely on my case. Accusing me, saying i vented JUST BECAUSE i was in th vents. " +
+           "\nI JUST LIKE SQUIRMING AROUND THE VENTS LIKE A BUG!!! Ooh if I see Purple walking around….\r\n"
+       };
+
+    }
 }

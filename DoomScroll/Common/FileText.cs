@@ -8,7 +8,8 @@ namespace Doom_Scroll.Common
     public enum FileTextType
     {
         TASKS,
-        NEWS
+        NEWS,
+        SOURCES
     }
     public class FileText : File
     {
@@ -20,8 +21,8 @@ namespace Doom_Scroll.Common
         public FileText(string parentPath, string name, CustomModal parentPanel, FileTextType textType) : base(parentPath, name, parentPanel)
         {
             m_type = textType;     
-            Btn.Label.SetLocalPosition(new Vector3(0, 0.4f, 0));
-            Btn.Label.SetSize(2.5f);
+            Btn.Label.SetLocalPosition(new Vector3(0, 0.3f, 0));
+            Btn.Label.SetSize(2.1f);
         }
 
         public override void DisplayContent()
@@ -38,6 +39,11 @@ namespace Doom_Scroll.Common
                     {
                         HeadlineDisplay.Instance.DisplayHeadlineInFolder();
                         m_content = HeadlineDisplay.Instance.ToString();
+                        break;
+                    }
+                case FileTextType.SOURCES:
+                    {
+                        FolderManager.Instance.Sources.DispaySources();
                         break;
                     }
             }
@@ -57,6 +63,11 @@ namespace Doom_Scroll.Common
                     {
                         HeadlineDisplay.Instance.HideNews();
                         //HeadlineDisplay.Instance.HidePageButtons();
+                        break;
+                    }
+                case FileTextType.SOURCES:
+                    {
+                        FolderManager.Instance.Sources.HideSources();
                         break;
                     }
             }
