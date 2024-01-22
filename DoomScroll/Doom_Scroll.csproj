@@ -105,5 +105,6 @@
     <EmbeddedResource Include="Assets\phone.png" />
 	  <EmbeddedResource Include="Assets\HeadlineTrustVoteResults.png" />
 	  <EmbeddedResource Include="Assets\HeadlineTrustVotes.png" />
+	  <EmbeddedResource Include="Assets\cameraButtonExample.png" />
   </ItemGroup>
 </Project>

@@ -129,7 +129,7 @@ namespace Doom_Scroll
             m_signInForms = new TutorialBookletPage("Sign-In Forms", m_signInFormsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.taskButtonsExample.png", 0.3f));
             m_infiniteChatLogs = new TutorialBookletPage("Infinite Chat Logs", m_infiniteChatLogsText, m_tutorialBookletArea, "Doom_Scroll.Assets.infiniteChatAfter.png", "Doom_Scroll.Assets.infiniteChatBefore.png");
             m_swcs = new TutorialBookletPage("SWCs", m_swcText, m_tutorialBookletArea, "Doom_Scroll.Assets.SWCInTaskList_WithArrow.png", "Doom_Scroll.Assets.SWCStartScreen.png");
-            m_screenshots = new TutorialBookletPage("Images", m_screenshotsText, m_tutorialBookletArea, "Doom_Scroll.Assets.file.png");
+            m_screenshots = new TutorialBookletPage("Images", m_screenshotsText, m_tutorialBookletArea, "Doom_Scroll.Assets.taskSelect.png", "Doom_Scroll.Assets.taskFolder.png", new Tuple<string, float>("Doom_Scroll.Assets.newsButtonExample.png", 1f)); // NEED CAMERA SCREENSHOTS
             m_folderSystem = new TutorialBookletPage("Folder System", m_folderSystemText, m_tutorialBookletArea, "Doom_Scroll.Assets.folderWhereInChat_WithArrow.png", "Doom_Scroll.Assets.folderOpen.png", new Tuple<string, float>("Doom_Scroll.Assets.folderButtonExample.png", 0.75f));
 
             m_pageOrder = new List<CustomUI>
