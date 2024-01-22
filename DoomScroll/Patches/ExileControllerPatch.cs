@@ -13,12 +13,13 @@ namespace Doom_Scroll.Patches
         public static MeetingHud.VoterState[] OriginalArray2;
         public static GameData.PlayerInfo OriginalExiledPlayer;
         public static bool OriginalTie;
-        private static bool _exiledWasModified;
+        private static bool _exiledWasOverridden;
 
         [HarmonyPrefix]
         [HarmonyPatch("Begin")]
         public static bool PrefixBegin(ExileController __instance, object[] __args)
         {
+            DoomScroll._log.LogInfo($"Length of args: {__args.Length}");
 
             int num = 0;
             foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
@@ -50,45 +51,91 @@ namespace Doom_Scroll.Patches
 
             if (!DoomScrollVictoryManager.CheckVotingSuccess())
             {
+                DoomScroll._log.LogInfo("Voting was not a success!");
                 __instance.exiled = null;
 
                 if (OriginalExiledPlayer != null)
                 {
                     DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer: " + OriginalExiledPlayer.ToString());
-                    //CALLS SAME STUFF AS ACTUAL THING, BUT THEN ADDS MESSAGE ABOUT VOTING TO THE END
-
-                    //^SIKE, NOT ANYMORE. THAT WAS A LIE.
+                    //CALLS SAME STUFF AS ACTUAL THING, THEN CANCELS METHOD IF WE MODIFYIING THE EXILE.
 
 
                     if (OriginalExiledPlayer.Role.IsImpostor)
                     {
-                        if (num2 > 1)
+                        if (num2 > 1) // If the amount of impostors is more than 1
                         {
                             if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
                             {
-                                __args[1] = OriginalExiledPlayer;
-                                //__args[2] = OriginalTie;
-                                __instance.exiled = OriginalExiledPlayer;
-                                return true;
+                                if (__args.Length == 2)
+                                {
+                                    __args[0] = OriginalArray2;
+                                    DoomScroll._log.LogInfo("Array");
+                                    if (OriginalExiledPlayer != null)
+                                    {
+                                        __args[1] = OriginalExiledPlayer;
+                                        DoomScroll._log.LogInfo("Exiled");
+                                    }
+                                    __instance.exiled = OriginalExiledPlayer;
+                                    DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
+                                }
+                                else if (__args.Length == 3)
+                                {
+                                    __args[0] = OriginalArray2;
+                                    DoomScroll._log.LogInfo("Array");
+                                    if (OriginalExiledPlayer != null)
+                                    {
+                                        __args[1] = OriginalExiledPlayer;
+                                        DoomScroll._log.LogInfo("Exiled");
+                                    }
+                                    __args[2] = OriginalTie;
+                                    DoomScroll._log.LogInfo("Tie");
+                                    __instance.exiled = OriginalExiledPlayer;
+                                    DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
+                                }
                             }
                             __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
+                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
                             DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
                         }
                         else
                         {
                             __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
+                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
                             DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
                         }
                     }
                     else // IF THEY VOTED SOMEONE OUT AND THEY AREN'T WINNING FROM IT, SET THE EXILED PLAYER BACK TO NORMAL AND RUN THE REAL METHOD
                     {
-                        __args[1] = OriginalExiledPlayer;
-                        //__args[2] = OriginalTie;
-                        __instance.exiled = OriginalExiledPlayer;
+                        if (__args.Length == 2)
+                        {
+                            __args[0] = OriginalArray2;
+                            DoomScroll._log.LogInfo("Array");
+                            if (OriginalExiledPlayer != null)
+                            {
+                                __args[1] = OriginalExiledPlayer;
+                                DoomScroll._log.LogInfo("Exiled");
+                            }
+                            __instance.exiled = OriginalExiledPlayer;
+                            DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
+                        }
+                        else if (__args.Length == 3)
+                        {
+                            __args[0] = OriginalArray2;
+                            DoomScroll._log.LogInfo("Array");
+                            if (OriginalExiledPlayer != null)
+                            {
+                                __args[1] = OriginalExiledPlayer;
+                                DoomScroll._log.LogInfo("Exiled");
+                            }
+                            __args[2] = OriginalTie;
+                            DoomScroll._log.LogInfo("Tie");
+                            __instance.exiled = OriginalExiledPlayer;
+                            DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
+                        }
                         return true;
                     }
 
-                    _exiledWasModified = true;
+                    _exiledWasOverridden = true;
                     __instance.gameObject.GetComponent<MonoBehaviour>().StartCoroutine(__instance.Animate());
 
 
@@ -105,11 +152,32 @@ namespace Doom_Scroll.Patches
                 }
             }
             // IF THEY VOTED CORRECTLY, THEY CAN VOTE OUT WHOEVER THEY WANT AND RUN THE REAL METHOD
-            __args[0] = OriginalExiledPlayer;
-            __instance.exiled = OriginalExiledPlayer;
-            __args[1] = OriginalTie;
+            DoomScroll._log.LogInfo("Voting was a success! Or, vote doesn't matter.");
+            if (__args.Length == 2)
+            {
+                __args[0] = OriginalArray2;
+                DoomScroll._log.LogInfo("Array");
+                __args[1] = OriginalExiledPlayer;
+                DoomScroll._log.LogInfo("Exiled");
+                __instance.exiled = OriginalExiledPlayer;
+                DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
+            }
+            else if (__args.Length == 3)
+            {
+                __args[0] = OriginalArray2;
+                DoomScroll._log.LogInfo("Array");
+                __args[1] = OriginalExiledPlayer;
+                DoomScroll._log.LogInfo("Exiled");
+                __args[2] = OriginalTie;
+                DoomScroll._log.LogInfo("Tie");
+                __instance.exiled = OriginalExiledPlayer;
+                DoomScroll._log.LogInfo("Running normal ExileControllerPatch setup.");
+            }
+
+            //ACTUALLY INSTEADDDDD, WE USE THEIR CODE AND GO TO THE NEXT THING
             return true;
         }
+
         [HarmonyPostfix]
         [HarmonyPatch("Begin")]
         public static void PostfixBegin(ExileController __instance)
@@ -117,7 +185,7 @@ namespace Doom_Scroll.Patches
             //
             //  ADD EDITED VOTING STRING HERE, AND DON'T LET THEM VOTE IMPOSTOR OUT UNTIL THEY GET ALL HEADLINE VOTES CORRECT
             //
-            if (_exiledWasModified)
+            if (_exiledWasOverridden)
             {
                 __instance.completeString = _retainedExileString;
             }
@@ -209,7 +277,7 @@ namespace Doom_Scroll.Patches
         public static void PrefixWrapUp(ExileController __instance)
         {
             //Reset exile stuff
-            if (OriginalExiledPlayer != null && !_exiledWasModified)
+            if (OriginalExiledPlayer != null && !_exiledWasOverridden)
             {
                 foreach (PlayerControl exiled in PlayerControl.AllPlayerControls)
                 {
@@ -221,13 +289,13 @@ namespace Doom_Scroll.Patches
                 }
             }
 
-            if (_exiledWasModified)
+            if (_exiledWasOverridden)
             {
                 __instance.ReEnableGameplay();
             }
 
             OriginalExiledPlayer = null;
-            _exiledWasModified = false;
+            _exiledWasOverridden = false;
         }
     }
 }
