@@ -66,12 +66,12 @@ namespace Doom_Scroll.Common
                 //set first image;
                 tutorialPictureOne = ImageLoader.ReadImageFromAssembly(assembly, imgName); //will appear as default file icon for now
                 imageOne = new CustomImage(parentOverlay.UIGameObject, $"TutorialPictureOne{title}", tutorialPictureOne);
-                imageOne.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x) * 0.28f); // landscape 2:3 ratio
+                imageOne.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x) * 0.25f); // landscape 2:3 ratio
                 imageOne.SetLocalPosition(new Vector3(-1.25f, 0.1f, -50f));
                 //set second image;
                 tutorialPictureTwo = ImageLoader.ReadImageFromAssembly(assembly, secondImgName); //will appear as default file icon for now
                 imageTwo = new CustomImage(parentOverlay.UIGameObject, $"TutorialPictureTwo{title}", tutorialPictureTwo);
-                imageTwo.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x) * 0.28f); // landscape 2:3 ratio
+                imageTwo.SetSize(new Vector3(parentOverlay.GetSize().x*1.5f, parentOverlay.GetSize().x) * 0.25f); // landscape 2:3 ratio
                 imageTwo.SetLocalPosition(new Vector3(1.25f, 0.1f, -50f));
                 if (iconButton != null)
                 {
