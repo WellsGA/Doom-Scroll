@@ -103,8 +103,8 @@
 	  <EmbeddedResource Include="Assets\tutorialModeToggle.png" />
 	  <EmbeddedResource Include="Assets\tooltipBackground.png" />
     <EmbeddedResource Include="Assets\phone.png" />
-	  <EmbeddedResource Include="Assets\HeadlineTrustVoteResults.png" />
-	  <EmbeddedResource Include="Assets\HeadlineTrustVotes.png" />
+	  <EmbeddedResource Include="Assets\headlineTrustVoteResults.png" />
+	  <EmbeddedResource Include="Assets\headlineTrustVotes.png" />
 	  <EmbeddedResource Include="Assets\cameraButtonExample.png" />
 	  <EmbeddedResource Include="Assets\ScreenshotCapture.png" />
 	  <EmbeddedResource Include="Assets\ScreenshotInChat.png" />
