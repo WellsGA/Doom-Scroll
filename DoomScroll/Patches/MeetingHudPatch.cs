@@ -15,6 +15,7 @@ namespace Doom_Scroll.Patches
         public static Tooltip meetingBeginningToolTip;
         private static PlayerVoteArea[] playerVoters;
         private static PlayerVoteArea[] unmodifiedPlayerStates;
+        public static MeetingHud.VoterState[] unmodifiedVoterStates;
         private static Dictionary<byte, int> DoomCalculateVotes(MeetingHud __instance)
         {
             Dictionary<byte, int> dictionary = new Dictionary<byte, int>();
@@ -213,35 +214,37 @@ namespace Doom_Scroll.Patches
             DoomScroll._log.LogInfo("Entering our PopulateResultsPatch");
             //__instance.TitleText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, (Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>)Array.Empty<object>());
             int num = 0;
-            for (int i = 0; i < __instance.playerStates.Length; i++)
+            for (int i = 0; i < unmodifiedPlayerStates.Length; i++)
             {
                 DoomScroll._log.LogInfo("Outer Loop.");
-                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                DoomScroll._log.LogInfo($"Length of playerStates array: {unmodifiedPlayerStates.Length}");
+                PlayerVoteArea playerVoteArea = unmodifiedPlayerStates[i];
                 playerVoteArea.ClearForResults();
                 int num2 = 0;
-                foreach (PlayerVoteArea voteArea in unmodifiedPlayerStates)
+                foreach (MeetingHud.VoterState voterState in unmodifiedVoterStates)
                 {
-                    DoomScroll._log.LogInfo($"Outer loop: {__instance.playerStates[i].TargetPlayerId}, Inner loop on another vote area! Player id: {voteArea.TargetPlayerId}");
-                    GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voteArea.TargetPlayerId);
+                    DoomScroll._log.LogInfo($"Outer loop: {unmodifiedPlayerStates[i].TargetPlayerId}, Inner loop on another vote area! Player id: {voterState.VoterId}");
+                    GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
                     if (playerById == null)
                     {
-                        __instance.logger.Error(string.Format("Couldn't find player info for voter: {0}", voteArea.TargetPlayerId), null);
+                        __instance.logger.Error(string.Format("Couldn't find player info for voter: {0}", voterState.VoterId), null);
                     }
-                    else if (i == 0 && (voteArea.VotedFor == PlayerVoteArea.SkippedVote))
+                    else if (i == 0 && voterState.SkippedVote)
                     {
                         DoomScroll._log.LogInfo("Trying to populate skipped vote with icon!");
                         __instance.BloopAVoteIcon(playerById, num, __instance.SkippedVoting.transform);
                         num++;
                     }
-                    else if (voteArea.VotedFor == playerVoteArea.TargetPlayerId)
+                    else if (voterState.VotedForId == playerVoteArea.TargetPlayerId)
                     {
-                        DoomScroll._log.LogInfo($"Trying to populate player vote with icon! Player id {voteArea.VotedFor} voted for {playerVoteArea.TargetPlayerId}");
+                        DoomScroll._log.LogInfo($"Trying to populate player vote with icon! Player id {voterState.VoterId} voted for {playerVoteArea.TargetPlayerId}");
                         __instance.BloopAVoteIcon(playerById, num2, playerVoteArea.transform);
                         num2++;
                     }
                 }
             }
             unmodifiedPlayerStates = new PlayerVoteArea[] { };
+            unmodifiedVoterStates = new MeetingHud.VoterState[] { };
             return false;
         }
 
@@ -322,6 +325,9 @@ namespace Doom_Scroll.Patches
                         };
                     }
                 }
+                // OUR VOTER STATE
+                unmodifiedVoterStates = array2;
+
                 //their code ends!
                 ExileControllerPatch.OriginalArray2 = array2;
                 DoomScroll._log.LogInfo("OriginalArray2 is being set as: " + array2.ToString());
@@ -359,11 +365,11 @@ namespace Doom_Scroll.Patches
         }
 
 
-        /*[HarmonyPostfix]
+        [HarmonyPostfix]
         [HarmonyPatch("VotingComplete")]
         public static void PrefixVotingComplete(object[] __args)
         {
-            foreach(object thing in __args)
+            foreach (object thing in __args)
             {
                 if (thing == null)
                 {
@@ -375,6 +381,13 @@ namespace Doom_Scroll.Patches
                 }
 
             }
+            if (__args[0] != null)
+            {
+                if (ExileControllerPatch.OriginalArray2 != null)
+                {
+                    __args[0] = ExileControllerPatch.OriginalArray2;
+                }
+            }
             if (__args[1] != null)
             {
                 DoomScroll._log.LogInfo("__args[1] is not null.");
@@ -384,14 +397,28 @@ namespace Doom_Scroll.Patches
                     DoomScroll._log.LogInfo("__args[1] as a PlayerInfo is " + (GameData.PlayerInfo)__args[1]);
                     DoomScroll._log.LogInfo("__args[1] is indeed a GameData.PlayerInfo");
                     DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer is being set as: " + (GameData.PlayerInfo)__args[1] + ", " + ((GameData.PlayerInfo)__args[1]).PlayerName);
-                    __args[1] = null;
+                    if (ExileControllerPatch.OriginalExiledPlayer != null)
+                    {
+                        __args[1] = ExileControllerPatch.OriginalExiledPlayer;
+                    }
+                }
+            }
+            else
+            {
+                if (ExileControllerPatch.OriginalExiledPlayer != null)
+                {
+                    __args[1] = ExileControllerPatch.OriginalExiledPlayer;
                 }
             }
             if (__args[2] != null)
             {
                 DoomScroll._log.LogInfo("__args[2] is not null.");
+                if (ExileControllerPatch.OriginalTie != null)
+                {
+                    __args[0] = ExileControllerPatch.OriginalTie;
+                }
             }
-            
-        }*/
+
+        }
     }
 }
