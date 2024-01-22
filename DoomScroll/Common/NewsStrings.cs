@@ -192,8 +192,8 @@ namespace Doom_Scroll.Common
            "\r\nBuffington Post 2016-2017" +
            "\r\nSpaceship News Network 2018-Present\n",
 
-           "<color=\"blue\">Spaceship News Network</color>\r\n" +
-           "\tArm Yourself with Knowledge" +
+           "<color=\"blue\">SPACESHIP NEWS NETWORK</color>\r\n" +
+           "\t\"<color=\\\"blue\\\">Arm Yourself with Knowledge.\\r\\n</color>" +
            "\r\nTOP STORIES:" +
            "\r\nAliens are feared to have infiltrated the ship, impersonating crewmates." +
            "\r\n“Imposters are sabotaging our efforts”, officials report. " +
@@ -201,8 +201,8 @@ namespace Doom_Scroll.Common
            "\r\nNews anchor Bobby Doubt sued by local crewmates for defamation." +
            "\r\nAuthorities: “Report any suspicious activity (or dead bodies) immediately”.\r\n",
 
-           "<color=\"blue\">Bluffington Post</color>\r\n" +
-           "Completely Objective, Absolutely Accurate. 100%." +
+           "<color=\"blue\">BLUFFINGTON POST</color>\r\n" +
+           "<color=\\\"blue\\\">Completely Objective, Absolutely Accurate. 100%.\\r\\n</color>" +
            "\r\nTOP STORIES:" +
            "\r\nARE IMPOSTERS REALLY THAT BAD? THIS NEW REPORT WILL SHOCK YOU" +
            "\r\nDISGUSTING!!! Blue crewmate caught SHOWERING in TOILET?" +
@@ -210,7 +210,7 @@ namespace Doom_Scroll.Common
            "\r\nGreen crewmate has done ZERO tasks, keeps slipping on banana peel. " +
            "\n“It was their own banana”, says Red.\r\n",
 
-           "<color=\"blue\">Imposter Kyle’s Personal Blog</color>\r\n" +
+           "<color=\"blue\">IMPOSTER KYLE'S PERSONAL BLOG</color>\r\n" +
            "@imposterkylespersonalbl0g" +
            "\r\nAbout me:" +
            "\r\nWhatup Im Imposter Kyle, i’ve been working on the crew for yearsss. I like doing my tasks, participating in meetings " +
