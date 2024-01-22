@@ -106,5 +106,7 @@
 	  <EmbeddedResource Include="Assets\HeadlineTrustVoteResults.png" />
 	  <EmbeddedResource Include="Assets\HeadlineTrustVotes.png" />
 	  <EmbeddedResource Include="Assets\cameraButtonExample.png" />
+	  <EmbeddedResource Include="Assets\ScreenshotCapture.png" />
+	  <EmbeddedResource Include="Assets\ScreenshotInChat.png" />
   </ItemGroup>
 </Project>
