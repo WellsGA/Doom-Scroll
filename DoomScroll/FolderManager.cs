@@ -34,6 +34,7 @@ namespace Doom_Scroll
         private Tooltip m_tasksTooltip;
         private Tooltip m_postsTooltip;
         private Tooltip m_screenshotsTooltip;
+        private Tooltip m_sourcesTooltip;
         private Tooltip m_taskFolderTooltip;
         private Tooltip m_postFolderTooltip;
         private Tooltip m_postFolderVotingTooltip;
@@ -169,11 +170,11 @@ namespace Doom_Scroll
             m_folderArea.CloseButton.ButtonEvent.MyAction += CloseFolder;
 
             // Tooltip in-folder setup
-            m_screenshotFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideScreenshotsFolder", "Notice any clues? How can you use these\nphotos in your arguments?", 0.4f, 7.5f, new Vector3(0, -0.4f, 0), 1.5f);
-            m_taskFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideTasksFolder", "Who is doing their tasks? Who isn't? Think about this how this\ninformation might reflect on each player's reliability", 6f, 7f, new Vector3(0, -0.3f, 0), 1.5f);
-            m_postFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "True posts can give vital clues about other players, but some\nposts might be misleading! Can you tell the difference? How?", .65f, 6f, new Vector3(0, -0.3f, 0), 1.5f);
-            m_postFolderVotingTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsVoting", "Discuss whether you think each post is TRUSTWORTHY or not.\nALL Crewmates must achieve 100% accuracy to complete the final task.", 0.5f, 9.7f, new Vector3(0, -4.0f, 0), 1.5f);
-            m_HeadlinesTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 3f, 0.29f, new Vector3(-3.5f, -2.3f, 0), 1.4f);
+            m_screenshotFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideScreenshotsFolder", "Notice any clues? How can you use these\nphotos in your arguments?", 0.4f, 7.5f, new Vector3(0, -0.4f, 0), 1.3f);
+            m_taskFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideTasksFolder", "Who is doing their tasks? Who isn't? Think about this how this\ninformation might reflect on each player's reliability", 6f, 7f, new Vector3(0, -0.3f, 0), 1.3f);
+            m_postFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "True posts can give vital clues about other players, but some\nposts might be misleading! Can you tell the difference? How?", .65f, 6f, new Vector3(0, -0.3f, 0), 1.3f);
+            m_postFolderVotingTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsVoting", "Discuss whether you think each post is TRUSTWORTHY or not.\nALL Crewmates must achieve 100% accuracy to complete the final task.", 0.65f, 7f, new Vector3(0, -1.95f, 0), 1.3f);
+            m_HeadlinesTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 4.5f, 0.25f, new Vector3(-3.6f, -0.85f, 0), 1.1f);
             m_HeadlinesTooltip.ImageObject.SetSize(new Vector2(1.5f, 3f));
             m_taskFolderTooltip.ImageObject.SetSize(new Vector2(4.2f, .36f));
             m_postFolderTooltip.ImageObject.SetSize(new Vector2(4.4f, .36f));
@@ -192,12 +193,14 @@ namespace Doom_Scroll
             Sources = new SourceDisplay(m_folderArea);
             m_root = new Folder("", "Home", m_folderArea);
             m_screenshots = new Folder(m_root.Path, "Images", m_folderArea);
-            m_screenshotsTooltip = new Tooltip(m_screenshots.Dir, "ScreenshotsFolderBtn", "Your photos will\nshow up here.", 0.5f, 3f, new Vector3(0, -1f, 0), 2f);
+            m_screenshotsTooltip = new Tooltip(m_screenshots.Btn.UIGameObject, "ScreenshotsFolderBtn", "Your photos will\nshow up here.", 0.4f, 2.8f, new Vector3(0, 0.79f, 0), 1.5f);
             m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea, FileTextType.TASKS);
-            m_tasksTooltip = new Tooltip(m_tasks.Dir, "TasksFolderBtn", "Your task sign-ins will\nshow up here.", 0.5f, 4f, new Vector3(0, -1f, 0), 2f);
+            m_tasksTooltip = new Tooltip(m_tasks.Btn.UIGameObject, "TasksFolderBtn", "Your task sign-ins will\nshow up here.", 0.4f, 3.8f, new Vector3(0, 0.79f, 0), 1.5f);
             m_posts = new FileText(m_root.Path, "Headlines", m_folderArea, FileTextType.NEWS);
-            m_postsTooltip = new Tooltip(m_posts.Dir, "PostsFolderBtn", "Your headlines will\nshow up here.", 0.5f, 3.5f, new Vector3(0, -1f, 0), 2f);
+            m_postsTooltip = new Tooltip(m_posts.Btn.UIGameObject, "PostsFolderBtn", "Your headlines will\nshow up here.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
             m_sources = new FileText(m_root.Path, "Sources", m_folderArea, FileTextType.SOURCES);
+            m_sourcesTooltip = new Tooltip(m_sources.Btn.UIGameObject, "SourcesFolderBtn", "Investigate the\nheadline sources.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
+
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
             m_root.AddItem(m_posts);

@@ -193,7 +193,7 @@ namespace Doom_Scroll.Common
            "\r\nSpaceship News Network 2018-Present\n",
 
            "<color=\"blue\">SPACESHIP NEWS NETWORK</color>\r\n" +
-           "\t\"<color=\\\"blue\\\">Arm Yourself with Knowledge.\\r\\n</color>" +
+           "Arm Yourself with Knowledge." +
            "\r\nTOP STORIES:" +
            "\r\nAliens are feared to have infiltrated the ship, impersonating crewmates." +
            "\r\n“Imposters are sabotaging our efforts”, officials report. " +
@@ -202,7 +202,7 @@ namespace Doom_Scroll.Common
            "\r\nAuthorities: “Report any suspicious activity (or dead bodies) immediately”.\r\n",
 
            "<color=\"blue\">BLUFFINGTON POST</color>\r\n" +
-           "<color=\\\"blue\\\">Completely Objective, Absolutely Accurate. 100%.\\r\\n</color>" +
+           "Completely Objective, Absolutely Accurate. 100%." +
            "\r\nTOP STORIES:" +
            "\r\nARE IMPOSTERS REALLY THAT BAD? THIS NEW REPORT WILL SHOCK YOU" +
            "\r\nDISGUSTING!!! Blue crewmate caught SHOWERING in TOILET?" +
