@@ -199,7 +199,7 @@ namespace Doom_Scroll
             m_posts = new FileText(m_root.Path, "Headlines", m_folderArea, FileTextType.NEWS);
             m_postsTooltip = new Tooltip(m_posts.Btn.UIGameObject, "PostsFolderBtn", "Your headlines will\nshow up here.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
             m_sources = new FileText(m_root.Path, "Sources", m_folderArea, FileTextType.SOURCES);
-            m_sourcesTooltip = new Tooltip(m_sources.Btn.UIGameObject, "SourcesFolderBtn", "Invetigate the\nheadline sources.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
+            m_sourcesTooltip = new Tooltip(m_sources.Btn.UIGameObject, "SourcesFolderBtn", "Investigate the\nheadline sources.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
 
             m_root.AddItem(m_screenshots);
             m_root.AddItem(m_tasks);
