@@ -31,3 +31,7 @@ To do so, we have added the following game mechanics:
 -Static Chat Logs: an updated chatfeed that removes the chat limiter so that players can see everything posted from previous rounds during a match
 
 -Secondary Win Conditions (SWCs): Secondary objectives that give players ulterior motives in their play (e.g. Blue is crewmate, but must also protect Red; Red is crewmate, but must also frame Yellow). Success or failure of SWCs will be shown to all players at the completion of the match.
+
+
+__Disclaimer__
+This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.
