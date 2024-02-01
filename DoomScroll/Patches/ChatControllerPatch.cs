@@ -3,6 +3,7 @@ using Doom_Scroll.UI;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
+using System.Collections.Generic;
 
 
 namespace Doom_Scroll.Patches
@@ -37,15 +38,14 @@ namespace Doom_Scroll.Patches
         public static void PrefixAddChat(out string __state, ref string chatText)
         {
 
-            __state = chatText.Substring(4);        // save content into state
-            chatText = chatText.Substring(0, 4);    // id - so we can find the chatbubble after created and added to the scroller
+            __state = numberOfMessages <= 99 ? chatText.Substring(4) : chatText.Substring(5);        // save content into state
+            chatText = numberOfMessages <= 99 ? chatText.Substring(0, 4) : chatText.Substring(0, 5);    // id - so we can find the chatbubble after created and added to the scroller
         }
-
 
         [HarmonyPostfix]
         [HarmonyPatch("AddChat")]
         public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText, string __state)
-        {
+        {           
             if (AmongUsClient.Instance.AmHost)
             {
                 GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + __state);
@@ -53,12 +53,21 @@ namespace Doom_Scroll.Patches
 
             bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
             GameObject scroller = __instance.GetComponentInChildren<Scroller>(true).gameObject;
-            TextMeshPro[] texts = scroller.gameObject.GetComponentsInChildren<TextMeshPro>(true);
-            if (texts != null)
+            // get the last max 15 chatbubbles // will only work as long as they keep the object hierarchy
+            List<GameObject> lastBubbles = new List<GameObject>();
+            int nrofBubbles = scroller.transform.childCount >= 15 ? 15 : scroller.transform.childCount;
+            for (int i = 1; i <= nrofBubbles; i++) 
             {
+                 lastBubbles.Add(scroller.transform.GetChild(scroller.transform.childCount - i).gameObject);
+            }
+           
+            foreach(GameObject bub in lastBubbles)
+            {
+                TextMeshPro[] texts = bub.GetComponentsInChildren<TextMeshPro>();
                 foreach (TextMeshPro text in texts)
                 {
-                    if (text.text == chatText)
+                    DoomScroll._log.LogInfo("BUBBLE CHILD TEXT: " + text.name);
+                    if(text.text == chatText)
                     {
                         string ID = text.text;
                         DoomScroll._log.LogInfo("ChatBubble was found, id: + " + ID + ", text: " + chatText);
@@ -69,14 +78,10 @@ namespace Doom_Scroll.Patches
                         TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
                         SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
 
-                        // if (nameText != null) nameText.text = nameText.text + " " + ID; // debug
-                        /*RectMask2D mask2D = text.transform.parent.GetComponentInChildren<RectMask2D>();
-                        if (mask2D != null) DoomScroll._log.LogInfo("2d mask: " + mask2D.gameObject.name);*/
-
                         switch (content)
                         {
                             case ChatContent.TEXT:
-                                if(chatbubble != null && nameText != null && background != null && maskArea != null)
+                                if (chatbubble != null && nameText != null && background != null && maskArea != null)
                                 {
                                     background.color = new Color(0.94f, 0.93f, 0.99f, 1);
                                     text.ForceMeshUpdate(true, true);
@@ -151,6 +156,7 @@ namespace Doom_Scroll.Patches
                     }
                 }
             }
+            
             content = ChatContent.DEFAULT;  // set back to default
         }
 
