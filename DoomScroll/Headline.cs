@@ -116,9 +116,9 @@ namespace Doom_Scroll
             if (DestroyableSingleton<HudManager>.Instance && AmongUsClient.Instance.AmClient)
             {
                 // add to chat locally
-                ChatControllerPatch.content = ChatContent.HEADLINE;
+                ChatControllerPatch.content = ChatContent.DEFAULT;
                 string id = ChatControllerPatch.GetChatID();
-                string chatText = id + NewsToChatText();
+                string chatText = NewsToChatText();
                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, chatText, false);
                 // send to others
                 RpcPostNews(id);

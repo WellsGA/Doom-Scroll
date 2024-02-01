@@ -159,10 +159,10 @@ namespace Doom_Scroll.Patches
             FolderManager.Instance.CheckForButtonClicks();
             HeadlineDisplay.Instance.CheckForShareClicks();
             TaskAssigner.Instance.CheckForShareTaskClicks();
-            foreach(HeadlineEndorsement headline in HeadlineDisplay.Instance.endorsementList)
+           /* foreach(HeadlineEndorsement headline in HeadlineDisplay.Instance.endorsementList)
             {
                 headline.CheckForEndorseClicks();
-            }
+            }*/
 
             if (meetingBeginningToolTip.TextObject.TextMP.text != "" && __instance.CurrentState != MeetingHud.VoteStates.Discussion && __instance.CurrentState != MeetingHud.VoteStates.Animating)
             {

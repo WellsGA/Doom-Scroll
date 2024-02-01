@@ -10,8 +10,6 @@ namespace Doom_Scroll.Patches
 {
     public enum ChatContent
     {
-        TEXT,
-        HEADLINE,
         SCREENSHOT,
         DEFAULT
     }
@@ -22,7 +20,7 @@ namespace Doom_Scroll.Patches
     public class ChatControllerPatch
     {
         public static byte[] screenshot = null; // for sharing images
-        public static ChatContent content = ChatContent.TEXT;
+        public static ChatContent content = ChatContent.DEFAULT;
         private static int numberOfMessages = 10;
 
         public static string GetChatID()
@@ -33,131 +31,89 @@ namespace Doom_Scroll.Patches
             return id;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch("AddChat")]
-        public static void PrefixAddChat(out string __state, ref string chatText)
-        {
-
-            __state = numberOfMessages <= 99 ? chatText.Substring(4) : chatText.Substring(5);        // save content into state
-            chatText = numberOfMessages <= 99 ? chatText.Substring(0, 4) : chatText.Substring(0, 5);    // id - so we can find the chatbubble after created and added to the scroller
-        }
-
         [HarmonyPostfix]
         [HarmonyPatch("AddChat")]
-        public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText, string __state)
-        {           
+        public static void PostfixAddChat(ChatController __instance, PlayerControl sourcePlayer, string chatText)
+        {   
+            // logging chat messages
             if (AmongUsClient.Instance.AmHost)
             {
-                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + __state);
+                if(content == ChatContent.SCREENSHOT) { chatText = "Photo shared, ID: " + chatText; }
+                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + chatText);
             }
 
-            bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
-            GameObject scroller = __instance.GetComponentInChildren<Scroller>(true).gameObject;
-            // get the last max 15 chatbubbles // will only work as long as they keep the object hierarchy
-            List<GameObject> lastBubbles = new List<GameObject>();
-            int nrofBubbles = scroller.transform.childCount >= 15 ? 15 : scroller.transform.childCount;
-            for (int i = 1; i <= nrofBubbles; i++) 
+            switch (content)
             {
-                 lastBubbles.Add(scroller.transform.GetChild(scroller.transform.childCount - i).gameObject);
-            }
-           
-            foreach(GameObject bub in lastBubbles)
-            {
-                TextMeshPro[] texts = bub.GetComponentsInChildren<TextMeshPro>();
-                foreach (TextMeshPro text in texts)
-                {
-                    DoomScroll._log.LogInfo("BUBBLE CHILD TEXT: " + text.name);
-                    if(text.text == chatText)
+                case ChatContent.SCREENSHOT:
                     {
-                        string ID = text.text;
-                        DoomScroll._log.LogInfo("ChatBubble was found, id: + " + ID + ", text: " + chatText);
-                        text.text = __state;
-                        Transform chatbubble = text.transform.parent;
-                        // child elements of ChatBubble needed to set the content correctly
-                        SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
-                        TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
-                        SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
-
-                        switch (content)
+                        bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
+                        GameObject scroller = __instance.GetComponentInChildren<Scroller>(true).gameObject;
+                        // get the last max 15 chatbubbles // will only work as long as they keep the object hierarchy
+                        List<GameObject> lastBubbles = new List<GameObject>();
+                        int nrofBubbles = scroller.transform.childCount >= 15 ? 15 : scroller.transform.childCount;
+                        for (int i = 1; i <= nrofBubbles; i++)
                         {
-                            case ChatContent.TEXT:
-                                if (chatbubble != null && nameText != null && background != null && maskArea != null)
-                                {
-                                    background.color = new Color(0.94f, 0.93f, 0.99f, 1);
-                                    text.ForceMeshUpdate(true, true);
-                                    background.size = new Vector2(background.size.x, background.size.y + 0.3f);
-                                    maskArea.size = background.size - new Vector2(0f, 0.03f);
-                                    background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
-                                    maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
-                                    AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
-
-                                }
-                                break;
-                            case ChatContent.HEADLINE:
-                                if (chatbubble != null && nameText != null && background != null && maskArea != null)
-                                {
-                                    background.color = new Color(0.97f, 0.96f, 0.90f, 1);
-                                    text.ForceMeshUpdate(true, true);
-                                    background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight());
-                                    maskArea.size = background.size - new Vector2(0f, 0.03f);
-                                    background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
-                                    maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
-                                    AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
-                                }
-                                break;
-                            case ChatContent.SCREENSHOT:
-                                if (screenshot == null) return;
-                                if (chatbubble != null && screenshot != null)
-                                {
-                                    Sprite imgSprite = ImageLoader.ReadImageFromByteArray(screenshot);
-                                    GameObject image = new GameObject("chat image");
-                                    image.layer = LayerMask.NameToLayer("UI");
-                                    image.transform.SetParent(chatbubble);
-                                    SpriteRenderer sr = image.AddComponent<SpriteRenderer>();
-                                    sr.drawMode = SpriteDrawMode.Sliced;
-                                    sr.sprite = imgSprite;
-                                    sr.size = new Vector2(2f, sr.sprite.rect.height / sr.sprite.rect.width * 2f);
-                                    sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                                    image.transform.localScale = Vector3.one;
-                                    DoomScroll._log.LogInfo("Image size: " + sr.size);
-                                    DoomScroll._log.LogInfo("chatbubble name: " + chatbubble.name);
-
-                                    // text.text = "";
-                                    text.ForceMeshUpdate(true, true);
-                                    Vector3 chatpos = text.transform.localPosition;
-                                    float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
-                                    image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
-                                    if (nameText != null && background != null && maskArea != null)
-                                    {
-                                        text.ForceMeshUpdate(true, true);
-                                        background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight() + sr.size.y);
-                                        maskArea.size = background.size - new Vector2(0f, 0.03f);
-                                        // background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 3, background.transform.localPosition.z);
-                                        background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
-                                        maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
-                                        AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
-                                    }
-                                    screenshot = null;
-                                }
-                                break;
-                            case ChatContent.DEFAULT:
-                            default:
-                                if (chatbubble != null && nameText != null && background != null && maskArea != null)
-                                {
-                                    text.ForceMeshUpdate(true, true);
-                                    background.size = new Vector2(background.size.x, background.size.y + 0.3f);
-                                    maskArea.size = background.size - new Vector2(0f, 0.03f);
-                                    background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
-                                    maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
-                                    AddEndorseButtonsToChatbubble(ID, chatbubble.gameObject, background.size, isLocalPlayer);
-                                }
-                                return;
+                            lastBubbles.Add(scroller.transform.GetChild(scroller.transform.childCount - i).gameObject);
                         }
+
+                        foreach (GameObject bub in lastBubbles)
+                        {
+                            TextMeshPro[] texts = bub.GetComponentsInChildren<TextMeshPro>();
+                            foreach (TextMeshPro text in texts)
+                            {
+                                DoomScroll._log.LogInfo("BUBBLE CHILD TEXT: " + text.name);
+                                if (text.text == chatText)
+                                {
+                                    DoomScroll._log.LogInfo("ChatBubble was found, id: " + chatText);
+                                    text.text = "Evidence id: " + chatText;
+                                    Transform chatbubble = text.transform.parent;
+                                    // child elements of ChatBubble needed to set the content correctly
+                                    SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
+                                    TextMeshPro nameText = chatbubble.Find("NameText (TMP)").gameObject.GetComponent<TextMeshPro>();
+                                    SpriteRenderer maskArea = chatbubble.Find("MaskArea").gameObject.GetComponent<SpriteRenderer>();
+
+                                    if (chatbubble != null && screenshot != null)
+                                    {
+                                        Sprite imgSprite = ImageLoader.ReadImageFromByteArray(screenshot);
+                                        GameObject image = new GameObject("chat image");
+                                        image.layer = LayerMask.NameToLayer("UI");
+                                        image.transform.SetParent(chatbubble);
+                                        SpriteRenderer sr = image.AddComponent<SpriteRenderer>();
+                                        sr.drawMode = SpriteDrawMode.Sliced;
+                                        sr.sprite = imgSprite;
+                                        sr.size = new Vector2(2f, sr.sprite.rect.height / sr.sprite.rect.width * 2f);
+                                        sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                                        image.transform.localScale = Vector3.one;
+                                        DoomScroll._log.LogInfo("Image size: " + sr.size);
+                                        DoomScroll._log.LogInfo("chatbubble name: " + chatbubble.name);
+
+                                        // text.text = "";
+                                        text.ForceMeshUpdate(true, true);
+                                        Vector3 chatpos = text.transform.localPosition;
+                                        float xOffset = isLocalPlayer ? -sr.size.x / 2 : sr.size.x / 2;
+                                        image.transform.localPosition = new Vector3(chatpos.x + xOffset, chatpos.y - sr.size.y / 2 - 0.3f, chatpos.z);
+                                        if (nameText != null && background != null && maskArea != null)
+                                        {
+                                            text.ForceMeshUpdate(true, true);
+                                            background.size = new Vector2(5.52f, 0.3f + nameText.GetNotDumbRenderedHeight() + text.GetNotDumbRenderedHeight() + sr.size.y);
+                                            maskArea.size = background.size - new Vector2(0f, 0.03f);
+                                            // background.transform.localPosition = new Vector3(background.transform.localPosition.x, background.transform.localPosition.y - background.size.y / 3, background.transform.localPosition.z);
+                                            background.transform.localPosition += new Vector3(0, nameText.transform.localPosition.y - background.size.y / 2f + 0.05f, 0);
+                                            maskArea.transform.localPosition = background.transform.localPosition + new Vector3(0f, 0.02f, 0f);
+                                        }
+                                        screenshot = null;
+                                    }
+                                    content = ChatContent.DEFAULT;  // set back to default
+                                    return;
+                                }
+                            }
+                        }
+                        break;
                     }
-                }
+                case ChatContent.DEFAULT:
+                default:
+                    return;
             }
-            
-            content = ChatContent.DEFAULT;  // set back to default
         }
 
         private static void AddEndorseButtonsToChatbubble(string ID, GameObject chatbubble, Vector2 size, bool isLocalPlayer)

@@ -217,7 +217,7 @@ namespace Doom_Scroll
                     if (ChatControllerPatch.screenshot != null)
                     {
                         ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                        string chatText = chatBubbleID + "Evidence #" + id;
+                        string chatText = chatBubbleID;
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(pl, chatText, false);
                     }
                     else

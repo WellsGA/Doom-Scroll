@@ -144,7 +144,7 @@ namespace Doom_Scroll.Patches
                 case (byte)CustomRPC.SENDTEXTCHAT:
                     if (DestroyableSingleton<HudManager>.Instance)
                     {
-                        ChatControllerPatch.content = ChatContent.TEXT;
+                        ChatControllerPatch.content = ChatContent.DEFAULT;
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, reader.ReadString());
                     }
                     return;               
@@ -161,8 +161,8 @@ namespace Doom_Scroll.Patches
                             Headline headline = HeadlineDisplay.Instance.GetNewsByID(reader.ReadInt32());
                             if (headline != null)
                             {
-                                ChatControllerPatch.content = ChatContent.HEADLINE;
-                                string chatText = id + headline.NewsToChatText();
+                                ChatControllerPatch.content = ChatContent.DEFAULT;
+                                string chatText = headline.NewsToChatText();
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
                             }
                         }
