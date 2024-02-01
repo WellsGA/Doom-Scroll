@@ -125,7 +125,7 @@ namespace Doom_Scroll
                     playerButtons.AddSelectOption(playerInfo.PlayerId, btn);                    
                 }
             }
-            int itemsInARow = playerButtons.GetNumberOfOptions() < 8 ? playerButtons.GetNumberOfOptions() : 8;
+            int itemsInARow = playerButtons.GetNumberOfOptions() < 15 ? playerButtons.GetNumberOfOptions() : 15;
             float xOffset = 0.5f;
             float btnsSize = 0.45f;
             float width = (2 * xOffset) + (itemsInARow * (btnsSize + 0.02f)) + 1.6f;
