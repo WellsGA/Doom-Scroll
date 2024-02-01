@@ -13,7 +13,7 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(ObjectPoolBehavior), nameof(ObjectPoolBehavior.Reclaim))]
     public static class ObjectPoolBehaviorReclaimPatch
     {
-        public static readonly int MAX_CHAT_BUBBLES = 100;
+        public static readonly int MAX_CHAT_BUBBLES = 10;
 
         [HarmonyPrefix]
         [HarmonyPatch("ReclaimOldest")]

@@ -35,7 +35,7 @@ namespace Doom_Scroll.Patches
             // create the overlay background
             CustomModal creditsOverlay = new CustomModal(parent, "CreditsOverlay", spr, toggler, true);
             creditsOverlay.SetLocalPosition(new Vector3(0f, 0f, -60f));
-            creditsOverlay.SetSize(6.2f);
+            creditsOverlay.SetSize(new Vector2(6.2f, 8.2f));
             // deactivate by default
             creditsOverlay.ActivateCustomUI(false);
             return creditsOverlay;

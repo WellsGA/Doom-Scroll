@@ -38,8 +38,9 @@ namespace Doom_Scroll.Patches
             // logging chat messages
             if (AmongUsClient.Instance.AmHost)
             {
-                if(content == ChatContent.SCREENSHOT) { chatText = "Photo shared, ID: " + chatText; }
-                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + chatText);
+                string message = chatText;
+                if(content == ChatContent.SCREENSHOT) { message = "Photo shared, ID: " + chatText; }
+                GameLogger.Write(GameLogger.GetTime() + " - " + sourcePlayer.name + " texted: " + message);
             }
 
             switch (content)
@@ -48,24 +49,24 @@ namespace Doom_Scroll.Patches
                     {
                         bool isLocalPlayer = sourcePlayer == PlayerControl.LocalPlayer;
                         GameObject scroller = __instance.GetComponentInChildren<Scroller>(true).gameObject;
-                        // get the last max 15 chatbubbles // will only work as long as they keep the object hierarchy
+                        // get the last max 25 chatbubbles // will only work as long as they keep the object hierarchy
                         List<GameObject> lastBubbles = new List<GameObject>();
-                        int nrofBubbles = scroller.transform.childCount >= 15 ? 15 : scroller.transform.childCount;
-                        for (int i = 1; i <= nrofBubbles; i++)
+                        int nrofBubbles = scroller.transform.childCount;
+                        int maxbubbles = nrofBubbles >= 25 ? 25 : nrofBubbles;
+                        for (int i = 1; i <= maxbubbles; i++)
                         {
-                            lastBubbles.Add(scroller.transform.GetChild(scroller.transform.childCount - i).gameObject);
+                            lastBubbles.Add(scroller.transform.GetChild(nrofBubbles - i).gameObject);
                         }
 
                         foreach (GameObject bub in lastBubbles)
                         {
                             TextMeshPro[] texts = bub.GetComponentsInChildren<TextMeshPro>();
                             foreach (TextMeshPro text in texts)
-                            {
-                                DoomScroll._log.LogInfo("BUBBLE CHILD TEXT: " + text.name);
+                            { 
                                 if (text.text == chatText)
                                 {
                                     DoomScroll._log.LogInfo("ChatBubble was found, id: " + chatText);
-                                    text.text = "Evidence id: " + chatText;
+                                    text.text = chatText;
                                     Transform chatbubble = text.transform.parent;
                                     // child elements of ChatBubble needed to set the content correctly
                                     SpriteRenderer background = chatbubble.transform.Find("Background").gameObject.GetComponent<SpriteRenderer>();
@@ -108,6 +109,7 @@ namespace Doom_Scroll.Patches
                                 }
                             }
                         }
+                        DoomScroll._log.LogInfo("Couldn't find the ChatBubble, id: " + chatText);
                         break;
                     }
                 case ChatContent.DEFAULT:

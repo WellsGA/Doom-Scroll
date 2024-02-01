@@ -35,17 +35,6 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(PlayerControl))]
     public static class PlayerControlPatch
     {
-        // static int count = 0; // debug
-
-        [HarmonyPrefix]
-        [HarmonyPatch("RpcSendChat")]
-        public static bool PrefixRpcSendChat(ref string chatText)
-        {
-            ChatControllerPatch.content = ChatContent.DEFAULT;
-            chatText = ChatControllerPatch.GetChatID() + Regex.Replace(chatText, "<.*?>", string.Empty);
-           
-            return true; //  skip origianl method
-        }
 
         [HarmonyPostfix]
         [HarmonyPatch("SetTasks")]
@@ -238,7 +227,7 @@ namespace Doom_Scroll.Patches
                         {
                             ImageQueuer.FinishedSharing(__instance.PlayerId, itemID);
                         }
-                        DoomScroll._log.LogInfo("4) Image sending complete" + itemID);
+                        DoomScroll._log.LogInfo("4) Image sending complete " + itemID);
                         break;
                     }
                 case (byte)CustomRPC.SENDIMAGEPIECE:  // receive image and add piece to the byte array 

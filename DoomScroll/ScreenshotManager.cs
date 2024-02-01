@@ -212,13 +212,13 @@ namespace Doom_Scroll
             {
                 if (playerId == pl.PlayerId)
                 {
-                    string chatBubbleID = ChatControllerPatch.GetChatID();
                     ChatControllerPatch.screenshot = GetScreenshotById(id);
                     if (ChatControllerPatch.screenshot != null)
                     {
                         ChatControllerPatch.content = ChatContent.SCREENSHOT;
-                        string chatText = chatBubbleID;
+                        string chatText = "Image evidence #" +id;
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(pl, chatText, false);
+                        DoomScroll._log.LogInfo(" ============== Image sent to chat ID: " + id + " ==============");
                     }
                     else
                     {

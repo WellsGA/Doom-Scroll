@@ -146,14 +146,26 @@ namespace Doom_Scroll
             headlineSelect.RemoveButtons();
             for (int i = 0; i < 3; i++)
             {
+                string message;
+                float yoffset;
                 Headline news = HeadlineCreator.CreateRandomNews(protect, PlayerControl.AllPlayerControls[targetPlayer]);
                 CustomButton btn = new CustomButton(NewsModal.UIGameObject, "headline item", headlineButtonSprites);
                 btn.SetScale(Vector3.one);
                 btn.SetSize(new Vector2(NewsModal.GetSize().x * 0.85f, 0.4f));
                 btn.SetLocalPosition(new Vector3(0, -i*0.5f, -10));
-                btn.Label.SetText(news.Title + " [" + news.Source + "}");
+                if(news.Title.Length + news.Source.Length > 100)
+                {
+                    message = news.Title + "\n [" + news.Source + "]";
+                    yoffset = -.25f;
+                }
+                else
+                {
+                    message = news.Title + " [" + news.Source + "]";
+                    yoffset = 0f;
+                }
+                btn.Label.SetText(message);
                 btn.Label.SetSize(1f);
-                btn.Label.SetLocalPosition(new Vector3(0f, 0, -20));
+                btn.Label.SetLocalPosition(new Vector3(0f, yoffset, -20));
                 headlineSelect.AddSelectOption(news, btn);
             }
             // headlineSelect.ArrangeButtons(NewsModal.GetSize().x *0.85f, 1, 1.5f, 1.5f);
@@ -181,7 +193,6 @@ namespace Doom_Scroll
             {
                 NewsModal.CloseButton.ButtonEvent.InvokeAction();
             }
-
         }
 
         public void CanPostNews(bool value)
