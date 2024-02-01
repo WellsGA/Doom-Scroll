@@ -39,19 +39,27 @@ namespace Doom_Scroll
         }
         public static bool CheckVotingSuccess()
         {
+            int potentialVoters = 0;
+            int wrongVotes = 0;
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
+                potentialVoters++;
                 byte pID = player.PlayerId;
                 if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID) && !player.Role.IsImpostor && !player.Disconnected)
                 {
+
                     int currentScore = HeadlineDisplay.Instance.PlayerScores[pID].Item1;
                     DoomScroll._log.LogInfo("Current numScore: " + currentScore.ToString());
                     DoomScroll._log.LogInfo("LastMeetingNewsItemsCount: " + LastMeetingNewsItemsCount.ToString());
                     if (currentScore < LastMeetingNewsItemsCount)
                     {
-                        return false;
+                        wrongVotes++;
                     }
                 }
+            }
+            if (((float)wrongVotes) / potentialVoters < 0.50)
+            {
+                return false;
             }
             return true;
         }
