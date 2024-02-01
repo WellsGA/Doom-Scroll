@@ -161,7 +161,7 @@ namespace Doom_Scroll
             m_folderToggleBtn.ButtonEvent.MyAction += ToggleFolders; // has to sign up before the custom modal is created!!!
 
             m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Click here to\ninvestigate the\nevidence.", 0.5f, 1.6f, new Vector3(0, -0.5f, 0), 1f);
-            m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
+            m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Consider the context behind everyone's arguments.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
 
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen, m_folderToggleBtn);
             m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
