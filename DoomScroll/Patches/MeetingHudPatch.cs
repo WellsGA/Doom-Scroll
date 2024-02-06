@@ -209,8 +209,17 @@ namespace Doom_Scroll.Patches
 
         [HarmonyPrefix]
         [HarmonyPatch("PopulateResults")]
-        public static bool PopulateResultsPatch(MeetingHud __instance)
+        public static bool PopulateResultsPatch(MeetingHud __instance, MeetingHud.VoterState[] states)
         {
+            if (unmodifiedPlayerStates == null || unmodifiedPlayerStates.Length == 0)
+            {
+                unmodifiedPlayerStates = __instance.playerStates;
+            }
+            if (unmodifiedVoterStates == null || unmodifiedVoterStates.Length == 0)
+            {
+                unmodifiedVoterStates = states;
+            }
+
             DoomScroll._log.LogInfo("Entering our PopulateResultsPatch");
             //__instance.TitleText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, (Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>)Array.Empty<object>());
             int num = 0;
