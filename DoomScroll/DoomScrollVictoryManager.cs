@@ -57,7 +57,7 @@ namespace Doom_Scroll
                     }
                 }
             }
-            if (((float)wrongVotes) / potentialVoters < 0.50)
+            if (((float)wrongVotes) / potentialVoters > 0.50)
             {
                 return false;
             }
