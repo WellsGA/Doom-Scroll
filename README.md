@@ -22,11 +22,11 @@ To do so, we have added the following game mechanics:
 
 -Screenshots: Players can create screenshots during the standard round (the player's avatar will automatically be removed from the screenshot) 
 ![Screenshot capture.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotCapture.png)
-![Screenshot in chat.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotinChat.png)
+![Screenshot in chat.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotInChat.png)
 
 -Task Sign-In Forms: Players can complete tasks but attribute the completion to another player
-![Task assignment prompt in-game.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/TaskSelect.png)
-![Task Sign-in Form in folder](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/TaskFolder.png)
+![Task assignment prompt in-game.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/taskSelect.png)
+![Task Sign-in Form in folder](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/taskFolder.png)
 
 -Headlines: Players can share news headlines from questionable sources that may (or may not) provide hints about the true imposters
 ![Headline selection prompt in-game.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/headlinePostSelection.png)
