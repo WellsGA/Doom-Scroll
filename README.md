@@ -21,22 +21,22 @@ Games have become a point of interest for combating misinformation, as they allo
 To do so, we have added the following game mechanics:
 
 -Screenshots: Players can create screenshots during the standard round (the player's avatar will automatically be removed from the screenshot) 
-![Screenshot capture.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotCapture.png)
-![Screenshot in chat.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotinChat.png)
+![Screenshot capture.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotCapture.png)
+![Screenshot in chat.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/ScreenshotinChat.png)
 
 -Task Sign-In Forms: Players can complete tasks but attribute the completion to another player
-![Task assignment prompt in-game.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/TaskSelect.png)
-![Task Sign-in Form in folder]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/TaskFolder.png)
+![Task assignment prompt in-game.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/TaskSelect.png)
+![Task Sign-in Form in folder](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/TaskFolder.png)
 
 -Headlines: Players can share news headlines from questionable sources that may (or may not) provide hints about the true imposters
-![Headline selection prompt in-game.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/headlinePostSelection.png)
-![Headline folder.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/headlinePostInFolder.png)
+![Headline selection prompt in-game.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/headlinePostSelection.png)
+![Headline folder.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/headlinePostInFolder.png)
 
 -In-Meeting Folder System: A folder system containing screenshots, sign-in data, and news alerts that can be called during the meeting phase to use as evidence
-![Folder system.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/folderOpen.png)
+![Folder system.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/folderOpen.png)
 
 -Secondary Win Conditions (SWCs): Secondary objectives that give players ulterior motives in their play (e.g. Blue is crewmate, but must also protect Red; Red is crewmate, but must also frame Yellow). Success or failure of SWCs will be shown to all players at the completion of the match.
-![Secondary Win Condition assignment in start screen.]([http://url/to/](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/SWCStartScreen.png)
+![Secondary Win Condition assignment in start screen.](https://github.com/WellsGA/Doom-Scroll/blob/main/DoomScroll/Assets/SWCStartScreen.png)
 
 -Static Chat Logs: an updated chatfeed that removes the chat limiter so that players can see everything posted from previous rounds during a match
 
