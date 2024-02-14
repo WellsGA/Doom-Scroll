@@ -215,24 +215,21 @@ namespace Doom_Scroll.Patches
             {
                 unmodifiedPlayerStates = __instance.playerStates;
             }
-            if (unmodifiedVoterStates == null || unmodifiedVoterStates.Length == 0)
-            {
-                unmodifiedVoterStates = states;
-            }
 
             DoomScroll._log.LogInfo("Entering our PopulateResultsPatch");
             //__instance.TitleText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, (Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>)Array.Empty<object>());
             int num = 0;
             for (int i = 0; i < unmodifiedPlayerStates.Length; i++)
             {
-                DoomScroll._log.LogInfo("Outer Loop.");
+                DoomScroll._log.LogInfo($"Outer Loop # {num}.");
                 DoomScroll._log.LogInfo($"Length of playerStates array: {unmodifiedPlayerStates.Length}");
                 PlayerVoteArea playerVoteArea = unmodifiedPlayerStates[i];
                 playerVoteArea.ClearForResults();
                 int num2 = 0;
                 foreach (MeetingHud.VoterState voterState in unmodifiedVoterStates)
                 {
-                    DoomScroll._log.LogInfo($"Outer loop: {unmodifiedPlayerStates[i].TargetPlayerId}, Inner loop on another vote area! Player id: {voterState.VoterId}");
+                    DoomScroll._log.LogInfo($"Inner Loop # {num2}");
+                    DoomScroll._log.LogInfo($"Value from outer loop: {unmodifiedPlayerStates[i].TargetPlayerId}, Inner loop on another vote area! Player id: {voterState.VoterId}");
                     GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
                     if (playerById == null)
                     {
