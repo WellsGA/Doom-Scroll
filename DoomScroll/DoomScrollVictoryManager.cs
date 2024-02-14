@@ -8,6 +8,7 @@ namespace Doom_Scroll
 {
     public static class DoomScrollVictoryManager
     {
+        public static readonly float PercentCorrectHeadlinesNeeded = 0.75f;
         public static int LastMeetingNewsItemsCount = 0;
         public static bool VotingTaskCompleteAsOfLastMeeting = false;
         public static void Reset()
@@ -57,7 +58,7 @@ namespace Doom_Scroll
                     }
                 }
             }
-            if (((float)wrongVotes) / potentialVoters > 0.50)
+            if (((float)wrongVotes) / potentialVoters > (1f-PercentCorrectHeadlinesNeeded))
             {
                 return false;
             }

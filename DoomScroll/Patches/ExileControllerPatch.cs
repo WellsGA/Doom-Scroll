@@ -209,6 +209,17 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("Begin")]
         public static void PostfixBegin(ExileController __instance)
         {
+            // Calculate num crewmates
+            int numCrewmates = 0;
+            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
+            {
+                if (!p.Role.IsImpostor && !p.Disconnected)
+                {
+                    numCrewmates++;
+                }
+            }
+            int numCrewVotesNeeded = (int)System.Math.Ceiling(numCrewmates * DoomScrollVictoryManager.PercentCorrectHeadlinesNeeded);
+
             //
             //  ADD EDITED VOTING STRING HERE, AND DON'T LET THEM VOTE IMPOSTOR OUT UNTIL THEY GET ALL HEADLINE VOTES CORRECT
             //
@@ -220,11 +231,11 @@ namespace Doom_Scroll.Patches
             {
                 if (OriginalExiledPlayer != null && OriginalExiledPlayer.Role.IsImpostor)
                 {
-                    __instance.completeString += $"\nHOWEVER, {OriginalExiledPlayer.PlayerName} was not ejected, because Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
+                    __instance.completeString += $"\nHOWEVER, {OriginalExiledPlayer.PlayerName} was not ejected, because Crewmates cannot succeed until\n{numCrewVotesNeeded} crewmates vote correctly for all Headlines.";
                 }
                 else
                 {
-                    __instance.completeString += $"Crewmates cannot succeed until\nall crewmates vote correctly for all Headlines.";
+                    __instance.completeString += $"Crewmates cannot succeed until\n{numCrewVotesNeeded} crewmates vote correctly for all Headlines.";
                 }
             }
             else
