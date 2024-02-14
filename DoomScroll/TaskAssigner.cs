@@ -13,7 +13,7 @@ namespace Doom_Scroll
     // relies on the common language runtime to initialize the variable
     public sealed class TaskAssigner
     {
-        private int maxTaskItemsPerPage = 4; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
+        private readonly int maxTaskItemsPerPage = 4; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         private static readonly TaskAssigner _instance = new TaskAssigner(); // readonly: can be assigned only during static initialization
         public static TaskAssigner Instance
@@ -166,7 +166,7 @@ namespace Doom_Scroll
 
                 taskCards.Add(task.Card);
                 task.Card.ActivateCustomUI(false); // unsure if necessary>
-                if (numOnPage >= maxTaskItemsPerPage)
+                if (numOnPage >= maxTaskItemsPerPage-1)
                 {
                     numOnPage = 0;
                     pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
