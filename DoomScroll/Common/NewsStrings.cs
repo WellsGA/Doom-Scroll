@@ -111,7 +111,7 @@ namespace Doom_Scroll.Common
             "Imposter Among Us? {X} is Missing from Sign-In Sheet",
             "LIGHTS OUT: Security Records Suggest {X} Sabotaging Crew",
             "BUSY BEE: {X} Has Completed More Tasks Than {Y}.",
-            "X Caught Loitering Near Vents, \"Like a Rat\" Says Witness",
+            "{X} Caught Loitering Near Vents, \"Like a Rat\" Says Witness",
             "{X} and {Y} Caught Sharing Headphones at Lunch",
             "{X} seen arguing with {Y}, Calls Them \"Smallest Bean\"",
             "{X} and {Y} Spotted Holding Hands During Meeting?!",
