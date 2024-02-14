@@ -61,6 +61,7 @@ namespace Doom_Scroll
 
         public void ActivatePanel(bool flag) 
         {
+            PlayerButtons.ClearSelection();
             PlayerButtonHolder.UIGameObject.SetActive(flag);
             isAssignerPanelActive = flag;
         }
@@ -107,6 +108,7 @@ namespace Doom_Scroll
         public void CheckForPlayerButtonClick()
         {
             if (PlayerButtons == null || PlayerButtons.GetNumberOfOptions() == 0) return;
+            
             PlayerButtons.ListenForSelection();
             if (PlayerButtons.HasSelected)
             {
@@ -129,6 +131,7 @@ namespace Doom_Scroll
                         if (task.PostButton.IsEnabled && task.PostButton.IsActive && task.PostButton.IsHovered() && Input.GetKey(KeyCode.Mouse0))
                         {
                             task.PostButton.ButtonEvent.InvokeAction();
+
                         }
                     }
                 }
