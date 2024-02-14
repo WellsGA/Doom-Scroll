@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static MeetingHud;
 using System;
+using Hazel;
 
 namespace Doom_Scroll.Patches
 {
@@ -39,6 +40,77 @@ namespace Doom_Scroll.Patches
         }
         private static void DoomForceSkipAll(MeetingHud __instance)
         {
+            //Change voting stuff!
+
+            Dictionary<byte, int> dictionary = DoomCalculateVotes(__instance); // Calculates votes after locally setting whatever this current player's vote should be
+            DoomScroll._log.LogInfo("DoomCalculateVotes is done");
+
+            //their code in CheckForEndVoting. array2, exiled, and tie are the parameters that go into RpcVotingComplete.
+            bool tie;
+            KeyValuePair<byte, int> max = DoomMaxPair(dictionary, out tie);
+            Logger logger = __instance.logger;
+            string format = "Vote counts: {0} Max={1}@{2} Tie={3}";
+            object[] array = new object[4];
+            array[0] = string.Join(" ", (from t in dictionary
+                                         select t.ToString()).ToArray<string>());
+            array[1] = max.Key;
+            array[2] = max.Value;
+            array[3] = tie;
+            logger.Debug(string.Format(format, array), null);
+            GameData.PlayerInfo exiled = null;
+            foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
+            {
+                if (!tie && v.PlayerId == max.Key)
+                {
+                    exiled = v;
+                    break;
+                }
+            }
+            DoomScroll._log.LogInfo("Found exiled player!");
+            MeetingHud.VoterState[] array2 = new MeetingHud.VoterState[__instance.playerStates.Length];
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                if (playerVoteArea != null)
+                {
+                    array2[i] = new MeetingHud.VoterState
+                    {
+                        VoterId = playerVoteArea.TargetPlayerId,
+                        VotedForId = playerVoteArea.VotedFor
+                    };
+                }
+            }
+            // OUR VOTER STATE
+            unmodifiedVoterStates = array2;
+
+            //their code ends!
+            ExileControllerPatch.OriginalArray2 = array2;
+            DoomScroll._log.LogInfo("OriginalArray2 is being set as: " + array2.ToString());
+            if (exiled != null)
+            {
+                ExileControllerPatch.OriginalExiledPlayer = exiled;
+                DoomScroll._log.LogInfo("OriginalExiledPlayer is being set as: " + exiled + ", " + exiled.PlayerName);
+            }
+            else
+            {
+
+                ExileControllerPatch.OriginalExiledPlayer = null;
+            }
+            ExileControllerPatch.OriginalTie = tie;
+            DoomScroll._log.LogInfo("OriginalExiledTie is being set as: " + tie.ToString());
+
+            //SEND TO OTHERS
+            if (exiled != null)
+            {
+                RPCExileInfo(tie, exiled.PlayerId);
+            }
+            else
+            {
+                RPCExileInfo(tie);
+            }
+            DoomScroll._log.LogInfo("Sent RPC info to others");
+
+            // THIS ACTUAL FUNCTION
             for (int i = 0; i < __instance.playerStates.Length; i++)
             {
                 PlayerVoteArea playerVoteArea = __instance.playerStates[i];
@@ -48,6 +120,14 @@ namespace Doom_Scroll.Patches
                     __instance.DirtyBits |= 1U;
                 }
             }
+        }
+
+        public static void RPCExileInfo(bool tie, byte player = 255)
+        {
+            MessageWriter messageWriter = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EJECTEDRESULTSINFO, (SendOption)1);
+            messageWriter.Write(tie); // bool
+            messageWriter.Write(player); // player
+            messageWriter.EndMessage();
         }
 
         public static KeyValuePair<byte, int> DoomMaxPair(Dictionary<byte, int> self, out bool tie)
@@ -102,6 +182,21 @@ namespace Doom_Scroll.Patches
             {
                 return true;
             }
+            /*if(__instance.CurrentState == MeetingHud.VoteStates.Voted)
+            {
+                LogicOptionsNormal logicOptionsNormal = GameManager.Instance.LogicOptions as LogicOptionsNormal;
+                int votingTime = logicOptionsNormal.GetVotingTime();
+                if (votingTime > 0)
+                {
+                    float num2 = __instance.discussionTimer - (float)logicOptionsNormal.GetDiscussionTime();
+                    float num3 = Mathf.Max(0f, (float)votingTime - num2);
+                    if (AmongUsClient.Instance.AmHost && num2 >= (float)votingTime)
+                    {
+                        MeetingHudPatch.DoomForceSkipAll(__instance);
+                        return false;
+                    }
+                }
+            }*/
             if (__instance.CurrentState == MeetingHud.VoteStates.Results)
             {
                 if (!HeadlineDisplay.Instance.HasFinishedSetup)
@@ -273,6 +368,7 @@ namespace Doom_Scroll.Patches
 
                 // check if this is the last vote
                 PlayerVoteArea thisVoteArea = null;
+                bool lastVoter = true;
                 foreach (PlayerVoteArea playerVoteArea in __instance.playerStates)
                 {
                     if (playerVoteArea.TargetPlayerId == srcPlayerId)
@@ -283,7 +379,7 @@ namespace Doom_Scroll.Patches
                     else if (!playerVoteArea.AmDead && !playerVoteArea.DidVote) // someone else is alive and didn't vote
                     {
                         DoomScroll._log.LogInfo("There are other players who haven't voted; resuming normal functionality");
-                        return true; // stops the prefix, continues on with the method as expected
+                        lastVoter =  false; // stops the prefix, continues on with the method as expected
                     }
                 }
 
@@ -350,23 +446,44 @@ namespace Doom_Scroll.Patches
                 ExileControllerPatch.OriginalTie = tie;
                 DoomScroll._log.LogInfo("OriginalExiledTie is being set as: " + tie.ToString());
 
-                //Now we're setting everyone's votes to SKIP
-                //Using code from CastVote
-                foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
+                //SEND TO OTHERS
+                if (exiled != null)
                 {
-                    if (v != null && !v.IsDead)
+                    RPCExileInfo(tie, exiled.PlayerId);
+                }
+                else
+                {
+                    RPCExileInfo(tie);
+                }
+                DoomScroll._log.LogInfo("Sent RPC info to others");
+
+                if (lastVoter)
+                {
+                    //Now we're setting everyone's votes to SKIP
+                    //Using code from CastVote
+                    foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
                     {
-                        DoomScroll._log.LogInfo("About to do a DoomCastVote for skipped");
-                        DoomCastVote(__instance, v.PlayerId, PlayerVoteArea.SkippedVote);
+                        if (v != null && !v.IsDead)
+                        {
+                            DoomScroll._log.LogInfo("About to do a DoomCastVote for skipped");
+                            DoomCastVote(__instance, v.PlayerId, PlayerVoteArea.SkippedVote);
+                        }
                     }
+
+                    // Now check for end voting, and cancel actual method.
+                    DoomScroll._log.LogInfo("Checking for end voting now!");
+                    __instance.CheckForEndVoting();
+                    return false;
                 }
 
-                // Now check for end voting, and cancel actual method.
-                DoomScroll._log.LogInfo("Checking for end voting now!");
-                __instance.CheckForEndVoting();
-                return false;
+                //BEFORE NORMAL METHOD, CHANGE VOTE BACK TO UNVOTED
+
+                DoomScroll._log.LogInfo("Trying to set this player's vote");
+                thisVoteArea.SetVote(254); // did not vote number
+                DoomScroll._log.LogInfo("Vote set!");
             }
 
+            DoomScroll._log.LogInfo("Running normal method now");
             return true;
         }
 

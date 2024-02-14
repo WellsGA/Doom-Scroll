@@ -10,6 +10,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
+        EJECTEDRESULTSINFO = 235,
         SETPLAYERFORSCREENSHOT = 236,
         COMPLETEDUMMYTASK = 237,
         SETDUMMYTASKS = 238,
@@ -279,6 +280,26 @@ namespace Doom_Scroll.Patches
                 case (byte)CustomRPC.SETPLAYERFORSCREENSHOT:
                     {
                         ScreenshotManager.Instance.PlayerCanScreenshot(reader.ReadByte());
+                        break;
+                    }
+                case (byte)CustomRPC.EJECTEDRESULTSINFO:
+                    {
+                        bool tie = reader.ReadBoolean();
+                        byte ogExiled = reader.ReadByte();
+                        ExileControllerPatch.OriginalTie = tie;
+                        GameData.PlayerInfo origExiled = null;
+                        if (ogExiled != 255)
+                        {
+                            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+                            {
+                                if (player.PlayerId == ogExiled)
+                                {
+                                    origExiled = player;
+                                    break;
+                                }
+                            }
+                        }
+                        ExileControllerPatch.OriginalExiledPlayer = origExiled;
                         break;
                     }
             }

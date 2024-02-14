@@ -17,6 +17,26 @@ namespace Doom_Scroll.Patches
         public static bool OriginalTie;
         private static bool _exiledWasOverridden;
 
+        public static void SetExileInfo(string retainedString, bool wasOverridden, byte ogExiledPlayer = 255)
+        {
+            _retainedExileString = retainedString;
+            _exiledWasOverridden = wasOverridden;
+            GameData.PlayerInfo ogExiled = null;
+            if (ogExiledPlayer != 255)
+            {
+                foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+                {
+                    if (player.PlayerId == ogExiledPlayer)
+                    {
+                        ogExiled = player;
+                        break;
+                    }
+                }
+            }
+            OriginalExiledPlayer = ogExiled;
+        }
+
+
         [HarmonyPrefix]
         [HarmonyPatch("Begin")]
         public static bool PrefixBegin(ExileController __instance, object[] __args)
