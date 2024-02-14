@@ -10,7 +10,6 @@ namespace Doom_Scroll.Patches
         public static GameObject playerCountText;
         public static CustomText lobbyToolTipText;
         public static LobbyBehaviour lobbyBehaviourInstance;
-        public static TutorialBookletManager tutorialBookletManagerInstance;
         /*public static CustomButton tutorialBookletButton;
         public static CustomModal tutorialBookletOverlay;*/
         public static bool gameBegun = false;
@@ -35,12 +34,6 @@ namespace Doom_Scroll.Patches
             lobbyToolTipText.SetLocalPosition(textPos);
             lobbyToolTipText.ActivateCustomUI(true);
             DoomScroll._log.LogInfo("Text should be activated!");
-
-            if (tutorialBookletManagerInstance != null)
-            {
-                tutorialBookletManagerInstance.Reset();
-            }
-            tutorialBookletManagerInstance = TutorialBookletManager.Instance;
         }
     }
 }
