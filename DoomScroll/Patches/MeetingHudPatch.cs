@@ -479,7 +479,7 @@ namespace Doom_Scroll.Patches
                 //BEFORE NORMAL METHOD, CHANGE VOTE BACK TO UNVOTED
 
                 DoomScroll._log.LogInfo("Trying to set this player's vote");
-                thisVoteArea.SetVote(254); // did not vote number
+                thisVoteArea.SetVote(255); // did not vote number
                 DoomScroll._log.LogInfo("Vote set!");
             }
 
