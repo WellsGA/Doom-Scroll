@@ -21,12 +21,12 @@ namespace Doom_Scroll.Patches
 
         public static void OpenPreLink()
         {
-            Application.OpenURL("https://uci.co1.qualtrics.com/jfe/form/SV_6zo325uPNFDM2zQ");
+            Application.OpenURL("https://uci.co1.qualtrics.com/jfe/form/SV_eQIA2NhED3iForQ");
         }
 
         public static void OpenPostLink()
         {
-            Application.OpenURL("https://uci.co1.qualtrics.com/jfe/form/SV_eL2BZfLKHFZvgY6");
+            Application.OpenURL("https://uci.co1.qualtrics.com/jfe/form/SV_8wFoeGH4tol1whM");
         }
 
         private static CustomModal CreateCreditsOverlay(GameObject parent, CustomButton toggler)
@@ -35,7 +35,7 @@ namespace Doom_Scroll.Patches
             // create the overlay background
             CustomModal creditsOverlay = new CustomModal(parent, "CreditsOverlay", spr, toggler, true);
             creditsOverlay.SetLocalPosition(new Vector3(0f, 0f, -60f));
-            creditsOverlay.SetSize(new Vector2(6.2f, 8.2f));
+            creditsOverlay.SetSize(new Vector2(6.2f, 5.5f));
             // deactivate by default
             creditsOverlay.ActivateCustomUI(false);
             return creditsOverlay;
