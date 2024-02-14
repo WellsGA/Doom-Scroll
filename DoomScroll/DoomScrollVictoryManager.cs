@@ -44,10 +44,10 @@ namespace Doom_Scroll
             int wrongVotes = 0;
             foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
             {
-                potentialVoters++;
                 byte pID = player.PlayerId;
                 if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID) && !player.Role.IsImpostor && !player.Disconnected)
                 {
+                    potentialVoters++;
 
                     int currentScore = HeadlineDisplay.Instance.PlayerScores[pID].Item1;
                     DoomScroll._log.LogInfo("Current numScore: " + currentScore.ToString());
