@@ -51,15 +51,10 @@ namespace Doom_Scroll
 
         private void InitializeInputPanel()
         {
-            // button sprites
-            Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);
-            playerButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
-            
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += ToggleFormItems;
-            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.5f, 2.7f, new Vector3(-0.8f, -0.4f, 0), 1f);
-            
+            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.5f, 2.7f, new Vector3(-0.8f, -0.4f, 0), 1f);     
 
             // news modal
             Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.phone.png", ImageLoader.slices2);
@@ -71,8 +66,9 @@ namespace Doom_Scroll
             modalSubTitle.SetSize(1.2f);
             NewsModal.CloseButton.ButtonEvent.MyAction += CloseFormItems;
             headlinePopupModalTooltip = new Tooltip(NewsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.5f, 9.5f, new Vector3(0, -1.8f, 0), 1.75f);
-            
+
             // frame and protect buttons
+            Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);
             frameOrProtect = new CustomSelect<bool>(NewsModal.GetSize());
             frameOrProtect.AddSelectOption(true, NewsFeedOverlay.CreateRadioButtons(NewsModal.UIGameObject, radioBtnSprites, "Protect"));
             frameOrProtect.AddSelectOption(false, NewsFeedOverlay.CreateRadioButtons(NewsModal.UIGameObject, radioBtnSprites, "Frame"));
@@ -81,7 +77,6 @@ namespace Doom_Scroll
             playerButtons = new CustomSelect<byte>(NewsModal.GetSize());
 
             // headlines
-            headlineButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png", ImageLoader.slices2);
             headlineSelect = new CustomSelect<Headline>(NewsModal.GetSize());
             ActivateNewsButton(false);
         }
@@ -107,11 +102,13 @@ namespace Doom_Scroll
             frameOrProtect.ClearSelection();
             playerButtons.ClearSelection();
             headlineSelect.ClearSelection();
-            DoomScroll._log.LogInfo("CLOSE HEADLINE");
         }
 
         private void CreatePlayerButtons()
         {
+            playerButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
+            headlineButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png", ImageLoader.slices2);
+
             headlineSelect.RemoveButtons();
             playerButtons.RemoveButtons();
             modalFrame.SetColor(Palette.PlayerColors[PlayerControl.LocalPlayer.cosmetics.ColorId]);
@@ -290,6 +287,9 @@ namespace Doom_Scroll
             canPostNews = false;
             NewsPostedByLocalPLayer = 0;
             numTimesPlayersPosted = new Dictionary<byte, int>();
+            playerButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.playerBtn.png", ImageLoader.slices4);
+            headlineButtonSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.input.png", ImageLoader.slices2);
+
             InitializeInputPanel();
             DoomScroll._log.LogInfo("NEWS MANAGER RESET");
         }

@@ -23,9 +23,9 @@ namespace Doom_Scroll.UI
             Selected = new KeyValuePair<T, CustomButton>();
         }
 
-        public void AddSelectOption(T value, CustomButton Btn)
+        public void AddSelectOption(T option, CustomButton Btn)
         {
-            buttonList.Add(value, Btn);
+            buttonList.Add(option, Btn);
         }
 
         public void ArrangeButtons(float btnSize, int itemsInOneRow, float xPos, float yPos)
@@ -38,7 +38,6 @@ namespace Doom_Scroll.UI
                 nextPos.x = counter % itemsInOneRow == 0 ? -parentSize.x / 2 + xPos : nextPos.x + btnSize +0.1f;
                 counter++;
                 nextPos.y = yPos - ((float)Math.Ceiling((decimal)counter / itemsInOneRow) * (btnSize + 0.2f));
-                DoomScroll._log.LogInfo(", X pos" + nextPos.x + ", Y pos" + nextPos.y);
                 btn.SetSize(btnSize);
                 btn.SetLocalPosition(nextPos);
                 btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().y / 2f-0.015f, -10));

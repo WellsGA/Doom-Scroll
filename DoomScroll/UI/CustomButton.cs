@@ -79,9 +79,10 @@ namespace Doom_Scroll.UI
         public override void SetSize(float scaledWidth)
         {
             DefaultIcon.SetSize(scaledWidth);
+
             if (hoverIcon != null) { hoverIcon.SetSize(scaledWidth); }
             if (selectIcon != null) { selectIcon.SetSize(scaledWidth); }
-            if(TopIcon != null) { TopIcon.SetSize(scaledWidth); }
+            if (TopIcon != null) { TopIcon.SetSize(scaledWidth); }
             collider.size = DefaultIcon.GetSize();
         }
         public void SetSize(Vector2 size)

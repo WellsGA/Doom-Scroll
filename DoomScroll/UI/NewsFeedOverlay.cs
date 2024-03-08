@@ -10,8 +10,9 @@ namespace Doom_Scroll.UI
         {
             GameObject UIParent = hud.MapButton.gameObject;
             SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
-            Vector2 scaledSize = mapButtonSr.size;
-            float yDist = (3 * mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y);
+
+            Vector2 scaledSize = mapButtonSr != null ? mapButtonSr.size : new Vector2(0.75f, 0.75f);
+            float yDist = (3 * scaledSize.y * hud.MapButton.gameObject.transform.localScale.y);
             Vector3 position = new Vector3(0, 0 - yDist, 0);
             Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", ImageLoader.slices2);
 

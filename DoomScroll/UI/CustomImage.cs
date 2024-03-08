@@ -15,6 +15,7 @@ namespace Doom_Scroll.UI
 
         public override void SetSize(float scaledWidth)
         {
+            if (m_spriteRenderer.sprite == null) { DoomScroll._log.LogInfo("NO SPRITE IN THE RENDERER"); return; }
             m_spriteRenderer.size = new Vector2(scaledWidth, m_spriteRenderer.sprite.rect.height * scaledWidth / m_spriteRenderer.sprite.rect.width);
         }
         public void SetSize(Vector2 size)
