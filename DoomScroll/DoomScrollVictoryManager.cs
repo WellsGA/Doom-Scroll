@@ -18,7 +18,14 @@ namespace Doom_Scroll
         }
         public static bool CheckVictory()
         {
-            return (CheckVotingSuccess() && SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess());
+            if (CheckLocalImpostor())
+            {
+                return SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess();
+            }
+            else
+            {
+                return (CheckVotingSuccess() && SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess());
+            }
         }
         public static bool CheckLocalImpostor()
         {
