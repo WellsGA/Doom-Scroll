@@ -242,7 +242,7 @@ namespace Doom_Scroll
             // add the players as buttons
             PlayerButtons = new CustomSelect<byte>(size);
 
-            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {

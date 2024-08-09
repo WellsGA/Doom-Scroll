@@ -23,7 +23,7 @@ namespace Doom_Scroll.Patches
                 }
             }
 
-            if (DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting)
+            if (DoomScrollVictoryManager.IsHeadlineVoteSuccess)
             {
                 str += "\n<color=#00DD00FF>";
                 str += "Crewmate Voting: Everyone vote on headlines correctly</color>";

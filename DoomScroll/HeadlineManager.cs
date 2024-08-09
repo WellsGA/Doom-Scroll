@@ -112,7 +112,7 @@ namespace Doom_Scroll
             headlineSelect.RemoveButtons();
             playerButtons.RemoveButtons();
             modalFrame.SetColor(Palette.PlayerColors[PlayerControl.LocalPlayer.cosmetics.ColorId]);
-            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (!playerInfo.IsDead && !playerInfo.Disconnected)
                 {
@@ -174,14 +174,8 @@ namespace Doom_Scroll
         {
             if (headlineSelect.GetNumberOfOptions() == 0 || !headlineSelect.HasSelected) return;
             RPCSandNews(headlineSelect.Selected.Key);
-
-            // Headline task stuff
-            GameDataPatch.RPCCompleteHeadlineDummyTask();
-            DoomScroll._log.LogInfo("RPC for Complete headline task sent!");
-            GameDataPatch.UpdateBlankHeadlineTaskCompletion(PlayerControl.LocalPlayer.PlayerId);
-            // Headline task stuff
-
             CanPostNews(false);
+            DoomScrollTasksManager.RPCCompleteHeadlinePostTask(); // set headline task completition locally and broadcast to others.
         }
         public void ActivateNewsButton(bool value)
         {

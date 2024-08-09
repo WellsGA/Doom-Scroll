@@ -13,7 +13,7 @@ namespace Doom_Scroll
         public static void SetSecondaryWinConditions() // only called for the host in ShipStatus Begin()
         {
             GameLogger.Write(GameLogger.GetTime() + " - Secondary Win Conditions"); 
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo player in GameData.Instance.AllPlayers)
             {
                 Goal playerGoal = AssignGoal();
                 byte playerTarget = AssignTarget(player.PlayerId);

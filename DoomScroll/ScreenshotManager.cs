@@ -346,7 +346,7 @@ namespace Doom_Scroll
             do
             {
                 int index = UnityEngine.Random.Range(0, screenshotWaitlist.Count);
-                GameData.PlayerInfo player = GameData.Instance.GetPlayerById(screenshotWaitlist[index]);
+                NetworkedPlayerInfo player = GameData.Instance.GetPlayerById(screenshotWaitlist[index]);
                 if (player != null) //player is still in the game
                 {
                     PlayerCanScreenshot(player.PlayerId);

@@ -1,10 +1,7 @@
 ﻿using Doom_Scroll.UI;
 using HarmonyLib;
-using Il2CppSystem;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace Doom_Scroll.Patches
 {
@@ -13,18 +10,19 @@ namespace Doom_Scroll.Patches
     {
         private static string _retainedExileString;
         public static MeetingHud.VoterState[] OriginalArray2;
-        public static GameData.PlayerInfo OriginalExiledPlayer;
+        public static NetworkedPlayerInfo OriginalExiledPlayer;
         public static bool OriginalTie;
         private static bool _exiledWasOverridden;
 
+        // TO DO: Check this, no references!!
         public static void SetExileInfo(string retainedString, bool wasOverridden, byte ogExiledPlayer = 255)
         {
             _retainedExileString = retainedString;
             _exiledWasOverridden = wasOverridden;
-            GameData.PlayerInfo ogExiled = null;
+            NetworkedPlayerInfo ogExiled = null;
             if (ogExiledPlayer != 255)
             {
-                foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+                foreach (NetworkedPlayerInfo player in GameData.Instance.AllPlayers)
                 {
                     if (player.PlayerId == ogExiledPlayer)
                     {
@@ -41,37 +39,27 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("Begin")]
         public static bool PrefixBegin(ExileController __instance, object[] __args)
         {
-            DoomScroll._log.LogInfo($"Length of args: {__args.Length}");
+            // DoomScroll._log.LogInfo($"Length of args: {__args.Length}");
 
-            int num = 0;
-            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
-            {
-                if (p.Role.IsImpostor && !p.IsDead && !p.Disconnected)
-                {
-                    num++;
-                }
-            }
-
-            int num2 = 0;
-            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
-            {
-                if (p.Role.IsImpostor)
-                {
-                    num2++;
-                }
-            }
-
+            int numAliveImpostors = 0;
+            int numImpostors = 0;
             int numAlivePlayers = 0;
-            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo npi in GameData.Instance.AllPlayers)
             {
-                if (!p.Role.IsImpostor && !p.IsDead && !p.Disconnected)
+                if (npi.Role.IsImpostor)
                 {
+                    numImpostors++;
+                    if (!npi.IsDead && !npi.Disconnected)
+                    {
+                        numAliveImpostors++;
+                    }
+                } else if (!npi.IsDead && !npi.Disconnected) {
                     numAlivePlayers++;
-                }
+                }    
             }
 
 
-            if (!DoomScrollVictoryManager.CheckVotingSuccess())
+            if (!DoomScrollVictoryManager.IsHeadlineVoteSuccess)
             {
                 DoomScroll._log.LogInfo("Voting was not a success!");
                 __instance.exiled = null;
@@ -80,33 +68,16 @@ namespace Doom_Scroll.Patches
                 {
                     DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer: " + OriginalExiledPlayer.ToString());
                     //CALLS SAME STUFF AS ACTUAL THING, THEN CANCELS METHOD IF WE MODIFYIING THE EXILE.
-
-
-                    if (OriginalExiledPlayer.Role.IsImpostor)
+                    // If exicled is not impostor or the amount of living impostors left is > 1;
+                    // basically, if the game doesn't end from them voting out this player, SET THE EXILED PLAYER BACK TO NORMAL AND RUN OUR VERSION OF THE REAL METHOD
+                    if (!OriginalExiledPlayer.Role.IsImpostor || numAliveImpostors > 1)
                     {
-                        if (num2 > 1) // If the amount of impostors is more than 1
-                        {
-                            if (num > 1) // If the amount of living impostors left is > 1; basically, if the game doesn't end from them voting out this impostor, SET THE EXILED PLAYER BACK TO NORMAL AND RUN OUR VERSION OF THE REAL METHOD
-                            {
-                                DoomExileBeginLikeNormal(__instance, num, num2);
-                                return false;
-                            }
-                            __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
-                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextPP, (OriginalExiledPlayer.PlayerName));
-                            DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
-                        }
-                        else
-                        {
-                            __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
-                            _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
-                            DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
-                        }
-                    }
-                    else // IF THEY VOTED SOMEONE OUT AND THEY AREN'T WINNING FROM IT, SET THE EXILED PLAYER BACK TO NORMAL AND RUN OUR VERSION OF THE REAL METHOD
-                    {
-                        DoomExileBeginLikeNormal(__instance, num, num2);
+                        DoomExileBeginLikeNormal(__instance, numAliveImpostors, numImpostors);
                         return false;
                     }
+                    __instance.completeString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
+                    _retainedExileString = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ExileTextSP, (OriginalExiledPlayer.PlayerName));
+                    DoomScroll._log.LogInfo($"String set to: {__instance.completeString}");
 
                     //if exiled was overridden
                     _exiledWasOverridden = true;
@@ -121,19 +92,19 @@ namespace Doom_Scroll.Patches
                         __instance.Player.SetCustomHatPosition(__instance.exileHatPosition);
                         __instance.Player.SetCustomVisorPosition(__instance.exileVisorPosition);
                     }
+
                     if (OriginalExiledPlayer.Role.IsImpostor)
                     {
-                        num--;
+                        numAliveImpostors--;
                     }
 
-
-                    if (num == 1)
+                    if (numAliveImpostors == 1)
                     {
-                        __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainS, num);
+                        __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainS, numAliveImpostors);
                     }
                     else
                     {
-                        __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainP, num);
+                        __instance.ImpostorText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ImpostorsRemainP, numAliveImpostors);
                     }
 
                     return false;
@@ -142,7 +113,7 @@ namespace Doom_Scroll.Patches
             // IF THEY VOTED CORRECTLY, OR IF IMPOSTOR NOT VOTED OUT, THEY CAN VOTE OUT WHOEVER THEY WANT AND RUN THE REAL METHOD
 
             //ACTUALLY INSTEADDDDD, WE USE THEIR CODE AND GO TO THE NEXT THING. THEN PREVENT THEIR METHOD FROM RUNNING.
-            DoomExileBeginLikeNormal(__instance, num, num2);
+            DoomExileBeginLikeNormal(__instance, numAliveImpostors, numImpostors);
             return false;
         }
 
@@ -230,23 +201,19 @@ namespace Doom_Scroll.Patches
         public static void PostfixBegin(ExileController __instance)
         {
             int numAliveImpostors = 0;
-            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
+            int numCrewmates = 0;
+            foreach (NetworkedPlayerInfo p in GameData.Instance.AllPlayers)
             {
                 if (p.Role.IsImpostor && !p.IsDead && !p.Disconnected)
                 {
                     numAliveImpostors++;
                 }
-            }
-
-            // Calculate num crewmates
-            int numCrewmates = 0;
-            foreach (GameData.PlayerInfo p in GameData.Instance.AllPlayers)
-            {
                 if (!p.Role.IsImpostor && !p.Disconnected)
                 {
                     numCrewmates++;
                 }
             }
+           
             int numCrewVotesNeeded = (int)System.Math.Ceiling(numCrewmates * DoomScrollVictoryManager.PercentCorrectHeadlinesNeeded);
 
             //
@@ -256,7 +223,7 @@ namespace Doom_Scroll.Patches
             {
                 __instance.completeString = _retainedExileString;
             }
-            if (!DoomScrollVictoryManager.CheckVotingSuccess())
+            if (!DoomScrollVictoryManager.IsHeadlineVoteSuccess)
             {
                 if (OriginalExiledPlayer != null && OriginalExiledPlayer.Role.IsImpostor && numAliveImpostors < 1)
                 {
@@ -274,56 +241,28 @@ namespace Doom_Scroll.Patches
 
 
             List<System.Tuple<int, string, string>> scoresByNumCorrect = new List<System.Tuple<int, string, string>>();
-            int currentHighScore = 0;
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+
+            foreach (NetworkedPlayerInfo player in GameData.Instance.AllPlayers)
             {
-                byte pID = player.PlayerId;
-                if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID) && !player.Disconnected)
+                if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(player.PlayerId) && !player.Disconnected)
                 {
-                    int currentScore = HeadlineDisplay.Instance.PlayerScores[pID].Item1;
-                    DoomScroll._log.LogInfo("Current numScore: " + currentScore.ToString());
-                    DoomScroll._log.LogInfo("LastMeetingNewsItemsCount: " + DoomScrollVictoryManager.LastMeetingNewsItemsCount.ToString());
-                    if (scoresByNumCorrect.Count == 0)
-                    {
-                        scoresByNumCorrect.Add(new System.Tuple<int, string, string>(currentScore, player.PlayerName, HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId).Trim(' ', '\n', '\t', '[', ']')));
-                    }
-                    else
-                    {
-                        for (int i = 0; i < scoresByNumCorrect.Count; i++)
-                        {
-                            DoomScroll._log.LogInfo("Count is " + scoresByNumCorrect.Count.ToString() + " and current i is " + i.ToString());
-                            DoomScroll._log.LogInfo("Loop " + i.ToString() + "of scoresByNumCorrect");
-                            if (scoresByNumCorrect[i].Item1 < currentScore)
-                            {
-                                scoresByNumCorrect.Insert(i, new System.Tuple<int, string, string>(currentScore, player.PlayerName, HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId).Trim(' ', '\n', '\t', '[', ']')));
-                                break;
-                            }
-                            else if (i == scoresByNumCorrect.Count - 1)
-                            {
-                                scoresByNumCorrect.Add(new System.Tuple<int, string, string>(currentScore, player.PlayerName, HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId).Trim(' ', '\n', '\t', '[', ']')));
-                                break;
-                            }
-                        }
-                    }
+                    int currentScore = HeadlineDisplay.Instance.PlayerScores[player.PlayerId].Item1;
+                    string headlineScore = HeadlineDisplay.Instance.CalculateScoreStrings(player.PlayerId);
+                    scoresByNumCorrect.Add(new System.Tuple<int, string, string>(currentScore, player.PlayerName, headlineScore.Trim(' ', '\n', '\t', '[', ']')));
                 }
             }
 
 
             DoomScroll._log.LogInfo("Things in scoresByNumCorrect: ");
             string votingResultsText = "<b>Headline Voting Scores:</b>\n";
+            string scoreboardText = "<b>Rankings:</b>\n";
             foreach (System.Tuple<int, string, string> thing in scoresByNumCorrect)
             {
                 DoomScroll._log.LogInfo(thing.Item3);
                 votingResultsText += thing.Item2 + ": " + thing.Item3 + "\n";
-            }
-
-
-            string scoreboardText = "<b>Rankings:</b>\n";
-            foreach (System.Tuple<int, string, string> thing in scoresByNumCorrect)
-            {
                 scoreboardText += thing.Item2 + "\n";
             }
-
+           
             CustomText votingResults = new CustomText(__instance.Text.gameObject, "Voting Results CustomText", votingResultsText);
             votingResults.SetLocalPosition(new Vector3(-2f, -1.3f, -10f));
             votingResults.SetSize(1.5f);
@@ -334,8 +273,7 @@ namespace Doom_Scroll.Patches
             scoreBoard.SetSize(1.5f);
             scoreBoard.SetColor(Color.yellow);
 
-            GameDataPatch.UpdateDummyVotingTaskCompletion(DoomScrollVictoryManager.CheckVotingSuccess());
-            DoomScrollVictoryManager.VotingTaskCompleteAsOfLastMeeting = DoomScrollVictoryManager.CheckVotingSuccess();
+            DoomScrollTasksManager.UpdateHeadlineSortingCompletion(DoomScrollVictoryManager.IsHeadlineVoteSuccess);
 
         }
 

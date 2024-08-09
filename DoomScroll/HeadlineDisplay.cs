@@ -20,7 +20,7 @@ namespace Doom_Scroll
         private readonly int maxNewsItemsPerPageVote = 7; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
 
         public List<Headline> AllNewsList { get; private set; }
-        public Dictionary<byte, Tuple<int, int>> PlayerScores;
+        public Dictionary<byte, Tuple<int, int>> PlayerScores; // player id, and nr of correct and incorrect votes for headlines
         public List<HeadlineEndorsement> endorsementList = new List<HeadlineEndorsement>();
 
         private HudManager hudManagerInstance;
@@ -211,14 +211,11 @@ namespace Doom_Scroll
         {
             voteForHeadlinesTooltip.ActivateToolTip(false);
             CustomModal parent = FolderManager.Instance.GetFolderArea();
-            int currentVotedHeadlinesCount = 0;
             foreach (Headline news in AllNewsList)
             {
                 news.SetParentAndSize(parent.UIGameObject, parent.GetSize());
                 news.Card.ActivateCustomUI(false);
-                currentVotedHeadlinesCount++;
             }
-            DoomScrollVictoryManager.LastMeetingNewsItemsCount = currentVotedHeadlinesCount;
             votingNewsPageHolder.TogglePageButtons(false);
         }
 

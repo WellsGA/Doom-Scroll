@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Il2CppSystem;
 using UnityEngine;
 
 namespace Doom_Scroll.Patches
@@ -17,6 +16,8 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("SetEverythingUp")]
         public static void PostfixSetEverythingUp(EndGameManager __instance)
         {
+            bool isImpostor = PlayerControl.LocalPlayer.Data.Role.IsImpostor;
+            
             if (__instance.WinText.text == DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Victory) && !DoomScrollVictoryManager.CheckVictory()) //If won but SWC not successful
             { // Case where they won but DoomScroll lost
                 __instance.WinText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Defeat);
@@ -30,11 +31,11 @@ namespace Doom_Scroll.Patches
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"blue\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
                 }
 
-                if (!DoomScrollVictoryManager.CheckLocalImpostor() && !DoomScrollVictoryManager.CheckVotingSuccess())
+                if (!isImpostor && !DoomScrollVictoryManager.IsHeadlineVoteSuccess)
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"red\">Failure: Some crewmates didn't vote correctly.</color></color></size>";
                 }
-                else if (!DoomScrollVictoryManager.CheckLocalImpostor() && DoomScrollVictoryManager.CheckVotingSuccess())
+                else if (!isImpostor && DoomScrollVictoryManager.IsHeadlineVoteSuccess)
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"blue\">Success: All crewmates voted correctly!</color></color></size>";
                 }
@@ -51,11 +52,11 @@ namespace Doom_Scroll.Patches
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { SWC Results } <color=\"blue\">" + SecondaryWinConditionManager.LocalPLayerSWC.SWCResultsText() + "</color></color></size>";
                 }
 
-                if (!DoomScrollVictoryManager.CheckLocalImpostor() && !DoomScrollVictoryManager.CheckVotingSuccess())
+                if (!isImpostor && !DoomScrollVictoryManager.IsHeadlineVoteSuccess)
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"red\">Failure: Some crewmates didn't vote correctly.</color></color></size>";
                 }
-                else if (!DoomScrollVictoryManager.CheckLocalImpostor() && DoomScrollVictoryManager.CheckVotingSuccess())
+                else if (!isImpostor && DoomScrollVictoryManager.IsHeadlineVoteSuccess)
                 {
                     __instance.WinText.text += "\n<size=20%><color=\"white\"> { Voting Results } <color=\"blue\">Success: All crewmates voted correctly!</color></color></size>";
                 }

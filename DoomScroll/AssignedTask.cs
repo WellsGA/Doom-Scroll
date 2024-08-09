@@ -31,7 +31,7 @@ namespace Doom_Scroll
             Type = type;
             AssignedBy = player;
             AssigneeId = assignee;   
-            GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(assignee);
+            NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(assignee);
             AssigneeName = playerInfo == null ? "Unknown player": playerInfo.PlayerName;  // if player has left, we don't know;
             CreateTaskCard();
         }
@@ -84,9 +84,9 @@ namespace Doom_Scroll
 
         public bool CheckIfFinished()
         {
-            GameData.PlayerInfo player = GameData.Instance.GetPlayerById(AssignedBy);
+            NetworkedPlayerInfo player = GameData.Instance.GetPlayerById(AssignedBy);
             if(player == null) return false;
-            foreach(GameData.TaskInfo task in player.Tasks)
+            foreach(NetworkedPlayerInfo.TaskInfo task in player.Tasks)
             {
                 if(task.Id == TaskId)
                 {

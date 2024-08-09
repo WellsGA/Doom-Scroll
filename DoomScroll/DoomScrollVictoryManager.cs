@@ -9,47 +9,29 @@ namespace Doom_Scroll
     public static class DoomScrollVictoryManager
     {
         public static readonly float PercentCorrectHeadlinesNeeded = 0.75f;
-        public static int LastMeetingNewsItemsCount = 0;
-        public static bool VotingTaskCompleteAsOfLastMeeting = false;
+        public static bool IsHeadlineVoteSuccess { get;  private set; } = false;
         public static void Reset()
         {
-            LastMeetingNewsItemsCount = 0;
-            VotingTaskCompleteAsOfLastMeeting= false;
+            IsHeadlineVoteSuccess= false;
         }
         public static bool CheckVictory()
         {
-            if (CheckLocalImpostor())
+            bool isSWCSuccess = SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess();
+            if (PlayerControl.LocalPlayer.Data.RoleType == RoleTypes.Impostor)
             {
-                return SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess();
+                return isSWCSuccess;
             }
             else
             {
-                return (CheckVotingSuccess() && SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess());
+                return IsHeadlineVoteSuccess && isSWCSuccess;
             }
         }
-        public static bool CheckLocalImpostor()
-        {
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
-            {
-                if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
-                {
-                    if (player.Role.IsImpostor)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-            return false;
-        }
-        public static bool CheckVotingSuccess()
+        
+        public static void CheckVotingSuccess()
         {
             int potentialVoters = 0;
             int wrongVotes = 0;
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo player in GameData.Instance.AllPlayers)
             {
                 byte pID = player.PlayerId;
                 if (HeadlineDisplay.Instance.PlayerScores.ContainsKey(pID) && !player.Role.IsImpostor && !player.Disconnected)
@@ -57,9 +39,8 @@ namespace Doom_Scroll
                     potentialVoters++;
 
                     int currentScore = HeadlineDisplay.Instance.PlayerScores[pID].Item1;
-                    DoomScroll._log.LogInfo("Current numScore: " + currentScore.ToString());
-                    DoomScroll._log.LogInfo("LastMeetingNewsItemsCount: " + LastMeetingNewsItemsCount.ToString());
-                    if (currentScore < LastMeetingNewsItemsCount)
+                    // check if they got it all right
+                    if (currentScore < HeadlineDisplay.Instance.AllNewsList.Count)
                     {
                         wrongVotes++;
                     }
@@ -67,18 +48,10 @@ namespace Doom_Scroll
             }
             if (((float)wrongVotes) / potentialVoters > (1f-PercentCorrectHeadlinesNeeded))
             {
-                return false;
+                IsHeadlineVoteSuccess = false;
             }
-            return true;
+            IsHeadlineVoteSuccess = true;
         }
 
-        public static bool CalculateSWCVictory()
-        {
-            if (SecondaryWinConditionManager.LocalPLayerSWC.CheckSuccess())
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }

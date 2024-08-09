@@ -26,9 +26,11 @@ namespace Doom_Scroll.Patches
         public static void PostfixBegin()
         {
             GameLogger.InitFileWriter("GameTracking");
-            GameLogger.Write("========================================= \n" + GameLogger.GetTime() + " - New Game Started\n Number of players: " + GameData.Instance.AllPlayers.Count +
-                             "\n  PLayer names and roles:\n");
-            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers) 
+            GameLogger.Write("========================================= \n" 
+                            + GameLogger.GetTime() + " - New Game Started\n Number of players: " 
+                            + GameData.Instance.AllPlayers.Count 
+                            + "\n  PLayer names and roles:\n");
+            foreach (NetworkedPlayerInfo player in GameData.Instance.AllPlayers) 
             {
                 GameLogger.Write("\t" + player.PlayerName + " [" + player.Role.Role + "]");
             }
@@ -37,9 +39,10 @@ namespace Doom_Scroll.Patches
             // HeadlineManager.Instance.SelectPLayersWhoCanPostNews();
 
             //Select first player to share screenshot
-            //ScreenshotManager.Instance.SelectAPlayerToTakeScreenshot();
-            ScreenshotManager.Instance.PlayerCanScreenshot(PlayerControl.LocalPlayer.PlayerId);
-            ScreenshotManager.Instance.RPCPlayerCanScreenshot(PlayerControl.LocalPlayer.PlayerId);
+            ScreenshotManager.Instance.SelectAPlayerToTakeScreenshot();
+            // Host is the first to take a screenshot - debug!
+                // ScreenshotManager.Instance.PlayerCanScreenshot(PlayerControl.LocalPlayer.PlayerId);
+                // ScreenshotManager.Instance.RPCPlayerCanScreenshot(PlayerControl.LocalPlayer.PlayerId);
         }
 
         public static void PrintAllTasksToConsole(ShipStatus instance)

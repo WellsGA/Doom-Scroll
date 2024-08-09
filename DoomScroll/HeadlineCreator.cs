@@ -79,7 +79,7 @@ namespace Doom_Scroll
             headline = ReplaceSymbolsInHeadline(headline, player, GetFinishedTaskCount(player.PlayerId));
 
             source = SelectSource(NewsStrings.unTrustSource);
-            GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(player.PlayerId);
+            NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(player.PlayerId);
             // do they sign with their misspelled names?
             string randomPlayer = GetRandomPlayer().name; // or player.name
             source = ReplaceSymbolsInSource(source, playerInfo.GetPlayerColorString(), randomPlayer);
@@ -159,7 +159,7 @@ namespace Doom_Scroll
                         }
                     case "role":
                         {
-                            GameData.PlayerInfo inf = GameData.Instance.GetPlayerById(pl.PlayerId);
+                            NetworkedPlayerInfo inf = GameData.Instance.GetPlayerById(pl.PlayerId);
                             if ((inf.Role.Role != RoleTypes.Impostor && protect) || (inf.Role.Role == RoleTypes.Impostor && !protect))
                             {
                                 int news = Random.Range(0, NewsStrings.autoTrustProtect[2].Length);
@@ -275,9 +275,9 @@ namespace Doom_Scroll
         private static int GetFinishedTaskCount(byte id)
         {
             int count = 0;
-            GameData.PlayerInfo player = GameData.Instance.GetPlayerById(id);
+            NetworkedPlayerInfo player = GameData.Instance.GetPlayerById(id);
             if(player.Role.Role == RoleTypes.Impostor) return count;
-            foreach (GameData.TaskInfo task in player.Tasks)
+            foreach (NetworkedPlayerInfo.TaskInfo task in player.Tasks)
             {
                 if (task.Complete) count++;
             }

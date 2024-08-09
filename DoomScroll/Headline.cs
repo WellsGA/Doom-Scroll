@@ -88,7 +88,7 @@ namespace Doom_Scroll
 
         public void CreateAuthorIcon() 
         {
-            GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(AuthorID);
+            NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(AuthorID);
             if (playerInfo != null)
             {
                 AuthorName = playerInfo.PlayerName;

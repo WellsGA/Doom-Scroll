@@ -32,7 +32,7 @@ namespace Doom_Scroll
 
         public string GetTargetName() // same as GetPlayerName, would worth to use only GetPlayerName with an id parameter
         {
-            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (playerInfo.PlayerId == playerSWCTarget)
                 {
@@ -48,7 +48,7 @@ namespace Doom_Scroll
 
         public string GetPlayerName()
         {
-            foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+            foreach (NetworkedPlayerInfo playerInfo in GameData.Instance.AllPlayers)
             {
                 if (playerInfo.PlayerId == playerID)
                 {

@@ -38,89 +38,6 @@ namespace Doom_Scroll.Patches
             }
             return dictionary;
         }
-        private static void DoomForceSkipAll(MeetingHud __instance)
-        {
-            //Change voting stuff!
-
-            Dictionary<byte, int> dictionary = DoomCalculateVotes(__instance); // Calculates votes after locally setting whatever this current player's vote should be
-            DoomScroll._log.LogInfo("DoomCalculateVotes is done");
-
-            //their code in CheckForEndVoting. array2, exiled, and tie are the parameters that go into RpcVotingComplete.
-            bool tie;
-            KeyValuePair<byte, int> max = DoomMaxPair(dictionary, out tie);
-            Logger logger = __instance.logger;
-            string format = "Vote counts: {0} Max={1}@{2} Tie={3}";
-            object[] array = new object[4];
-            array[0] = string.Join(" ", (from t in dictionary
-                                         select t.ToString()).ToArray<string>());
-            array[1] = max.Key;
-            array[2] = max.Value;
-            array[3] = tie;
-            logger.Debug(string.Format(format, array), null);
-            GameData.PlayerInfo exiled = null;
-            foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
-            {
-                if (!tie && v.PlayerId == max.Key)
-                {
-                    exiled = v;
-                    break;
-                }
-            }
-            DoomScroll._log.LogInfo("Found exiled player!");
-            MeetingHud.VoterState[] array2 = new MeetingHud.VoterState[__instance.playerStates.Length];
-            for (int i = 0; i < __instance.playerStates.Length; i++)
-            {
-                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
-                if (playerVoteArea != null)
-                {
-                    array2[i] = new MeetingHud.VoterState
-                    {
-                        VoterId = playerVoteArea.TargetPlayerId,
-                        VotedForId = playerVoteArea.VotedFor
-                    };
-                }
-            }
-            // OUR VOTER STATE
-            unmodifiedVoterStates = array2;
-
-            //their code ends!
-            ExileControllerPatch.OriginalArray2 = array2;
-            DoomScroll._log.LogInfo("OriginalArray2 is being set as: " + array2.ToString());
-            if (exiled != null)
-            {
-                ExileControllerPatch.OriginalExiledPlayer = exiled;
-                DoomScroll._log.LogInfo("OriginalExiledPlayer is being set as: " + exiled + ", " + exiled.PlayerName);
-            }
-            else
-            {
-
-                ExileControllerPatch.OriginalExiledPlayer = null;
-            }
-            ExileControllerPatch.OriginalTie = tie;
-            DoomScroll._log.LogInfo("OriginalExiledTie is being set as: " + tie.ToString());
-
-            //SEND TO OTHERS
-            if (exiled != null)
-            {
-                RPCExileInfo(tie, exiled.PlayerId);
-            }
-            else
-            {
-                RPCExileInfo(tie);
-            }
-            DoomScroll._log.LogInfo("Sent RPC info to others");
-
-            // THIS ACTUAL FUNCTION
-            for (int i = 0; i < __instance.playerStates.Length; i++)
-            {
-                PlayerVoteArea playerVoteArea = __instance.playerStates[i];
-                if (!playerVoteArea.DidVote)
-                {
-                    playerVoteArea.VotedFor = 254;
-                    __instance.DirtyBits |= 1U;
-                }
-            }
-        }
 
         public static void RPCExileInfo(bool tie, byte player = 255)
         {
@@ -150,8 +67,8 @@ namespace Doom_Scroll.Patches
         }
         public static void DoomCastVote(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)
         {
-            GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(srcPlayerId);
-            GameData.PlayerInfo playerById2 = GameData.Instance.GetPlayerById(suspectPlayerId);
+            NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(srcPlayerId);
+            NetworkedPlayerInfo playerById2 = GameData.Instance.GetPlayerById(suspectPlayerId);
             __instance.logger.Debug(playerById.PlayerName + " has voted for " + ((playerById2 != null) ? playerById2.PlayerName : "No one"), null);
             PlayerVoteArea playerVoteArea = null;
             foreach (PlayerVoteArea pv in __instance.playerStates)
@@ -325,7 +242,7 @@ namespace Doom_Scroll.Patches
                 {
                     DoomScroll._log.LogInfo($"Inner Loop # {num2}");
                     DoomScroll._log.LogInfo($"Value from outer loop: {unmodifiedPlayerStates[i].TargetPlayerId}, Inner loop on another vote area! Player id: {voterState.VoterId}");
-                    GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
+                    NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
                     if (playerById == null)
                     {
                         __instance.logger.Error(string.Format("Couldn't find player info for voter: {0}", voterState.VoterId), null);
@@ -345,7 +262,7 @@ namespace Doom_Scroll.Patches
                 }
             }
             unmodifiedPlayerStates = new PlayerVoteArea[] { };
-            unmodifiedVoterStates = new MeetingHud.VoterState[] { };
+            unmodifiedVoterStates = new VoterState[] { };
             return false;
         }
 
@@ -404,8 +321,8 @@ namespace Doom_Scroll.Patches
                 array[2] = max.Value;
                 array[3] = tie;
                 logger.Debug(string.Format(format, array), null);
-                GameData.PlayerInfo exiled = null;
-                foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
+                NetworkedPlayerInfo exiled = null;
+                foreach (NetworkedPlayerInfo v in GameData.Instance.AllPlayers)
                 {
                     if (!tie && v.PlayerId == max.Key)
                     {
@@ -414,17 +331,17 @@ namespace Doom_Scroll.Patches
                     }
                 }
                 DoomScroll._log.LogInfo("Found exiled player!");
-                MeetingHud.VoterState[] array2 = new MeetingHud.VoterState[__instance.playerStates.Length];
+                VoterState[] array2 = new VoterState[__instance.playerStates.Length];
                 for (int i = 0; i < __instance.playerStates.Length; i++)
                 {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea != null)
                     {
-                        array2[i] = new MeetingHud.VoterState
-                        {
-                            VoterId = playerVoteArea.TargetPlayerId,
-                            VotedForId = playerVoteArea.VotedFor
-                        };
+                        array2[i] = new VoterState
+                                    {
+                                        VoterId = playerVoteArea.TargetPlayerId,
+                                        VotedForId = playerVoteArea.VotedFor
+                                    };
                     }
                 }
                 // OUR VOTER STATE
@@ -440,7 +357,6 @@ namespace Doom_Scroll.Patches
                 }
                 else
                 {
-
                     ExileControllerPatch.OriginalExiledPlayer = null;
                 }
                 ExileControllerPatch.OriginalTie = tie;
@@ -461,7 +377,7 @@ namespace Doom_Scroll.Patches
                 {
                     //Now we're setting everyone's votes to SKIP
                     //Using code from CastVote
-                    foreach (GameData.PlayerInfo v in GameData.Instance.AllPlayers)
+                    foreach (NetworkedPlayerInfo v in GameData.Instance.AllPlayers)
                     {
                         if (v != null && !v.IsDead)
                         {
@@ -492,18 +408,7 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("VotingComplete")]
         public static void PrefixVotingComplete(object[] __args)
         {
-            foreach (object thing in __args)
-            {
-                if (thing == null)
-                {
-                    DoomScroll._log.LogInfo("Current __args thing is NULL.");
-                }
-                else
-                {
-                    DoomScroll._log.LogInfo("Current __args thing is NOT null.");
-                }
-
-            }
+            
             if (__args[0] != null)
             {
                 if (ExileControllerPatch.OriginalArray2 != null)
@@ -517,9 +422,9 @@ namespace Doom_Scroll.Patches
                 if (__args[1] != null)
                 {
                     DoomScroll._log.LogInfo("__args[1] to String is " + __args[1].ToString());
-                    DoomScroll._log.LogInfo("__args[1] as a PlayerInfo is " + (GameData.PlayerInfo)__args[1]);
+                    DoomScroll._log.LogInfo("__args[1] as a PlayerInfo is " + (NetworkedPlayerInfo)__args[1]);
                     DoomScroll._log.LogInfo("__args[1] is indeed a GameData.PlayerInfo");
-                    DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer is being set as: " + (GameData.PlayerInfo)__args[1] + ", " + ((GameData.PlayerInfo)__args[1]).PlayerName);
+                    DoomScroll._log.LogInfo(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OriginalExiledPlayer is being set as: " + (NetworkedPlayerInfo)__args[1] + ", " + ((NetworkedPlayerInfo)__args[1]).PlayerName);
                     if (ExileControllerPatch.OriginalExiledPlayer != null)
                     {
                         __args[1] = ExileControllerPatch.OriginalExiledPlayer;
@@ -536,10 +441,7 @@ namespace Doom_Scroll.Patches
             if (__args[2] != null)
             {
                 DoomScroll._log.LogInfo("__args[2] is not null.");
-                if (ExileControllerPatch.OriginalTie != null)
-                {
-                    __args[0] = ExileControllerPatch.OriginalTie;
-                }
+                __args[0] = ExileControllerPatch.OriginalTie;
             }
 
         }

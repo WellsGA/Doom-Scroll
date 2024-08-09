@@ -13,7 +13,7 @@ namespace Doom_Scroll.Patches
         EJECTEDRESULTSINFO = 235,
         SETPLAYERFORSCREENSHOT = 236,
         COMPLETEDUMMYTASK = 237,
-        SETDUMMYTASKS = 238,
+        ADDHEADLINETASKINFOS = 238,
         ENQUEUEIMAGE = 239,
         IMAGESENDINGCOMPLETE = 240,
         CANSENDIMAGE = 241,
@@ -261,20 +261,25 @@ namespace Doom_Scroll.Patches
                         }
                         break;
                     }
-                case (byte)CustomRPC.SETDUMMYTASKS:
+                case (byte)CustomRPC.ADDHEADLINETASKINFOS:
                     {
-                        foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
-                        {
-                            GameDataPatch.AddDummyTasksToThisList(playerInfo);
-                        }
+                        DoomScrollTasksManager.AddHeadlineTaskInfos();
                         break;
                     }
                 case (byte)CustomRPC.COMPLETEDUMMYTASK:
                     {
-                        if (reader.ReadByte() == GameDataPatch.headlineTaskID)
+                        byte taskId = reader.ReadByte();
+                        byte playerId = reader.ReadByte();
+                        if (taskId == DoomScrollTasksManager.HeadlineTaskID)
                         {
-                            GameDataPatch.UpdateBlankHeadlineTaskCompletion(reader.ReadByte());
+                            foreach (PlayerControl player in PlayerControl.AllPlayerControls) { 
+                                if(playerId == player.PlayerId)
+                                {
+                                    GameData.Instance.CompleteTask(player, taskId);
+                                }
+                            }
                         }
+                        // maybe, check for voting task id too...
                         break;
                     }
                 case (byte)CustomRPC.SETPLAYERFORSCREENSHOT:
@@ -287,10 +292,10 @@ namespace Doom_Scroll.Patches
                         bool tie = reader.ReadBoolean();
                         byte ogExiled = reader.ReadByte();
                         ExileControllerPatch.OriginalTie = tie;
-                        GameData.PlayerInfo origExiled = null;
+                        NetworkedPlayerInfo origExiled = null;
                         if (ogExiled != 255)
                         {
-                            foreach (GameData.PlayerInfo player in GameData.Instance.AllPlayers)
+                            foreach (NetworkedPlayerInfo player in GameData.Instance.AllPlayers)
                             {
                                 if (player.PlayerId == ogExiled)
                                 {
