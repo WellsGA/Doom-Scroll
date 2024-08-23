@@ -10,13 +10,6 @@ namespace Doom_Scroll.UI
         private static Vector2 buttonSize = new Vector2(0.4f, 0.4f);
         public static CustomButton CreateFolderBtn(GameObject parent)
         {
-            PassiveButton[] srs = parent.gameObject.GetComponentsInChildren<PassiveButton>(true);
-            foreach (PassiveButton r in srs)
-            {
-                DoomScroll._log.LogInfo(r.gameObject.transform.parent.name); 
-                DoomScroll._log.LogInfo(r.gameObject.transform.parent.transform.parent.name);
-
-            }
             GameObject chatScreen = parent.transform.Find("ChatScreenRoot/ChatScreenContainer").gameObject;
             GameObject banButton = parent.GetComponentInChildren<BanMenu>(true).gameObject;
             Vector3 pos = banButton.transform.localPosition;

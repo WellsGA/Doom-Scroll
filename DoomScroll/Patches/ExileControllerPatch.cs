@@ -8,7 +8,7 @@ namespace Doom_Scroll.Patches
     [HarmonyPatch(typeof(ExileController))]
     static class ExileControllerPatch
     {
-        private static string _retainedExileString;
+      /*  private static string _retainedExileString;
         public static MeetingHud.VoterState[] OriginalArray2;
         public static NetworkedPlayerInfo OriginalExiledPlayer;
         public static bool OriginalTie;
@@ -301,6 +301,6 @@ namespace Doom_Scroll.Patches
 
             OriginalExiledPlayer = null;
             _exiledWasOverridden = false;
-        }
+        }*/
     }
 }

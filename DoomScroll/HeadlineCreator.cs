@@ -162,7 +162,6 @@ namespace Doom_Scroll
                             NetworkedPlayerInfo inf = GameData.Instance.GetPlayerById(pl.PlayerId);
                             if ((inf.Role.Role != RoleTypes.Impostor && protect) || (inf.Role.Role == RoleTypes.Impostor && !protect))
                             {
-                                int news = Random.Range(0, NewsStrings.autoTrustProtect[2].Length);
                                 headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[2]) : SelectHeadline(NewsStrings.autoTrustFrame[2]);
                                 if (headline.Contains("{X}")) headline = headline.Replace("{X}", pl.name);
                                 foundNews = true;
@@ -181,7 +180,7 @@ namespace Doom_Scroll
 
                             if ((hasHelpedFix > 0 && protect) || (hasSabotaged && !protect))
                             {
-                                int news = Random.Range(0, NewsStrings.autoTrustProtect[3].Length);
+
                                 headline = protect ? SelectHeadline(NewsStrings.autoTrustProtect[3]) : SelectHeadline(NewsStrings.autoTrustFrame[3]);
                                 if (headline.Contains("{X}")) headline = headline.Replace("{X}", pl.name);
                                 if (headline.Contains("{#S}")) headline = headline.Replace("{#S}", hasHelpedFix.ToString());

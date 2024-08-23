@@ -2,7 +2,6 @@
 using UnityEngine;
 using Doom_Scroll.UI;
 using Doom_Scroll.Common;
-using System.Collections.Generic;
 
 namespace Doom_Scroll.Patches
 {

@@ -8,7 +8,7 @@ namespace Doom_Scroll.Patches
     {
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
-        public static void PostfixStart(ShipStatus __instance)
+        public static void PostfixStart()
         {
             ScreenshotManager.Instance.ActivateCameraButton(true);
             HeadlineManager.Instance.ActivateNewsButton(true);

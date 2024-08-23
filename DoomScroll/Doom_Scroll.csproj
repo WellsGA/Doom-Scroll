@@ -18,7 +18,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.671" Private="false" ExcludeAssets="runtime;native" />
-    <PackageReference Include="AmongUs.GameLibs.Steam" Version="2024.6.18" PrivateAssets="all" />
+    <PackageReference Include="AmongUs.GameLibs.Steam" Version="2024.8.13" PrivateAssets="all" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 
     <PackageReference Include="BepInEx.AutoPlugin" Version="1.1.0" PrivateAssets="all" />
@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>lib\Assembly-CSharp-2024.6.18</HintPath>
+      <HintPath>lib\Assembly-CSharp-2024.8.13.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
       <HintPath>lib\Il2Cppmscorlib.dll</HintPath>
@@ -61,8 +61,8 @@
     <EmbeddedResource Include="Assets\closeButton.png" />
     <EmbeddedResource Include="Assets\homeButton.png" />
     <EmbeddedResource Include="Assets\backButton.png" />
-    <EmbeddedResource Include="Assets\cameraFlash.png" />
-    <EmbeddedResource Include="Assets\postNews.png" />
+    <EmbeddedResource Include="Assets\cameraFlash2.png" />
+    <EmbeddedResource Include="Assets\postNews2.png" />
     <EmbeddedResource Include="Assets\submitButton.png" />
     <EmbeddedResource Include="Assets\cameraOverlay.png" />
     <EmbeddedResource Include="Assets\captureScreenNew.png" />

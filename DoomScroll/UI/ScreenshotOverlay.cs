@@ -12,12 +12,21 @@ namespace Doom_Scroll.UI
         {
             //   NEW CODE TO SET UP BUTTON:
             GameObject m_UIParent = hud.MapButton.gameObject;
-            //Vector3 mapBtnPos = hud.MapButton.gameObject.transform.position;
-            SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(0, 0 - mapButtonSr.size.y * hud.MapButton.gameObject.transform.localScale.y * 1.5f, 0);
+           /* Component[] components = hud.MapButton.gameObject.GetComponentsInChildren<Component>();
+            foreach (Component component in components)
+            {
+                DoomScroll._log.LogInfo(component.ToString());
+            }*/
+            
+            Vector3 position = new Vector3(0, 0 - 0.64f, 0);
             //Vector2 scaledSize = mapButtonSr.size * hud.MapButton.gameObject.transform.localScale;
-            Vector2 scaledSize = mapButtonSr.size;
-            Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash.png", ImageLoader.slices2);
+            Vector2 scaledSize = new Vector2(0.67f, 0.67f);
+            SpriteRenderer mapButtonSr = m_UIParent.transform.Find("Background").GetComponent<SpriteRenderer>();
+            if (mapButtonSr) {
+                position = new Vector3(0, 0 - mapButtonSr.size.y * 0.7f, 0);
+                scaledSize = mapButtonSr.size * 0.67f;
+            }
+            Sprite[] cameraBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraFlash2.png", ImageLoader.slices2);
 
             return new CustomButton(m_UIParent, "Camera Toggle Button", cameraBtnSprites, position, scaledSize.x);
         }

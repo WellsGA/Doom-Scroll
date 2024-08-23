@@ -9,12 +9,16 @@ namespace Doom_Scroll.UI
         public static CustomButton CreateNewsButton(HudManager hud)
         {
             GameObject UIParent = hud.MapButton.gameObject;
-            SpriteRenderer mapButtonSr = hud.MapButton.gameObject.GetComponent<SpriteRenderer>();
-
-            Vector2 scaledSize = mapButtonSr != null ? mapButtonSr.size : new Vector2(0.75f, 0.75f);
-            float yDist = (3 * scaledSize.y * hud.MapButton.gameObject.transform.localScale.y);
-            Vector3 position = new Vector3(0, 0 - yDist, 0);
-            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews.png", ImageLoader.slices2);
+            SpriteRenderer mapButtonSr = UIParent.transform.Find("Background").GetComponent<SpriteRenderer>();
+            Vector3 position = new Vector3(0 - 0.69f, 0 - 0.64f, 0);
+            Vector2 scaledSize = new Vector2(0.67f, 0.67f);
+            if (mapButtonSr)
+            {
+                new Vector3(0 - mapButtonSr.size.y * 0.7f, 0 - mapButtonSr.size.y * 0.7f, 0);
+                scaledSize = mapButtonSr.size * 0.67f;
+            }
+            
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postNews2.png", ImageLoader.slices2);
 
             return new CustomButton(UIParent, "News Toggle Button", BtnSprites, position, scaledSize.x);
         }

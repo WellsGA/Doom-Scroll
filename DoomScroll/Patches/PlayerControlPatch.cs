@@ -2,7 +2,6 @@
 using Hazel;
 using System.Collections.Generic;
 using Doom_Scroll.Common;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 
@@ -10,7 +9,7 @@ namespace Doom_Scroll.Patches
 {
     public enum CustomRPC : byte
     {
-        EJECTEDRESULTSINFO = 235,
+        // EJECTEDRESULTSINFO = 235,
         SETPLAYERFORSCREENSHOT = 236,
         COMPLETEDUMMYTASK = 237,
         ADDHEADLINETASKINFOS = 238,
@@ -287,7 +286,7 @@ namespace Doom_Scroll.Patches
                         ScreenshotManager.Instance.PlayerCanScreenshot(reader.ReadByte());
                         break;
                     }
-                case (byte)CustomRPC.EJECTEDRESULTSINFO:
+/*                case (byte)CustomRPC.EJECTEDRESULTSINFO:
                     {
                         bool tie = reader.ReadBoolean();
                         byte ogExiled = reader.ReadByte();
@@ -306,7 +305,7 @@ namespace Doom_Scroll.Patches
                         }
                         ExileControllerPatch.OriginalExiledPlayer = origExiled;
                         break;
-                    }
+                    }*/
             }
         }
     }
