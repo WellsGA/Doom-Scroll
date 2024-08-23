@@ -55,7 +55,7 @@ namespace Doom_Scroll
         private void InitializeManager()
         {
             m_cameraButton = ScreenshotOverlay.CreateCameraButton(hudManagerInstance);
-            m_cameraButtonTooltip = new Tooltip(m_cameraButton.UIGameObject, "CameraToggleButton", "Take a photo! Others will\nsee it in the photo folder\nduring meetings", 0.5f, 2.4f, new Vector3(-0.8f, -0.4f, 0), 1f);
+            m_cameraButtonTooltip = new Tooltip(m_cameraButton.UIGameObject, "CameraToggleButton", "Take a photo! Others will\nsee it in the photo folder\nduring meetings", 0.4f, 2.5f, new Vector3(-m_cameraButton.GetBtnSize().x - 0.3f, 0, 0), 0.7f);
             UIOverlay = ScreenshotOverlay.InitCameraOverlay(hudManagerInstance);
             m_captureScreenButton = ScreenshotOverlay.CreateCaptureButton(UIOverlay);
 

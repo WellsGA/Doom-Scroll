@@ -44,7 +44,7 @@ namespace Doom_Scroll.UI
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.cameraOverlay.png");
             CustomImage cameraOverlay = new CustomImage(hud.gameObject, "ScreenshotOverlay", spr);  
-            cameraOverlay.SetLocalPosition(new Vector3(0f, 0f, -5));
+            cameraOverlay.SetLocalPosition(new Vector3(0f, 0f, -15));
 
             // deactivate by default
             cameraOverlay.ActivateCustomUI(false);

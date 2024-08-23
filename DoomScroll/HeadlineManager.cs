@@ -54,7 +54,7 @@ namespace Doom_Scroll
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += ToggleFormItems;
-            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.5f, 2.7f, new Vector3(-0.8f, -0.4f, 0), 1f);     
+            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.4f, 2.5f, new Vector3(-toggleModalBtn.GetBtnSize().x - 0.3f, 0, 0), 0.7f);     
 
             // news modal
             Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.phone.png", ImageLoader.slices2);
@@ -65,7 +65,7 @@ namespace Doom_Scroll
             modalSubTitle = new CustomText(NewsModal.UIGameObject, "News Modal SubTitle", "Select 'protect' or 'frame' and a target player.");
             modalSubTitle.SetSize(1.2f);
             NewsModal.CloseButton.ButtonEvent.MyAction += CloseFormItems;
-            headlinePopupModalTooltip = new Tooltip(NewsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.5f, 9.5f, new Vector3(0, -1.8f, 0), 1.75f);
+            headlinePopupModalTooltip = new Tooltip(NewsModal.UIGameObject, "HeadlinePopup", "Choose whether to protect or frame, then choose a target.\nThis will generate a headline about your target.", 0.5f, 9.5f, new Vector3(0, -NewsModal.GetSize().y * 0.5f, 0), 1f);
 
             // frame and protect buttons
             Sprite[] radioBtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.radioButton.png", ImageLoader.slices3);

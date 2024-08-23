@@ -10,11 +10,11 @@ namespace Doom_Scroll.UI
         {
             GameObject UIParent = hud.MapButton.gameObject;
             SpriteRenderer mapButtonSr = UIParent.transform.Find("Background").GetComponent<SpriteRenderer>();
-            Vector3 position = new Vector3(0 - 0.69f, 0 - 0.64f, 0);
+            Vector3 position = new Vector3(0, 0 - 0.64f, 0);
             Vector2 scaledSize = new Vector2(0.67f, 0.67f);
             if (mapButtonSr)
             {
-                new Vector3(0 - mapButtonSr.size.y * 0.7f, 0 - mapButtonSr.size.y * 0.7f, 0);
+                position = new Vector3(0, 0 - mapButtonSr.size.y * 1.4f, 0);
                 scaledSize = mapButtonSr.size * 0.67f;
             }
             
