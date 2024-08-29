@@ -71,35 +71,20 @@ namespace Doom_Scroll
             m_homeBtn.ReplaceImgageOnHover();
             m_backBtn.ReplaceImgageOnHover();
 
-            // Activate FolderToggle Button if Chat is open and hide if it's closed
-            if (hudManagerInstance.Chat.IsOpenOrOpening && !m_folderToggleBtn.IsActive)
-            {
-                m_folderToggleBtn.ActivateCustomUI(true);
-            }
-            else if (hudManagerInstance.Chat.IsClosedOrClosing && m_folderToggleBtn.IsActive)
-            {
-                if (m_folderArea.IsModalOpen)
-                {
-                    CloseFolderOverlay();
-                    DoomScroll._log.LogInfo("NEED TO CLOSE CURRENT FOLDER ");
-                }
-                m_folderToggleBtn.ActivateCustomUI(false);
-            }
-
             // If chat is open and the foder toggle button is active invoke toggle on mouse click 
-            if (hudManagerInstance.Chat.IsOpenOrOpening && m_folderToggleBtn.IsActive)
+            if (m_folderToggleBtn.IsActive)
             {
                 try
                 {
                     m_folderArea.ListenForButtonClicks();
                 }
                 catch (Exception e)
-                {
+                { 
                     DoomScroll._log.LogError("Error invoking folderToggle: " + e);
                 }
             }
             // If chat and folder overlay are open invoke events on button clicks
-            if (hudManagerInstance.Chat.State == ChatControllerState.Open && m_folderArea.IsModalOpen)
+            if (m_folderArea.IsModalOpen)
             {
                 try
                 {
@@ -159,7 +144,7 @@ namespace Doom_Scroll
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
             m_folderToggleBtn.ButtonEvent.MyAction += ToggleFolders; // has to sign up before the custom modal is created!!!
 
-            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Investigate \nevidence.", 0.5f, 1.4f, new Vector3(0, -0.5f, 0), 0.75f);
+            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Investigate \nevidence.", 0.3f, 1.4f, new Vector3(0, -0.5f, 0), 0.75f);
             // m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
 
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen, m_folderToggleBtn);
@@ -290,6 +275,10 @@ namespace Doom_Scroll
                     }
                 }
             }
+        }
+
+        public void ActivateFolderButton(bool isActive) { 
+            m_folderToggleBtn.ActivateCustomUI(isActive);
         }
 
         public void OnClickHomeButton()

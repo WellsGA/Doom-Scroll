@@ -170,8 +170,10 @@ namespace Doom_Scroll.Patches
             [HarmonyPatch("Close")]
             public static void PostfixClose()
             {
-                // SORTING
+                // EVIDENCE FOLDER
                 FolderManager.Instance.CloseFolderOverlay();
+                FolderManager.Instance.ActivateFolderButton(false);
+                // HEADLINE SORTING
                 string results = "";
                 foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 {
@@ -199,7 +201,9 @@ namespace Doom_Scroll.Patches
                 HeadlineDisplay.Instance.ResetHeadlineVotes();
 
                 ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
-            }
+                FolderManager.Instance.ActivateFolderButton(true);
+                DoomScroll._log.LogInfo(" ==================== FOLDER BTN ACTIVE ================== ");
+        }
 
         /*        [HarmonyPrefix]
                 [HarmonyPatch("PopulateResults")]

@@ -1,6 +1,8 @@
 ﻿using System.Reflection; 
 using UnityEngine;
 using Doom_Scroll.Common;
+// using System.Collections.Generic;
+using Il2CppSystem.Collections.Generic;
 
 namespace Doom_Scroll.UI
 {
@@ -11,30 +13,26 @@ namespace Doom_Scroll.UI
         public static CustomButton CreateFolderBtn(GameObject parent)
         { 
              // GameObject chatUI = parent.transform.Find("ChatUI").gameObject;
-            GameObject chatButton = parent.transform.Find("ChatButton").gameObject;
-            parent.transform.localPosition += new Vector3(-0.82f, 0, 0);
-            GameObject chatParent =  chatButton != null ? chatButton: parent;
-            Vector3 pos = chatParent.transform.localPosition;
-           // SpriteRenderer sr = chatParent.GetComponent<SpriteRenderer>();
+            GameObject mapButton = HudManager.Instance.MapButton.gameObject;
+            GameObject chatParent =  parent;
             Vector2 size = new Vector2(.85f, .85f);
-            Vector3 position = new(pos.x + size.x / 2 + 0.25f, pos.y, pos.z-500);
+            if (mapButton != null)
+            {
+                chatParent = mapButton;
+                SpriteRenderer sr = mapButton.transform.Find("Background").GetComponent<SpriteRenderer>();
+                if(sr != null) size = sr.size * 0.64f;
+            }
+            Vector3 pos = chatParent.transform.localPosition;
+            Vector3 position = new(-2f,0,0);
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", ImageLoader.slices2);
             CustomButton folderBtn = new CustomButton(chatParent, "FolderToggleButton", btnSprites, position, size.x);
             folderBtn.ActivateCustomUI(false);
 
-            ControllerButtonBehavior cbb = chatButton.GetComponent<ControllerButtonBehavior>();
-            if (cbb != null)
-            {
-                DoomScroll._log.LogInfo("===================== LIST OF MENU NAMES ===================== ");
-                foreach ( string s in cbb.requiredMenuNames) { DoomScroll._log.LogInfo(s + '\n'); } 
-               foreach( string s in cbb.restrictedMenuNames) { DoomScroll._log.LogInfo(s + '\n'); }
-            }
-            /*Component[] components = parent.GetComponentsInChildren<Component>(true);
+           /* Component[] components = HudManager.Instance.GetComponentsInChildren<Component>(true);
             foreach (Component component in components)
             {
                 DoomScroll._log.LogInfo(component.ToString());
             }*/
-            DoomScroll._log.LogInfo("new positon " + parent.transform.localPosition);
             return folderBtn;
         }
 
@@ -50,7 +48,7 @@ namespace Doom_Scroll.UI
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -30f));       
             if (backgroundSR != null)
             {
-               folderOverlay.SetSize(backgroundSR.size.x * 0.85f);
+               folderOverlay.SetSize(backgroundSR.size.x * 0.9f);
                folderOverlay.SetLocalPosition(new Vector3(-0.65f, backgroundSR.size.y /2 - folderOverlay.GetSize().y /2 - 0.3f, -30));
             }
             else
