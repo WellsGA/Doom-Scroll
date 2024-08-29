@@ -156,11 +156,10 @@ namespace Doom_Scroll
         private void CreateFolderOverlayUI()
         {
             GameObject chatScreen = hudManagerInstance.Chat.gameObject;
-            if(chatScreen != null) { DoomScroll._log.LogInfo("Scroller ???? " + chatScreen.name); }
             m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
             m_folderToggleBtn.ButtonEvent.MyAction += ToggleFolders; // has to sign up before the custom modal is created!!!
 
-            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Click here to\ninvestigate the\nevidence.", 0.5f, 1.6f, new Vector3(0, -0.5f, 0), 1f);
+            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Investigate \nevidence.", 0.5f, 1.4f, new Vector3(0, -0.5f, 0), 0.75f);
             // m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
 
             m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen, m_folderToggleBtn);
@@ -185,7 +184,6 @@ namespace Doom_Scroll
             m_postFolderVotingTooltip.ActivateToolTip(false);
 
             m_HeadlinesTooltip.ActivateToolTip(false);
-
 
         }
         private void InitFolderStructure()

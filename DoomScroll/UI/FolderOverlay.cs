@@ -9,16 +9,32 @@ namespace Doom_Scroll.UI
     {
         private static Vector2 buttonSize = new Vector2(0.4f, 0.4f);
         public static CustomButton CreateFolderBtn(GameObject parent)
-        {
-            GameObject chatScreen = parent.transform.Find("ChatScreenRoot/ChatScreenContainer").gameObject;
-            GameObject banButton = parent.GetComponentInChildren<BanMenu>(true).gameObject;
-            Vector3 pos = banButton.transform.localPosition;
-            SpriteRenderer sr = banButton.GetComponent<SpriteRenderer>();
-            Vector2 size = sr ? sr.size * 2 : new Vector2(.85f, .85f);
-            Vector3 position = new(pos.x, pos.y + size.y / 2 + 0.05f, pos.z);
+        { 
+             // GameObject chatUI = parent.transform.Find("ChatUI").gameObject;
+            GameObject chatButton = parent.transform.Find("ChatButton").gameObject;
+            parent.transform.localPosition += new Vector3(-0.82f, 0, 0);
+            GameObject chatParent =  chatButton != null ? chatButton: parent;
+            Vector3 pos = chatParent.transform.localPosition;
+           // SpriteRenderer sr = chatParent.GetComponent<SpriteRenderer>();
+            Vector2 size = new Vector2(.85f, .85f);
+            Vector3 position = new(pos.x + size.x / 2 + 0.25f, pos.y, pos.z-500);
             Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", ImageLoader.slices2);
-            CustomButton folderBtn = new CustomButton(chatScreen, "FolderToggleButton", btnSprites, position, size.x);
+            CustomButton folderBtn = new CustomButton(chatParent, "FolderToggleButton", btnSprites, position, size.x);
             folderBtn.ActivateCustomUI(false);
+
+            ControllerButtonBehavior cbb = chatButton.GetComponent<ControllerButtonBehavior>();
+            if (cbb != null)
+            {
+                DoomScroll._log.LogInfo("===================== LIST OF MENU NAMES ===================== ");
+                foreach ( string s in cbb.requiredMenuNames) { DoomScroll._log.LogInfo(s + '\n'); } 
+               foreach( string s in cbb.restrictedMenuNames) { DoomScroll._log.LogInfo(s + '\n'); }
+            }
+            /*Component[] components = parent.GetComponentsInChildren<Component>(true);
+            foreach (Component component in components)
+            {
+                DoomScroll._log.LogInfo(component.ToString());
+            }*/
+            DoomScroll._log.LogInfo("new positon " + parent.transform.localPosition);
             return folderBtn;
         }
 
