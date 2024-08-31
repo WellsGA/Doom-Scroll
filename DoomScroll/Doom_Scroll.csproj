@@ -108,5 +108,9 @@
 	  <EmbeddedResource Include="Assets\cameraButtonExample.png" />
 	  <EmbeddedResource Include="Assets\ScreenshotCapture.png" />
 	  <EmbeddedResource Include="Assets\ScreenshotInChat.png" />
+    <EmbeddedResource Include="Assets\postsTab.png" />
+    <EmbeddedResource Include="Assets\tasksTab.png" />
+    <EmbeddedResource Include="Assets\sourcesTab.png" />
+    <EmbeddedResource Include="Assets\imagesTab.png" />
   </ItemGroup>
 </Project>

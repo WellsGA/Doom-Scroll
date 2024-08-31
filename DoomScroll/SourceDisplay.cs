@@ -10,12 +10,12 @@ namespace Doom_Scroll
     public class SourceDisplay
     {
         private List<CustomImage> sourceList;
-        private CustomModal parent;
+        private CustomUI parent;
         private readonly int maxSourceItemsPerPage = 1; // THIS VALUE SHOULD NOT BE CHANGED IN CLASS
         private Pageable sourcesPageHolder;
         public bool AreSourcesDisplayed { get; private set; }
 
-        public SourceDisplay(CustomModal parentModal)
+        public SourceDisplay(CustomUI parentModal)
         {
             parent = parentModal;
             sourceList = new List<CustomImage>();

@@ -28,5 +28,6 @@ namespace Doom_Scroll.UI
         }
         public abstract void SetSize(float size);
 
+        public abstract Vector2 GetSize();
     }
 }

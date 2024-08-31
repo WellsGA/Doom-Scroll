@@ -72,7 +72,7 @@ namespace Doom_Scroll.UI
             // DoomScroll._log.LogInfo("BUTTON SIZE AND COLLIDER SIZE: " + DefaultIcon.GetSize() + ", " + collider.size);
         }
 
-        public Vector2 GetBtnSize()
+        public override Vector2 GetSize()
         {
             return DefaultIcon.GetSize();
         }

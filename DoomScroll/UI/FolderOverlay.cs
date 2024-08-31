@@ -2,7 +2,6 @@
 using UnityEngine;
 using Doom_Scroll.Common;
 // using System.Collections.Generic;
-using Il2CppSystem.Collections.Generic;
 
 namespace Doom_Scroll.UI
 {
@@ -10,33 +9,8 @@ namespace Doom_Scroll.UI
     public static class FolderOverlay
     {
         private static Vector2 buttonSize = new Vector2(0.4f, 0.4f);
-        public static CustomButton CreateFolderBtn(GameObject parent)
-        { 
-             // GameObject chatUI = parent.transform.Find("ChatUI").gameObject;
-            GameObject mapButton = HudManager.Instance.MapButton.gameObject;
-            GameObject chatParent =  parent;
-            Vector2 size = new Vector2(.85f, .85f);
-            if (mapButton != null)
-            {
-                chatParent = mapButton;
-                SpriteRenderer sr = mapButton.transform.Find("Background").GetComponent<SpriteRenderer>();
-                if(sr != null) size = sr.size * 0.64f;
-            }
-            Vector3 pos = chatParent.transform.localPosition;
-            Vector3 position = new(-2f,0,0);
-            Sprite[] btnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderToggle.png", ImageLoader.slices2);
-            CustomButton folderBtn = new CustomButton(chatParent, "FolderToggleButton", btnSprites, position, size.x);
-            folderBtn.ActivateCustomUI(false);
 
-           /* Component[] components = HudManager.Instance.GetComponentsInChildren<Component>(true);
-            foreach (Component component in components)
-            {
-                DoomScroll._log.LogInfo(component.ToString());
-            }*/
-            return folderBtn;
-        }
-
-        public static CustomModal CreateFolderOverlay(GameObject parent, CustomButton toggler)
+        public static CustomImage CreateFolderOverlay(GameObject parent)
         {
             GameObject cahtScreen = parent.transform.Find("ChatScreenRoot/ChatScreenContainer").gameObject;
             GameObject bg = cahtScreen.transform.Find("Background").gameObject;
@@ -44,12 +18,12 @@ namespace Doom_Scroll.UI
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderOverlay.png");
 
             // create the overlay background
-            CustomModal folderOverlay = new CustomModal(cahtScreen, "FolderOverlay", spr, toggler, true);  
+            CustomImage folderOverlay = new CustomImage(cahtScreen, "EvidenceFolder", spr);  
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -30f));       
             if (backgroundSR != null)
             {
-               folderOverlay.SetSize(backgroundSR.size.x * 0.9f);
-               folderOverlay.SetLocalPosition(new Vector3(-0.65f, backgroundSR.size.y /2 - folderOverlay.GetSize().y /2 - 0.3f, -30));
+               folderOverlay.SetSize(backgroundSR.size.x * 0.8f);
+               folderOverlay.SetLocalPosition(new Vector3(-0.25f, backgroundSR.size.y /2 - folderOverlay.GetSize().y /2 - 0.3f, -30));
             }
             else
             {
@@ -57,29 +31,60 @@ namespace Doom_Scroll.UI
             }
             return folderOverlay;
         }
-
-        public static CustomButton AddHomeButton(CustomModal parent)
+ 
+        public static FileText AddPostsBtn(CustomImage parent)
         {
-            Vector2 size = parent.GetSize();
-            Sprite[] homeBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.homeButton.png", ImageLoader.slices2);
-            Vector3 homePosition = new Vector3(-size.x / 2 + buttonSize.x + 0.2f, size.y / 2 - buttonSize.y, -5f);
-            return new CustomButton(parent.UIGameObject, "Back to Home", homeBtnImg, homePosition, buttonSize.x);
-
+            FileText posts = new FileText("", "Headlines", parent, FileTextType.NEWS);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.postsTab.png", ImageLoader.slices3);
+            posts.Btn.ResetButtonImages(BtnSprites);
+            Vector3 pos = parent.UIGameObject.transform.position;
+            Vector2 parentSize = parent.GetSize();
+            float btnWidth = parentSize.x / 5;
+            posts.Btn.SetSize(btnWidth);
+            posts.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 0.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            
+            return posts;
         }
-        public static CustomButton AddBackButton(CustomModal parent)
-        {
-            Vector2 size = parent.GetSize();
-            Sprite[] backBtnImg = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.backButton.png", ImageLoader.slices2);
-            Vector3 backPosition = new Vector3(-size.x / 2 + 2 * buttonSize.x + 0.2f, size.y / 2 - buttonSize.y, -5f);
-            return new CustomButton(parent.UIGameObject, "Back to Previous", backBtnImg, backPosition, buttonSize.x);
 
-        }
-        public static CustomText AddPath(CustomModal parent)
+        public static FileText AddTasksBtn(CustomImage parent)
         {
-            CustomText pathText = new CustomText(parent.UIGameObject, "PathName", "Home");
-            pathText.SetLocalPosition(new Vector3(0, parent.GetSize().y /2 -0.45f, -10));
-            pathText.SetSize(1.9f);
-            return pathText;
+            FileText tasks = new FileText("", "Tasks", parent, FileTextType.TASKS);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.tasksTab.png", ImageLoader.slices3);
+            tasks.Btn.ResetButtonImages(BtnSprites);
+            Vector3 pos = parent.UIGameObject.transform.position;
+            Vector2 parentSize = parent.GetSize();
+            float btnWidth = parentSize.x / 5;
+            tasks.Btn.SetSize(btnWidth);
+            tasks.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 1.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            
+            return tasks;   
+        }
+        public static Folder AddScreenshotsBtn(CustomImage parent)
+        {
+            Folder screenshots = new Folder("", "Images", parent);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.imagesTab.png", ImageLoader.slices3);
+            screenshots.Btn.ResetButtonImages(BtnSprites);
+            Vector3 pos = parent.UIGameObject.transform.position;
+            Vector2 parentSize = parent.GetSize();
+            float btnWidth = parentSize.x / 5;
+            screenshots.Btn.SetSize(btnWidth);
+            screenshots.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 2.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            
+            return screenshots;
+        }
+
+        public static FileText AddSourcesBtn(CustomImage parent)
+        {
+            FileText sources = new FileText("", "Sources", parent, FileTextType.SOURCES);
+            Sprite[] BtnSprites = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.sourcesTab.png", ImageLoader.slices3);
+            sources.Btn.ResetButtonImages(BtnSprites);
+            Vector3 pos = parent.UIGameObject.transform.position;
+            Vector2 parentSize = parent.GetSize();
+            float btnWidth = parentSize.x / 5;
+            sources.Btn.SetSize(btnWidth);
+            sources.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 3.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+
+            return sources;
         }
 
     }

@@ -46,5 +46,10 @@ namespace Doom_Scroll.UI
         {
            return TextMP.bounds.size;
         }
+
+        public override Vector2 GetSize()
+        {
+            return TextMP.rectTransform.sizeDelta;
+        }
     }
 }

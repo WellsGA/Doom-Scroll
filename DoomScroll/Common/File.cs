@@ -13,7 +13,7 @@ namespace Doom_Scroll.Common
         public string Path { get; private set; }
         public CustomButton Btn { get; set; }
 
-        public File(string parentPath, string name, CustomModal parentPanel)
+        public File(string parentPath, string name, CustomUI parentPanel)
         {
             // default file icon
             Sprite[] file = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.file.png", ImageLoader.slices2);
@@ -27,11 +27,11 @@ namespace Doom_Scroll.Common
 
             Btn = new CustomButton(Dir, name, file);
             //Btn.SetLocalPosition(Vector3.zero);
-            Btn.ActivateCustomUI(false);
+            Btn.ActivateCustomUI(true);
             Btn.ButtonEvent.MyAction += DisplayContent;
-            Btn.Label.SetText(name);
+            Btn.UIGameObject.transform.localScale = Vector3.one;
         }
-    
+
         public virtual void DisplayContent() { }
         public virtual void HideContent() { }
         public string PrintDirectory()

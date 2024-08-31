@@ -106,7 +106,10 @@ namespace Doom_Scroll.Patches
                         {
                             DestroyableSingleton<HudManager>.Instance.Chat.gameObject.SetActive(false); ;
                         }
-                        if (FolderManager.Instance.IsFolderOpen()) FolderManager.Instance.CloseFolderOverlay();
+                       /* if (FolderManager.Instance.IsFolderOpen())
+                        {
+                            FolderManager.Instance.ActivateEvidenceFolder(false);
+                        }*/
                         if (playerVoters.Length > 0)
                         {
                             foreach (PlayerVoteArea playerVoteArea in playerVoters)
@@ -171,8 +174,7 @@ namespace Doom_Scroll.Patches
             public static void PostfixClose()
             {
                 // EVIDENCE FOLDER
-                FolderManager.Instance.CloseFolderOverlay();
-                FolderManager.Instance.ActivateFolderButton(false);
+                // FolderManager.Instance.ActivateEvidenceFolder(false);
                 // HEADLINE SORTING
                 string results = "";
                 foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -201,7 +203,7 @@ namespace Doom_Scroll.Patches
                 HeadlineDisplay.Instance.ResetHeadlineVotes();
 
                 ScreenshotManager.Instance.EnableCameraButton(false); // disable camera even if no picture was taken
-                FolderManager.Instance.ActivateFolderButton(true);
+                // FolderManager.Instance.ActivateEvidenceFolder(true);
                 DoomScroll._log.LogInfo(" ==================== FOLDER BTN ACTIVE ================== ");
         }
 

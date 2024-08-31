@@ -46,7 +46,7 @@ namespace Doom_Scroll.UI
             }
         }
 
-        public Vector2 GetSize()
+        public override Vector2 GetSize()
         {
             return modalBackground.size;
         }

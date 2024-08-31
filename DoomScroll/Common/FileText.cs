@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using UnityEngine;
+﻿using UnityEngine;
 using Doom_Scroll.UI;
 
 namespace Doom_Scroll.Common
@@ -18,7 +17,7 @@ namespace Doom_Scroll.Common
         private string m_content;
 
 
-        public FileText(string parentPath, string name, CustomModal parentPanel, FileTextType textType) : base(parentPath, name, parentPanel)
+        public FileText(string parentPath, string name, CustomUI parentPanel, FileTextType textType) : base(parentPath, name, parentPanel)
         {
             m_type = textType;     
             Btn.Label.SetLocalPosition(new Vector3(0, 0.3f, 0));

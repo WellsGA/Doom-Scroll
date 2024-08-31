@@ -54,7 +54,7 @@ namespace Doom_Scroll
             // news modal toggle button
             toggleModalBtn = NewsFeedOverlay.CreateNewsButton(hudManagerInstance);
             toggleModalBtn.ButtonEvent.MyAction += ToggleFormItems;
-            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.4f, 2.5f, new Vector3(-toggleModalBtn.GetBtnSize().x - 0.3f, 0, 0), 0.7f);     
+            headlineBtnTooltip = new Tooltip(toggleModalBtn.UIGameObject, "HeadlineButton", "Share a post! Others will\nsee it in the headlines folder\nduring meetings", 0.4f, 2.5f, new Vector3(-toggleModalBtn.GetSize().x - 0.3f, 0, 0), 0.7f);     
 
             // news modal
             Sprite[] spr = ImageLoader.ReadImageSlicesFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.phone.png", ImageLoader.slices2);

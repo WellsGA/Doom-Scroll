@@ -12,35 +12,24 @@ namespace Doom_Scroll
     {
         public SourceDisplay Sources { get; private set; }
         //modal
-        private CustomModal m_folderArea;
-        private CustomText m_pathText;
-        //buttons on modal
-        private CustomButton m_folderToggleBtn;
-        private CustomButton m_homeBtn;
-        private CustomButton m_backBtn;
+        private CustomImage m_folderArea;
 
         // folders
-        private Folder m_root;
         private IDirectory m_previous;
         private IDirectory m_current;
         private FileText m_tasks;
         private FileText m_posts;
         private FileText m_sources;
         private Folder m_screenshots;
+        private List<IDirectory> m_tabs;
 
         // tooltips
-        private Tooltip m_folderToggleTooltip;
         // private Tooltip m_chatWindowTooltip;
-        private Tooltip m_tasksTooltip;
+        /*private Tooltip m_tasksTooltip;
         private Tooltip m_postsTooltip;
         private Tooltip m_screenshotsTooltip;
         private Tooltip m_sourcesTooltip;
-        private Tooltip m_taskFolderTooltip;
-        private Tooltip m_postFolderTooltip;
-        private Tooltip m_postFolderVotingTooltip;
-        private Tooltip m_screenshotFolderTooltip;
-        private Tooltip m_HeadlinesTooltip;
-
+*/
         private HudManager hudManagerInstance;
 
         private static FolderManager _instance;
@@ -58,7 +47,6 @@ namespace Doom_Scroll
 
         private FolderManager()
         {
-            hudManagerInstance = HudManager.Instance;
             InitializeFolderManager();
             DoomScroll._log.LogInfo("FOLDER MANAGER CONSTRUCTOR");
         }
@@ -66,36 +54,28 @@ namespace Doom_Scroll
         public void CheckForButtonClicks()
         {
             if (hudManagerInstance == null) return;
-            // Change buttons icon on hover
-            m_folderToggleBtn.ReplaceImgageOnHover();
-            m_homeBtn.ReplaceImgageOnHover();
-            m_backBtn.ReplaceImgageOnHover();
-
-            // If chat is open and the foder toggle button is active invoke toggle on mouse click 
-            if (m_folderToggleBtn.IsActive)
+            if (hudManagerInstance.Chat.IsOpenOrOpening && !m_folderArea.UIGameObject.active)
             {
-                try
-                {
-                    m_folderArea.ListenForButtonClicks();
-                }
-                catch (Exception e)
-                { 
-                    DoomScroll._log.LogError("Error invoking folderToggle: " + e);
-                }
+                Instance.ActivateEvidenceFolder(true);
             }
-            // If chat and folder overlay are open invoke events on button clicks
-            if (m_folderArea.IsModalOpen)
+            else if(hudManagerInstance.Chat.IsClosedOrClosing && m_folderArea.UIGameObject.active)
+            {
+                Instance.ActivateEvidenceFolder(false);
+            }
+                // If chat and folder overlay are open invoke events on button clicks
+            if (m_folderArea.UIGameObject.active)
             {
                 try
                 {
-                    if (m_homeBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                    foreach(IDirectory dir in m_tabs)
                     {
-                        m_homeBtn.ButtonEvent.InvokeAction();
+                        dir.Btn.ReplaceImgageOnHover();
+                        if (dir.Btn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
+                        {
+                            ChangeDirectory(dir);
+                        }
                     }
-                    if (m_backBtn.IsHovered() && Input.GetKeyUp(KeyCode.Mouse0))
-                    {
-                        m_backBtn.ButtonEvent.InvokeAction();
-                    }
+
                     // if current is folder, check for clicks on any of its contents
                     if(m_current is Folder currFolder)
                     {
@@ -132,175 +112,57 @@ namespace Doom_Scroll
 
         private void InitializeFolderManager()
         {
+            hudManagerInstance = HudManager.Instance;
             if (hudManagerInstance == null) return;
-            CreateFolderOverlayUI();
-            InitFolderStructure();
-            m_homeBtn.ButtonEvent.MyAction += OnClickHomeButton;
-            m_backBtn.ButtonEvent.MyAction += OnClickBackButton;
-        }
-        private void CreateFolderOverlayUI()
-        {
+
             GameObject chatScreen = hudManagerInstance.Chat.gameObject;
-            m_folderToggleBtn = FolderOverlay.CreateFolderBtn(chatScreen);
-            m_folderToggleBtn.ButtonEvent.MyAction += ToggleFolders; // has to sign up before the custom modal is created!!!
-
-            m_folderToggleTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "FolderToggleBtn", "Investigate \nevidence.", 0.3f, 1.4f, new Vector3(0, -0.5f, 0), 0.75f);
-            // m_chatWindowTooltip = new Tooltip(m_folderToggleBtn.UIGameObject, "ChatWindow", "Use :) or :( to like or dislike chat posts.", 0.25f, 11f, new Vector3(-4f, -3.1f, 0), 1.5f);
-
-            m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen, m_folderToggleBtn);
-            m_homeBtn = FolderOverlay.AddHomeButton(m_folderArea);
-            m_backBtn = FolderOverlay.AddBackButton(m_folderArea);
-            m_pathText = FolderOverlay.AddPath(m_folderArea);
-            m_folderArea.CloseButton.ButtonEvent.MyAction += CloseFolder;
-
-            // Tooltip in-folder setup
-            m_screenshotFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideScreenshotsFolder", "Notice any clues? How can you use these\nphotos in your arguments?", 0.4f, 7.5f, new Vector3(0, -0.4f, 0), 1.3f);
-            m_taskFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsideTasksFolder", "Who is doing their tasks? Who isn't? Think about this how this\ninformation might reflect on each player's reliability", 6f, 7f, new Vector3(0, -0.3f, 0), 1.3f);
-            m_postFolderTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "True posts can give vital clues about other players, but some\nposts might be misleading! Can you tell the difference? How?", .65f, 6f, new Vector3(0, -0.3f, 0), 1.3f);
-            m_postFolderVotingTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsVoting", "Discuss whether you think each post is TRUSTWORTHY or not.\nALL Crewmates must achieve 100% accuracy to complete the final task.", 0.65f, 7f, new Vector3(0, -1.95f, 0), 1.3f);
-            m_HeadlinesTooltip = new Tooltip(m_pathText.UIGameObject, "InsidePostsFolder", "FAKE NEWS:\r\nEmotional/polarizing\r\nHyperbolic\r\nPartisan/biased\r\nMany claims at once\r\nMisleading data\r\nConspiracy theories\r\nTrolling\r\nAttacks opponents\n\nBAD SOURCES:\r\nImpersonators\r\nMisleading domains\r\nUnreliable sponsors\n(blogs, forums)", 4.5f, 0.25f, new Vector3(-3.6f, -0.85f, 0), 1.1f);
-            m_HeadlinesTooltip.ImageObject.SetSize(new Vector2(1.5f, 3f));
-            m_taskFolderTooltip.ImageObject.SetSize(new Vector2(4.2f, .36f));
-            m_postFolderTooltip.ImageObject.SetSize(new Vector2(4.4f, .36f));
-
-            m_screenshotFolderTooltip.ActivateToolTip(false);
-            m_taskFolderTooltip.ActivateToolTip(false);
-            m_postFolderTooltip.ActivateToolTip(false);
-            m_postFolderVotingTooltip.ActivateToolTip(false);
-
-            m_HeadlinesTooltip.ActivateToolTip(false);
-
-        }
-        private void InitFolderStructure()
-        {
+            m_folderArea = FolderOverlay.CreateFolderOverlay(chatScreen);
             Sources = new SourceDisplay(m_folderArea);
-            m_root = new Folder("", "Home", m_folderArea);
-            m_screenshots = new Folder(m_root.Path, "Images", m_folderArea);
-            m_screenshotsTooltip = new Tooltip(m_screenshots.Btn.UIGameObject, "ScreenshotsFolderBtn", "Your photos will\nshow up here.", 0.4f, 2.8f, new Vector3(0, 0.79f, 0), 1.5f);
-            m_tasks = new FileText(m_root.Path, "Tasks", m_folderArea, FileTextType.TASKS);
-            m_tasksTooltip = new Tooltip(m_tasks.Btn.UIGameObject, "TasksFolderBtn", "Your task sign-ins will\nshow up here.", 0.4f, 3.8f, new Vector3(0, 0.79f, 0), 1.5f);
-            m_posts = new FileText(m_root.Path, "Headlines", m_folderArea, FileTextType.NEWS);
-            m_postsTooltip = new Tooltip(m_posts.Btn.UIGameObject, "PostsFolderBtn", "Your headlines will\nshow up here.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
-            m_sources = new FileText(m_root.Path, "Sources", m_folderArea, FileTextType.SOURCES);
-            m_sourcesTooltip = new Tooltip(m_sources.Btn.UIGameObject, "SourcesFolderBtn", "Investigate the\nheadline sources.", 0.4f, 3.3f, new Vector3(0, 0.79f, 0), 1.5f);
+            
+            m_screenshots = FolderOverlay.AddScreenshotsBtn(m_folderArea);
+            m_tasks = FolderOverlay.AddTasksBtn(m_folderArea);
+            m_posts = FolderOverlay.AddPostsBtn(m_folderArea);
+            m_sources = FolderOverlay.AddSourcesBtn(m_folderArea);
 
-            m_root.AddItem(m_screenshots);
-            m_root.AddItem(m_tasks);
-            m_root.AddItem(m_posts);
-            m_root.AddItem(m_sources);
+            m_tabs = new List<IDirectory>() { m_posts, m_tasks, m_screenshots, m_sources };
 
-            m_current = m_root;
-            m_previous = m_root;
+            m_current = m_posts;
+            m_previous = m_posts;
 
-        }
-
-        private void ToggleFolders()
-        {
-            if (!m_folderToggleBtn.IsActive) return;
-            if (m_folderArea.IsModalOpen)
-            {
-                m_current.HideContent();
-                DoomScroll._log.LogInfo("CURRENT FOLDER CLOSED");
-            }
-            else
-            {
-                DoomScroll._log.LogInfo("ROOT FOLDER OPEN");
-                // (re)sets root as the current and m_previous folder and displays its content
-                m_previous = m_root;
-                m_current = m_root;
-                m_current.Btn.ButtonEvent.InvokeAction();
-                RectifyFolderTooltips();
-            }
         }
 
         private void ChangeDirectory(IDirectory folder)
         {
-            if (m_folderToggleBtn.IsActive && m_folderArea.IsModalOpen)
-            { 
-                if (folder is FileScreenshot) 
-                {
-                    folder.Btn.ButtonEvent.InvokeAction();
-                }
-                else
-                {
-                    m_previous = m_current;
-                    m_current = folder;
-                    m_pathText.SetText(folder.Path);
-                    m_previous.HideContent();
-                    m_current.Btn.ButtonEvent.InvokeAction();
-
-                    RectifyFolderTooltips();
-                }
-            }
-        }
-        public static void RectifyFolderTooltips()
-        {
-            if (FolderManager.Instance != null)
+            if (m_folderArea.UIGameObject.active)
             {
-                FolderManager __instance = FolderManager.Instance;
-                if (__instance.m_current != null && __instance.m_screenshotFolderTooltip != null && __instance.m_taskFolderTooltip != null && __instance.m_postFolderTooltip != null && __instance.m_postFolderVotingTooltip != null)
-                {   
-                    // Tooltip in-folder toggling
-                    if (__instance.m_current == __instance.m_screenshots)
-                    {
-                        __instance.m_screenshotFolderTooltip.ActivateToolTip(true);
-                        __instance.m_taskFolderTooltip.ActivateToolTip(false);
-                        __instance.m_postFolderTooltip.ActivateToolTip(false);
-                        __instance.m_postFolderVotingTooltip.ActivateToolTip(false);
-                        __instance.m_HeadlinesTooltip.ActivateToolTip(false);
-                    }
-                    else if (__instance.m_current == __instance.m_tasks)
-                    {
-                        __instance.m_screenshotFolderTooltip.ActivateToolTip(false);
-                        __instance.m_taskFolderTooltip.ActivateToolTip(true);
-                        __instance.m_postFolderTooltip.ActivateToolTip(false);
-                        __instance.m_postFolderVotingTooltip.ActivateToolTip(false);
-                        __instance.m_HeadlinesTooltip.ActivateToolTip(false);
-                    }
-                    else if (__instance.m_current == __instance.m_posts)
-                    {
-                        __instance.m_screenshotFolderTooltip.ActivateToolTip(false);
-                        __instance.m_taskFolderTooltip.ActivateToolTip(false);
-                        __instance.m_postFolderTooltip.ActivateToolTip(true);
-                        __instance.m_postFolderVotingTooltip.ActivateToolTip(true);
-                        __instance.m_HeadlinesTooltip.ActivateToolTip(true);
-                    }
-                    else
-                    {
-                        __instance.m_screenshotFolderTooltip.ActivateToolTip(false);
-                        __instance.m_taskFolderTooltip.ActivateToolTip(false);
-                        __instance.m_postFolderTooltip.ActivateToolTip(false);
-                        __instance.m_postFolderVotingTooltip.ActivateToolTip(false);
-                        __instance.m_HeadlinesTooltip.ActivateToolTip(false);
-                    }
-                }
+                m_previous = m_current;
+                m_previous.Btn.SelectButton(false);
+                m_previous.HideContent();
+                m_current = folder;
+                m_current.Btn.SelectButton(true);
+                m_current.Btn.ButtonEvent.InvokeAction();
+                DoomScroll._log.LogInfo(" =================== OPEN TAB " + m_current.Path + "==========================");
             }
         }
+      
 
-        public void ActivateFolderButton(bool isActive) { 
-            m_folderToggleBtn.ActivateCustomUI(isActive);
+        public void ActivateEvidenceFolder(bool isActive) { 
+            m_folderArea.ActivateCustomUI(isActive);
+            if(isActive)
+            {
+                ChangeDirectory(m_posts);
+            }
+            else
+            {
+                CloseEvidenceFolder();
+            }
+            
         }
 
-        public void OnClickHomeButton()
+        private void CloseEvidenceFolder()
         {
-            ChangeDirectory(m_root);
-        }
-
-        public void OnClickBackButton()
-        {
-            ChangeDirectory(m_previous);
-        }
-
-        public void CloseFolderOverlay()
-        {
-            m_folderArea.CloseButton.ButtonEvent.InvokeAction();         
-        }
-
-        public void CloseFolder()
-        {
-            ChangeDirectory(m_root);
+            ChangeDirectory(m_posts);
             m_current.HideContent();
-            DoomScroll._log.LogInfo("FOLDER CLOSED");
         }
 
         public void AddImageToScreenshots(int id, byte[] img)
@@ -309,13 +171,13 @@ namespace Doom_Scroll
             m_screenshots.AddItem(file);
         }
 
-        public CustomModal GetFolderArea()
+        public CustomImage GetFolderArea()
         {
             return m_folderArea;
         }
         public bool IsFolderOpen()
         {
-            return m_folderArea.IsModalOpen;
+            return m_folderArea.UIGameObject.active ;
         }
         public List<FileScreenshot> GetScreenshots() 
         {
@@ -331,7 +193,6 @@ namespace Doom_Scroll
         {
             if (hudManagerInstance == null)
             {
-                hudManagerInstance = HudManager.Instance;
                 InitializeFolderManager();
             }
             DoomScroll._log.LogInfo("FOLDER MANAGER RESET");

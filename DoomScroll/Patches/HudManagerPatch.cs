@@ -28,7 +28,7 @@ namespace Doom_Scroll.Patches
             // Tutorial Mode toggle button
             m_tutorialModeToggleBtn = Tooltip.CreateTutorialModeToggleBtn(__instance.SettingsButton, new Vector3(-10.6f, -6.6f, 0));
             m_tutorialModeToggleBtn.ButtonEvent.MyAction += ToggleTutorialButtonSelected;
-            m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
+            // m_tutorialModeToggleBtn.ButtonEvent.MyAction += FolderManager.RectifyFolderTooltips;
             m_tutorialModeToggleBtn.SelectButton(Tooltip.TutorialModeOn);
             DoomScroll._log.LogInfo("Button event added to button.");
             m_tutorialModeToggleBtn.EnableButton(true);
@@ -94,19 +94,6 @@ namespace Doom_Scroll.Patches
         [HarmonyPatch("OpenMeetingRoom")]
         public static void PrefixOpenMeetingRoom(PlayerControl reporter)
         {
-            /*if (ScreenshotManager.Instance.IsCameraOpen)
-            {
-                ScreenshotManager.Instance.ToggleCamera();
-                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- CAMERA CLOSED");
-            }
-            if (HeadlineManager.Instance.NewsModal.IsModalOpen)
-            {
-                HeadlineManager.Instance.CloseFormItems();
-                HeadlineManager.Instance.NewsModal.CloseButton.ButtonEvent.InvokeAction();
-                DoomScroll._log.LogInfo("HudManager.OpenMeetingRoom ---- NEWS FORM CLOSED");
-            } */
-            // HEADLINES
-            // HeadlineManager.Instance.CanPostNews(false); // cannot create news
             if (PlayerControl.LocalPlayer.AmOwner)  // OpenMeetingRoom is called by the host only - but just in case
             {
                 // create a random news
@@ -133,21 +120,6 @@ namespace Doom_Scroll.Patches
             {
                 LobbyBehaviourPatch.gameBegun = true;
             }
-
-            /*
-            if (!shhh)
-            {
-                DoomScroll._log.LogInfo("Discussion Behavior emblem animating!");
-                GameObject uiParent = __instance.discussEmblem.Text.gameObject;
-                CustomText toolTipText = new CustomText(uiParent, "DiscussionTimeTooltip", "Use this time to look through the files in the folder!\n<size=50%>Open the chat, and click the folder button with a paperclip on it.</size>");
-                toolTipText.SetColor(Color.red);
-                toolTipText.SetSize(3f);
-                Vector3 textPos = new Vector3(0, 0, -10);
-                toolTipText.SetLocalPosition(textPos);
-                toolTipText.ActivateCustomUI(true);
-                DoomScroll._log.LogInfo("Text should be activated!");
-            }
-            */
         }
 
         private static void ToggleTutorialButtonSelected()

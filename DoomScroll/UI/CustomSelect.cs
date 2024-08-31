@@ -40,7 +40,7 @@ namespace Doom_Scroll.UI
                 nextPos.y = yPos - ((float)Math.Ceiling((decimal)counter / itemsInOneRow) * (btnSize + 0.2f));
                 btn.SetSize(btnSize);
                 btn.SetLocalPosition(nextPos);
-                btn.Label.SetLocalPosition(new Vector3(0, -btn.GetBtnSize().y / 2f-0.015f, -10));
+                btn.Label.SetLocalPosition(new Vector3(0, -btn.GetSize().y / 2f-0.015f, -10));
                 btn.Label.SetSize(1f);
             }
         }

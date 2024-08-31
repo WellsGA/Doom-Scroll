@@ -47,7 +47,7 @@ namespace Doom_Scroll
             numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
             // pagination
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            CustomImage parent = FolderManager.Instance.GetFolderArea();
             folderNewsPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxNewsItemsPerPage); // sets up an empty pageable
         }
 
@@ -114,7 +114,7 @@ namespace Doom_Scroll
         // lists posts during meetings
         public void DisplayNews()
         {
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            CustomImage parent = FolderManager.Instance.GetFolderArea();
             List<CustomUI> newsCards = new List<CustomUI>();
             Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.75f, -10);
             int numOnPage = 0;
@@ -210,7 +210,7 @@ namespace Doom_Scroll
         public void HideHeadlinesAfterVote()
         {
             voteForHeadlinesTooltip.ActivateToolTip(false);
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            CustomImage parent = FolderManager.Instance.GetFolderArea();
             foreach (Headline news in AllNewsList)
             {
                 news.SetParentAndSize(parent.UIGameObject, parent.GetSize());

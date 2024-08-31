@@ -40,7 +40,7 @@ namespace Doom_Scroll
         private void CreateNewsCard()
         {
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            CustomImage parent = FolderManager.Instance.GetFolderArea();
             Card = new CustomImage(parent.UIGameObject, "card item", spr);
             Card.SetSize(new Vector2(parent.GetSize().x - 2f, 0.4f));  
             titleUI = new CustomText(Card.UIGameObject, "Headline", Title);

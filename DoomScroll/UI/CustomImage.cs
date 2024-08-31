@@ -36,7 +36,7 @@ namespace Doom_Scroll.UI
         {
            return m_spriteRenderer.sprite;
         }
-        public Vector2 GetSize()
+        public override Vector2 GetSize()
         {
             return m_spriteRenderer.size;
         }

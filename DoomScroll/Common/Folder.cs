@@ -12,7 +12,7 @@ namespace Doom_Scroll.Common
         public GameObject Dir { get; private set; }
         public CustomButton Btn { get; private set; }
         private Vector2 parentSize;
-        public Folder(string parentPath, string name, CustomModal parentPanel)
+        public Folder(string parentPath, string name, CustomUI parentPanel)
         {
             Sprite[] folderEmpty = { ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.folderEmpty.png") };
 
@@ -25,11 +25,10 @@ namespace Doom_Scroll.Common
             Content = new List<IDirectory>();
             
             Btn = new CustomButton(Dir, name, folderEmpty);
-            Btn.Label.SetText(name);
-            Btn.Label.SetLocalPosition(new Vector3(0, 0, 0));
-            Btn.Label.SetSize(3f);
-            Btn.ActivateCustomUI(false);
+            Btn.ActivateCustomUI(true);
             Btn.ButtonEvent.MyAction += DisplayContent; // play sound, etc. could be added too
+            Btn.UIGameObject.transform.localScale = Vector3.one;
+
         }
 
         public void AddItem(IDirectory item)

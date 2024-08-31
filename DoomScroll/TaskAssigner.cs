@@ -55,7 +55,7 @@ namespace Doom_Scroll
             isAssignerPanelActive = false;
 
             // set up stuff for folder display, paging through. Set it false for now because not necessary yet.
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            CustomImage parent = FolderManager.Instance.GetFolderArea();
             taskPageHolder = new Pageable(parent.UIGameObject.GetComponent<SpriteRenderer>(), new List<CustomUI>(), maxTaskItemsPerPage); // sets up an empty pageable 
         }
 
@@ -150,7 +150,7 @@ namespace Doom_Scroll
 
         public void DisplayAssignedTasks()
         {
-            CustomModal parent = FolderManager.Instance.GetFolderArea();
+            CustomImage parent = FolderManager.Instance.GetFolderArea();
             numPages = (int)Math.Ceiling((float)(AssignedTasks.Count) / FileText.maxNumTextItems);
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
 

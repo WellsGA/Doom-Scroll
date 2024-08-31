@@ -13,7 +13,7 @@ namespace Doom_Scroll.Common
         public int Id { get { return m_id; } }
         private bool m_shareable;
 
-        public FileScreenshot(string parentPath, string name, CustomModal parentPanel, byte[] image, int id) : base(parentPath, name, parentPanel)
+        public FileScreenshot(string parentPath, string name, CustomUI parentPanel, byte[] image, int id) : base(parentPath, name, parentPanel)
         {
             m_id = id;
             m_content = image;
@@ -30,8 +30,6 @@ namespace Doom_Scroll.Common
         public override void DisplayContent() // this shares the image in the chat instead of opening
         {
             if(!m_shareable) return;
-            byte[] image = m_Screenshot.texture.EncodeToJPG(ImageSize);  // we could use m_content but the size may be bigger
-            DoomScroll._log.LogInfo("Original size: " + m_content.Length + ", New image size: " + image.Length);
             ScreenshotManager.Instance.SendImageToChat(m_id);
             Btn.EnableButton(false); // disable after sharing
         }
