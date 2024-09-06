@@ -3,6 +3,7 @@ using Doom_Scroll.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Reflection;
 
 namespace Doom_Scroll
 {
@@ -29,10 +30,12 @@ namespace Doom_Scroll
         private Pageable votingNewsPageHolder;
         private static Tooltip voteForHeadlinesTooltip;
         private int numPages = 1;
-
+        
+        // headline voting
         public float discussionStartTimer;
         public bool HasHeadlineVoteEnded { get; private set; }
         public bool HasFinishedSetup { get; private set; }
+
         private HeadlineDisplay()
         {
             AllNewsList = new List<Headline>();
@@ -42,7 +45,7 @@ namespace Doom_Scroll
 
         public void InitHeadlineDisplay()
         {
-            hudManagerInstance = HudManager.Instance;
+            hudManagerInstance = HudManager.Instance;   
             ResetHeadlineVotes();
             numPages = (int)Math.Ceiling((float)(AllNewsList.Count) / FileText.maxNumTextItems);
             DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
@@ -116,13 +119,13 @@ namespace Doom_Scroll
         {
             CustomImage parent = FolderManager.Instance.GetFolderArea();
             List<CustomUI> newsCards = new List<CustomUI>();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.75f, -10);
+            Vector3 pos = new Vector3(-0.25f, parent.GetSize().y / 2 - 0.25f, -10);
             int numOnPage = 0;
             foreach (Headline newsPost in AllNewsList)
             {
                 DoomScroll._log.LogInfo($"Current News: {newsPost.ToString()}");
                 Headline news = newsPost;
-                pos.y -= news.Card.GetSize().y + 0.045f;
+                pos.y -= news.Card.GetSize().y + 0.04f;
                 news.Card.SetLocalPosition(pos);
                 news.DisplayCardButtons(false);
                 newsCards.Add(news.Card);
@@ -131,7 +134,7 @@ namespace Doom_Scroll
                 if (numOnPage >= maxNewsItemsPerPage)
                 {
                     numOnPage = 0;
-                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.75f, -10);
+                    pos = new Vector3(-0.25f, parent.GetSize().y / 2 - 0.25f, -10);
                 }
             }
             // always show page 1 first
@@ -169,6 +172,7 @@ namespace Doom_Scroll
             HasHeadlineVoteEnded = false;
             HasFinishedSetup = false;
         }
+
         public void DisplayHeadlineInFolder()
         {
             DisplayNews();
@@ -270,6 +274,13 @@ namespace Doom_Scroll
 
         public string CalculateScoreStrings(byte playerID)
         {
+            Tuple<int, int> score = CalculateScores(playerID);
+            string scoreString = "\n\t[" + score.Item1 + " correct and " + score.Item2 + " incorrect votes out of " + AllNewsList.Count + "]\n";
+            return scoreString;
+        }
+
+        public Tuple<int, int> CalculateScores(byte playerID)
+        {
             int numCorrect = 0;
             int numIncorrect = 0;
             foreach (Headline newsPost in AllNewsList)
@@ -281,10 +292,26 @@ namespace Doom_Scroll
                 }
             }
             Tuple<int, int> score = new Tuple<int, int>(numCorrect, numIncorrect);
-            PlayerScores[playerID] = score;
-            string scoreString = "\n\t[" + numCorrect + " correct and " + numIncorrect + " incorrect votes out of " + AllNewsList.Count + "]\n";
-            return scoreString;
+            PlayerScores[playerID] = score; // update scores for playerID
+            return score;
         }
+
+        public string GetWrongAnswers(byte playerID)
+        {
+            string wrongAnswers = "";
+            foreach (Headline newsPost in AllNewsList)
+            {
+                if (newsPost.PlayersTrustSelections.ContainsKey(playerID))
+                {
+                    if (newsPost.PlayersTrustSelections[playerID] != newsPost.IsTrue)
+                    {
+                        wrongAnswers += newsPost.ToString() + '\n';
+                    }
+                }
+            }
+            return wrongAnswers;
+        }
+
 
         public void CheckForDisplayedNewsPageButtonClicks()
         {

@@ -42,7 +42,7 @@ namespace Doom_Scroll
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             CustomImage parent = FolderManager.Instance.GetFolderArea();
             Card = new CustomImage(parent.UIGameObject, "card item", spr);
-            Card.SetSize(new Vector2(parent.GetSize().x - 2f, 0.4f));  
+            Card.SetSize(new Vector2(parent.GetSize().x - 1.75f, 0.4f));  
             titleUI = new CustomText(Card.UIGameObject, "Headline", Title);
             sourceUI = new CustomText(Card.UIGameObject, "Source", Source);
             titleUI.SetSize(1.2f);
@@ -107,8 +107,8 @@ namespace Doom_Scroll
                 CustomText label = new CustomText(AuthorIcon, playerInfo.PlayerName + "- icon label", playerInfo.PlayerName);
                 label.SetLocalPosition(new Vector3(0, -sr.size.y / 2 - 0.05f, -10));
                 label.SetSize(0.8f);
-                /* titleUI.SetLocalPosition(new Vector3(sr.size.x, 0.05f, -10));
-                 sourceUI.SetLocalPosition(new Vector3(sr.size.x, -0.05f, -10));*/
+                /*titleUI.SetLocalPosition(new Vector3(sr.size.x, 0.05f, -10));
+                sourceUI.SetLocalPosition(new Vector3(sr.size.x, -0.05f, -10));*/
             }
         }
         private void OnClickShare()

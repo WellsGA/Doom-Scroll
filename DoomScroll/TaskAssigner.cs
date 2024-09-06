@@ -152,17 +152,16 @@ namespace Doom_Scroll
         {
             CustomImage parent = FolderManager.Instance.GetFolderArea();
             numPages = (int)Math.Ceiling((float)(AssignedTasks.Count) / FileText.maxNumTextItems);
-            DoomScroll._log.LogInfo("Number of pages of news: " + numPages);
 
             List<CustomUI> taskCards = new List<CustomUI>();
-            Vector3 pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+            Vector3 pos = new Vector3(-0.25f, parent.GetSize().y / 2 - 0.25f, -10);
             int numOnPage = 0;
             foreach (AssignedTask taskItem in AssignedTasks)
             {
-                DoomScroll._log.LogInfo($"Current task: {taskItem.ToString()}");
+                // DoomScroll._log.LogInfo($"Current task: {taskItem.ToString()}");
                 AssignedTask task = taskItem;
                 task.DisplayTaskCard();
-                pos.y -= task.Card.GetSize().y + 0.05f;
+                pos.y -= task.Card.GetSize().y + 0.04f;
                 task.Card.SetLocalPosition(pos);
                 task.Card.ActivateCustomUI(true);
                 task.PostButton.ActivateCustomUI(true);
@@ -172,7 +171,7 @@ namespace Doom_Scroll
                 if (numOnPage >= maxTaskItemsPerPage-1)
                 {
                     numOnPage = 0;
-                    pos = new Vector3(0, parent.GetSize().y / 2 - 0.8f, -10);
+                    pos = new Vector3(-0.25f, parent.GetSize().y / 2 - 0.25f, -10);
                 }
             }
 

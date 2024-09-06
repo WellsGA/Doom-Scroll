@@ -22,7 +22,7 @@ namespace Doom_Scroll.UI
             folderOverlay.SetLocalPosition(new Vector3(0f, 0f, -30f));       
             if (backgroundSR != null)
             {
-               folderOverlay.SetSize(backgroundSR.size.x * 0.8f);
+               folderOverlay.SetSize(new Vector2(backgroundSR.size.x * 0.77f, backgroundSR.size.y/3));
                folderOverlay.SetLocalPosition(new Vector3(-0.25f, backgroundSR.size.y /2 - folderOverlay.GetSize().y /2 - 0.3f, -30));
             }
             else
@@ -41,7 +41,7 @@ namespace Doom_Scroll.UI
             Vector2 parentSize = parent.GetSize();
             float btnWidth = parentSize.x / 5;
             posts.Btn.SetSize(btnWidth);
-            posts.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 0.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            posts.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 0.6f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
             
             return posts;
         }
@@ -55,7 +55,7 @@ namespace Doom_Scroll.UI
             Vector2 parentSize = parent.GetSize();
             float btnWidth = parentSize.x / 5;
             tasks.Btn.SetSize(btnWidth);
-            tasks.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 1.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            tasks.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 1.6f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
             
             return tasks;   
         }
@@ -68,7 +68,7 @@ namespace Doom_Scroll.UI
             Vector2 parentSize = parent.GetSize();
             float btnWidth = parentSize.x / 5;
             screenshots.Btn.SetSize(btnWidth);
-            screenshots.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 2.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            screenshots.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 2.6f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
             
             return screenshots;
         }
@@ -82,7 +82,7 @@ namespace Doom_Scroll.UI
             Vector2 parentSize = parent.GetSize();
             float btnWidth = parentSize.x / 5;
             sources.Btn.SetSize(btnWidth);
-            sources.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 3.4f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
+            sources.Btn.SetLocalPosition(new Vector3(pos.x - parentSize.x / 2 + btnWidth * 3.6f, pos.y + parentSize.y / 2 - 0.25f, pos.z - 10));
 
             return sources;
         }

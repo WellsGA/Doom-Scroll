@@ -26,7 +26,7 @@ namespace Doom_Scroll
             foreach (string source in rawSources)
             {
                 CustomImage card = new CustomImage(parent.UIGameObject, "source card", panelSprite);
-                card.SetSize(new Vector2(parent.GetSize().x * 0.8f, parent.GetSize().y * 0.65f));
+                card.SetSize(new Vector2(parent.GetSize().x * 0.84f, parent.GetSize().y * 0.75f));
                 CustomText cardText = new CustomText(card.UIGameObject, "source text", source);
                 cardText.SetSize(0.9f);
                 //cardText.SetTextAlignment(TMPro.TextAlignmentOptions.Left);
@@ -38,17 +38,17 @@ namespace Doom_Scroll
 
         public void DispaySources()
         {
-            Vector3 pos = new Vector3(0, -0.08f, -10);
+            Vector3 pos = new Vector3(0, -0.17f, -10);
             List<CustomUI> sourceCards = new List<CustomUI>();
             int numOnPage = 0;
             foreach (CustomImage source in sourceList)
             {
-                pos.y -= - source.GetSize().y /2 +0.05f;
+                pos.y -= source.GetSize().y /2 + 0.05f;
                 numOnPage++;
                 if (numOnPage >= maxSourceItemsPerPage)
                 {
                     numOnPage = 0;
-                    pos = new Vector3(0, -0.08f, -10);
+                    pos = new Vector3(0, -0.17f, -10);
                 }
 
                 source.SetLocalPosition(pos);

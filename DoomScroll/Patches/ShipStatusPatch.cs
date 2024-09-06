@@ -18,7 +18,6 @@ namespace Doom_Scroll.Patches
 
             // list all tasks - for debug purposes
             // PrintAllTasksToConsole(__instance);
-
         }
 
         [HarmonyPostfix]

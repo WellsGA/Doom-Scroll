@@ -128,7 +128,6 @@ namespace Doom_Scroll
 
             m_current = m_posts;
             m_previous = m_posts;
-
         }
 
         private void ChangeDirectory(IDirectory folder)

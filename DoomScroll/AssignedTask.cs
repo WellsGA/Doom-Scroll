@@ -48,7 +48,7 @@ namespace Doom_Scroll
             Sprite spr = ImageLoader.ReadImageFromAssembly(Assembly.GetExecutingAssembly(), "Doom_Scroll.Assets.card.png");
             CustomImage parent = FolderManager.Instance.GetFolderArea();
             Card = new CustomImage(parent.UIGameObject, "card item", spr);
-            Card.SetSize(new Vector3(parent.GetSize().x - 2f, 0.3f, 0)); 
+            Card.SetSize(new Vector3(parent.GetSize().x - 1.4f, 0.3f, 0)); 
             cardText = new CustomText(Card.UIGameObject, "task", "Default");
             cardText.SetSize(1.5f);
             AddShareButton();
