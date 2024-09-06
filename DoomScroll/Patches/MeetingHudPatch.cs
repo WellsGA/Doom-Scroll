@@ -49,7 +49,7 @@ namespace Doom_Scroll.Patches
                     // calculate scores
                     Tuple<int, int> score = HeadlineDisplay.Instance.CalculateScores(PlayerControl.LocalPlayer.PlayerId);
                     DoomScroll._log.LogInfo("Correct: " + score.Item1 + " incorrect: " + score.Item2);
-                    canVote = score.Item1 >= score.Item2;
+                    canVote = score.Item1 >= score.Item2 && score.Item1 != 0;
                     if (!canVote)
                     { // got less than half of them correctly
                         ActivateVoteAreas(false);
@@ -65,7 +65,8 @@ namespace Doom_Scroll.Patches
                     }
 
                     HeadlineDisplay.Instance.FinishVoteForHeadlines();
-                    __instance.TimerText.gameObject.SetActive(false);
+                    __instance.TimerText.gameObject.SetActive(true);
+                    __instance.SkipVoteButton.SetEnabled();
                     __instance.ProceedButton.gameObject.SetActive(true);
                     return false;
                 }
